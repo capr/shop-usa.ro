@@ -1,0 +1,79 @@
+APIs:
+	- query(sql, args) -> rows
+
+URLs:
+	/data/prod/pid
+	/data/s/catid?
+		q=search-string
+		did1=dvid1
+		i1=,n=
+	/cart
+	/login
+	/register
+	/forgot-password
+
+
+browsing modules:
+	- categories / left side
+	- categories / top bar
+	- categories / top bar popups
+	- multi-select filters / left side
+	- product gallery / grid
+	- product gallery / list
+	- product page / image gallery
+	- product page / image slide gallery
+	- product page / zoom cursor
+	- product page / dim. selection + stock / price update
+		- dim selectors: combo, color, size chart, grid, etc.
+	- product page / add-to-cart and add-to-wishlist buttons
+	- product page / fields: price, stock, description, brand logo
+	- category landing page templates
+	- homepage special offer banner slider
+
+cart module:
+	- cart list with buy later option
+	- buy later list with add-to-cart and remove option
+	- checkout button
+
+account module:
+	- login
+		- login with fbk
+		- login with g+
+	- register
+	- forgot password
+
+checkout module:
+	- select shipping method
+		- select service
+			- add shipping fee
+		- in store
+	- select shipping address
+		- add new address
+		- remove address
+	- select payment method
+		- cash on delivery
+		- online with cc
+	- place order
+
+backend orders module:
+	- orders grid with filtering, sorting, etc.
+		- change order status
+
+------------------------------------------------------------------------------
+
+missing features:
+	- multiple sites
+	- multiple languages
+
+missing backend:
+	- category manager
+	- attribute manager
+	- product manager
+		- details
+		- prices
+		- combinations
+		- images
+		- category associations
+		- shipping details
+	- stock manager
+
