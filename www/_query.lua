@@ -1,4 +1,5 @@
 --database query function
+setfenv(1, require'_g')
 local mysql = require'resty.mysql'
 
 db_host = '10.1.1.105'
