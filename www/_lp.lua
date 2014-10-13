@@ -51,7 +51,12 @@ function M.translate (s)
 	local start = 1   -- start of untranslated part in `s'
 	while true do
 		local ip, fp, target, exp, code = find(s, "<%?(%w*)[ \t]*(=?)(.-)%?>", start)
-		if not ip then break end
+		if not ip then
+			ip, fp, target, exp, code = find(s, "<%?(%w*)[ \t]*(=?)(.*)", start)
+			if not ip then
+				break
+			end
+		end
 		tinsert(res, out(s, start, ip-1))
 		if target ~= "" and target ~= "lua" then
 			-- not for Lua; pass whole instruction to the output

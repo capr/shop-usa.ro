@@ -4,22 +4,34 @@ local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
 local pp_ = require'pp'
---package.loaded._query = nil
+package.loaded._query = nil
 require'_query'
 
 --print API ------------------------------------------------------------------
 
 function print(...)
-	local t = {}
-	for i=1,select('#',...) do
-		t[i] = tostring((select(i, ...)))
+	local n = select('#',...)
+	if n == 0 then
+		--nothing
+	elseif n == 1 then
+		ngx.say(tostring(...))
+	else
+		local t = {}
+		for i=1,n do
+			t[i] = tostring((select(i, ...)))
+		end
+		ngx.header.content_type = 'text/plain'
+		ngx.say(table.concat(t, '\t'))
 	end
-	ngx.header.content_type = 'text/plain'
-	ngx.say(table.concat(t, '\t'))
+	ngx.say'\n'
 end
 
 function pp(v)
 	print(pp_.format(v, '   '))
+end
+
+function printf(...)
+	ngx.say(string.format(...))
 end
 
 function out_json(t)
@@ -37,6 +49,10 @@ local function parse_request()
 		ngx.req.read_body()
 		POST = ngx.req.get_post_args()
 	end
+end
+
+function uint_arg(s)
+	return s and tonumber(s:match'(%d+)$')
 end
 
 --reply API ------------------------------------------------------------------
@@ -71,6 +87,7 @@ local function filepath(file)
 	return path
 end
 
+local chunks = {} --{action = chunk}
 function action(action, ...)
 	local luapath = filepath(action..'.lua')
 	local lppath = not luapath and filepath(action..'.lp')
@@ -86,8 +103,11 @@ function action(action, ...)
 		chunk = assert(loadfile(luapath))
 	end
 	setfenv(chunk, getfenv(1))
+	chunks[action] = chunk
 	return chunk(...)
 end
+
+include = lp.include
 
 --main -----------------------------------------------------------------------
 

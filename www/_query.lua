@@ -13,7 +13,7 @@ local db --global db object
 
 local function assert_db(ret, err, errno, sqlstate)
 	if ret ~= nil then return ret end
-	error('db error: '..err..': '..errno..' '..sqlstate)
+	error('db error: '..err..': '..(errno or '')..' '..(sqlstate or ''))
 end
 
 local function connect()
@@ -27,6 +27,7 @@ local function connect()
 		user = db_user,
 		password = db_pass,
 	})
+	db:set_timeout(50000)
 end
 
 function query_(sql, ...) --query, iterate rows and close
@@ -39,18 +40,21 @@ function query_(sql, ...) --query, iterate rows and close
 	local i = 0
 	--TODO: skip string literals
 	sql = sql:gsub('%?', function() i = i + 1; return t[i] end)
-	return assert_db(db:query(sql))
+	local t = assert_db(db:query(sql))
+	for i,t in ipairs(t) do
+		for k,v in pairs(t) do
+			if v == ngx.null then
+				t[k] = nil
+			end
+		end
+	end
+	return t
 end
 
 --query frontends ------------------------------------------------------------
 
 function query(sql, ...)
-	local res = query_(sql, ...)
-	local i = 0
-	return function()
-		i = i + 1
-		return res[i]
-	end
+	return query_(sql, ...)
 end
 
 function query1(sql, ...) --query first row and close
