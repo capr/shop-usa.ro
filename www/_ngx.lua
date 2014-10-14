@@ -12,12 +12,19 @@ end
 
 local function main()
 
-	--reassign _G to G because it is replaced on every request
+	--reassign _G to G because it is replaced on every request.
 	local G = require'_g'
 	G.__index = _G
+	setfenv(1, G)
 
-	--unload packages that we work on
-	package.loaded._main = nil
+	nocache = true
+
+	--unload packages if not using cache.
+	if nocache then
+		package.loaded._main = nil
+		package.loaded._query = nil
+		package.loaded._lp = nil
+	end
 
 	require'_main'()
 end

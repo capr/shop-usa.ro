@@ -2,9 +2,28 @@
 <link rel="stylesheet" type="text/css" href="/main.css">
 <script src="/jquery.js"></script>
 <script src="/mustache.js"></script>
+<script src="/jquery.history.js"></script>
 <script>
 
-function format_node(node) {
+// history -------------------------------------------------------------------
+
+function init_history() {
+	var History = window.History
+	History.Adapter.bind(window, 'statechange', function() {
+		var State = History.getState()
+		url_changed(State.url)
+	})
+}
+
+function push_link(url) {
+	History.pushState(null, null, url)
+}
+
+// cat tree ------------------------------------------------------------------
+
+var g_root_catid = 2
+
+function format_cat(node) {
 
 	var id = node[0]
 	var name = node[1]
@@ -14,25 +33,162 @@ function format_node(node) {
 		prod_count + ' style="display: none;">' +
 		'<a>' + name + '</a> <span class=gray>(' + prod_count + ')</span>'
 	for (var i = 3; i < node.length; i++)
-		s = s + '<li>' + format_node(node[i]) + '</li>'
+		s = s + '<li>' + format_cat(node[i]) + '</li>'
 	s = s + '</ul>'
 
 	return s
 }
 
-function format_prods(prods) {
-	var template = $('#prod_template').html()
-	return Mustache.render(template, prods)
+function update_cats(cats) {
+	$('#cat').html(format_cat(cats))
+
+	$('#cat a').click(function() {
+		if ($(this).hasClass('active'))
+			return
+		var catid = $(this).parent().attr('catid')
+		change_cat(catid, 1)
+	})
+	$('#cat > ul').show()
 }
+
+function load_cats() {
+	$('#cat').addClass('loading')
+	$.ajax('/cat.json').done(function(cats) {
+		update_cats(cats)
+		$('#cat').removeClass('loading')
+		url_changed()
+	})
+}
+
+function change_cat(catid, page_num) {
+
+	$('#cat ul').hide()
+	$('#cat a').removeClass('active')
+	var cat_a = $('#cat ul[catid="'+catid+'"] > a')
+	cat_a.parents('#cat ul').show()
+	cat_a.parent().children('li').find('>ul').show()
+	cat_a.addClass('active')
+
+	var prod_count = cat_a.parent().attr('prod_count')
+	change_page(catid, prod_count, page_num)
+}
+
+// prods ---------------------------------------------------------------------
+
+var g_viewstyle = 'grid'
+var g_col_count = 3
+var g_prods
+
+function format_prods(prods, viewstyle) {
+	if (viewstyle == 'list') {
+		var template = $('#prod_list_template').html()
+		return Mustache.render(template, prods)
+	} else if (viewstyle == 'grid') {
+		var s = '<table width=100%>'
+		var template = $('#prod_grid_element_template').html()
+		$.each(prods, function(i, prod) {
+			if (i % g_col_count == 0)
+				s = s + '<tr>'
+			s = s + Mustache.render(template, prod)
+			if (i % g_col_count == g_col_count - 1 || i == prods.length)
+				s = s + '</tr>'
+		})
+		s = s + '</table>'
+		return s
+	}
+}
+
+function update_prods(prods, viewstyle) {
+
+	prods = prods || g_prods
+	viewstyle = viewstyle || g_viewstyle
+
+	$('#prod').html(format_prods(prods, viewstyle))
+
+	$('#prod a').click(function() {
+		var pid = parseInt($(this).parents('[pid]').first().attr('pid'))
+		change_prod(pid)
+	})
+
+	$('#prod .buybutton').click(function() {
+		var pid = parseInt($(this).parents('[pid]').first().attr('pid'))
+		add_to_cart(pid)
+	})
+
+	g_viewstyle = viewstyle
+	g_prods = prods
+}
+
+var g_catid
+var g_prod_count
+var g_page_num
+var g_page_xhr
+function change_page(catid, prod_count, page_num) {
+
+	catid = catid || g_catid
+	prod_count = prod_count || g_prod_count
+	page_num = page_num || g_page_num
+
+	if (g_page_xhr)
+		g_page_xhr.abort()
+
+	push_link('/browse/'+catid+'/'+page_num)
+
+	if (catid != g_catid)
+		$('#topnav').hide()
+
+	$('#prod').html('')
+	$('#prod').addClass('loading')
+
+	g_page_xhr = $.ajax({
+
+		url: '/prod.json/'+catid+'/'+page_num,
+
+		error: function(xhr) {
+			if (xhr.status == 404) {
+				change_cat(g_root_catid, 1)
+			}
+		},
+
+	}).done(function(prods) {
+
+		$('#topnav').show()
+		$('#prod').removeClass('loading')
+
+		update_pagenav(prod_count, page_num)
+		update_prods(prods)
+
+		g_catid = catid
+		g_prod_count = prod_count
+		g_page_num = page_num
+	})
+}
+
+// viewstyle -----------------------------------------------------------------
+
+function change_viewstyle(viewstyle) {
+	update_prods(null, viewstyle)
+}
+
+function init_viewstyle() {
+	$('a[viewstyle]').click(function() {
+		var viewstyle = $(this).attr('viewstyle')
+		change_viewstyle(viewstyle)
+	})
+}
+
+// page nav ------------------------------------------------------------------
+
+var g_prod_per_page = 99
 
 function clamp(x, min, max) {
 	return Math.min(Math.max(x, min), max)
 }
 
-function format_pagenav(prod_count, cur_page, prod_per_page) {
+function format_pagenav(prod_count, cur_page) {
 	var s = ''
 	if (cur_page > 1) s = s + '<a>«</a> '
-	var page_count = Math.ceil(prod_count / prod_per_page)
+	var page_count = Math.ceil(prod_count / g_prod_per_page)
 	cur_page = clamp(cur_page, 1, page_count)
 	var dotted
 	for (var i = 1; i <= page_count; i++) {
@@ -54,72 +210,39 @@ function format_pagenav(prod_count, cur_page, prod_per_page) {
 	return s
 }
 
-var g_catid
-var g_prod_count
-var g_cur_page
-
-function update_prods(prods, prod_count, cur_page) {
-	$('#pagenav').html(format_pagenav(prod_count, cur_page, 100))
+function update_pagenav(prod_count, cur_page) {
+	$('#pagenav').html(format_pagenav(prod_count, cur_page))
 	$('#pagenav a').click(function() {
 		var s = $(this).html()
 		var page_num =
-			(s == '«' && g_cur_page-1) ||
-			(s == '»' && g_cur_page+1) ||
+			(s == '«' && cur_page-1) ||
+			(s == '»' && cur_page+1) ||
 			parseInt(s)
 		change_page(null, null, page_num)
 	})
-	$('#prod').html(format_prods(prods))
 }
 
-function update_cats(cats) {
-	$('#cat').html(format_node(cats))
-
-	$('#cat a').click(function() {
-		if ($(this).hasClass('active'))
-			return
-		$('#cat ul').hide()
-		$('#cat a').removeClass('active')
-		$(this).parents('#cat ul').show()
-		$(this).parent().children('li').find('>ul').show()
-		$(this).addClass('active')
-
-		var id = $(this).parent().attr('catid')
-		var prod_count = $(this).parent().attr('prod_count')
-		change_page(id, prod_count, 1)
-	})
-	$('#cat > ul').show()
+function change_prod(pid) {
+	console.log('change_prod', pid)
 }
 
-var page_xhr
-function change_page(catid, prod_count, page_num) {
+function add_to_cart(pid) {
+	console.log('add_to_cart', pid)
+}
 
-	catid = catid || g_catid
-	prod_count = prod_count || g_prod_count
+// load page -----------------------------------------------------------------
 
-	if (page_xhr)
-		page_xhr.abort()
-
-	if (catid != g_catid)
-		$('#pagenav').html('')
-
-	$('#prod').html('')
-	$('#prod').addClass('loading')
-
-	page_xhr = $.ajax('/prod.json/'+catid+'/'+page_num).done(function(prods) {
-		$('#prod').removeClass('loading')
-		update_prods(prods, prod_count, page_num)
-		g_catid = catid
-		g_prod_count = prod_count
-		g_cur_page = page_num
-	})
+function url_changed() {
+	var args = location.pathname.split('/')
+	var catid = parseInt(args[2]) || g_root_catid
+	var page_num = parseInt(args[3]) || 1
+	change_cat(catid, page_num)
 }
 
 $(document).ready(function() {
-	$('#cat').addClass('loading')
-	$.ajax('/cat.json').done(function(cats) {
-		update_cats(cats)
-		$('#cat').removeClass('loading')
-	})
+	init_history()
+	init_viewstyle()
+	load_cats()
 })
 </script>
 
@@ -128,23 +251,52 @@ $(document).ready(function() {
 		<td valign=top width=300>
 			<div id=cat></div>
 		</td>
-		<td valign=top>
-			<div id=pagenav></div>
+		<td valign=top width=700>
+			<table width=100% id=topnav style="display: none;">
+				<tr>
+					<td class=small>
+						<a viewstyle=grid>grid</a> |
+						<a viewstyle=list>list</a>
+					</td>
+					<td align=right>
+						<div id=pagenav></div>
+					</td>
+				</tr>
+			</table>
 			<div id=prod></div>
 		</td>
 	</tr>
 </table>
 
-<script type="text/x-mustache" id=prod_template>
-{{#.}}
-	<p>
-		<img src="/img/p/{{{imgid}}}-home.jpg" class=home_img>
+<script type="text/x-mustache" id=prod_list_template>
+	<table width=100%>
+		{{#.}}
+		<tr pid={{{pid}}}>
+			<td width=300>
+				<img src="/img/p/{{{imgid}}}-home.jpg" class=home_img>
+			</td>
+			<td>
+				<b>{{{bname}}}</b> {{{name}}}
+				<br>
+				<span class=price>${{price}}</span>
+				<br>
+				<button type=button class=buybutton>add to bag</button>
+			</td>
+		</tr>
+		{{/.}}
+	</table>
+</script>
+
+<script type="text/x-mustache" id=prod_grid_element_template>
+	<td pid={{{pid}}}>
+		<a><img src="/img/p/{{{imgid}}}-home.jpg" class=home_img></a>
 		<br>
-		<b>{{{bname}}}</b> {{{name}}}
+		<a><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
 		<span class=price>${{price}}</span>
-	</p>
-{{/.}}
+		<br>
+		<button type=button class=buybutton pid={{{pid}}}>add to bag</button>
+	</td>
 </script>
 
 </html>

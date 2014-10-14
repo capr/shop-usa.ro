@@ -4,7 +4,6 @@ local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
 local pp_ = require'pp'
-package.loaded._query = nil
 require'_query'
 
 --print API ------------------------------------------------------------------
@@ -20,7 +19,7 @@ function print(...)
 		for i=1,n do
 			t[i] = tostring((select(i, ...)))
 		end
-		ngx.header.content_type = 'text/plain'
+		ngx.header['Content-Type'] = 'text/plain'
 		ngx.say(table.concat(t, '\t'))
 	end
 	ngx.say'\n'
@@ -35,7 +34,7 @@ function printf(...)
 end
 
 function out_json(t)
-	ngx.header.content_type = 'application/json'
+	ngx.header['Content-Type'] = 'application/json'
 	ngx.say(cjson.encode(t))
 	ngx.exit(0)
 end
@@ -55,12 +54,15 @@ function uint_arg(s)
 	return s and tonumber(s:match'(%d+)$')
 end
 
+function clamp(x, min, max)
+	return math.min(math.max(x, min), max)
+end
+
 --reply API ------------------------------------------------------------------
 
-function not_found(what)
+function check(ret, ...)
+	if ret then return ret, ... end
 	ngx.status = 404
-	ngx.header.content_type = 'text/plain'
-	print(msg or (what and what .. ' ' or '' ) .. 'not found')
 	ngx.exit(0)
 end
 
@@ -79,31 +81,38 @@ local function parse_path()
 	return action, args
 end
 
-local function filepath(file)
+local function filepath(file, basedir)
+	basedir = basedir or '../www'
 	if file:find('..', 1, true) then return end --trying to escape
 	if file:find'^_' then return end --private module
-	local path = '../www/'..file
+	local path = basedir .. '/' .. file
 	if not lfs.attributes(path, 'mode') then return end
 	return path
 end
 
 local chunks = {} --{action = chunk}
+
 function action(action, ...)
-	local luapath = filepath(action..'.lua')
-	local lppath = not luapath and filepath(action..'.lp')
-	if not luapath and not lppath then
-		ngx.redirect'/'
+	local chunk = chunks[action]
+	if not chunk then
+		local luapath = filepath(action..'.lua')
+		local lppath = not luapath and filepath(action..'.lp')
+		if not luapath and not lppath then
+			ngx.redirect'/'
+		end
+		if lppath then
+			lp.nocache = nocache
+			lp.setoutfunc'ngx.say'
+			local template = glue.readfile(lppath)
+			chunk = lp.compile(template, action, _G)
+		else
+			chunk = assert(loadfile(luapath))
+		end
+		setfenv(chunk, getfenv(1))
+		if not nocache then
+			chunks[action] = chunk
+		end
 	end
-	local chunk
-	if lppath then
-		lp.setoutfunc'ngx.say'
-		local template = glue.readfile(lppath)
-		chunk = lp.compile(template, action, _G)
-	else
-		chunk = assert(loadfile(luapath))
-	end
-	setfenv(chunk, getfenv(1))
-	chunks[action] = chunk
 	return chunk(...)
 end
 
@@ -117,18 +126,16 @@ local function check_img()
 	--not an image
 	if not path:find'^/img/p/' then return end
 
-	--check short form
+	--check for short form and make an internal redirect.
 	local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'
 	if imgid then
 		path = '/img/p'..imgid:gsub('.', '/%1')..'/'..imgid..'-'..size..'_default.jpg'
+		ngx.header['Cache-Control'] = 'max-age='.. (24 * 3600)
+		ngx.exec(path)
 	end
 
-	--file exists
-	if filepath(path) then return end
-
-	--redirect to default image
+	--redirect to default image (default is 302-moved-temporarily)
 	local size = path:match'%-(%w+)_default.jpg$' or 'home'
-
 	ngx.redirect('/img/p/en-default-'..size..'_default.jpg')
 end
 

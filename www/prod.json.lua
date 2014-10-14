@@ -1,15 +1,16 @@
 
-local catid, page = ...
-catid = assert(uint_arg(catid))
+local catid, page, pagesize = ...
+catid = check(uint_arg(catid))
 page  = tonumber(page) or 1
+pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
 
-local pagesize = 100
 local offset = (page - 1) * pagesize
 
-local pcount = query1([[
+local pcount = check(query1([[
 	select product_count as pcount from ps_category
 	where id_category = ?
-]], catid).pcount
+]], catid)).pcount
+
 local pagecount = math.ceil(pcount / pagesize)
 
 local products = query([[

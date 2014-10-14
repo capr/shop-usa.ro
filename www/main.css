@@ -25,7 +25,7 @@ a:link {
 }
 
 a:visited {
-	color: #333;
+	color: #666;
 }
 
 a:hover, a.hover {
@@ -48,12 +48,35 @@ a.active {
 	color: #999;
 }
 
+.small {
+	font-size: 13px;
+}
+
 .home_img {
-	min-width: 125px;
-	min-height: 125px;
+	min-width: 170px;
+	min-height: 198px;
 }
 
 .price {
 	color: #ff3300;
 	font-weight: bold;
 }
+
+.buybutton {
+	cursor: pointer;
+	color: #000;
+	background: #fff;
+	border: 1px solid #ccc;
+	font-weight: normal;
+	font-size: 14px;
+	font-variant: small-caps;
+	padding-top: 2px;
+	padding-bottom: 5px;
+	padding-left: 2em;
+	padding-right: 2em;
+}
+
+.buybutton:hover {
+	color: #cc8800;
+}
+
