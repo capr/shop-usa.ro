@@ -113,10 +113,22 @@ include = lp.include
 
 local function check_img()
 	local path = ngx.var.uri
-	if not path:find'^/img/p/%d' then return end
-	local size = path:match'%-(%w+)_default.jpg$'
-	if not size then return end
+
+	--not an image
+	if not path:find'^/img/p/' then return end
+
+	--check short form
+	local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'
+	if imgid then
+		path = '/img/p'..imgid:gsub('.', '/%1')..'/'..imgid..'-'..size..'_default.jpg'
+	end
+
+	--file exists
 	if filepath(path) then return end
+
+	--redirect to default image
+	local size = path:match'%-(%w+)_default.jpg$' or 'home'
+
 	ngx.redirect('/img/p/en-default-'..size..'_default.jpg')
 end
 
@@ -130,4 +142,3 @@ end
 
 return main
 
---http://10.1.1.105:8080/img/p/2/0/0/0/1/0/1/4/3/6/0/1/0/1/20001014360101-cart_default.jpg

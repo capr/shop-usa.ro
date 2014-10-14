@@ -1,3 +1,9 @@
+body, div {
+	font-family: Helvetica;
+	font-size: 14px;
+	line-height: 150%;
+}
+
 ul {
     list-style-type: none;
     padding: 0px;
@@ -10,27 +16,44 @@ ul li {
 
 a {
 	cursor: pointer;
-	color: blue;
-	text-decoration: underline;
+	color: #000;
+	text-decoration: none;
 }
 
 a:link {
-	color: #666666;
-}
-
-a:active {
-	color: #B73045;
+	color: #000;
 }
 
 a:visited {
-	color: #999999;
+	color: #333;
 }
 
 a:hover, a.hover {
-	text-decoration: underline;
+	color: #cc8800;
 }
 
 a.active {
-	color: black;
-	text-decoration: none;
+	font-weight: bold;
+	cursor: auto;
+}
+
+.loading {
+	background-image: url("loading.gif");
+	background-repeat: no-repeat;
+	min-width: 16px;
+	min-height: 16px;
+}
+
+.gray {
+	color: #999;
+}
+
+.home_img {
+	min-width: 125px;
+	min-height: 125px;
+}
+
+.price {
+	color: #ff3300;
+	font-weight: bold;
 }
