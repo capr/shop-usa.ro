@@ -99,7 +99,7 @@ function change_content(user_url, backend_url, on_done, on_error) {
 
 	g_xhr = $.ajax({
 
-		url: backend_url
+		url: backend_url,
 
 		error: function(xhr) {
 			if (on_error)
