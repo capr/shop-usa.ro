@@ -4,8 +4,7 @@
 function init_history() {
 	var History = window.History
 	History.Adapter.bind(window, 'statechange', function() {
-		var State = History.getState()
-		url_changed(State.url)
+		url_changed()
 	})
 }
 
@@ -13,11 +12,25 @@ function push_link(url) {
 	History.pushState(null, null, url)
 }
 
+var action = {} // {action: handler}
+var default_action = 'browse'
+
+function url_changed() {
+	var args = location.pathname.split('/')
+	var act = args[1] || default_action
+	args.shift()
+	args.shift()
+	var handler = action[act]
+	if (handler)
+		handler.apply(null, args)
+}
+
+
 // mustache ------------------------------------------------------------------
 
-function multi_column(template_sel, items, col_count) {
+function multi_column(template_id, items, col_count) {
 	var s = '<table width=100%>'
-	var template = template_sel.html()
+	var template = $(template_id).html()
 	var w = 100 / col_count
 	$.each(items, function(i, item) {
 		if (i % col_count == 0)
@@ -28,6 +41,60 @@ function multi_column(template_sel, items, col_count) {
 	})
 	s = s + '</table>'
 	return s
+}
+
+function apply_template(template_id, data, dest_id) {
+	var template = $(template_id).html()
+	var s = Mustache.render(template, data)
+	if (dest_id) {
+		$(dest_id).html(s)
+	} else {
+		return s
+	}
+}
+
+// content loading -----------------------------------------------------------
+
+var g_xhrs = {}
+
+function load_content(sel_id, backend_url, on_success, on_error) {
+
+	if (g_xhrs[sel_id]) {
+		g_xhrs[sel_id].abort()
+		delete g_xhrs[sel_id]
+	}
+
+	var sel = $(sel_id)
+	sel.html('')
+	sel.addClass('loading')
+
+	g_xhrs[sel_id] = $.ajax({
+		url: backend_url,
+		success: function(data) {
+			sel.removeClass('loading')
+			delete g_xhrs[sel_id]
+			if (on_success)
+				on_success(data)
+		},
+		error: function(xhr) {
+			sel.removeClass('loading')
+			delete g_xhrs[sel_id]
+			if (on_error) {
+				on_error(xhr)
+			} else {
+				sel.addClass('loading_error')
+			}
+		},
+	})
+}
+
+function load_main(user_url, backend_url, on_success, on_error) {
+	push_link(user_url)
+	load_content('#main', backend_url, function(data) {
+		if (on_success) on_success(data)
+	}, function(xhr) {
+		if (on_error) on_error(xhr)
+	})
 }
 
 // cat tree ------------------------------------------------------------------
@@ -63,10 +130,8 @@ function update_cats(cats) {
 }
 
 function load_cats() {
-	$('#cat').addClass('loading')
-	$.ajax('/cat.json').done(function(cats) {
+	load_content('#cat', '/cat.json', function(cats) {
 		update_cats(cats)
-		$('#cat').removeClass('loading')
 		url_changed()
 	})
 }
@@ -84,36 +149,10 @@ function change_cat(catid, page_num) {
 	change_page(catid, prod_count, page_num)
 }
 
-// content -------------------------------------------------------------------
-
-var g_xhr
-function change_content(user_url, backend_url, on_done, on_error) {
-
-	if (g_xhr)
-		g_xhr.abort()
-
-	push_link(user_url)
-
-	$('#prod').html('')
-	$('#prod').addClass('loading')
-
-	g_xhr = $.ajax({
-
-		url: backend_url,
-
-		error: function(xhr) {
-			if (on_error)
-				on_error()
-			//TODO: pop link
-		},
-
-	}).done(function(prods) {
-
-		$('.topnav').show()
-		$('#prod').removeClass('loading')
-
-		on_done()
-	})
+action.browse = function(catid, page_num) {
+	var catid = parseInt(catid) || g_root_catid
+	var page_num = parseInt(page_num) || 1
+	change_cat(catid, page_num)
 }
 
 // prods ---------------------------------------------------------------------
@@ -124,10 +163,9 @@ var g_prods
 
 function format_prods(prods, viewstyle) {
 	if (viewstyle == 'list') {
-		var template = $('#prod_list_template').html()
-		return Mustache.render(template, prods)
+		return apply_template('#prod_list_template', prods)
 	} else if (viewstyle == 'grid') {
-		return multi_column($('#prod_grid_element_template'), prods, g_col_count)
+		return multi_column('#prod_grid_element_template', prods, g_col_count)
 	}
 }
 
@@ -136,14 +174,14 @@ function update_prods(prods, viewstyle) {
 	prods = prods || g_prods
 	viewstyle = viewstyle || g_viewstyle
 
-	$('#prod').html(format_prods(prods, viewstyle))
+	$('#main').html(format_prods(prods, viewstyle))
 
-	$('#prod a').click(function() {
+	$('#main a').click(function() {
 		var pid = parseInt($(this).parents('[pid]').first().attr('pid'))
 		change_prod(pid)
 	})
 
-	$('#prod .buybutton').click(function() {
+	$('#main .buybutton').click(function() {
 		var pid = parseInt($(this).parents('[pid]').first().attr('pid'))
 		add_to_cart(pid)
 	})
@@ -161,36 +199,28 @@ function change_page(catid, prod_count, page_num) {
 	prod_count = prod_count || g_prod_count
 	page_num = page_num || g_page_num
 
-	push_link('/browse/'+catid+'/'+page_num)
-
 	if (catid != g_catid)
 		$('.topnav').hide()
 
-	$('#prod').html('')
-	$('#prod').addClass('loading')
+	load_main(
+		'/browse/'+catid+'/'+page_num,
+		'/prod.json/'+catid+'/'+page_num,
+		function(prods) {
 
-	g_xhr = $.ajax({
+			$('.topnav').show()
 
-		url: '/prod.json/'+catid+'/'+page_num,
+			update_pagenav(prod_count, page_num)
+			update_prods(prods)
 
-		error: function(xhr) {
-			if (xhr.status == 404) {
-				change_cat(g_root_catid, 1)
-			}
+			g_catid = catid
+			g_prod_count = prod_count
+			g_page_num = page_num
 		},
-
-	}).done(function(prods) {
-
-		$('.topnav').show()
-		$('#prod').removeClass('loading')
-
-		update_pagenav(prod_count, page_num)
-		update_prods(prods)
-
-		g_catid = catid
-		g_prod_count = prod_count
-		g_page_num = page_num
-	})
+		function(xhr) {
+			if (xhr.status == 404)
+				change_cat(g_root_catid, 1)
+		}
+	)
 }
 
 // viewstyle -----------------------------------------------------------------
@@ -216,7 +246,7 @@ function clamp(x, min, max) {
 
 function format_pagenav(prod_count, cur_page) {
 	var s = ''
-	if (cur_page > 1) s = s + '<a>«</a> '
+	if (cur_page > 1) s = s + '<a>&laquo;</a> '
 	var page_count = Math.ceil(prod_count / g_prod_per_page)
 	cur_page = clamp(cur_page, 1, page_count)
 	var dotted
@@ -235,7 +265,7 @@ function format_pagenav(prod_count, cur_page) {
 			dotted = true
 		}
 	}
-	if (cur_page < page_count) s = s + ' <a>»</a>'
+	if (cur_page < page_count) s = s + ' <a>&raquo;</a>'
 	return s
 }
 
@@ -263,55 +293,41 @@ function add_to_cart(pid) {
 
 // brands --------------------------------------------------------------------
 
-function load_brands1() {
-	$('#brands').addClass('loading')
-	$.ajax('/brands.json').done(function(brands) {
-		$('#brands').removeClass('loading')
-		var template = $('#brands_list_template').html()
-		var s = Mustache.render(template, brands)
-		$('#brands').html(s)
+function load_brands() {
+	load_content('#brands', '/brands.json', function(brands) {
+		apply_template('#brands_list_template', brands, '#brands')
+		$('input#brand_search').quicksearch('ul#brands_list li').cache()
 	})
 }
 
-function load_brands(search) {
+function update_brands(brands) {
+	var s = multi_column('#brands_template', brands, 4)
+	$('#main').html('<br><br>'+s)
+}
+
+action.brands = function(search) {
 	$('.topnav').hide()
-	$('#prod').html('')
-	$('#prod').addClass('loading')
-	$.ajax('/brands.json/'+search).done(function(brands) {
-		$('#prod').removeClass('loading')
-		var s = multi_column($('#brands_template'), brands, 4)
-		$('#prod').html(s)
-	})
-	push_link('/brands/'+search)
+	load_main(
+		'/brands/'+search,
+		'/brands.json/'+search,
+		update_brands
+	)
 }
 
 function init_letters() {
 	$('#letters a').click(function() {
 		var search = $(this).attr('search')
-		load_brands(search)
+		action.brands(search)
 	})
 }
 
 // load page -----------------------------------------------------------------
-
-function url_changed() {
-	var args = location.pathname.split('/')
-	var action = args[1] || 'browse'
-	if (action == 'browse') {
-		var catid = parseInt(args[2]) || g_root_catid
-		var page_num = parseInt(args[3]) || 1
-		change_cat(catid, page_num)
-	} else if (action == 'brands') {
-		var letter = args[2]
-		load_brands(letter)
-	}
-}
 
 $(document).ready(function() {
 	init_history()
 	init_viewstyle()
 	init_letters()
 	load_cats()
-	//load_brands()
+	load_brands()
 })
 

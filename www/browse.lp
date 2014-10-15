@@ -1,13 +1,19 @@
+<!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="/main.css">
-<script src="/jquery-1.11.1.js"></script>
-<script src="/mustache.js"></script>
-<script src="/jquery.history.js"></script>
-<script src="/browse.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/main.css">
+	<script src="/jquery-1.11.1.js"></script>
+	<script src="/mustache.js"></script>
+	<script src="/jquery.history.js"></script>
+	<script src="/jquery.quicksearch.js"></script>
+	<script src="/browse.js"></script>
+</head>
+<body>
 
 <table cellpadding=10>
 	<tr>
-		<td valign=top width=300>
+		<td valign=top width=260>
 			<div id=cat></div>
 			<br>
 			<div id=brands></div>
@@ -42,7 +48,7 @@
 					</td>
 				</tr>
 			</table>
-			<div id=prod></div>
+			<div id=main></div>
 			<table width=100% class=topnav style="display: none;">
 				<tr>
 					<td align=right>
@@ -91,11 +97,15 @@
 
 <script type="text/x-mustache" id=brands_list_template>
 	<b>Brands</b>
-	<ul>
-	{{#.}}
-		<li><a bid={{{bid}}}>{{bname}}</a></li>
-	{{/.}}
-	</ul>
+	<br>
+	<input id=brand_search type=text style="width: 220px"></input>
+	<div style="width: 220px; height: 200px; overflow: auto">
+		<ul id=brands_list>
+		{{#.}}
+			<li><a bid={{{bid}}}>{{bname}}</a></li>
+		{{/.}}
+		</ul>
+	</div>
 </script>
 
 <script type="text/x-mustache" id=brands_template>
@@ -103,5 +113,5 @@
 		<span class=gray>({{pcount}})</span></span>
 </script>
 
+</body>
 </html>
-
