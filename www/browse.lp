@@ -67,6 +67,8 @@
 				<span class=price>${{price}}</span>
 				<br>
 				<button type=button class=buybutton>add to bag</button>
+				<br>
+				<br>
 			</td>
 		</tr>
 		{{/.}}
@@ -82,6 +84,8 @@
 		<span class=price>${{price}}</span>
 		<br>
 		<button type=button class=buybutton pid={{{pid}}}>add to bag</button>
+		<br>
+		<br>
 	</div>
 </script>
 
@@ -100,5 +104,4 @@
 </script>
 
 </html>
-
 

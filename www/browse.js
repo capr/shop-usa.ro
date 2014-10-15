@@ -275,6 +275,7 @@ function load_brands1() {
 
 function load_brands(search) {
 	$('.topnav').hide()
+	$('#prod').html('')
 	$('#prod').addClass('loading')
 	$.ajax('/brands.json/'+search).done(function(brands) {
 		$('#prod').removeClass('loading')
