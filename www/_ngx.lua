@@ -12,10 +12,9 @@ end
 
 local function main()
 
-	--reassign _G to G because it is replaced on every request.
-	local G = require'_g'
-	G.__index = _G
-	setfenv(1, G)
+	local _G = _G
+	setfenv(1, require'_g')
+	__index = _G --reassign _G because it is replaced on every request.
 
 	nocache = true
 

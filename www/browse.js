@@ -13,6 +13,23 @@ function push_link(url) {
 	History.pushState(null, null, url)
 }
 
+// mustache ------------------------------------------------------------------
+
+function multi_column(template_sel, items, col_count) {
+	var s = '<table width=100%>'
+	var template = template_sel.html()
+	var w = 100 / col_count
+	$.each(items, function(i, item) {
+		if (i % col_count == 0)
+			s = s + '<tr>'
+		s = s + '<td width='+w+'%>' + Mustache.render(template, item) + '</td>'
+		if (i % col_count == col_count - 1 || i == items.length)
+			s = s + '</tr>'
+	})
+	s = s + '</table>'
+	return s
+}
+
 // cat tree ------------------------------------------------------------------
 
 var g_root_catid = 2
@@ -67,6 +84,38 @@ function change_cat(catid, page_num) {
 	change_page(catid, prod_count, page_num)
 }
 
+// content -------------------------------------------------------------------
+
+var g_xhr
+function change_content(user_url, backend_url, on_done, on_error) {
+
+	if (g_xhr)
+		g_xhr.abort()
+
+	push_link(user_url)
+
+	$('#prod').html('')
+	$('#prod').addClass('loading')
+
+	g_xhr = $.ajax({
+
+		url: backend_url
+
+		error: function(xhr) {
+			if (on_error)
+				on_error()
+			//TODO: pop link
+		},
+
+	}).done(function(prods) {
+
+		$('.topnav').show()
+		$('#prod').removeClass('loading')
+
+		on_done()
+	})
+}
+
 // prods ---------------------------------------------------------------------
 
 var g_viewstyle = 'grid'
@@ -78,17 +127,7 @@ function format_prods(prods, viewstyle) {
 		var template = $('#prod_list_template').html()
 		return Mustache.render(template, prods)
 	} else if (viewstyle == 'grid') {
-		var s = '<table width=100%>'
-		var template = $('#prod_grid_element_template').html()
-		$.each(prods, function(i, prod) {
-			if (i % g_col_count == 0)
-				s = s + '<tr>'
-			s = s + Mustache.render(template, prod)
-			if (i % g_col_count == g_col_count - 1 || i == prods.length)
-				s = s + '</tr>'
-		})
-		s = s + '</table>'
-		return s
+		return multi_column($('#prod_grid_element_template'), prods, g_col_count)
 	}
 }
 
@@ -116,25 +155,21 @@ function update_prods(prods, viewstyle) {
 var g_catid
 var g_prod_count
 var g_page_num
-var g_page_xhr
 function change_page(catid, prod_count, page_num) {
 
 	catid = catid || g_catid
 	prod_count = prod_count || g_prod_count
 	page_num = page_num || g_page_num
 
-	if (g_page_xhr)
-		g_page_xhr.abort()
-
 	push_link('/browse/'+catid+'/'+page_num)
 
 	if (catid != g_catid)
-		$('#topnav').hide()
+		$('.topnav').hide()
 
 	$('#prod').html('')
 	$('#prod').addClass('loading')
 
-	g_page_xhr = $.ajax({
+	g_xhr = $.ajax({
 
 		url: '/prod.json/'+catid+'/'+page_num,
 
@@ -146,7 +181,7 @@ function change_page(catid, prod_count, page_num) {
 
 	}).done(function(prods) {
 
-		$('#topnav').show()
+		$('.topnav').show()
 		$('#prod').removeClass('loading')
 
 		update_pagenav(prod_count, page_num)
@@ -205,8 +240,8 @@ function format_pagenav(prod_count, cur_page) {
 }
 
 function update_pagenav(prod_count, cur_page) {
-	$('#pagenav').html(format_pagenav(prod_count, cur_page))
-	$('#pagenav a').click(function() {
+	$('.pagenav').html(format_pagenav(prod_count, cur_page))
+	$('.pagenav a').click(function() {
 		if ($(this).hasClass('active'))
 			return
 		var s = $(this).html()
@@ -226,18 +261,56 @@ function add_to_cart(pid) {
 	console.log('add_to_cart', pid)
 }
 
+// brands --------------------------------------------------------------------
+
+function load_brands1() {
+	$('#brands').addClass('loading')
+	$.ajax('/brands.json').done(function(brands) {
+		$('#brands').removeClass('loading')
+		var template = $('#brands_list_template').html()
+		var s = Mustache.render(template, brands)
+		$('#brands').html(s)
+	})
+}
+
+function load_brands(search) {
+	$('.topnav').hide()
+	$('#prod').addClass('loading')
+	$.ajax('/brands.json/'+search).done(function(brands) {
+		$('#prod').removeClass('loading')
+		var s = multi_column($('#brands_template'), brands, 4)
+		$('#prod').html(s)
+	})
+	push_link('/brands/'+search)
+}
+
+function init_letters() {
+	$('#letters a').click(function() {
+		var search = $(this).attr('search')
+		load_brands(search)
+	})
+}
+
 // load page -----------------------------------------------------------------
 
 function url_changed() {
 	var args = location.pathname.split('/')
-	var catid = parseInt(args[2]) || g_root_catid
-	var page_num = parseInt(args[3]) || 1
-	change_cat(catid, page_num)
+	var action = args[1] || 'browse'
+	if (action == 'browse') {
+		var catid = parseInt(args[2]) || g_root_catid
+		var page_num = parseInt(args[3]) || 1
+		change_cat(catid, page_num)
+	} else if (action == 'brands') {
+		var letter = args[2]
+		load_brands(letter)
+	}
 }
 
 $(document).ready(function() {
 	init_history()
 	init_viewstyle()
+	init_letters()
 	load_cats()
+	//load_brands()
 })
 

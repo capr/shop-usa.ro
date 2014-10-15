@@ -6,13 +6,6 @@ pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
 
 local offset = (page - 1) * pagesize
 
-local pcount = check(query1([[
-	select product_count as pcount from ps_category
-	where id_category = ?
-]], catid)).pcount
-
-local pagecount = math.ceil(pcount / pagesize)
-
 local products = query([[
 	select
 		p.id_product as pid,
