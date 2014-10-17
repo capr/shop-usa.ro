@@ -1,9 +1,10 @@
 setfenv(1, require'_g')
-local glue = require'glue'
+glue = require'glue'
 local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
 local pp_ = require'pp'
+local sess = require'resty.session'
 require'_query'
 
 --print API ------------------------------------------------------------------
@@ -22,21 +23,27 @@ function print(...)
 		ngx.header['Content-Type'] = 'text/plain'
 		ngx.say(table.concat(t, '\t'))
 	end
-	ngx.say'\n'
 end
 
 function pp(v)
 	print(pp_.format(v, '   '))
 end
 
-function printf(...)
-	ngx.say(string.format(...))
-end
-
 function out_json(t)
 	ngx.header['Content-Type'] = 'application/json'
 	ngx.say(cjson.encode(t))
 	ngx.exit(0)
+end
+
+local outbuf
+function out(s)
+	outbuf = outbuf or {}
+	outbuf[#outbuf+1] = s
+end
+function dump_outbuf()
+	if not outbuf then return end
+	ngx.say(table.concat(outbuf))
+	outbuf = nil
 end
 
 --request API ----------------------------------------------------------------
@@ -57,6 +64,8 @@ end
 function clamp(x, min, max)
 	return math.min(math.max(x, min), max)
 end
+
+session = assert(sess.start())
 
 --reply API ------------------------------------------------------------------
 
@@ -102,7 +111,7 @@ function action(action, ...)
 		end
 		if lppath then
 			lp.nocache = nocache
-			lp.setoutfunc'ngx.say'
+			lp.setoutfunc'out'
 			local template = glue.readfile(lppath)
 			chunk = lp.compile(template, action, _G)
 		else
@@ -113,7 +122,9 @@ function action(action, ...)
 			chunks[action] = chunk
 		end
 	end
-	return chunk(...)
+	local ret = chunk(...)
+	dump_outbuf()
+	return ret
 end
 
 include = lp.include
@@ -122,21 +133,24 @@ include = lp.include
 
 local function check_img()
 	local path = ngx.var.uri
+	local kind = path:match'^/img/([^/]+)'
+	if not kind then return end --not an image
 
-	--not an image
-	if not path:find'^/img/p/' then return end
-
-	--check for short form and make an internal redirect.
-	local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'
-	if imgid then
-		path = '/img/p'..imgid:gsub('.', '/%1')..'/'..imgid..'-'..size..'_default.jpg'
-		ngx.header['Cache-Control'] = 'max-age='.. (24 * 3600)
-		ngx.exec(path)
+	if kind == 'p' then
+		--check for short form and make an internal redirect.
+		local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'
+		if imgid then
+			path = '/img/p'..imgid:gsub('.', '/%1')..'/'..imgid..'-'..size..'_default.jpg'
+			ngx.header['Cache-Control'] = 'max-age='.. (24 * 3600)
+			ngx.exec(path)
+		end
+		--redirect to default image (default is 302-moved-temporarily)
+		local size = path:match'%-(%w+)_default.jpg$' or 'cart'
+		ngx.redirect('/img/p/en-default-'..size..'_default.jpg')
+	else
+		--redirect to empty image (default is 302-moved-temporarily)
+		ngx.redirect('/0.png')
 	end
-
-	--redirect to default image (default is 302-moved-temporarily)
-	local size = path:match'%-(%w+)_default.jpg$' or 'home'
-	ngx.redirect('/img/p/en-default-'..size..'_default.jpg')
 end
 
 local function main()

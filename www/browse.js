@@ -8,25 +8,25 @@ function init_history() {
 	})
 }
 
-function push_link(url) {
+function exec(url) {
 	History.pushState(null, null, url)
 }
 
 var action = {} // {action: handler}
-var default_action = 'browse'
+var default_action = 'cat'
 
 function url_changed() {
 	var args = location.pathname.split('/')
-	var act = args[1] || default_action
-	args.shift()
-	args.shift()
+	args.shift() // remove /
+	args.shift() // remove browse/
+	var act = args[0] || default_action
+	args.shift() // remove action/
 	var handler = action[act]
 	if (handler)
 		handler.apply(null, args)
 }
 
-
-// mustache ------------------------------------------------------------------
+// templating ----------------------------------------------------------------
 
 function multi_column(template_id, items, col_count) {
 	var s = '<table width=100%>'
@@ -55,8 +55,7 @@ function apply_template(template_id, data, dest_id) {
 
 // content loading -----------------------------------------------------------
 
-var g_xhrs = {}
-
+var g_xhrs = {} //{sel_id: xhr}
 function load_content(sel_id, backend_url, on_success, on_error) {
 
 	if (g_xhrs[sel_id]) {
@@ -65,35 +64,38 @@ function load_content(sel_id, backend_url, on_success, on_error) {
 	}
 
 	var sel = $(sel_id)
-	sel.html('')
-	sel.addClass('loading')
+	var timeout = setTimeout(function() {
+		sel.html('')
+		sel.addClass('loading')
+	}, C('loading_delay', 2000))
+
+	var done = function() {
+		clearTimeout(timeout)
+		sel.removeClass('loading')
+		delete g_xhrs[sel_id]
+	}
 
 	g_xhrs[sel_id] = $.ajax({
 		url: backend_url,
 		success: function(data) {
-			sel.removeClass('loading')
-			delete g_xhrs[sel_id]
+			done()
+			sel.removeClass('load_error')
 			if (on_success)
 				on_success(data)
 		},
 		error: function(xhr) {
-			sel.removeClass('loading')
-			delete g_xhrs[sel_id]
-			if (on_error) {
+			done()
+			sel.addClass('load_error')
+			if (on_error)
 				on_error(xhr)
-			} else {
-				sel.addClass('loading_error')
-			}
 		},
 	})
 }
 
-function load_main(user_url, backend_url, on_success, on_error) {
-	push_link(user_url)
-	load_content('#main', backend_url, function(data) {
-		if (on_success) on_success(data)
-	}, function(xhr) {
-		if (on_error) on_error(xhr)
+function load_main(backend_url, on_success, on_error) {
+	load_content('#main', backend_url, on_success, function(xhr) {
+		if (xhr.status == 404)
+			window.location = '/'
 	})
 }
 
@@ -101,7 +103,7 @@ function load_main(user_url, backend_url, on_success, on_error) {
 
 var g_root_catid = 2
 
-function format_cat(node) {
+function format_cats(node) {
 
 	var id = node[0]
 	var name = node[1]
@@ -111,74 +113,87 @@ function format_cat(node) {
 		prod_count + ' style="display: none;">' +
 		'<a>' + name + '</a> <span class=gray>(' + prod_count + ')</span>'
 	for (var i = 3; i < node.length; i++)
-		s = s + '<li>' + format_cat(node[i]) + '</li>'
+		s = s + '<li>' + format_cats(node[i]) + '</li>'
 	s = s + '</ul>'
 
 	return s
 }
 
 function update_cats(cats) {
-	$('#cat').html(format_cat(cats))
+	$('#cat').html(format_cats(cats))
 
 	$('#cat a').click(function() {
-		if ($(this).hasClass('active'))
-			return
 		var catid = $(this).parent().attr('catid')
-		change_cat(catid, 1)
+		exec('/browse/cat/'+catid)
 	})
 	$('#cat > ul').show()
 }
 
-function load_cats() {
-	load_content('#cat', '/cat.json', function(cats) {
-		update_cats(cats)
-		url_changed()
+var g_cats
+function load_cats(on_success) {
+	if (g_cats) {
+		$('#sidebar').show()
+		on_success()
+	} else {
+		load_content('#cat', '/cat.json', function(cats) {
+			g_cats = cats
+			update_cats(cats)
+			$('#sidebar').show()
+			on_success()
+		})
+	}
+}
+
+var g_catid
+var g_prod_count
+function select_cat(catid) {
+	if (catid != g_catid) {
+
+		$('#cat ul').hide()
+		$('#cat a').removeClass('active')
+		var cat_a = $('#cat ul[catid="'+catid+'"] > a')
+		cat_a.parents('#cat ul').show()
+		cat_a.parent().children('li').find('> ul').show()
+		cat_a.addClass('active')
+
+		g_catid = catid
+		g_prod_count = cat_a.parent().attr('prod_count')
+	}
+	return g_prod_count
+}
+
+action.cat = function(catid, page_num) {
+
+	catid = parseInt(catid) || g_root_catid
+	page_num = parseInt(page_num) || 1
+
+	load_cats(function() {
+		var prod_count = select_cat(catid)
+		load_prods(catid, prod_count, page_num)
+		load_brands(catid)
 	})
-}
-
-function change_cat(catid, page_num) {
-
-	$('#cat ul').hide()
-	$('#cat a').removeClass('active')
-	var cat_a = $('#cat ul[catid="'+catid+'"] > a')
-	cat_a.parents('#cat ul').show()
-	cat_a.parent().children('li').find('>ul').show()
-	cat_a.addClass('active')
-
-	var prod_count = cat_a.parent().attr('prod_count')
-	change_page(catid, prod_count, page_num)
-}
-
-action.browse = function(catid, page_num) {
-	var catid = parseInt(catid) || g_root_catid
-	var page_num = parseInt(page_num) || 1
-	change_cat(catid, page_num)
 }
 
 // prods ---------------------------------------------------------------------
 
-var g_viewstyle = 'grid'
-var g_col_count = 3
-var g_prods
-
-function format_prods(prods, viewstyle) {
-	if (viewstyle == 'list') {
+function format_prods(prods) {
+	if (g_viewstyle == 'list') {
 		return apply_template('#prod_list_template', prods)
-	} else if (viewstyle == 'grid') {
-		return multi_column('#prod_grid_element_template', prods, g_col_count)
+	} else if (g_viewstyle == 'grid') {
+		return multi_column('#prod_grid_element_template', prods, 3)
 	}
 }
 
-function update_prods(prods, viewstyle) {
+var g_prods
+function update_prods(prods) {
 
 	prods = prods || g_prods
-	viewstyle = viewstyle || g_viewstyle
 
-	$('#main').html(format_prods(prods, viewstyle))
+	$('#main').html(format_prods(prods))
 
 	$('#main a').click(function() {
 		var pid = parseInt($(this).parents('[pid]').first().attr('pid'))
-		change_prod(pid)
+		exec('/browse/p/'+pid)
 	})
 
 	$('#main .buybutton').click(function() {
@@ -186,54 +201,33 @@ function update_prods(prods, viewstyle) {
 		add_to_cart(pid)
 	})
 
-	g_viewstyle = viewstyle
 	g_prods = prods
 }
 
-var g_catid
-var g_prod_count
-var g_page_num
-function change_page(catid, prod_count, page_num) {
-
-	catid = catid || g_catid
-	prod_count = prod_count || g_prod_count
-	page_num = page_num || g_page_num
-
-	if (catid != g_catid)
-		$('.topnav').hide()
-
-	load_main(
-		'/browse/'+catid+'/'+page_num,
-		'/prod.json/'+catid+'/'+page_num,
-		function(prods) {
-
-			$('.topnav').show()
-
-			update_pagenav(prod_count, page_num)
-			update_prods(prods)
-
-			g_catid = catid
-			g_prod_count = prod_count
-			g_page_num = page_num
-		},
-		function(xhr) {
-			if (xhr.status == 404)
-				change_cat(g_root_catid, 1)
-		}
-	)
+function load_prods(catid, prod_count, page_num) {
+	load_main('/prods.json/'+catid+'/'+page_num, function(prods) {
+		update_pagenav(prod_count, page_num)
+		update_prods(prods)
+	})
 }
 
 // viewstyle -----------------------------------------------------------------
 
+var g_viewstyle = 'grid'
+
 function change_viewstyle(viewstyle) {
-	update_prods(null, viewstyle)
+	g_viewstyle = viewstyle
+	update_prods()
 }
 
 function init_viewstyle() {
 	$('a[viewstyle]').click(function() {
 		var viewstyle = $(this).attr('viewstyle')
 		change_viewstyle(viewstyle)
+		$('a[viewstyle]').removeClass('active')
+		$(this).addClass('active')
 	})
+	$('a[viewstyle="'+g_viewstyle+'"]').addClass('active')
 }
 
 // page nav ------------------------------------------------------------------
@@ -272,53 +266,206 @@ function format_pagenav(prod_count, cur_page) {
 function update_pagenav(prod_count, cur_page) {
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
 	$('.pagenav a').click(function() {
-		if ($(this).hasClass('active'))
-			return
 		var s = $(this).html()
 		var page_num =
 			(s == '«' && cur_page-1) ||
 			(s == '»' && cur_page+1) ||
 			parseInt(s)
-		change_page(null, null, page_num)
+		exec('/browse/cat/'+g_catid+(page_num > 1 ? '/'+page_num : ''))
 	})
+	$('.navbar').show()
 }
 
-function change_prod(pid) {
-	console.log('change_prod', pid)
+// brands list ---------------------------------------------------------------
+
+var g_brands_catid
+function load_brands(catid) {
+	if (g_brands_catid != catid) {
+		load_content('#brands', '/brands.json/all/'+catid, function(brands) {
+
+			apply_template('#brands_list_template', brands, '#brands')
+
+			if ($('#brands_list li').length > 40)
+				$('#brand_search').show()
+			else
+				$('#brand_search').hide()
+			$('#brand_search').quicksearch('#brands_list li').cache()
+
+			g_brands_catid = catid
+		})
+	}
 }
 
-function add_to_cart(pid) {
-	console.log('add_to_cart', pid)
-}
-
-// brands --------------------------------------------------------------------
-
-function load_brands() {
-	load_content('#brands', '/brands.json', function(brands) {
-		apply_template('#brands_list_template', brands, '#brands')
-		$('input#brand_search').quicksearch('ul#brands_list li').cache()
-	})
-}
+// brands page ---------------------------------------------------------------
 
 function update_brands(brands) {
+	$('.navbar').hide()
+	$('#sidebar').hide()
 	var s = multi_column('#brands_template', brands, 4)
 	$('#main').html('<br><br>'+s)
 }
 
 action.brands = function(search) {
-	$('.topnav').hide()
-	load_main(
-		'/brands/'+search,
-		'/brands.json/'+search,
-		update_brands
-	)
+	load_main('/brands.json/'+search, update_brands)
 }
 
 function init_letters() {
 	$('#letters a').click(function() {
 		var search = $(this).attr('search')
-		action.brands(search)
+		exec('/browse/brands/'+search)
 	})
+}
+
+// product page --------------------------------------------------------------
+
+function init_prod() {
+
+	// keyboard image navigation
+	$(document).keydown(function(event) {
+		var img = $('#gallery a[imgid] > img.active')
+		if (event.which == 39) {
+			change_prod_img(img.closest('td').next('td').find('> a').attr('imgid'))
+		} else if (event.which == 37) {
+			change_prod_img(img.closest('td').prev('td').find('> a').attr('imgid'))
+		}
+	})
+}
+
+function change_prod_img(imgid) {
+	if (!imgid) return
+
+	$('#gallery a[imgid] > img').addClass('inactive').removeClass('active')
+	$('#gallery a[imgid="'+imgid+'"] > img').addClass('active')
+		.removeClass('inactive')
+
+	$('#zoom_img').removeData('jqzoom')
+	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
+		$('#zoom_img').attr('href', '/img/p/'+imgid+'-thickbox.jpg')
+		$('#zoom_img').jqzoom({zoomType: 'innerzoom', title: false, lens: false})
+	})
+}
+
+var g_prod, g_dvals
+
+function dimsel_changed() {
+
+	// compile values of selected dims into 'dvid1 dvid2 ...'
+	var dvals = []
+	$('#dimsel select[did] option:selected').each(function() {
+		dvals.push(parseInt($(this).val()))
+	})
+	dvals.sort(function(a, b) { return a > b })
+	dvals = dvals.join(' ')
+
+	//find the combi for those dvals
+	var combi = g_prod.combis[dvals] || {}
+	g_dvals = dvals
+
+	// prepare and apply the combi templates
+	var co = {}
+	co.price = combi.price &&
+		S('price', '${0}').format(combi.price) ||
+		S('na', '<span class=notavailable>N/A</span>')
+	co.stock =
+		!combi.price && '<span class=notavailable>' + S('not_available', 'Not Available') + '</span>' ||
+		(!combi.qty || combi.qty < 1) && '<span class=notavailable>' + S('out_of_stock', 'Out of stock') + '</span>' ||
+		combi.qty > C('max_stock_reveal', 5) && S('plenty_in_stock', '<b>Plenty in stock</b>') ||
+		combi.qty < C('low_stock', 3) && S('low_stock', '<b>Only {0} left</b> in stock').format(combi.qty) ||
+		S('in_stock', '<b>{0} left</b> in stock').format(combi.qty)
+
+	apply_template('#product_combi_template', co, '#combi')
+
+	if (!combi.price || !combi.qty || combi.qty < 1)
+		$('.buybutton').hide()
+	else
+		$('.buybutton').show()
+
+	var imgs = combi.imgs || []
+
+	// if there are no images for this combi, use the cover image.
+	if (!imgs.length)
+		imgs.push(g_prod.imgid)
+
+	apply_template('#product_gallery_template', imgs, '#gallery')
+
+	change_prod_img(imgs[0])
+
+	$('#gallery a[imgid]').click(function() {
+		var imgid = $(this).attr('imgid')
+		change_prod_img(imgid)
+	})
+
+}
+
+function update_prod(prod) {
+
+	g_prod = prod
+
+	window.scrollTo(0, 0)
+
+	$('.navbar').hide()
+	$('#sidebar').hide()
+
+	apply_template('#product_page_template', prod, '#main')
+
+	$('#dimsel select[did]').change(dimsel_changed)
+
+	dimsel_changed()
+
+	$('#main .buybutton').click(function() {
+		var pid = parseInt($(this).attr('pid'))
+		add_to_cart(pid, g_dvals)
+	})
+}
+
+action.p = function(pid) {
+	load_main('/prod.json/'+pid, update_prod)
+}
+
+// cart ----------------------------------------------------------------------
+
+function get_cart() {
+	return JSON.parse($.cookie('cart') || '{}')
+}
+
+function add_to_cart(pid, dvals) {
+	var cart = get_cart()
+	var key = pid+' '+dvals
+	cart[key] = (cart[key] || 0) + 1
+	$.cookie('cart', JSON.stringify(cart))
+
+	var p = $('#cart_icon').offset()
+	var o = $('#drag_img').position()
+	$('#prod_img').clone().appendTo('#drag_img')
+	$('#drag_img').first().animate({
+		top: p.top - o.top,
+		left: p.left - o.left,
+		opacity: 0,
+	}, 500, function() {
+		$('#drag_img').html('')
+		$('#cart_icon').effect('bounce', 250)
+	})
+
+	return cart
+	//exec('/cart/add/'+pid)
+}
+
+// side bar ------------------------------------------------------------------
+
+function init_sidebar() {
+	var el = $('#sidebar')
+	var elpos = el.offset().top
+	var headspace = 20
+	var adjust_sidebar = function() {
+		var y = $(this).scrollTop()
+		if (y < elpos - headspace || window.innerHeight < el.height() + headspace) {
+			el.css('position', 'static')
+		} else {
+			el.css({position: 'fixed', top: headspace})
+		}
+	}
+	$(window).scroll(adjust_sidebar)
+	$(window).resize(adjust_sidebar)
 }
 
 // load page -----------------------------------------------------------------
@@ -327,7 +474,8 @@ $(document).ready(function() {
 	init_history()
 	init_viewstyle()
 	init_letters()
-	load_cats()
-	load_brands()
+	init_sidebar()
+	init_prod()
+	url_changed()
 })
 

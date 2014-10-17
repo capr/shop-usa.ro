@@ -1,44 +1,153 @@
 
-local catid, page, pagesize = ...
-catid = check(uint_arg(catid))
-page  = tonumber(page) or 1
-pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
+local pid = ...
+pid = check(uint_arg(pid))
 
-local offset = (page - 1) * pagesize
+--product --------------------------------------------------------------------
 
-local products = query([[
+local prod = query1([[
 	select
 		p.id_product as pid,
-		pl.name,
 		p.price,
-		i.id_image as imgid,
-		m.name as bname
+		pl.name as name,
+		pl.description as descr,
+		m.id_manufacturer as bid,
+		m.name as bname,
+		i.id_image as imgid
 	from
 		ps_product p
-	left join ps_image i on
-		i.id_product = p.id_product
-		and i.cover = 1
-	inner join ps_product_shop ps on
-		ps.id_product = p.id_product
-		and ps.id_shop = 1
-	inner join ps_category_product cp on
-		cp.id_product = p.id_product
-		and cp.id_category = ?
-	inner join ps_product_lang pl on
-		pl.id_product = p.id_product
-	left join ps_manufacturer m on
-		m.id_manufacturer = p.id_manufacturer
+		inner join ps_product_lang pl on
+			pl.id_lang = 1
+			and pl.id_product = p.id_product
+		left join ps_image i on
+			i.id_product = p.id_product
+			and i.cover = 1
+		left join ps_manufacturer m on
+			m.id_manufacturer = p.id_manufacturer
 	where
 		p.active = 1
-	limit
-]]..offset..', '..pagesize, catid)
+		and p.id_product = ?
+]], pid)
 
-local function update_default_price()
-	query[[
-		update ps_product p set p.price = (
-			select pa.price from ps_product_attribute pa
-			where pa.id_product = p.id_product and pa.default_on = 1)
-	]]
+--combis ---------------------------------------------------------------------
+
+local coid, co
+local dnames = {} --{did = dname}
+local dvnames = {} --{dvid = dvname}
+local dpos = {} --{did = dpos}
+local dvpos = {} --{dvid = dvpos}
+local dvids = {} --{did = {dvid = true}}
+local cot = {} --{{coid=, price=, qty=, dvid1, ...}, ...}
+
+for i,t in ipairs(query([[
+	select
+		pa.id_product_attribute as coid,
+		pa.price,
+		pa.quantity as qty,
+		ag.id_attribute_group as did,
+		agl.name as dname,
+		ag.position as dpos,
+		a.id_attribute as dvid,
+		al.name as dvname,
+		a.position as dvpos
+	from
+		ps_product_attribute_combination co
+		inner join ps_product_attribute pa on
+			pa.id_product_attribute = co.id_product_attribute
+		inner join ps_attribute a on
+			a.id_attribute = co.id_attribute
+		inner join ps_attribute_lang al on
+			al.id_lang = 1
+			and al.id_attribute = a.id_attribute
+		inner join ps_attribute_group ag on
+			ag.id_attribute_group = a.id_attribute_group
+		inner join ps_attribute_group_lang agl on
+			agl.id_lang = 1
+			and agl.id_attribute_group = ag.id_attribute_group
+	where
+		pa.id_product = ?
+	order by
+		coid, dvid
+]], pid)) do
+
+	dnames[t.did] = t.dname
+	dvnames[t.dvid] = t.dvname
+	dpos[t.did] = t.dpos
+	dvpos[t.dvid] = t.dvpos
+	dvids[t.did] = dvids[t.did] or {}
+	dvids[t.did][t.dvid] = true
+
+	if coid ~= t.coid then --next combi
+		coid = t.coid
+		co = {coid = t.coid, price = t.price, qty = t.qty}
+		table.insert(cot, co)
+	end
+	table.insert(co, t.dvid) --dvids come sorted (we need that)
 end
 
-out_json(products)
+prod.dims = {} --{{did=, dname=, dvals = {{dvid = dvid1, dvname = dvname1}, ...}}, ...}
+
+for did, dname in pairs(dnames) do
+	local dim = {did = did, dname = dname, dvals = {}}
+	table.insert(prod.dims, dim)
+
+	local dvids = glue.keys(dvids[did]) --{dvid1, ...}
+
+	--sort dvids by (dvpos, dvname).
+	table.sort(dvids, function(dvid1, dvid2)
+		local dvpos1, dvpos2 = dvpos[dvid1], dvpos[dvid2]
+		if dvpos1 == dvpos2 then
+			return dvnames[dvid1] < dvnames[dvid2]
+		else
+			return dvpos1 < dvpos2
+		end
+	end)
+
+	for i,dvid in ipairs(dvids) do
+		table.insert(dim.dvals, {dvid = dvid, dvname = dvnames[dvid]})
+	end
+end
+
+--sort dims by (dpos, did).
+table.sort(prod.dims, function(d1, d2)
+	local did1, did2 = d1.did, d2.did
+	local dpos1, dpos2 = dpos[did1], dpos[did2]
+	if dpos1 == dpos2 then
+		return did1 < did2
+	else
+		return dpos1 < dpos2
+	end
+end)
+
+prod.combis = {} --{['dvid1 dvid2 ...'] = {coid=, price=, qty=, imgs=}}}
+local combi_map = {} --{coid = 'dvid1 dvid2 ...'}
+
+for i,co in ipairs(cot) do
+	local dvids = table.concat(co, ' ') --'dvid1 dvid2 ...' sorted numerically
+	combi_map[co.coid] = dvids
+	prod.combis[dvids] = {coid = co.coid, price = co.price, qty = co.qty, imgs = {}}
+end
+
+--images ---------------------------------------------------------------------
+
+for i,t in ipairs(query([[
+	select
+		pai.id_product_attribute as coid,
+		pai.id_image as imgid
+	from
+		ps_product_attribute_image pai
+		inner join ps_product_attribute pa on
+			pa.id_product_attribute = pai.id_product_attribute
+		inner join ps_image i on
+			i.id_image = pai.id_image
+	where
+		pa.id_product = ?
+	order by
+		coid, i.position, imgid
+]], pid)) do
+	local dvids = combi_map[t.coid]
+	local combi = prod.combis[dvids]
+	table.insert(combi.imgs, tonumber(t.imgid))
+end
+
+out_json(prod)
+

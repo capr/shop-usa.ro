@@ -1,17 +1,23 @@
-body, div {
+body {
 	font-family: Helvetica;
 	font-size: 14px;
 	line-height: 150%;
+	margin: 20px;
+	padding: 0px;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
+table, tr, td, div, img {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-spacing: 0;
+   border-collapse: separate;
 }
 
-ul li {
-    padding-left: 8px;
+input, select {
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	width: 100%;
 }
 
 a {
@@ -28,13 +34,30 @@ a:visited {
 	color: #666;
 }
 
-a:hover, a.hover {
+a:hover {
 	color: #cc8800;
 }
 
 a.active {
 	font-weight: bold;
-	cursor: auto;
+}
+
+img.active {
+	border: 1px solid #333;
+}
+
+img.inactive {
+	border: 1px solid #fff;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar ul li {
+    padding-left: 12px;
 }
 
 .loading {
@@ -44,17 +67,19 @@ a.active {
 	min-height: 16px;
 }
 
+.load_error {
+	background-image: url("load_error.gif");
+	background-repeat: no-repeat;
+	min-width: 32px;
+	min-height: 32px;
+}
+
 .gray {
 	color: #999;
 }
 
 .small {
 	font-size: 13px;
-}
-
-.home_img {
-	min-width: 170px;
-	min-height: 198px;
 }
 
 .price {
@@ -78,5 +103,29 @@ a.active {
 
 .buybutton:hover {
 	color: #cc8800;
+}
+
+.big_price {
+	color: #ff3300;
+	font-weight: 100;
+	font-size: 36px;
+}
+
+.description {
+	font-family: Georgia;
+	font-size: 13px;
+}
+
+.notavailable {
+	color: #666;
+	font-weight: bold;
+}
+
+/* make it fixed */
+td .thumb {
+	width: 60px;
+	height: 60px;
+	overflow: hidden;
+	white-space: nowrap;
 }
 

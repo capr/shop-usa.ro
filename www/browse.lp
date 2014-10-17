@@ -3,33 +3,41 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="/main.css">
-	<script src="/jquery-1.11.1.js"></script>
+	<script src="/jquery.js"></script>
 	<script src="/mustache.js"></script>
+	<script src="/util.js"></script>
 	<script src="/jquery.history.js"></script>
+	<script src="/jquery.cookie.js"></script>
 	<script src="/jquery.quicksearch.js"></script>
+	<script src="/jquery.jqzoom.js"></script>
+	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<script src="/browse.js"></script>
 </head>
 <body>
 
 <table cellpadding=10>
 	<tr>
-		<td valign=top width=260>
-			<div id=cat></div>
+		<td valign=top width=280>
+			<a href=/><img src="/logo.jpg"></a>
 			<br>
-			<div id=brands></div>
+			<br>
+			<div id=sidebar>
+				<div id=cat></div>
+				<br>
+				<div id=brands></div>
+			</div>
 		</td>
 		<td valign=top width=900>
 			<table width=100% id=letters>
-				<tr>
+				<tr valign=top height=40>
 					<?lua
 					local letters = {'#'}
-					for byte = string.byte'a', string.byte'z' do
+					for byte = string.byte'A', string.byte'Z' do
 						table.insert(letters, string.char(byte))
 					end
 					local w = 900 / #letters
 					for i,letter in ipairs(letters) do
-						local search = letter == '#' and '0-9' or letter
-						local letter = letter:upper()
+						local search = letter == '#' and 'other' or letter
 					?>
 					<td align=center width=<?=w?>><a search=<?=search?>><?=letter?></a></td>
 					<?lua
@@ -37,7 +45,12 @@
 					?>
 				</tr>
 			</table>
-			<table width=100% class=topnav style="display: none;">
+			<table width=100%>
+				<td align=right>
+					<img src="/bag.png" id=cart_icon style="position: relative;">
+				</td>
+			</table>
+			<table width=100% class=navbar id=top_navbar style="display: none">
 				<tr>
 					<td class=small>
 						<a viewstyle=grid>grid</a> |
@@ -49,10 +62,21 @@
 				</tr>
 			</table>
 			<div id=main></div>
-			<table width=100% class=topnav style="display: none;">
+			<table width=100% class=navbar id=bottom_navbar style="display: none">
 				<tr>
 					<td align=right>
 						<div class=pagenav></div>
+					</td>
+				</tr>
+			</table>
+			<table width=100%>
+				<tr height=140>
+					<td align=center>
+						<span class=gray>Made with
+						<a href="http://luapower.com/" target=_blank>Lua Power</a>,
+						Love, Spice, and
+						<a href="http://openresty.org/" target=_blank>Everything Nice</a>,
+						<br>by Cosmin Apreutesei</a>
 					</td>
 				</tr>
 			</table>
@@ -64,13 +88,13 @@
 	<table width=100%>
 		{{#.}}
 		<tr pid={{{pid}}}>
-			<td width=300>
-				<img src="/img/p/{{{imgid}}}-home.jpg" class=home_img>
+			<td width=300 height=200>
+				<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 			</td>
 			<td>
 				<b>{{{bname}}}</b> {{{name}}}
 				<br>
-				<span class=price>${{price}}</span>
+				<span class=price>${{{price}}}</span>
 				<br>
 				<button type=button class=buybutton>add to bag</button>
 				<br>
@@ -83,11 +107,13 @@
 
 <script type="text/x-mustache" id=prod_grid_element_template>
 	<div pid={{{pid}}}>
-		<a><img src="/img/p/{{{imgid}}}-home.jpg" class=home_img></a>
+		<div style="min-width: 170px; min-height: 210px">
+			<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+		</div>
 		<br>
 		<a><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
-		<span class=price>${{price}}</span>
+		<span class=price>${{{price}}}</span>
 		<br>
 		<button type=button class=buybutton pid={{{pid}}}>add to bag</button>
 		<br>
@@ -98,11 +124,12 @@
 <script type="text/x-mustache" id=brands_list_template>
 	<b>Brands</b>
 	<br>
-	<input id=brand_search type=text style="width: 220px"></input>
+	<input id=brand_search type=text style="width: 220px" placeholder="Enter Brand"></input>
 	<div style="width: 220px; height: 200px; overflow: auto">
 		<ul id=brands_list>
 		{{#.}}
-			<li><a bid={{{bid}}}>{{bname}}</a></li>
+			<li><a bid={{{bid}}}>{{bname}}</a>
+				<span class=gray>({{pcount}})</span></li>
 		{{/.}}
 		</ul>
 	</div>
@@ -111,6 +138,77 @@
 <script type="text/x-mustache" id=brands_template>
 	<span class=small><a bid={{{bid}}}>{{bname}}</a>
 		<span class=gray>({{pcount}})</span></span>
+</script>
+
+<script type="text/x-mustache" id=product_page_template>
+	<br>
+	<br>
+	<table width=100%>
+		<tr>
+			<td valign=top align=center width=600 height=400>
+				<div id=gallery></div>
+			</td>
+			<td valign=top width=300>
+				<div style="min-height: 100px">
+					<img src="/img/m/{{{bid}}}.jpg">
+				</div>
+				<b>{{{bname}}}</b> {{{name}}}
+				<br>
+				<br>
+				<div id=combi style="min-height: 60px"></div>
+				<br>
+				<table width=80% id=dimsel>
+					{{#dims}}
+					<tr>
+						<td>{{dname}}:</td>
+						<td>
+							<select did={{{did}}}>
+								{{#dvals}}
+									<option value="{{dvid}}">{{dvname}}</option>
+								{{/dvals}}
+							</select>
+						</td>
+					</tr>
+					{{/dims}}
+				</table>
+				<br>
+				<br>
+				<button type=button class=buybutton pid={{{pid}}}>add to bag</button>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2>
+				<br>
+				<div class=description>{{{descr}}}</div>
+			</td>
+		</tr>
+	</table>
+</script>
+
+<script type="text/x-mustache" id=product_combi_template>
+	<span class=big_price>{{{price}}}</span>
+	<br>
+	<span class=active>{{{stock}}}</span>
+</script>
+
+<script type="text/x-mustache" id=product_gallery_template>
+	<div style="min-height: 400px">
+		<div style="position: absolute;" id=drag_img></div>
+		<a id=zoom_img>
+			<img style="position: absolute;" id=prod_img>
+		</a>
+	</div>
+	<div style="width: 500px; overflow: auto; white-space: nowrap">
+	<table>
+		<tr>
+		{{#.}}
+			<td align=center valign=middle class=thumb>
+				<a imgid="{{{.}}}"><img src="/img/p/{{{.}}}-cart.jpg" class=inactive></a>
+			</td>
+		{{/.}}
+		</tr>
+	<table>
+	</div>
 </script>
 
 </body>
