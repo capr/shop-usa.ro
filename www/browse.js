@@ -268,7 +268,9 @@ function update_pagenav(prod_count, cur_page, bid) {
 			(s == '«' && cur_page-1) ||
 			(s == '»' && cur_page+1) ||
 			parseInt(s)
-		exec('/browse/cat/'+g_catid+((page_num > 1 || bid) ? '/'+page_num : ''))
+		exec('/browse/cat/'+g_catid+
+			((page_num > 1 || bid) ? '/'+page_num : '')+
+			(bid && '/'+bid || ''))
 	})
 	$('.navbar').show()
 }
