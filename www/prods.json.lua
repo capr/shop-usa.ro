@@ -1,12 +1,39 @@
 
-local catid, page, pagesize = ...
+local catid, page, bid, pagesize = ...
 catid = check(uint_arg(catid))
 page  = tonumber(page) or 1
 pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
+bid = tonumber(bid)
 
 local offset = (page - 1) * pagesize
 
-local products = query([[
+local prod_count
+
+if bid then
+	prod_count = query1([[
+		select
+			count(1) as count
+		from
+			ps_product p
+		inner join ps_category_product cp on
+			cp.id_product = p.id_product
+			and cp.id_category = ?
+		where
+			p.active = 1
+			]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
+	]], catid).count
+else
+	prod_count = query1([[
+		select
+			c.product_count as count
+		from
+			ps_category c
+		where
+			c.id_category = ?
+	]], catid).count
+end
+
+local prods = query([[
 	select
 		p.id_product as pid,
 		pl.name,
@@ -30,6 +57,7 @@ local products = query([[
 		m.id_manufacturer = p.id_manufacturer
 	where
 		p.active = 1
+		]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
 	limit
 ]]..offset..', '..pagesize, catid)
 
@@ -41,4 +69,7 @@ local function update_default_price()
 	]]
 end
 
-out_json(products)
+out_json({
+	prods = prods,
+	prod_count = prod_count,
+})

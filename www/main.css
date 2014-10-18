@@ -105,6 +105,14 @@ img.inactive {
 	color: #cc8800;
 }
 
+.orange {
+	background: #ff8800;
+}
+
+.orange:hover {
+	color: #fff;
+}
+
 .big_price {
 	color: #ff3300;
 	font-weight: 100;
@@ -129,3 +137,25 @@ td .thumb {
 	white-space: nowrap;
 }
 
+/* grid|list icons */
+img.enabled {
+
+}
+img.disabled {
+	opacity: 0.2;
+}
+
+#cart_item_count {
+	color: #fff;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+button.disabled {
+	color: #666;
+	background: #ccc;
+}
+
+button.disabled:hover {
+	color: #666;
+}

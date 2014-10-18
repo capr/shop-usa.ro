@@ -10,6 +10,7 @@
 	<script src="/jquery.cookie.js"></script>
 	<script src="/jquery.quicksearch.js"></script>
 	<script src="/jquery.jqzoom.js"></script>
+	<script src="/jquery.easing.js"></script>
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<script src="/browse.js"></script>
 </head>
@@ -46,18 +47,30 @@
 				</tr>
 			</table>
 			<table width=100%>
-				<td align=right>
-					<img src="/bag.png" id=cart_icon style="position: relative;">
+				<td align=right style="text-align: right;">
+					<a>
+						<div id=cart_icon_div style="position: relative;" align=right>
+							<img id=cart_icon>
+							<div style="float: right; position: relative; top: 11px; left: -21px;">
+								<span id=cart_item_count></span>
+							</div>
+						</div>
+					</a>
 				</td>
 			</table>
 			<table width=100% class=navbar id=top_navbar style="display: none">
 				<tr>
-					<td class=small>
-						<a viewstyle=grid>grid</a> |
-						<a viewstyle=list>list</a>
+					<td>
+						<table>
+							<tr>
+								<td><a viewstyle=grid><img src="/grid.png"></a></td>
+								<td width=4></td>
+								<td><a viewstyle=list><img src="/list.png"></a></td>
+							</tr>
+						</table>
 					</td>
 					<td align=right>
-						<div class=pagenav></div>
+						<div class="pagenav small"></div>
 					</td>
 				</tr>
 			</table>
@@ -145,7 +158,7 @@
 	<br>
 	<table width=100%>
 		<tr>
-			<td valign=top align=center width=600 height=400>
+			<td valign=top width=600 height=400>
 				<div id=gallery></div>
 			</td>
 			<td valign=top width=300>
@@ -173,7 +186,7 @@
 				</table>
 				<br>
 				<br>
-				<button type=button class=buybutton pid={{{pid}}}>add to bag</button>
+				<button type=button class="buybutton orange" pid={{{pid}}}>add to bag</button>
 			</td>
 		</tr>
 		<tr>
@@ -192,24 +205,23 @@
 </script>
 
 <script type="text/x-mustache" id=product_gallery_template>
-	<div style="min-height: 400px">
-		<div style="position: absolute;" id=drag_img></div>
-		<a id=zoom_img>
-			<img style="position: absolute;" id=prod_img>
-		</a>
-	</div>
+	<div style="position: relative; z-index: 100;" id=fly_img_div></div>
+	<a id=zoom>
+		<img id=prod_img>
+	</a>
 	<div style="width: 500px; overflow: auto; white-space: nowrap">
-	<table>
-		<tr>
-		{{#.}}
-			<td align=center valign=middle class=thumb>
-				<a imgid="{{{.}}}"><img src="/img/p/{{{.}}}-cart.jpg" class=inactive></a>
-			</td>
-		{{/.}}
-		</tr>
-	<table>
+		<table>
+			<tr>
+			{{#.}}
+				<td align=center valign=middle class=thumb>
+					<a imgid="{{{.}}}"><img src="/img/p/{{{.}}}-cart.jpg" class=inactive></a>
+				</td>
+			{{/.}}
+			</tr>
+		<table>
 	</div>
 </script>
 
 </body>
 </html>
+

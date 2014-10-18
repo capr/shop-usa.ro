@@ -109,8 +109,7 @@ function format_cats(node) {
 	var name = node[1]
 	var prod_count = node[2]
 
-	var s = '<ul catid=' + id + ' prod_count=' +
-		prod_count + ' style="display: none;">' +
+	var s = '<ul catid=' + id + ' style="display: none;">' +
 		'<a>' + name + '</a> <span class=gray>(' + prod_count + ')</span>'
 	for (var i = 3; i < node.length; i++)
 		s = s + '<li>' + format_cats(node[i]) + '</li>'
@@ -145,7 +144,6 @@ function load_cats(on_success) {
 }
 
 var g_catid
-var g_prod_count
 function select_cat(catid) {
 	if (catid != g_catid) {
 
@@ -157,20 +155,19 @@ function select_cat(catid) {
 		cat_a.addClass('active')
 
 		g_catid = catid
-		g_prod_count = cat_a.parent().attr('prod_count')
 	}
-	return g_prod_count
 }
 
-action.cat = function(catid, page_num) {
+action.cat = function(catid, page_num, bid) {
 
 	catid = parseInt(catid) || g_root_catid
 	page_num = parseInt(page_num) || 1
+	bid = parseInt(bid) || ''
 
 	load_cats(function() {
-		var prod_count = select_cat(catid)
-		load_prods(catid, prod_count, page_num)
-		load_brands(catid)
+		select_cat(catid)
+		load_prods(catid, page_num, bid)
+		load_brands(catid, bid)
 	})
 }
 
@@ -191,8 +188,8 @@ function update_prods(prods) {
 
 	$('#main').html(format_prods(prods))
 
-	$('#main a').click(function() {
-		var pid = parseInt($(this).parents('[pid]').first().attr('pid'))
+	$('#main [pid] a').click(function() {
+		var pid = parseInt($(this).closest('[pid]').attr('pid'))
 		exec('/browse/p/'+pid)
 	})
 
@@ -204,10 +201,11 @@ function update_prods(prods) {
 	g_prods = prods
 }
 
-function load_prods(catid, prod_count, page_num) {
-	load_main('/prods.json/'+catid+'/'+page_num, function(prods) {
-		update_pagenav(prod_count, page_num)
-		update_prods(prods)
+function load_prods(catid, page_num, bid) {
+	load_main('/prods.json/'+catid+'/'+page_num+'/'+bid, function(response) {
+		update_pagenav(response.prod_count, page_num, bid)
+		update_prods(response.prods)
+		select_brand(bid)
 	})
 }
 
@@ -215,19 +213,18 @@ function load_prods(catid, prod_count, page_num) {
 
 var g_viewstyle = 'grid'
 
-function change_viewstyle(viewstyle) {
-	g_viewstyle = viewstyle
-	update_prods()
+function update_viewstyle_icons() {
+	$('a[viewstyle] img').addClass('disabled').removeClass('enabled')
+	$('a[viewstyle="'+g_viewstyle+'"] img').addClass('enabled').removeClass('disabled')
 }
 
 function init_viewstyle() {
 	$('a[viewstyle]').click(function() {
-		var viewstyle = $(this).attr('viewstyle')
-		change_viewstyle(viewstyle)
-		$('a[viewstyle]').removeClass('active')
-		$(this).addClass('active')
+		g_viewstyle = $(this).attr('viewstyle')
+		update_prods()
+		update_viewstyle_icons()
 	})
-	$('a[viewstyle="'+g_viewstyle+'"]').addClass('active')
+	update_viewstyle_icons()
 }
 
 // page nav ------------------------------------------------------------------
@@ -263,7 +260,7 @@ function format_pagenav(prod_count, cur_page) {
 	return s
 }
 
-function update_pagenav(prod_count, cur_page) {
+function update_pagenav(prod_count, cur_page, bid) {
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
 	$('.pagenav a').click(function() {
 		var s = $(this).html()
@@ -271,15 +268,24 @@ function update_pagenav(prod_count, cur_page) {
 			(s == '«' && cur_page-1) ||
 			(s == '»' && cur_page+1) ||
 			parseInt(s)
-		exec('/browse/cat/'+g_catid+(page_num > 1 ? '/'+page_num : ''))
+		exec('/browse/cat/'+g_catid+((page_num > 1 || bid) ? '/'+page_num : ''))
 	})
 	$('.navbar').show()
 }
 
 // brands list ---------------------------------------------------------------
 
+function select_brand(bid, scroll) {
+	$('#brands_list a[bid]').removeClass('active')
+	if (bid) {
+		var e = $('#brands_list a[bid="'+bid+'"]').addClass('active')
+		if (scroll)
+			e[0].scrollIntoView()
+	}
+}
+
 var g_brands_catid
-function load_brands(catid) {
+function load_brands(catid, bid) {
 	if (g_brands_catid != catid) {
 		load_content('#brands', '/brands.json/all/'+catid, function(brands) {
 
@@ -290,6 +296,13 @@ function load_brands(catid) {
 			else
 				$('#brand_search').hide()
 			$('#brand_search').quicksearch('#brands_list li').cache()
+
+			$('#brands_list a[bid]').click(function() {
+				var bid = parseInt($(this).attr('bid'))
+				exec('/browse/cat/'+g_brands_catid+'/1/'+bid)
+			})
+
+			select_brand(bid, true)
 
 			g_brands_catid = catid
 		})
@@ -323,6 +336,7 @@ function init_prod() {
 	// keyboard image navigation
 	$(document).keydown(function(event) {
 		var img = $('#gallery a[imgid] > img.active')
+		if (!img) return
 		if (event.which == 39) {
 			change_prod_img(img.closest('td').next('td').find('> a').attr('imgid'))
 		} else if (event.which == 37) {
@@ -338,10 +352,12 @@ function change_prod_img(imgid) {
 	$('#gallery a[imgid="'+imgid+'"] > img').addClass('active')
 		.removeClass('inactive')
 
-	$('#zoom_img').removeData('jqzoom')
+	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {})
+
+	$('#zoom').removeData('jqzoom')
 	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
-		$('#zoom_img').attr('href', '/img/p/'+imgid+'-thickbox.jpg')
-		$('#zoom_img').jqzoom({zoomType: 'innerzoom', title: false, lens: false})
+		$('#zoom').attr('href', '/img/p/'+imgid+'-thickbox.jpg')
+		$('#zoom').jqzoom({zoomType: 'innerzoom', title: false, lens: false})
 	})
 }
 
@@ -375,10 +391,12 @@ function dimsel_changed() {
 
 	apply_template('#product_combi_template', co, '#combi')
 
-	if (!combi.price || !combi.qty || combi.qty < 1)
-		$('.buybutton').hide()
-	else
-		$('.buybutton').show()
+	if (!combi.price || !combi.qty || combi.qty < 1) {
+		$('.buybutton').prop('disabled', true).addClass('disabled')
+			.attr('title', S('not_available_msg', 'Item not available.\nPlease choose another combination.'))
+	} else {
+		$('.buybutton').prop('disabled', false).removeClass('disabled').attr('title', '')
+	}
 
 	var imgs = combi.imgs || []
 
@@ -428,26 +446,61 @@ function get_cart() {
 	return JSON.parse($.cookie('cart') || '{}')
 }
 
-function add_to_cart(pid, dvals) {
+function cart_item_count(cart) {
+	var n = 0
+	for (var key in cart) {
+		n = n + cart[key]
+	}
+	return n
+}
+
+function add_prod_to_cart(pid, dvals) {
 	var cart = get_cart()
 	var key = pid+' '+dvals
 	cart[key] = (cart[key] || 0) + 1
-	$.cookie('cart', JSON.stringify(cart))
+	$.cookie('cart', JSON.stringify(cart), {path: '/'})
+	return cart
+}
 
-	var p = $('#cart_icon').offset()
-	var o = $('#drag_img').position()
-	$('#prod_img').clone().appendTo('#drag_img')
-	$('#drag_img').first().animate({
-		top: p.top - o.top,
-		left: p.left - o.left,
+function drag_prod_img_to_cart(finish) {
+	var img = $('#prod_img').clone().css({position: 'absolute'}).appendTo($('#fly_img_div'))
+	var srp_abs = img.parent().offset()
+	var dst_abs = $('#cart_icon').offset()
+	img.animate({
+		top: dst_abs.top - srp_abs.top,
+		left: dst_abs.left - srp_abs.left,
+		width: $('#cart_icon').width(),
+		height: $('#cart_icon').height(),
 		opacity: 0,
 	}, 500, function() {
-		$('#drag_img').html('')
-		$('#cart_icon').effect('bounce', 250)
+		img.remove()
+		finish()
 	})
+}
 
-	return cart
-	//exec('/cart/add/'+pid)
+function set_cart_icon(cart) {
+	var n = cart_item_count(cart)
+	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
+	$('#cart_item_count').html((n < 10 ? '0' : '') + n)
+}
+
+var g_ci_top
+function update_cart_icon(cart) {
+	var ci = $('#cart_icon_div')
+	g_ci_top = g_ci_top || ci.position().top
+	ci.animate({top: g_ci_top - 90}, 100, 'easeOutExpo', function() {
+		set_cart_icon(cart)
+		ci.animate({top: g_ci_top - 60}, 500, 'easeOutBounce', function() {
+			ci.css('top', '')
+		})
+	})
+}
+
+function add_to_cart(pid, dvals) {
+	drag_prod_img_to_cart(function() {
+		var cart = add_prod_to_cart(pid, dvals)
+		update_cart_icon(cart)
+	})
 }
 
 // side bar ------------------------------------------------------------------
@@ -476,6 +529,7 @@ $(document).ready(function() {
 	init_letters()
 	init_sidebar()
 	init_prod()
+	set_cart_icon(get_cart())
 	url_changed()
 })
 

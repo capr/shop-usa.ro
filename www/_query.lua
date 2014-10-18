@@ -30,12 +30,16 @@ local function connect()
 	db:set_timeout(50000)
 end
 
+function quote(s)
+	return ngx.quote_sql_str(tostring(s))
+end
+
 function query_(sql, ...) --query, iterate rows and close
 	connect()
 	local t = {}
 	for i = 1, select('#', ...) do
 		local arg = select(i, ...)
-		t[i] = ngx.quote_sql_str(tostring(arg))
+		t[i] = quote(arg)
 	end
 	local i = 0
 	--TODO: skip string literals
