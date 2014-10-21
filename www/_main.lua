@@ -5,6 +5,7 @@ local lfs = require'lfs'
 local cjson = require'cjson'
 local pp_ = require'pp'
 local sess = require'resty.session'
+local ck = require'resty.cookie'
 require'_query'
 
 --print API ------------------------------------------------------------------
@@ -27,6 +28,16 @@ end
 
 function pp(v)
 	print(pp_.format(v, '   '))
+end
+
+function json(v)
+	if type(v) == 'table' then
+		return cjson.encode(v)
+	elseif type(v) == 'string' then
+		return cjson.decode(v)
+	else
+		error('invalid arg '..type(v))
+	end
 end
 
 function out_json(t)
@@ -66,6 +77,21 @@ function clamp(x, min, max)
 end
 
 session = assert(sess.start())
+
+local cookie_obj
+function cookie(name, val, opt)
+	cookie_obj = cookie_obj or assert(ck:new())
+	if val == nil then
+		return ngx.unescape_uri(assert(cookie_obj:get(name)))
+	else
+		local t = glue.update({
+			key = name,
+			value = ngx.escape_uri(val),
+			path = '/'
+		}, opt)
+		assert(cookie_obj:set(t))
+	end
+end
 
 --reply API ------------------------------------------------------------------
 

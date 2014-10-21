@@ -45,14 +45,12 @@ local prods = query([[
 	left join ps_image i on
 		i.id_product = p.id_product
 		and i.cover = 1
-	inner join ps_product_shop ps on
-		ps.id_product = p.id_product
-		and ps.id_shop = 1
 	inner join ps_category_product cp on
 		cp.id_product = p.id_product
 		and cp.id_category = ?
 	inner join ps_product_lang pl on
 		pl.id_product = p.id_product
+		and pl.id_lang = 1
 	left join ps_manufacturer m on
 		m.id_manufacturer = p.id_manufacturer
 	where

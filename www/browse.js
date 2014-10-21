@@ -110,7 +110,9 @@ function format_cats(node) {
 	var prod_count = node[2]
 
 	var s = '<ul catid=' + id + ' style="display: none;">' +
-		'<a>' + name + '</a> <span class=gray>(' + prod_count + ')</span>'
+		'<a>' + name + '</a>'
+	if (prod_count)
+		s = s + ' <span class=gray>(' + prod_count + ')</span>'
 	for (var i = 3; i < node.length; i++)
 		s = s + '<li>' + format_cats(node[i]) + '</li>'
 	s = s + '</ul>'
@@ -125,7 +127,6 @@ function update_cats(cats) {
 		var catid = $(this).parent().attr('catid')
 		exec('/browse/cat/'+catid)
 	})
-	$('#cat > ul').show()
 }
 
 var g_cats
@@ -143,19 +144,30 @@ function load_cats(on_success) {
 	}
 }
 
+function select_topbar_cat(catid) {
+	$('#topbar a[catid]').removeClass('active')
+	if (catid)
+		$('#topbar a[catid="'+catid+'"]').addClass('active')
+}
+
+function select_tree_cat(catid, cid) {
+	cid = cid || '#cat'
+	$(cid+' ul').hide()
+	$(cid+' a').removeClass('active')
+	var cat_a = $(cid+' ul[catid="'+catid+'"] > a')
+	cat_a.parents(cid+' ul').show()
+	cat_a.parent().children('li').find('> ul').show()
+	cat_a.addClass('active')
+}
+
 var g_catid
-function select_cat(catid) {
+function select_cat(catid, cid) {
 	if (catid != g_catid) {
-
-		$('#cat ul').hide()
-		$('#cat a').removeClass('active')
-		var cat_a = $('#cat ul[catid="'+catid+'"] > a')
-		cat_a.parents('#cat ul').show()
-		cat_a.parent().children('li').find('> ul').show()
-		cat_a.addClass('active')
-
+		select_tree_cat(catid, cid)
 		g_catid = catid
 	}
+	select_topbar_cat(catid)
+	select_brand_letter()
 }
 
 action.cat = function(catid, page_num, bid) {
@@ -177,7 +189,7 @@ function format_prods(prods) {
 	if (g_viewstyle == 'list') {
 		return apply_template('#prod_list_template', prods)
 	} else if (g_viewstyle == 'grid') {
-		return multi_column('#prod_grid_element_template', prods, 3)
+		return multi_column('#prod_grid_element_template', prods, g_prod_cols)
 	}
 }
 
@@ -202,7 +214,8 @@ function update_prods(prods) {
 }
 
 function load_prods(catid, page_num, bid) {
-	load_main('/prods.json/'+catid+'/'+page_num+'/'+bid, function(response) {
+	load_main('/prods.json/'+catid+'/'+page_num+'/'+(bid||'-')+'/'+g_pagesize,
+	function(response) {
 		update_pagenav(response.prod_count, page_num, bid)
 		update_prods(response.prods)
 		select_brand(bid)
@@ -229,7 +242,9 @@ function init_viewstyle() {
 
 // page nav ------------------------------------------------------------------
 
-var g_prod_per_page = 99
+var g_prod_cols = 4
+var g_prod_rows = 16
+var g_pagesize = g_prod_cols * g_prod_rows
 
 function clamp(x, min, max) {
 	return Math.min(Math.max(x, min), max)
@@ -238,7 +253,7 @@ function clamp(x, min, max) {
 function format_pagenav(prod_count, cur_page) {
 	var s = ''
 	if (cur_page > 1) s = s + '<a>&laquo;</a> '
-	var page_count = Math.ceil(prod_count / g_prod_per_page)
+	var page_count = Math.ceil(prod_count / g_pagesize)
 	cur_page = clamp(cur_page, 1, page_count)
 	var dotted
 	for (var i = 1; i <= page_count; i++) {
@@ -313,15 +328,31 @@ function load_brands(catid, bid) {
 
 // brands page ---------------------------------------------------------------
 
+function select_brand_letter(search) {
+	$('#letters a[search]').removeClass('active')
+	if (search) {
+		$('#letters a[search="'+search+'"]').addClass('active')
+		select_topbar_cat()
+	}
+}
+
 function update_brands(brands) {
 	$('.navbar').hide()
 	$('#sidebar').hide()
 	var s = multi_column('#brands_template', brands, 4)
 	$('#main').html('<br><br>'+s)
+
+	$('#main a[bid]').click(function() {
+		var bid = $(this).attr('bid')
+		exec('/browse/brand/'+bid)
+	})
 }
 
 action.brands = function(search) {
-	load_main('/brands.json/'+search, update_brands)
+	load_main('/brands.json/'+search, function(brands) {
+		update_brands(brands)
+		select_brand_letter(search)
+	})
 }
 
 function init_letters() {
@@ -363,7 +394,7 @@ function change_prod_img(imgid) {
 	})
 }
 
-var g_prod, g_dvals
+var g_prod, g_combi
 
 function dimsel_changed() {
 
@@ -376,8 +407,8 @@ function dimsel_changed() {
 	dvals = dvals.join(' ')
 
 	//find the combi for those dvals
-	var combi = g_prod.combis[dvals] || {}
-	g_dvals = dvals
+	g_combi = g_prod.combis[dvals]
+	var combi = g_combi || {}
 
 	// prepare and apply the combi templates
 	var co = {}
@@ -434,7 +465,7 @@ function update_prod(prod) {
 
 	$('#main .buybutton').click(function() {
 		var pid = parseInt($(this).attr('pid'))
-		add_to_cart(pid, g_dvals)
+		add_to_cart(pid, g_combi.coid)
 	})
 }
 
@@ -444,28 +475,49 @@ action.p = function(pid) {
 
 // cart ----------------------------------------------------------------------
 
+var g_cart
 function get_cart() {
-	return JSON.parse($.cookie('cart') || '{}')
+	g_cart = g_cart || JSON.parse($.cookie('cart') || '[]')
+	return g_cart
 }
 
-function cart_item_count(cart) {
+function set_cart() {
+	$.cookie('cart', JSON.stringify(g_cart), {path: '/'})
+}
+
+function cart_item_index(pid, coid) {
+	var key = pid+' '+coid
+	var cart = get_cart()
+	for (var i = 0; i < cart.length; i++) {
+		if (cart[i].k == key)
+			return i
+	}
+	cart.push({k: key, n: 0})
+	return cart.length-1
+}
+
+function cart_item_count() {
+	var cart = get_cart()
 	var n = 0
-	for (var key in cart) {
-		n = n + cart[key]
+	for (var i = 0; i < cart.length; i++) {
+		n = n + cart[i].n
 	}
 	return n
 }
 
-function add_prod_to_cart(pid, dvals) {
+function add_prod_to_cart(pid, coid) {
 	var cart = get_cart()
-	var key = pid+' '+dvals
-	cart[key] = (cart[key] || 0) + 1
-	$.cookie('cart', JSON.stringify(cart), {path: '/'})
+	var i = cart_item_index(pid, coid)
+	cart[i].n = cart[i].n + 1
+	set_cart()
 	return cart
 }
 
 function drag_prod_img_to_cart(finish) {
-	var img = $('#prod_img').clone().css({position: 'absolute'}).appendTo($('#fly_img_div'))
+	var img = $('#prod_img').clone()
+		.attr('id', '')
+		.css({position: 'absolute'})
+		.appendTo($('#fly_img_div'))
 	var srp_abs = img.parent().offset()
 	var dst_abs = $('#cart_icon').offset()
 	img.animate({
@@ -480,28 +532,89 @@ function drag_prod_img_to_cart(finish) {
 	})
 }
 
-function set_cart_icon(cart) {
-	var n = cart_item_count(cart)
+function set_cart_icon() {
+	var n = cart_item_count()
 	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
 	$('#cart_item_count').html((n < 10 ? '0' : '') + n)
+	$('#cart_icon').click(function() {
+		exec('/browse/cart')
+	})
 }
 
 var g_ci_top
-function update_cart_icon(cart) {
+function update_cart_icon() {
 	var ci = $('#cart_icon_div')
-	g_ci_top = g_ci_top || ci.position().top
-	ci.animate({top: g_ci_top - 90}, 100, 'easeOutExpo', function() {
-		set_cart_icon(cart)
-		ci.animate({top: g_ci_top - 60}, 500, 'easeOutBounce', function() {
+	g_ci_top = g_ci_top || ci.position().top - ci.offset().top
+	ci.animate({top: g_ci_top - 20}, 100, 'easeOutExpo', function() {
+		set_cart_icon()
+		ci.animate({top: g_ci_top}, 500, 'easeOutBounce', function() {
 			ci.css('top', '')
 		})
 	})
 }
 
-function add_to_cart(pid, dvals) {
+function add_to_cart(pid, coid) {
 	drag_prod_img_to_cart(function() {
-		var cart = add_prod_to_cart(pid, dvals)
-		update_cart_icon(cart)
+		add_prod_to_cart(pid, coid)
+		update_cart_icon()
+	})
+}
+
+
+function init_cart() {
+	set_cart_icon(get_cart())
+}
+
+function update_cart_page(cart) {
+	apply_template('#cart_page_template', cart, '#main')
+}
+
+action.cart = function(action) {
+	if (!action) {
+		load_main('/cart.json', update_cart_page)
+	}
+}
+
+// brand page ----------------------------------------------------------------
+
+function update_brand_page(brand) {
+	$('#sidebar').hide()
+	$('.navbar').hide()
+
+	apply_template('#brand_page_template', brand, '#main')
+
+	$('#bcat').html(format_cats(brand.cats))
+
+	$('#bcat a').click(function() {
+		var catid = $(this).parent().attr('catid')
+		exec('/browse/cat/'+catid+'/1/'+brand.bid)
+	})
+
+	$('#bcat ul').show()
+}
+
+action.brand = function(bid) {
+	load_main('/brand.json/'+bid, update_brand_page)
+}
+
+// top bar -------------------------------------------------------------------
+
+function init_topbar() {
+	var t = []
+	t.push({catid: 27567, catname: 'Shoes'})
+	t.push({catid: 27563, catname: 'Clothing'})
+	t.push({catid: 27496, catname: 'Bags'})
+	t.push({catid: 27495, catname: 'Accessories'})
+	t.push({catid: 100000002, catname: 'Men\'s'})
+	t.push({catid: 200000002, catname: 'Women\'s'})
+	t.push({catid: 400000002, catname: 'Girls'})
+	t.push({catid: 500000002, catname: 'Boys'})
+	var w = 100 / t.length
+	var data = {items: t, width: w}
+	apply_template('#topbar_template', data, '#topbar')
+	$('#topbar a[catid]').click(function() {
+		var catid = $(this).attr('catid')
+		exec('/browse/cat/'+catid)
 	})
 }
 
@@ -530,8 +643,10 @@ $(document).ready(function() {
 	init_viewstyle()
 	init_letters()
 	init_sidebar()
+	init_topbar()
 	init_prod()
-	set_cart_icon(get_cart())
+	init_cart()
 	url_changed()
 })
+
 

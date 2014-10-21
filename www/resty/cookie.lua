@@ -33,7 +33,6 @@ _M._VERSION = '0.01'
 
 local mt = { __index = _M }
 
-
 local function get_cookie_table(text_cookie)
     if type(text_cookie) ~= "string" then
         log(ERR, format("expect text_cookie to be \"string\" but found %s",

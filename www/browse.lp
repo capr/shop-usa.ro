@@ -23,12 +23,13 @@
 			<br>
 			<br>
 			<div id=sidebar>
-				<div id=cat></div>
+				<div id=cat class=menu></div>
 				<br>
-				<div id=brands></div>
+				<div id=brands class=menu></div>
 			</div>
 		</td>
 		<td valign=top width=900>
+			<div id=topbar></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
 					<?lua
@@ -48,7 +49,7 @@
 			</table>
 			<table width=100%>
 				<td align=right style="text-align: right;">
-					<a>
+					<a id=cart_icon_link>
 						<div id=cart_icon_div style="position: relative;" align=right>
 							<img id=cart_icon>
 							<div style="float: right; position: relative; top: 11px; left: -21px;">
@@ -141,7 +142,7 @@
 	<div style="width: 220px; height: 200px; overflow: auto">
 		<ul id=brands_list>
 		{{#.}}
-			<li><a bid={{{bid}}}>{{bname}}</a>
+			<li><a bid={{{bid}}}>{{{bname}}}</a>
 				<span class=gray>({{pcount}})</span></li>
 		{{/.}}
 		</ul>
@@ -149,7 +150,7 @@
 </script>
 
 <script type="text/x-mustache" id=brands_template>
-	<span class=small><a bid={{{bid}}}>{{bname}}</a>
+	<span class=small><a bid={{{bid}}}>{{{bname}}}</a>
 		<span class=gray>({{pcount}})</span></span>
 </script>
 
@@ -222,6 +223,32 @@
 	</div>
 </script>
 
+<script type="text/x-mustache" id=brand_page_template>
+	<b>{{bname}}</b>
+	<br>
+	<br>
+	<div style="min-height: 100px;">
+		<a bid={{{bid}}}><img src="/img/m/{{{bid}}}.jpg"></a>
+	</div>
+	<div id=bcat class=menu></div>
+</script>
+
+<script type="text/x-mustache" id=cart_page_template>
+	{{#.}}
+	{{/.}}
+</script>
+
+<script type="text/x-mustache" id=topbar_template>
+	<table style="float: right;">
+		<tr>
+		{{#items}}
+			<td valign=middle height=40>
+				<img style="display: inline-block;" src="/0.png" width=64 height=1>
+				<a catid={{{catid}}}>{{{catname}}}</a></td>
+		{{/items}}
+		</tr>
+	</table>
+</script>
+
 </body>
 </html>
-
