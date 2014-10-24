@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="/main.css">
+	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<script src="/jquery.js"></script>
 	<script src="/mustache.js"></script>
 	<script src="/util.js"></script>
@@ -11,7 +12,8 @@
 	<script src="/jquery.quicksearch.js"></script>
 	<script src="/jquery.jqzoom.js"></script>
 	<script src="/jquery.easing.js"></script>
-	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
+	<script src="/jquery.sortable.js"></script>
+	<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 	<script src="/browse.js"></script>
 </head>
 <body>
@@ -109,6 +111,7 @@
 				<b>{{{bname}}}</b> {{{name}}}
 				<br>
 				<span class=price>${{{price}}}</span>
+				<span class=discount>{{{discount}}}</span>
 				<br>
 				<button type=button class=buybutton>add to bag</button>
 				<br>
@@ -121,13 +124,14 @@
 
 <script type="text/x-mustache" id=prod_grid_element_template>
 	<div pid={{{pid}}}>
-		<div style="min-width: 170px; min-height: 210px">
+		<div style="min-width: 170px; min-height: 250px">
 			<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 		</div>
 		<br>
 		<a><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
 		<span class=price>${{{price}}}</span>
+		<span class=discount>{{{discount}}}</span>
 		<br>
 		<button type=button class=buybutton pid={{{pid}}}>add to bag</button>
 		<br>
@@ -178,7 +182,7 @@
 						<td>
 							<select did={{{did}}}>
 								{{#dvals}}
-									<option value="{{dvid}}">{{dvname}}</option>
+									<option value="{{{dvid}}}" {{{selected}}}>{{dvname}}</option>
 								{{/dvals}}
 							</select>
 						</td>
@@ -242,9 +246,9 @@
 	<table style="float: right;">
 		<tr>
 		{{#items}}
-			<td valign=middle height=40>
-				<img style="display: inline-block;" src="/0.png" width=64 height=1>
-				<a catid={{{catid}}}>{{{catname}}}</a></td>
+			<td valign=middle height=40 width={{{width}}}>
+				<a catid={{{catid}}}>{{{catname}}}</a>
+			</td>
 		{{/items}}
 		</tr>
 	</table>
@@ -252,3 +256,4 @@
 
 </body>
 </html>
+

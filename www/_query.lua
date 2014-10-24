@@ -6,6 +6,8 @@ db_host = '10.1.1.105'
 db_user = 'root'
 db_pass = 'abcd12'
 db_name = 'prestashop'
+connect_timeout = 1 --seconds
+db_timeout = 30 --seconds
 
 print_queries = false
 
@@ -19,7 +21,7 @@ end
 local function connect()
 	if conn then return end
 	db = assert(mysql:new())
-	db:set_timeout(1000)
+	db:set_timeout(connect_timeout * 1000)
 	assert_db(db:connect{
 		host = db_host,
 		port = 3306,
@@ -27,7 +29,7 @@ local function connect()
 		user = db_user,
 		password = db_pass,
 	})
-	db:set_timeout(50000)
+	db:set_timeout(db_timeout * 1000)
 end
 
 function quote(s)
@@ -69,4 +71,3 @@ function insertquery(sql, ...) --insert query: return autoincremented id
 	local res = query_(sql, ...)
 	return res.insert_id
 end
-

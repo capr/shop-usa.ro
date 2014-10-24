@@ -8,6 +8,8 @@ local prod = query1([[
 	select
 		p.id_product as pid,
 		p.price,
+		p.discount,
+		p.msrp,
 		pl.name as name,
 		pl.description as descr,
 		m.id_manufacturer as bid,
@@ -37,12 +39,14 @@ local dpos = {} --{did = dpos}
 local dvpos = {} --{dvid = dvpos}
 local dvids = {} --{did = {dvid = true}}
 local cot = {} --{{coid=, price=, qty=, dvid1, ...}, ...}
+local init_dvids = {} --{did = dvid}
 
 for i,t in ipairs(query([[
 	select
 		pa.id_product_attribute as coid,
 		pa.price,
 		pa.quantity as qty,
+		pa.default_on,
 		ag.id_attribute_group as did,
 		agl.name as dname,
 		ag.position as dpos,
@@ -82,9 +86,13 @@ for i,t in ipairs(query([[
 		table.insert(cot, co)
 	end
 	table.insert(co, t.dvid) --dvids come sorted (we need that)
+	if t.default_on == 1 then
+		init_dvids[t.did] = t.dvid
+	end
 end
 
-prod.dims = {} --{{did=, dname=, dvals = {{dvid = dvid1, dvname = dvname1}, ...}}, ...}
+--{{did=, dname=, dvals = {{dvid = dvid1, dvname = dvname1}, ...}}, ...}
+prod.dims = {}
 
 for did, dname in pairs(dnames) do
 	local dim = {did = did, dname = dname, dvals = {}}
@@ -103,7 +111,10 @@ for did, dname in pairs(dnames) do
 	end)
 
 	for i,dvid in ipairs(dvids) do
-		table.insert(dim.dvals, {dvid = dvid, dvname = dvnames[dvid]})
+		table.insert(dim.dvals, {
+			dvid = dvid, dvname = dvnames[dvid],
+			selected = dvid == init_dvids[did] and 'selected' or nil,
+		})
 	end
 end
 
@@ -124,7 +135,7 @@ local combi_map = {} --{coid = 'dvid1 dvid2 ...'}
 for i,co in ipairs(cot) do
 	local dvids = table.concat(co, ' ') --'dvid1 dvid2 ...' sorted numerically
 	combi_map[co.coid] = dvids
-	prod.combis[dvids] = {coid = co.coid, price = co.price, qty = co.qty, imgs = {}}
+	prod.combis[dvids] = {coid = co.coid, price = co.price, qty = co.qty}
 end
 
 --images ---------------------------------------------------------------------
@@ -146,8 +157,8 @@ for i,t in ipairs(query([[
 ]], pid)) do
 	local dvids = combi_map[t.coid]
 	local combi = prod.combis[dvids]
+	combi.imgs = combi.imgs or {}
 	table.insert(combi.imgs, tonumber(t.imgid))
 end
 
 out_json(prod)
-

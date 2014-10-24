@@ -67,13 +67,6 @@ img.inactive {
 	min-height: 16px;
 }
 
-.load_error {
-	background-image: url("load_error.gif");
-	background-repeat: no-repeat;
-	min-width: 32px;
-	min-height: 32px;
-}
-
 .gray {
 	color: #999;
 }
@@ -84,6 +77,11 @@ img.inactive {
 
 .price {
 	color: #ff3300;
+	font-weight: bold;
+}
+
+.discount {
+	color: #000;
 	font-weight: bold;
 }
 
@@ -159,3 +157,8 @@ button.disabled {
 button.disabled:hover {
 	color: #666;
 }
+
+.sortable-placeholder {
+	height: 20px;
+}
+

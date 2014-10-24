@@ -55,15 +55,49 @@ function apply_template(template_id, data, dest_id) {
 
 // content loading -----------------------------------------------------------
 
-var g_xhrs = {} //{sel_id: xhr}
-function load_content(sel_id, backend_url, on_success, on_error) {
+// restartable ajax requests.
+var g_xhrs = {} //{dst_id: xhr}
+function ajax(id, url, on_success, on_error, opt) {
 
-	if (g_xhrs[sel_id]) {
-		g_xhrs[sel_id].abort()
-		delete g_xhrs[sel_id]
+	if (g_xhrs[id]) {
+		g_xhrs[id].abort()
+		delete g_xhrs[id]
 	}
 
-	var sel = $(sel_id)
+	var done = function() {
+		delete g_xhrs[id]
+	}
+
+	g_xhrs[id] = $.ajax($.extend({
+		url: url,
+		success: function(data) {
+			done()
+			if (on_success)
+				on_success(data)
+		},
+		error: function(xhr) {
+			if (xhr.statusText == 'abort')
+				return
+			done()
+			if (on_error)
+				on_error(xhr)
+		},
+	}, opt))
+}
+
+function post(url, data, on_success, on_error) {
+	if (typeof data != 'string')
+		data = {data: JSON.stringify(data)}
+	ajax(url, url, on_success, on_error, {
+		type: 'POST',
+		data: data,
+	})
+}
+
+// restartable ajax requets that correspond to a visual element.
+function load_content(dst_id, url, on_success, on_error) {
+
+	var sel = $(dst_id)
 	var timeout = setTimeout(function() {
 		sel.html('')
 		sel.addClass('loading')
@@ -72,28 +106,32 @@ function load_content(sel_id, backend_url, on_success, on_error) {
 	var done = function() {
 		clearTimeout(timeout)
 		sel.removeClass('loading')
-		delete g_xhrs[sel_id]
 	}
 
-	g_xhrs[sel_id] = $.ajax({
-		url: backend_url,
-		success: function(data) {
+	ajax(dst_id, url,
+		function(data) {
 			done()
-			sel.removeClass('load_error')
 			if (on_success)
 				on_success(data)
 		},
-		error: function(xhr) {
+		function(xhr) {
 			done()
-			sel.addClass('load_error')
+			sel.html('<a><img src="/load_error.gif"></a>').find('a')
+				.attr('title', xhr.responseText)
+				.click(function() {
+					sel.html('')
+					sel.addClass('loading')
+					load_content(dst_id, url, on_success, on_error)
+				})
 			if (on_error)
 				on_error(xhr)
-		},
-	})
+		}
+	)
 }
 
-function load_main(backend_url, on_success, on_error) {
-	load_content('#main', backend_url, on_success, function(xhr) {
+// ajax request on the main pane: redirect to homepage on 404.
+function load_main(url, on_success, on_error) {
+	load_content('#main', url, on_success, function(xhr) {
 		if (xhr.status == 404)
 			window.location = '/'
 	})
@@ -124,7 +162,7 @@ function update_cats(cats) {
 	$('#cat').html(format_cats(cats))
 
 	$('#cat a').click(function() {
-		var catid = $(this).parent().attr('catid')
+		var catid = $(this).closest('ul').attr('catid')
 		exec('/browse/cat/'+catid)
 	})
 }
@@ -150,14 +188,65 @@ function select_topbar_cat(catid) {
 		$('#topbar a[catid="'+catid+'"]').addClass('active')
 }
 
+function cat_make_sortable() {
+
+	$('#cat ul').sortable('destroy')
+
+	$('#cat a.active').closest('ul').sortable().bind('sortupdate', function() {
+
+		var catids = []
+		$(this).find('> li > ul').each(function() {
+			catids.push(parseInt($(this).attr('catid')))
+		})
+
+		post('/cat.json/reorder', catids, null, function() {
+
+			// TODO: reload on error
+		})
+	})
+
+	// sortable() makes draggable the non-li elements too...
+	$('#cat a.active').closest('ul').find(':not(li)').attr('draggable', 'false')
+}
+
 function select_tree_cat(catid, cid) {
+
 	cid = cid || '#cat'
 	$(cid+' ul').hide()
-	$(cid+' a').removeClass('active')
+	$(cid+' a.active').removeClass('active').next().remove()
 	var cat_a = $(cid+' ul[catid="'+catid+'"] > a')
+	if (!cat_a.length)
+		window.location = '/'
+
 	cat_a.parents(cid+' ul').show()
 	cat_a.parent().children('li').find('> ul').show()
 	cat_a.addClass('active')
+
+	cat_a.after(' \
+		<span>\
+		<a id=add_cat    class="fa fa-plus-circle"></a>\
+		<a id=rename_cat class="fa fa-edit"></a>\
+		<a id=remove_cat class="fa fa-minus-circle"></a>\
+		</span>\
+	')
+
+	$('#add_cat').click(function() {
+		post('/cat.json/add', {catid: catid, name: 'Unnamed'}, refresh_cats, refresh_cats)
+	})
+
+	$('#remove_cat').click(function() {
+		var done = function() {
+			g_catid = parseInt(cat_a.closest('ul').parent().closest('ul').attr('catid'))
+			refresh_cats()
+		}
+		post('/cat.json/remove', {catid: catid}, done, done)
+	})
+
+	$('#rename_cat').click(function() {
+		post('/cat.json/rename', {catid: catid}, refresh_cats, refresh_cats)
+	})
+
+	cat_make_sortable()
 }
 
 var g_catid
@@ -168,6 +257,15 @@ function select_cat(catid, cid) {
 	}
 	select_topbar_cat(catid)
 	select_brand_letter()
+}
+
+function refresh_cats() {
+	var catid = g_catid
+	g_cats = null
+	g_catid = null
+	load_cats(function() {
+		select_cat(catid)
+	})
 }
 
 action.cat = function(catid, page_num, bid) {
@@ -186,6 +284,14 @@ action.cat = function(catid, page_num, bid) {
 // prods ---------------------------------------------------------------------
 
 function format_prods(prods) {
+	for (var i=0; i < prods.length; i++) {
+		var prod = prods[i]
+		if (prod.discount)
+			prod.discount = '(%'+prod.discount+' off'+
+				(prod.msrp && ' MSRP $'+prod.msrp || '')+')'
+		else
+			delete prod.discount
+	}
 	if (g_viewstyle == 'list') {
 		return apply_template('#prod_list_template', prods)
 	} else if (g_viewstyle == 'grid') {
@@ -303,27 +409,27 @@ function select_brand(bid, scroll) {
 
 var g_brands_catid
 function load_brands(catid, bid) {
-	if (g_brands_catid != catid) {
-		load_content('#brands', '/brands.json/all/'+catid, function(brands) {
+	if (g_brands_catid == catid)
+		return
+	load_content('#brands', '/brands.json/all/'+catid, function(brands) {
 
-			apply_template('#brands_list_template', brands, '#brands')
+		apply_template('#brands_list_template', brands, '#brands')
 
-			if ($('#brands_list li').length > 40)
-				$('#brand_search').show()
-			else
-				$('#brand_search').hide()
-			$('#brand_search').quicksearch('#brands_list li').cache()
+		if ($('#brands_list li').length > 40)
+			$('#brand_search').show()
+		else
+			$('#brand_search').hide()
+		$('#brand_search').quicksearch('#brands_list li').cache()
 
-			$('#brands_list a[bid]').click(function() {
-				var bid = parseInt($(this).attr('bid'))
-				exec('/browse/cat/'+g_brands_catid+'/1/'+bid)
-			})
-
-			select_brand(bid, true)
-
-			g_brands_catid = catid
+		$('#brands_list a[bid]').click(function() {
+			var bid = parseInt($(this).attr('bid'))
+			exec('/browse/cat/'+g_brands_catid+'/1/'+bid)
 		})
-	}
+
+		select_brand(bid, true)
+
+		g_brands_catid = catid
+	})
 }
 
 // brands page ---------------------------------------------------------------
@@ -416,19 +522,25 @@ function dimsel_changed() {
 		S('price', '${0}').format(combi.price) ||
 		S('na', '<span class=notavailable>N/A</span>')
 	co.stock =
-		!combi.price && '<span class=notavailable>' + S('not_available', 'Not Available') + '</span>' ||
-		(!combi.qty || combi.qty < 1) && '<span class=notavailable>' + S('out_of_stock', 'Out of stock') + '</span>' ||
-		combi.qty > C('max_stock_reveal', 5) && S('plenty_in_stock', '<b>Plenty in stock</b>') ||
-		combi.qty < C('low_stock', 3) && S('low_stock', '<b>Only {0} left</b> in stock').format(combi.qty) ||
+		!combi.price && '<span class=notavailable>' +
+			S('not_available', 'Not Available') + '</span>' ||
+		(!combi.qty || combi.qty < 1) && '<span class=notavailable>' +
+			S('out_of_stock', 'Out of stock') + '</span>' ||
+		combi.qty > C('max_stock_reveal', 5) &&
+			S('plenty_in_stock', '<b>Plenty in stock</b>') ||
+		combi.qty < C('low_stock', 3) &&
+			S('low_stock', '<b>Only {0} left</b> in stock').format(combi.qty) ||
 		S('in_stock', '<b>{0} left</b> in stock').format(combi.qty)
 
 	apply_template('#product_combi_template', co, '#combi')
 
 	if (!combi.price || !combi.qty || combi.qty < 1) {
 		$('.buybutton').prop('disabled', true).addClass('disabled')
-			.attr('title', S('not_available_msg', 'Item not available.\nPlease choose another combination.'))
+			.attr('title', S('not_available_msg',
+				'Item not available.\nPlease choose another combination.'))
 	} else {
-		$('.buybutton').prop('disabled', false).removeClass('disabled').attr('title', '')
+		$('.buybutton').prop('disabled', false).removeClass('disabled')
+			.attr('title', '')
 	}
 
 	var imgs = combi.imgs || []
@@ -601,14 +713,14 @@ action.brand = function(bid) {
 
 function init_topbar() {
 	var t = []
-	t.push({catid: 27567, catname: 'Shoes'})
-	t.push({catid: 27563, catname: 'Clothing'})
-	t.push({catid: 27496, catname: 'Bags'})
-	t.push({catid: 27495, catname: 'Accessories'})
-	t.push({catid: 100000002, catname: 'Men\'s'})
-	t.push({catid: 200000002, catname: 'Women\'s'})
-	t.push({catid: 400000002, catname: 'Girls'})
-	t.push({catid: 500000002, catname: 'Boys'})
+	t.push({catid:     27567, width: 110, catname: 'Shoes'})
+	t.push({catid:     27563, width: 116, catname: 'Clothing'})
+	t.push({catid:     27496, width: 090, catname: 'Bags'})
+	t.push({catid:     27495, width: 138, catname: 'Accessories'})
+	t.push({catid: 100000002, width: 100, catname: 'Men\'s'})
+	t.push({catid: 200000002, width: 110, catname: 'Women\'s'})
+	t.push({catid: 400000002, width: 090, catname: 'Girls'})
+	t.push({catid: 500000002, width: 060, catname: 'Boys'})
 	var w = 100 / t.length
 	var data = {items: t, width: w}
 	apply_template('#topbar_template', data, '#topbar')
@@ -648,5 +760,4 @@ $(document).ready(function() {
 	init_cart()
 	url_changed()
 })
-
 

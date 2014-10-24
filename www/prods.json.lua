@@ -33,11 +33,14 @@ else
 	]], catid).count
 end
 
+--note: "newest first" is actually "oldest first".
 local prods = query([[
 	select
 		p.id_product as pid,
 		pl.name,
 		p.price,
+		p.discount,
+		p.msrp,
 		i.id_image as imgid,
 		m.name as bname
 	from
@@ -56,16 +59,11 @@ local prods = query([[
 	where
 		p.active = 1
 		]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
+	order by
+		p.date_upd
 	limit
 ]]..offset..', '..pagesize, catid)
 
-local function update_default_price()
-	query[[
-		update ps_product p set p.price = (
-			select pa.price from ps_product_attribute pa
-			where pa.id_product = p.id_product and pa.default_on = 1)
-	]]
-end
 
 out_json({
 	prods = prods,
