@@ -30,9 +30,18 @@ String.prototype.format = function() {
 	return s
 }
 
-Object.size = function(obj) {
-    var size = 0
-    for (var key in obj)
-        if (obj.hasOwnProperty(key)) size++
-    return size
+// make an element follow the scroll.
+function follow_scroll(element_id, margin) {
+	var el = $(element_id)
+	var ey = el.position().top + 46 // TODO: account for margins of parents!
+	var adjust_position = function() {
+		var y = $(this).scrollTop()
+		if (y < ey - margin || window.innerHeight < el.height() + margin) {
+			el.css({position: 'relative', top: ''})
+		} else {
+			el.css({position: 'fixed', top: margin})
+		}
+	}
+	$(window).scroll(adjust_position)
+	$(window).resize(adjust_position)
 }

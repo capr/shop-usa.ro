@@ -36,16 +36,20 @@ function quote(s)
 	return ngx.quote_sql_str(tostring(s))
 end
 
-function query_(sql, ...) --query, iterate rows and close
-	connect()
+local tran = {}
+
+local function set_params(sql, ...)
 	local t = {}
 	for i = 1, select('#', ...) do
 		local arg = select(i, ...)
 		t[i] = quote(arg)
 	end
-	local i = 0
 	--TODO: skip string literals
-	sql = sql:gsub('%?', function() i = i + 1; return t[i] end)
+	local i = 0
+	return sql:gsub('%?', function() i = i + 1; return t[i] end)
+end
+
+local function run_query(sql)
 	local t = assert_db(db:query(sql))
 	for i,t in ipairs(t) do
 		for k,v in pairs(t) do
@@ -55,6 +59,29 @@ function query_(sql, ...) --query, iterate rows and close
 		end
 	end
 	return t
+end
+
+function query_(sql, ...) --query, iterate rows and close
+	connect()
+	sql = set_params(sql, ...)
+	if #tran > 0 then --we're inside atomic()
+		table.insert(tran[#tran], sql)
+	else
+		return run_query(sql)
+	end
+end
+
+--concatenate queries instead of running them, and then run them all
+--as a single multi-statement query, wrapped inside a transaction.
+--NOTE: results of intermediate queries are not available immediately.
+function atomic(func)
+	local t = {'start transaction'}
+	table.insert(tran, t)
+	func()
+	table.remove(tran)
+	table.insert(t, 'commit;')
+	local sql = table.concat(t, ';')
+	return run_query(sql)
 end
 
 --query frontends ------------------------------------------------------------

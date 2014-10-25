@@ -16,16 +16,8 @@ local function main()
 	setfenv(1, require'_g')
 	__index = _G --reassign _G because it is replaced on every request.
 
-	nocache = true
-
-	--unload packages if not using cache.
-	if nocache then
-		package.loaded._main = nil
-		package.loaded._query = nil
-		package.loaded._lp = nil
-	end
-
 	require'_main'()
 end
 
 try_call(main)
+

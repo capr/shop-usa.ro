@@ -1,4 +1,15 @@
 
+// global state --------------------------------------------------------------
+
+function editmode() {
+	return true
+}
+
+function check(truth) {
+	if(!truth)
+		window.location = '/'
+}
+
 // history -------------------------------------------------------------------
 
 function init_history() {
@@ -55,7 +66,7 @@ function apply_template(template_id, data, dest_id) {
 
 // content loading -----------------------------------------------------------
 
-// restartable ajax requests.
+// restartable ajax request.
 var g_xhrs = {} //{dst_id: xhr}
 function ajax(id, url, on_success, on_error, opt) {
 
@@ -94,7 +105,7 @@ function post(url, data, on_success, on_error) {
 	})
 }
 
-// restartable ajax requets that correspond to a visual element.
+// restartable ajax request with ui feedback.
 function load_content(dst_id, url, on_success, on_error) {
 
 	var sel = $(dst_id)
@@ -132,152 +143,7 @@ function load_content(dst_id, url, on_success, on_error) {
 // ajax request on the main pane: redirect to homepage on 404.
 function load_main(url, on_success, on_error) {
 	load_content('#main', url, on_success, function(xhr) {
-		if (xhr.status == 404)
-			window.location = '/'
-	})
-}
-
-// cat tree ------------------------------------------------------------------
-
-var g_root_catid = 2
-
-function format_cats(node) {
-
-	var id = node[0]
-	var name = node[1]
-	var prod_count = node[2]
-
-	var s = '<ul catid=' + id + ' style="display: none;">' +
-		'<a>' + name + '</a>'
-	if (prod_count)
-		s = s + ' <span class=gray>(' + prod_count + ')</span>'
-	for (var i = 3; i < node.length; i++)
-		s = s + '<li>' + format_cats(node[i]) + '</li>'
-	s = s + '</ul>'
-
-	return s
-}
-
-function update_cats(cats) {
-	$('#cat').html(format_cats(cats))
-
-	$('#cat a').click(function() {
-		var catid = $(this).closest('ul').attr('catid')
-		exec('/browse/cat/'+catid)
-	})
-}
-
-var g_cats
-function load_cats(on_success) {
-	if (g_cats) {
-		$('#sidebar').show()
-		on_success()
-	} else {
-		load_content('#cat', '/cat.json', function(cats) {
-			g_cats = cats
-			update_cats(cats)
-			$('#sidebar').show()
-			on_success()
-		})
-	}
-}
-
-function select_topbar_cat(catid) {
-	$('#topbar a[catid]').removeClass('active')
-	if (catid)
-		$('#topbar a[catid="'+catid+'"]').addClass('active')
-}
-
-function cat_make_sortable() {
-
-	$('#cat ul').sortable('destroy')
-
-	$('#cat a.active').closest('ul').sortable().bind('sortupdate', function() {
-
-		var catids = []
-		$(this).find('> li > ul').each(function() {
-			catids.push(parseInt($(this).attr('catid')))
-		})
-
-		post('/cat.json/reorder', catids, null, function() {
-
-			// TODO: reload on error
-		})
-	})
-
-	// sortable() makes draggable the non-li elements too...
-	$('#cat a.active').closest('ul').find(':not(li)').attr('draggable', 'false')
-}
-
-function select_tree_cat(catid, cid) {
-
-	cid = cid || '#cat'
-	$(cid+' ul').hide()
-	$(cid+' a.active').removeClass('active').next().remove()
-	var cat_a = $(cid+' ul[catid="'+catid+'"] > a')
-	if (!cat_a.length)
-		window.location = '/'
-
-	cat_a.parents(cid+' ul').show()
-	cat_a.parent().children('li').find('> ul').show()
-	cat_a.addClass('active')
-
-	cat_a.after(' \
-		<span>\
-		<a id=add_cat    class="fa fa-plus-circle"></a>\
-		<a id=rename_cat class="fa fa-edit"></a>\
-		<a id=remove_cat class="fa fa-minus-circle"></a>\
-		</span>\
-	')
-
-	$('#add_cat').click(function() {
-		post('/cat.json/add', {catid: catid, name: 'Unnamed'}, refresh_cats, refresh_cats)
-	})
-
-	$('#remove_cat').click(function() {
-		var done = function() {
-			g_catid = parseInt(cat_a.closest('ul').parent().closest('ul').attr('catid'))
-			refresh_cats()
-		}
-		post('/cat.json/remove', {catid: catid}, done, done)
-	})
-
-	$('#rename_cat').click(function() {
-		post('/cat.json/rename', {catid: catid}, refresh_cats, refresh_cats)
-	})
-
-	cat_make_sortable()
-}
-
-var g_catid
-function select_cat(catid, cid) {
-	if (catid != g_catid) {
-		select_tree_cat(catid, cid)
-		g_catid = catid
-	}
-	select_topbar_cat(catid)
-	select_brand_letter()
-}
-
-function refresh_cats() {
-	var catid = g_catid
-	g_cats = null
-	g_catid = null
-	load_cats(function() {
-		select_cat(catid)
-	})
-}
-
-action.cat = function(catid, page_num, bid) {
-
-	catid = parseInt(catid) || g_root_catid
-	page_num = parseInt(page_num) || 1
-	bid = parseInt(bid) || ''
-
-	load_cats(function() {
-		select_cat(catid)
-		load_prods(catid, page_num, bid)
-		load_brands(catid, bid)
+		check(xhr.status != 404)
 	})
 }
 
@@ -319,10 +185,10 @@ function update_prods(prods) {
 	g_prods = prods
 }
 
-function load_prods(catid, page_num, bid) {
-	load_main('/prods.json/'+catid+'/'+page_num+'/'+(bid||'-')+'/'+g_pagesize,
+function load_prods(catid, pagenum, bid) {
+	load_main('/prods.json/'+catid+'/'+pagenum+'/'+(bid||'-')+'/'+g_pagesize,
 	function(response) {
-		update_pagenav(response.prod_count, page_num, bid)
+		update_pagenav(response.prod_count, pagenum, bid)
 		update_prods(response.prods)
 		select_brand(bid)
 	})
@@ -385,13 +251,11 @@ function update_pagenav(prod_count, cur_page, bid) {
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
 	$('.pagenav a').click(function() {
 		var s = $(this).html()
-		var page_num =
+		var pagenum =
 			(s == '«' && cur_page-1) ||
 			(s == '»' && cur_page+1) ||
 			parseInt(s)
-		exec('/browse/cat/'+g_catid+
-			((page_num > 1 || bid) ? '/'+page_num : '')+
-			(bid && '/'+bid || ''))
+		exec_cat(g_catid, pagenum, bid)
 	})
 	$('.navbar').show()
 }
@@ -423,7 +287,7 @@ function load_brands(catid, bid) {
 
 		$('#brands_list a[bid]').click(function() {
 			var bid = parseInt($(this).attr('bid'))
-			exec('/browse/cat/'+g_brands_catid+'/1/'+bid)
+			exec_cat(g_brands_catid, 1, bid)
 		})
 
 		select_brand(bid, true)
@@ -699,7 +563,7 @@ function update_brand_page(brand) {
 
 	$('#bcat a').click(function() {
 		var catid = $(this).parent().attr('catid')
-		exec('/browse/cat/'+catid+'/1/'+brand.bid)
+		exec_cat(catid, 1, brand.bid)
 	})
 
 	$('#bcat ul').show()
@@ -713,39 +577,37 @@ action.brand = function(bid) {
 
 function init_topbar() {
 	var t = []
-	t.push({catid:     27567, width: 110, catname: 'Shoes'})
-	t.push({catid:     27563, width: 116, catname: 'Clothing'})
-	t.push({catid:     27496, width: 090, catname: 'Bags'})
-	t.push({catid:     27495, width: 138, catname: 'Accessories'})
-	t.push({catid: 100000002, width: 100, catname: 'Men\'s'})
-	t.push({catid: 200000002, width: 110, catname: 'Women\'s'})
-	t.push({catid: 400000002, width: 090, catname: 'Girls'})
-	t.push({catid: 500000002, width: 060, catname: 'Boys'})
-	var w = 100 / t.length
-	var data = {items: t, width: w}
-	apply_template('#topbar_template', data, '#topbar')
+
+	t.push({catid:     27567}) // shoes
+	t.push({catid:     27563}) // clothing
+	t.push({catid:     27496}) // bags
+	t.push({catid:     27495}) // acc.
+	t.push({catid: 100000002}) // men
+	t.push({catid: 200000002}) // women
+	t.push({catid: 400000002}) // girls
+	t.push({catid: 500000002}) // boys
+
+	for (var i = 0; i < t.length; i++) {
+		t[i].catname = g_cats[t[i].catid].name
+	}
+	apply_template('#topbar_template', {items: t}, '#topbar')
+
 	$('#topbar a[catid]').click(function() {
 		var catid = $(this).attr('catid')
-		exec('/browse/cat/'+catid)
+		exec_cat(catid)
 	})
+}
+
+function select_topbar_cat(catid) {
+	$('#topbar a[catid]').removeClass('active')
+	if (catid)
+		$('#topbar a[catid="'+catid+'"]').addClass('active')
 }
 
 // side bar ------------------------------------------------------------------
 
 function init_sidebar() {
-	var el = $('#sidebar')
-	var elpos = el.offset().top
-	var headspace = 20
-	var adjust_sidebar = function() {
-		var y = $(this).scrollTop()
-		if (y < elpos - headspace || window.innerHeight < el.height() + headspace) {
-			el.css('position', 'static')
-		} else {
-			el.css({position: 'fixed', top: headspace})
-		}
-	}
-	$(window).scroll(adjust_sidebar)
-	$(window).resize(adjust_sidebar)
+	follow_scroll('#sidebar', 20)
 }
 
 // load page -----------------------------------------------------------------
@@ -755,9 +617,7 @@ $(document).ready(function() {
 	init_viewstyle()
 	init_letters()
 	init_sidebar()
-	init_topbar()
 	init_prod()
 	init_cart()
 	url_changed()
 })
-

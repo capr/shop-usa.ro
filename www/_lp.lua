@@ -9,7 +9,7 @@ local find, format, gsub, strsub, char = string.find, string.format, string.gsub
 local concat, tinsert = table.concat, table.insert
 local open = io.open
 
-local M = {nocache = false}
+local M = {}
 
 ----------------------------------------------------------------------------
 -- function to do output
@@ -109,9 +109,7 @@ function M.compile (string, chunkname, env)
 	local s, err = cache[string]
 	if not s then
 		s = M.translate (string)
-		if not M.nocache then
-			cache[string] = s
-		end
+		cache[string] = s
 	end
 	f, err = load (s, chunkname, "bt", env)
 	if not f then error (err, 3) end

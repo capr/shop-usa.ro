@@ -19,7 +19,8 @@ local cats = query([[
 		c.id_parent as pid,
 		c.is_root_category as root,
 		cl.name,
-		count(1) as count
+		count(1) as count,
+		c.active
 	from
 		ps_category c
 	inner join

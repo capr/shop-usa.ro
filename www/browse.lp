@@ -2,6 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
+	<title>SHOP USA</title>
 	<link rel="stylesheet" type="text/css" href="/main.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<script src="/jquery.js"></script>
@@ -15,10 +16,10 @@
 	<script src="/jquery.sortable.js"></script>
 	<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 	<script src="/browse.js"></script>
+	<script src="/cat.js"></script>
 </head>
 <body>
-
-<table cellpadding=10>
+<table>
 	<tr>
 		<td valign=top width=280>
 			<a href=/><img src="/logo.jpg"></a>
@@ -50,6 +51,7 @@
 				</tr>
 			</table>
 			<table width=100%>
+				<td></td>
 				<td align=right style="text-align: right;">
 					<a id=cart_icon_link>
 						<div id=cart_icon_div style="position: relative;" align=right>
@@ -123,7 +125,7 @@
 </script>
 
 <script type="text/x-mustache" id=prod_grid_element_template>
-	<div pid={{{pid}}}>
+	<div pid={{{pid}}} class=drop>
 		<div style="min-width: 170px; min-height: 250px">
 			<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 		</div>
@@ -246,7 +248,7 @@
 	<table style="float: right;">
 		<tr>
 		{{#items}}
-			<td valign=middle height=40 width={{{width}}}>
+			<td valign=middle height=40 style="padding-left: 30px; padding-right: 30px;">
 				<a catid={{{catid}}}>{{{catname}}}</a>
 			</td>
 		{{/items}}
@@ -256,4 +258,3 @@
 
 </body>
 </html>
-

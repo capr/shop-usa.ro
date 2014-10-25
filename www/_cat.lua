@@ -6,7 +6,7 @@ function make_cat_tree(t)
 	local ci = {} --{pid = {index1, index2}}
 	local root
 	local pid
-	for i=1, #t+1 do
+	for i = 1, #t+1 do
 		local t = t[i]
 		if t and t.root == 1 then
 			root = t
@@ -25,13 +25,19 @@ function make_cat_tree(t)
 
 	--make the tree.
 	local function make(node, parent)
-		local e = {node.id, node.name, node.count or 0}
+		local e = {
+			id = node.id,
+			name = node.name,
+			count = node.count or 0,
+			active = node.active,
+			cats = {},
+		}
 		local range = ci[node.id]
 		if range then
 			local i1, i2 = unpack(range)
 			for i = i1, i2 do
 				local ce = make(t[i], e)
-				table.insert(e, ce)
+				table.insert(e.cats, ce)
 			end
 		end
 		return e

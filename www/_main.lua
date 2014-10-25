@@ -76,7 +76,7 @@ function clamp(x, min, max)
 	return math.min(math.max(x, min), max)
 end
 
-session = assert(sess.start())
+--session = assert(sess.start())
 
 local cookie_obj
 function cookie(name, val, opt)
@@ -91,6 +91,10 @@ function cookie(name, val, opt)
 		}, opt)
 		assert(cookie_obj:set(t))
 	end
+end
+
+function editmode()
+	return true
 end
 
 --reply API ------------------------------------------------------------------
@@ -136,7 +140,6 @@ function action(action, ...)
 			ngx.redirect'/'
 		end
 		if lppath then
-			lp.nocache = nocache
 			lp.setoutfunc'out'
 			local template = glue.readfile(lppath)
 			chunk = lp.compile(template, action, _G)
@@ -144,9 +147,7 @@ function action(action, ...)
 			chunk = assert(loadfile(luapath))
 		end
 		setfenv(chunk, getfenv(1))
-		if not nocache then
-			chunks[action] = chunk
-		end
+		chunks[action] = chunk
 	end
 	local ret = chunk(...)
 	dump_outbuf()
