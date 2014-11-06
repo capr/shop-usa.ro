@@ -150,14 +150,6 @@ function load_main(url, on_success, on_error) {
 // prods ---------------------------------------------------------------------
 
 function format_prods(prods) {
-	for (var i=0; i < prods.length; i++) {
-		var prod = prods[i]
-		if (prod.discount)
-			prod.discount = '(%'+prod.discount+' off'+
-				(prod.msrp && ' MSRP $'+prod.msrp || '')+')'
-		else
-			delete prod.discount
-	}
 	if (g_viewstyle == 'list') {
 		return apply_template('#prod_list_template', prods)
 	} else if (g_viewstyle == 'grid') {
@@ -167,6 +159,17 @@ function format_prods(prods) {
 
 var g_prods
 function update_prods(prods) {
+
+	if (prods) {
+		for (var i=0; i < prods.length; i++) {
+			var prod = prods[i]
+			if (prod.discount)
+				prod.discount = '(%'+prod.discount+' off'+
+					(prod.msrp && ' MSRP $'+prod.msrp || '')+')'
+			else
+				delete prod.discount
+		}
+	}
 
 	prods = prods || g_prods
 
