@@ -4,8 +4,8 @@ local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
 local pp_ = require'pp'
-local sess = require'resty.session'
 local ck = require'resty.cookie'
+local random = require'resty.random'
 require'_query'
 
 --print API ------------------------------------------------------------------
@@ -76,8 +76,6 @@ function clamp(x, min, max)
 	return math.min(math.max(x, min), max)
 end
 
---session = assert(sess.start())
-
 local cookie_obj
 function cookie(name, val, opt)
 	cookie_obj = cookie_obj or assert(ck:new())
@@ -95,6 +93,21 @@ end
 
 function editmode()
 	return true
+end
+
+--session API ----------------------------------------------------------------
+
+local session_ = require'resty.session'
+function sessid()
+	local session = assert(session_.start())
+	if not session.data.sessid then
+		local token = glue.tohex(session.id)
+		session.data.sessid = iquery([[
+			insert into session (clientip) values (?)
+		]], ngx.var.remote_addr)
+		session:save()
+	end
+	return session.data.sessid
 end
 
 --reply API ------------------------------------------------------------------

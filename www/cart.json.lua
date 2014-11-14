@@ -1,10 +1,12 @@
 
+local sessid = sessid()
+
 local action = {}
 
 function action.show()
-	local cart = json(cookie'cart' or {})
-	pp(cart)
-	local items = {}
+	session.cartid
+	if query1('select 1 from cart where cartid = ?',
+
 	for i,item in ipairs(cart) do
 		local pid, coid = item.k:match'(%d+) (%d+)'
 		local t = query1([[
@@ -32,7 +34,16 @@ function action.show()
 		t.n = item.n
 		table.insert(items, t)
 	end
+	items.sessid = sessid
 	out_json(items)
+end
+
+function action.add()
+
+end
+
+function action.remove()
+
 end
 
 action = action[(...)] or action.show

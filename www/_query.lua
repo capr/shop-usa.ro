@@ -9,8 +9,6 @@ db_name = 'prestashop'
 connect_timeout = 1 --seconds
 db_timeout = 30 --seconds
 
-print_queries = false
-
 local db --global db object
 
 local function assert_db(ret, err, errno, sqlstate)
@@ -94,7 +92,7 @@ function query1(sql, ...) --query first row and close
 	return query_(sql, ...)[1]
 end
 
-function insertquery(sql, ...) --insert query: return autoincremented id
+function iquery(sql, ...) --insert query: return autoincremented id
 	local res = query_(sql, ...)
 	return res.insert_id
 end

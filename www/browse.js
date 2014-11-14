@@ -37,6 +37,17 @@ function url_changed() {
 		handler.apply(null, args)
 }
 
+// persistence ---------------------------------------------------------------
+
+function store(key, value) {
+    Storage.setItem(key, JSON.stringify(value))
+}
+
+function getback(key) {
+    var value = Storage.getItem(key)
+    return value && JSON.parse(value)
+}
+
 // templating ----------------------------------------------------------------
 
 function multi_column(template_id, items, col_count) {

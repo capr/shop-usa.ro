@@ -68,7 +68,7 @@ local function decode(value)
     return base64dec((value:gsub("[-_.]", DECODE_CHARS)))
 end
 
-function setcookie(session, value, expires)
+local function setcookie(session, value, expires)
     local cookie = { session.name, "=", value }
     local domain = session.cookie.domain
     if expires then
