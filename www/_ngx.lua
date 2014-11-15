@@ -12,9 +12,11 @@ end
 
 local function main()
 
-	local _G = _G
-	setfenv(1, require'_g')
-	__index = _G --reassign _G because it is replaced on every request.
+	local g = require'_g'
+	g.__index = _G --reassign _G because it is replaced on every request.
+	g._G = g
+	g.REQ = _G --per-request storage
+	setfenv(1, g)
 
 	require'_main'()
 end

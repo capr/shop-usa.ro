@@ -12,7 +12,7 @@ db_timeout = 30 --seconds
 local db --global db object
 
 local function assert_db(ret, err, errno, sqlstate)
-	if ret ~= nil then return ret end
+	if ret ~= nil then return ret, err end
 	error('db error: '..err..': '..(errno or '')..' '..(sqlstate or ''))
 end
 
@@ -30,8 +30,11 @@ local function connect()
 	db:set_timeout(db_timeout * 1000)
 end
 
-function quote(s)
-	return ngx.quote_sql_str(tostring(s))
+function quote(v)
+	if v == nil then
+		return 'null'
+	end
+	return ngx.quote_sql_str(tostring(v))
 end
 
 local tran = {}
@@ -48,7 +51,15 @@ local function set_params(sql, ...)
 end
 
 local function run_query(sql)
-	local t = assert_db(db:query(sql))
+	assert_db(db:send_query(sql))
+	local t, err = assert_db(db:read_result())
+	if err == 'again' then --multi-result/multi-statement query
+		t = {t}
+		repeat
+			local t1, err = assert_db(db:read_result())
+			t[#t+1] = t1
+		until not err
+	end
 	for i,t in ipairs(t) do
 		for k,v in pairs(t) do
 			if v == ngx.null then
@@ -59,7 +70,7 @@ local function run_query(sql)
 	return t
 end
 
-function query_(sql, ...) --query, iterate rows and close
+function query(sql, ...) --execute, iterate rows, close
 	connect()
 	sql = set_params(sql, ...)
 	if #tran > 0 then --we're inside atomic()
@@ -84,15 +95,29 @@ end
 
 --query frontends ------------------------------------------------------------
 
-function query(sql, ...)
-	return query_(sql, ...)
-end
-
-function query1(sql, ...) --query first row and close
-	return query_(sql, ...)[1]
+function query1(sql, ...) --query first row (or first row/column) and close
+	local row = query(sql, ...)[1]
+	if not row then return end
+	local k,v = next(row)
+	if not next(row, k) then return v end --first row/col
+	return row --first row
 end
 
 function iquery(sql, ...) --insert query: return autoincremented id
-	local res = query_(sql, ...)
-	return res.insert_id
+	return query(sql, ...).insert_id
+end
+
+function groupby(items, col, cb)
+	local t = {}
+	local v
+	local st
+	for i,e in ipairs(items) do
+		if not st or v ~= e[col] then
+			st = {}
+			t[#t+1] = st
+		end
+		st[#st+1] = e
+		v = e[col]
+	end
+	return ipairs(t)
 end

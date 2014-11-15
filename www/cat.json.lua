@@ -1,7 +1,7 @@
 require'_cat'
 
 if POST then
-	check(editmode())
+	check(editable())
 	local action = ...
 	if action == 'reorder' then
 		local catids = json(POST.data)

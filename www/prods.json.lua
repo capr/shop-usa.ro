@@ -12,7 +12,7 @@ local prod_count
 if bid then
 	prod_count = query1([[
 		select
-			count(1) as count
+			count(1)
 		from
 			ps_product p
 		inner join ps_category_product cp on
@@ -21,16 +21,16 @@ if bid then
 		where
 			p.active = 1
 			]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
-	]], catid).count
+	]], catid)
 else
 	prod_count = query1([[
 		select
-			c.product_count as count
+			c.product_count
 		from
 			ps_category c
 		where
 			c.id_category = ?
-	]], catid).count
+	]], catid)
 end
 
 --note: "newest first" is actually "oldest first".

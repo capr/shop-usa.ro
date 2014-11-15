@@ -4,24 +4,22 @@ local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
 local pp_ = require'pp'
-local ck = require'resty.cookie'
-local random = require'resty.random'
-require'_query'
+local cookie_ = require'resty.cookie'
+require'_session'
 
 --print API ------------------------------------------------------------------
 
 function print(...)
 	local n = select('#',...)
-	if n == 0 then
-		--nothing
-	elseif n == 1 then
+	if n == 0 then return end
+	ngx.header['Content-Type'] = 'text/plain'
+	if n == 1 then
 		ngx.say(tostring(...))
 	else
 		local t = {}
 		for i=1,n do
 			t[i] = tostring((select(i, ...)))
 		end
-		ngx.header['Content-Type'] = 'text/plain'
 		ngx.say(table.concat(t, '\t'))
 	end
 end
@@ -78,7 +76,7 @@ end
 
 local cookie_obj
 function cookie(name, val, opt)
-	cookie_obj = cookie_obj or assert(ck:new())
+	cookie_obj = cookie_obj or assert(cookie_:new())
 	if val == nil then
 		return ngx.unescape_uri(assert(cookie_obj:get(name)))
 	else
@@ -89,25 +87,6 @@ function cookie(name, val, opt)
 		}, opt)
 		assert(cookie_obj:set(t))
 	end
-end
-
-function editmode()
-	return true
-end
-
---session API ----------------------------------------------------------------
-
-local session_ = require'resty.session'
-function sessid()
-	local session = assert(session_.start())
-	if not session.data.sessid then
-		local token = glue.tohex(session.id)
-		session.data.sessid = iquery([[
-			insert into session (clientip) values (?)
-		]], ngx.var.remote_addr)
-		session:save()
-	end
-	return session.data.sessid
 end
 
 --reply API ------------------------------------------------------------------
@@ -167,8 +146,6 @@ function action(action, ...)
 	return ret
 end
 
-include = lp.include
-
 --main -----------------------------------------------------------------------
 
 local function check_img()
@@ -202,4 +179,3 @@ local function main()
 end
 
 return main
-

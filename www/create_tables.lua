@@ -1,54 +1,150 @@
 
-pp(query[[
+local function pq(sql, ...)
+	print(sql, ...)
+	return query(sql, ...)
+end
 
-create table if not exists usr (
-	uid         int primary key auto_increment,
-	firstname   varchar(32) not null,
-	lastname    varchar(32) not null,
-	email       varchar(128) not null,
-	passwd      varchar(32) not null,
-	active      tinyint not null default 0,
+--ddl macro language ---------------------------------------------------------
+
+local substs = {}
+
+local function subst(def) --'name type'
+	local name, val = def:match'(%w+)%s+(.*)'
+	substs[name] = val
+end
+
+local macro = {}
+
+local function macro_subst(name, args)
+	local macro = assert(macro[name], 'invalid macro')
+	args = args:sub(2,-2)..','
+	local t = {}
+	for arg in args:gmatch'([^,]+)' do
+		arg = glue.trim(arg)
+		t[#t+1] = arg
+	end
+	return macro(unpack(t))
+end
+
+local function ddl(sql)
+	sql = sql:gsub('$(%w+)(%b())', macro_subst)
+	sql = sql:gsub('$(%w+)', substs)
+	pq(sql)
+end
+
+--ddl vocabulary -------------------------------------------------------------
+
+local function constable(name)
+	return query1([[
+		select c.table_name from information_schema.table_constraints c
+		where c.table_schema = ? and c.constraint_name = ?
+	]], db_name, name)
+end
+
+local function dropfk(name)
+	local tbl = constable(name)
+	if not tbl then return end
+	pq('alter table '..tbl..' drop foreign key '..name..';')
+end
+
+local function droptable(name)
+	pq('drop table if exists '..name..';')
+end
+
+--ddl commands
+subst'table  create table if not exists'
+
+--type domains
+subst'id     int unsigned'
+subst'pk     int unsigned primary key auto_increment'
+subst'name   varchar(32)'
+subst'email  varchar(128)'
+subst'pass   varchar(32)'
+subst'bool   tinyint not null'
+subst'atime  timestamp default current_timestamp'
+subst'mtime  timestamp on update current_timestamp'
+
+function macro.fk(tbl, col, ftbl, fcol, ondelete, onupdate)
+	ondelete = ondelete or 'cascade'
+	onupdate = onupdate or 'restrict'
+	local a1 = ondelete ~= 'restrict' and ' on delete '..ondelete or ''
+	local a2 = onupdate ~= 'restrict' and ' on update '..onupdate or ''
+	return string.format(
+		'constraint fk_%s_%s foreign key (%s) references %s (%s)%s%s',
+		tbl, col:gsub('%s', ''):gsub(',', '_'), col, ftbl, fcol or col, a1, a2)
+end
+
+function macro.uk(tbl, col)
+	return string.format(
+		'constraint uk_%s_%s unique key (%s)',
+		tbl, col:gsub('%s', ''):gsub(',', '_'), col)
+end
+
+local function fk(tbl, ...)
+	local sql = string.format('alter table %s add ', tbl)..
+		macro.fk(tbl, ...)..';'
+	pq(sql)
+end
+
+------------------------------------------------------------------------------
+
+dropfk'fk_session_cartid'
+dropfk'fk_usr_cartid'
+
+droptable'cartitemval'
+droptable'cartitem'
+droptable'cart'
+droptable'session'
+droptable'usr'
+
+ddl[[
+$table usr (
+	uid         $pk,
+	firstname   $name not null,
+	lastname    $name not null,
+	email       $email not null,
+	passwd      $pass not null,
+	active      $bool,
 	birthday    date,
-	newsletter  tinyint not null default 0,
-	isadmin     tinyint not null default 0,
+	newsletter  $bool,
+	admin       $bool,
 	note        text,
-	atime       timestamp default current_timestamp,
-	mtime       timestamp on update current_timestamp
+	cartid      $id,
+	atime       $atime,
+	mtime       $mtime
 );
+]]
 
-drop table session;
-drop table cart;
-
-create table if not exists session (
-	sessid      int primary key auto_increment,
-	token       varchar(64) not null unique key,
-   uid         int references users (uid) on delete cascade,
+ddl[[
+$table session (
+	sessid      $pk,
+	uid         $id, $fk(session, uid, usr),
 	clientip    varchar(32),
-	cartid      int,
-	atime       timestamp default current_timestamp,
-	mtime       timestamp on update current_timestamp
+	cartid      $id,
+	atime       $atime,
+	mtime       $mtime
 );
+]]
 
-create table if not exists cart (
-	cartid      int primary key auto_increment,
-	uid         int references usr (uid) on delete cascade,
-	sessid      int references session (sessid) on delete cascade
+ddl[[
+$table cart (
+	cartid      $pk,
+	uid         $id, $fk(cart, uid, usr),
+	sessid      $id, $fk(cart, sessid, session)
 );
+]]
 
-alter table session add foreign key (cartid) references cart (cartid);
+fk('session', 'cartid', 'cart')
+fk('usr', 'cartid', 'cart')
 
-create table if not exists cartitem (
-	iid         int primary key auto_increment,
-	cartid      int not null references cart (cartid) on delete cascade,
-	pid         int not null references ps_product (id_product) on delete cascade,
-	pos         int not null default 0,
-	buylater    tinyint not null default 0
+ddl[[
+$table cartitem (
+	ciid        $pk,
+	cartid      $id not null, $fk(cartitem, cartid, cart),
+	pid         $id not null, $fk(cartitem, pid, ps_product),
+	coid        $id, $fk(cartitem, coid, ps_product_attribute, id_product_attribute),
+	pos         $id not null,
+	buylater    $bool
 );
-
-create table cartitemval (
-	iid         int not null references cartitem (iid) on delete cascade,
-   vid         int not null references ps_product_attribute (id_product) on delete cascade
-);
-
-]])
+]]
 
