@@ -62,7 +62,7 @@ subst'email  varchar(128)'
 subst'pass   varchar(32)'
 subst'bool   tinyint not null'
 subst'atime  timestamp default current_timestamp'
-subst'mtime  timestamp on update current_timestamp'
+subst'mtime  timestamp' --on update current_timestamp
 
 function macro.fk(tbl, col, ftbl, fcol, ondelete, onupdate)
 	ondelete = ondelete or 'cascade'
