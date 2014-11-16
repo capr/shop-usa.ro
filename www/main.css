@@ -169,7 +169,7 @@ button.disabled:hover {
 }
 
 .cart_list .sortable-placeholder {
-	height: 100px;
+	height: 180px;
 	border: 2px dashed #ddd;
 	text-align: center;
 	vertical-align: middle;
