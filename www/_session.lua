@@ -16,6 +16,8 @@ end
 --session state --------------------------------------------------------------
 
 session = once(function()
+	session_.persistent = true
+	session_.cookie.lifetime = 365 * 24 * 3600 --one year
 	return assert(session_.start())
 end)
 
