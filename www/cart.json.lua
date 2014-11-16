@@ -32,9 +32,9 @@ if POST then
 		for i,ciid in ipairs(data.ciids) do
 			query([[
 				update cartitem
-				set pos = ?
+				set pos = ?, buylater = ?
 				where ciid = ? and cartid = ?
-			]], i, ciid, cartid())
+			]], i, data.buylater[i] and 1 or 0, ciid, cartid())
 		end
 	elseif action == 'remove' then
 		query('delete from cartitem where ciid = ? and cartid = ?',

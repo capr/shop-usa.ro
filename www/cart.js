@@ -41,8 +41,8 @@ function buy_later(ciid, finish) {
 	})
 }
 
-function cart_reorder(ciids, finish) {
-	var args = {cartid: g_cart.cartid, ciids: ciids}
+function cart_reorder(ciids, buylater, finish) {
+	var args = {cartid: g_cart.cartid, ciids: ciids, buylater: buylater}
 	post('/cart.json/reorder', args, function(cart) {
 		g_cart = cart // returns full cart
 		finish()
@@ -151,10 +151,12 @@ function cart_make_draggable() {
 
 	var sortupdate = function() {
 		var ciids = []
+		var buylater = []
 		$('#main ul li').each(function() {
 			ciids.push(parseInt($(this).attr('ciid')))
+			buylater.push($(this).closest('#cart_buy_later').length > 0)
 		})
-		cart_reorder(ciids, update_cart_page)
+		cart_reorder(ciids, buylater, update_cart_page)
 	}
 
 	$('.cart_list').sortable({

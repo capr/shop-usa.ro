@@ -271,6 +271,8 @@
 			<t class=en>${{{total}}}</t>
 			<t class=ro>{{{total}}} Lei</t>
 		</span>
+		<br>
+		<button class=buybutton><t class=en>Buy</t><t class=ro>Comanda</t></button>
 	</div>
 	<h2>
 		<t class=en>Saved for later ({{{buylater_count}}} items)</t>
