@@ -1,3 +1,6 @@
 nginx/*_temp
 nginx/logs/
 img/
+www/_env.lua
+www/_dbpass.lua
+env
