@@ -9,5 +9,12 @@ function config.prod()
 	db_name = 'prestashop'
 end
 
-local env = require'_env'
+function config.dev()
+	db_host = '10.1.1.105'
+	db_user = 'root'
+	db_pass = 'abcd12'
+	db_name = 'prestashop'
+end
+
+local env = glue.readfile('../env')
 config[env]()

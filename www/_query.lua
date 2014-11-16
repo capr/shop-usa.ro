@@ -2,9 +2,9 @@
 setfenv(1, require'_g')
 local mysql = require'resty.mysql'
 
-db_host = '10.1.1.105'
+db_host = '127.0.0.1'
 db_user = 'root'
-db_pass = 'abcd12'
+db_pass = ''
 db_name = 'prestashop'
 connect_timeout = 1 --seconds
 db_timeout = 30 --seconds
