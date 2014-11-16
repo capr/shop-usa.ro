@@ -1,4 +1,21 @@
 
+// keyboard navigation -------------------------------------------------------
+
+var keydown_events = {} // {id: handler}
+
+function bind_keydown(id, func) {
+	keydown_events[id] = func
+}
+
+
+function init_keydown() {
+	$(document).keydown(function(event) {
+		$.each(keydown_events, function(id, func) {
+			func(event)
+		})
+	})
+}
+
 // prods ---------------------------------------------------------------------
 
 function format_prods(prods) {
@@ -100,6 +117,20 @@ function update_pagenav(prod_count, cur_page, bid) {
 		exec_cat(g_catid, pagenum, bid)
 	})
 	$('.navbar').show()
+
+	// keyboard page navigation
+	bind_keydown('page', function(event) {
+		console.log(event.which)
+		if (event.which == 39) {
+			exec_cat(g_catid, cur_page + 1, bid)
+		} else if (event.which == 37) {
+			exec_cat(g_catid, cur_page - 1, bid)
+		}
+	})
+}
+
+function init_pagenav() {
+
 }
 
 // brands list ---------------------------------------------------------------
@@ -179,7 +210,7 @@ function init_letters() {
 function init_prod() {
 
 	// keyboard image navigation
-	$(document).keydown(function(event) {
+	bind_keydown('gallery', function(event) {
 		var img = $('#gallery a[imgid] > img.active')
 		if (!img) return
 		if (event.which == 39) {
@@ -188,6 +219,7 @@ function init_prod() {
 			change_prod_img(img.closest('td').prev('td').find('> a').attr('imgid'))
 		}
 	})
+
 }
 
 function change_prod_img(imgid) {
@@ -353,11 +385,13 @@ function init_sidebar() {
 // load page -----------------------------------------------------------------
 
 $(document).ready(function() {
+	init_keydown()
 	init_history()
 	init_viewstyle()
 	init_letters()
 	init_sidebar()
 	init_prod()
+	init_pagenav()
 	init_cart()
 	url_changed()
 })
