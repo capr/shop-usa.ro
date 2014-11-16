@@ -6,6 +6,7 @@ local cjson = require'cjson'
 local pp_ = require'pp'
 local cookie_ = require'resty.cookie'
 require'_session'
+require'_config'
 
 --print API ------------------------------------------------------------------
 
@@ -155,7 +156,7 @@ local function check_img()
 
 	if kind == 'p' then
 
-		check(false)
+		--check(false)
 
 		--check for short form and make an internal redirect.
 		local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'
