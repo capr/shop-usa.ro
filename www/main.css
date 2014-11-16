@@ -1,4 +1,4 @@
-html, body, table, tr, td, div, img {
+html, body, table, tr, td, div, img, ul, hr {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -52,10 +52,11 @@ img.inactive {
 	border: 1px solid #fff;
 }
 
-.menu ul {
+ul {
     list-style-type: none;
-    padding: 0;
-    margin: 0;
+}
+
+.menu ul {
 }
 
 .menu ul li {
@@ -87,7 +88,7 @@ img.inactive {
 	font-weight: bold;
 }
 
-.buybutton {
+button {
 	cursor: pointer;
 	color: #000;
 	background: #fff;
@@ -101,7 +102,10 @@ img.inactive {
 	padding-right: 2em;
 }
 
-.buybutton:hover {
+.buybutton {
+}
+
+button:hover {
 	color: #cc8800;
 }
 
@@ -160,7 +164,32 @@ button.disabled:hover {
 	color: #666;
 }
 
-.sortable-placeholder {
+#cat .sortable-placeholder {
 	height: 20px;
 }
+
+.cart_list .sortable-placeholder {
+	height: 100px;
+	border: 2px dashed #ddd;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.cart_total {
+	float:right;
+	font-size: 18px;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+hr {
+	border-top: 1px solid #ccc;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.en, .ro { display:none; } /* hide all elements with a language class */
+.en:lang(en), .ro:lang(ro) { display: inline; } /* show elements that match their lang class */
 

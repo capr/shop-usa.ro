@@ -1,4 +1,6 @@
 
+// global strings and config values ------------------------------------------
+
 // global S() for internationalizing strings.
 var S_ = {}
 function S(name, val) {
@@ -15,6 +17,8 @@ function C(name, val) {
 	return C_[name]
 }
 
+// string formatting ---------------------------------------------------------
+
 // usage:
 //		'{1} of {0}'.format(total, current)
 //		'{1} of {0}'.format([total, current])
@@ -30,7 +34,8 @@ String.prototype.format = function() {
 	return s
 }
 
-// make an element follow the scroll.
+// follow scroll -------------------------------------------------------------
+
 function follow_scroll(element_id, margin) {
 	var el = $(element_id)
 	var ey = el.position().top + 46 // TODO: account for margins of parents!
@@ -44,4 +49,168 @@ function follow_scroll(element_id, margin) {
 	}
 	$(window).scroll(adjust_position)
 	$(window).resize(adjust_position)
+}
+
+// global state --------------------------------------------------------------
+
+function editmode() {
+	return true
+}
+
+function check(truth) {
+	if(!truth)
+		window.location = '/'
+}
+
+// history -------------------------------------------------------------------
+
+function init_history() {
+	var History = window.History
+	History.Adapter.bind(window, 'statechange', function() {
+		url_changed()
+	})
+}
+
+function exec(url) {
+	History.pushState(null, null, url)
+}
+
+var action = {} // {action: handler}
+var default_action = 'cat'
+
+function url_changed() {
+	var args = location.pathname.split('/')
+	args.shift() // remove /
+	args.shift() // remove browse/
+	var act = args[0] || default_action
+	args.shift() // remove action/
+	var handler = action[act]
+	if (handler)
+		handler.apply(null, args)
+}
+
+// persistence ---------------------------------------------------------------
+
+function store(key, value) {
+    Storage.setItem(key, JSON.stringify(value))
+}
+
+function getback(key) {
+    var value = Storage.getItem(key)
+    return value && JSON.parse(value)
+}
+
+// templating ----------------------------------------------------------------
+
+function multi_column(template_id, items, col_count) {
+	var s = '<table width=100%>'
+	var template = $(template_id).html()
+	var w = 100 / col_count
+	$.each(items, function(i, item) {
+		if (i % col_count == 0)
+			s = s + '<tr>'
+		s = s + '<td width='+w+'%>' + Mustache.render(template, item) + '</td>'
+		if (i % col_count == col_count - 1 || i == items.length)
+			s = s + '</tr>'
+	})
+	s = s + '</table>'
+	return s
+}
+
+function apply_template(template_id, data, dest_id) {
+	var template = $(template_id).html()
+	var s = Mustache.render(template, data)
+	if (dest_id) {
+		$(dest_id).html(s)
+	} else {
+		return s
+	}
+}
+
+// find an id attribute in the parents of an element
+function upid(e, attr) {
+	return parseInt($(e).closest('['+attr+']').attr(attr))
+}
+
+// content loading -----------------------------------------------------------
+
+// restartable ajax request.
+var g_xhrs = {} //{dst_id: xhr}
+function ajax(id, url, on_success, on_error, opt) {
+
+	if (g_xhrs[id]) {
+		g_xhrs[id].abort()
+		delete g_xhrs[id]
+	}
+
+	g_xhrs[id] = $.ajax($.extend({
+		url: url,
+		success: function(data) {
+			delete g_xhrs[id]
+			if (on_success)
+				on_success(data)
+		},
+		error: function(xhr) {
+			delete g_xhrs[id]
+			if (xhr.statusText == 'abort')
+				return
+			if (on_error)
+				on_error(xhr)
+		},
+	}, opt))
+}
+
+function get(url, on_success, on_error) {
+	ajax(url, url, on_success, on_error)
+}
+
+function post(url, data, on_success, on_error) {
+	if (typeof data != 'string')
+		data = {data: JSON.stringify(data)}
+	ajax(url, url, on_success, on_error, {
+		type: 'POST',
+		data: data,
+	})
+}
+
+// restartable ajax request with ui feedback.
+function load_content(dst_id, url, on_success, on_error) {
+
+	var sel = $(dst_id)
+	var timeout = setTimeout(function() {
+		sel.html('')
+		sel.addClass('loading')
+	}, C('loading_delay', 2000))
+
+	var done = function() {
+		clearTimeout(timeout)
+		sel.removeClass('loading')
+	}
+
+	ajax(dst_id, url,
+		function(data) {
+			done()
+			if (on_success)
+				on_success(data)
+		},
+		function(xhr) {
+			done()
+			sel.html('<a><img src="/load_error.gif"></a>').find('a')
+				.attr('title', xhr.responseText)
+				.click(function() {
+					sel.html('')
+					sel.addClass('loading')
+					load_content(dst_id, url, on_success, on_error)
+				})
+			if (on_error)
+				on_error(xhr)
+		}
+	)
+}
+
+// ajax request on the main pane: redirect to homepage on 404.
+function load_main(url, on_success, on_error) {
+	load_content('#main', url, on_success, function(xhr) {
+		check(xhr.status != 404)
+	})
 }

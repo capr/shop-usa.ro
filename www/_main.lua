@@ -38,9 +38,9 @@ function json(v)
 	end
 end
 
-function out_json(t)
+function out_json(v)
 	ngx.header['Content-Type'] = 'application/json'
-	ngx.say(cjson.encode(t))
+	ngx.say(cjson.encode(v))
 	ngx.exit(0)
 end
 
@@ -154,6 +154,9 @@ local function check_img()
 	if not kind then return end --not an image
 
 	if kind == 'p' then
+
+		check(false)
+
 		--check for short form and make an internal redirect.
 		local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'
 		if imgid then

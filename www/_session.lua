@@ -60,5 +60,5 @@ admin = once(function()
 	]], sessid()) == 1
 end)
 
-editable = admin
+editmode = admin
 

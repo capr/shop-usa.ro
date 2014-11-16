@@ -1,7 +1,7 @@
 require'_cat'
 
 if POST then
-	check(editable())
+	check(editmode())
 	local action = ...
 	if action == 'reorder' then
 		local catids = json(POST.data)
@@ -82,4 +82,3 @@ local cats = query([[
 
 local cats = make_cat_tree(cats)
 out_json(cats)
-

@@ -91,7 +91,6 @@ end
 dropfk'fk_session_cartid'
 dropfk'fk_usr_cartid'
 
-droptable'cartitemval'
 droptable'cartitem'
 droptable'cart'
 droptable'session'
@@ -141,10 +140,13 @@ ddl[[
 $table cartitem (
 	ciid        $pk,
 	cartid      $id not null, $fk(cartitem, cartid, cart),
-	pid         $id not null, $fk(cartitem, pid, ps_product),
+	pid         $id not null, $fk(cartitem, pid, ps_product, id_product),
 	coid        $id, $fk(cartitem, coid, ps_product_attribute, id_product_attribute),
-	pos         $id not null,
-	buylater    $bool
+	qty         $id not null,
+	pos         $id,
+	buylater    $bool,
+	atime       $atime,
+	mtime       $mtime
 );
 ]]
 

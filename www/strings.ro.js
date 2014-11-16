@@ -1,0 +1,11 @@
+
+S('move_here', 'Pune-l aici')
+S('remove', 'Sterge')
+S('price', '{0} Lei')
+S('na', '<span class=notavailable>Nedisponibil</span>')
+S('not_available', 'Nedisponibil')
+S('out_of_stock', 'Lipsa stoc')
+S('plenty_in_stock', '<b>In stoc</b>')
+S('low_stock', '<b>Doar {0} bucati</b> in stoc')
+S('in_stock', '<b>{0} bucati</b> in stoc')
+S('not_available_msg', 'Combinatie nedisponibila.\nTe rugam alege alta combinatie.')

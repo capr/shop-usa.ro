@@ -1,163 +1,4 @@
 
-// global state --------------------------------------------------------------
-
-function editmode() {
-	return true
-}
-
-function check(truth) {
-	if(!truth)
-		window.location = '/'
-}
-
-// history -------------------------------------------------------------------
-
-function init_history() {
-	var History = window.History
-	History.Adapter.bind(window, 'statechange', function() {
-		url_changed()
-	})
-}
-
-function exec(url) {
-	History.pushState(null, null, url)
-}
-
-var action = {} // {action: handler}
-var default_action = 'cat'
-
-function url_changed() {
-	var args = location.pathname.split('/')
-	args.shift() // remove /
-	args.shift() // remove browse/
-	var act = args[0] || default_action
-	args.shift() // remove action/
-	var handler = action[act]
-	if (handler)
-		handler.apply(null, args)
-}
-
-// persistence ---------------------------------------------------------------
-
-function store(key, value) {
-    Storage.setItem(key, JSON.stringify(value))
-}
-
-function getback(key) {
-    var value = Storage.getItem(key)
-    return value && JSON.parse(value)
-}
-
-// templating ----------------------------------------------------------------
-
-function multi_column(template_id, items, col_count) {
-	var s = '<table width=100%>'
-	var template = $(template_id).html()
-	var w = 100 / col_count
-	$.each(items, function(i, item) {
-		if (i % col_count == 0)
-			s = s + '<tr>'
-		s = s + '<td width='+w+'%>' + Mustache.render(template, item) + '</td>'
-		if (i % col_count == col_count - 1 || i == items.length)
-			s = s + '</tr>'
-	})
-	s = s + '</table>'
-	return s
-}
-
-function apply_template(template_id, data, dest_id) {
-	var template = $(template_id).html()
-	var s = Mustache.render(template, data)
-	if (dest_id) {
-		$(dest_id).html(s)
-	} else {
-		return s
-	}
-}
-
-// content loading -----------------------------------------------------------
-
-// restartable ajax request.
-var g_xhrs = {} //{dst_id: xhr}
-function ajax(id, url, on_success, on_error, opt) {
-
-	if (g_xhrs[id]) {
-		g_xhrs[id].abort()
-		delete g_xhrs[id]
-	}
-
-	var done = function() {
-		delete g_xhrs[id]
-	}
-
-	g_xhrs[id] = $.ajax($.extend({
-		url: url,
-		success: function(data) {
-			done()
-			if (on_success)
-				on_success(data)
-		},
-		error: function(xhr) {
-			if (xhr.statusText == 'abort')
-				return
-			done()
-			if (on_error)
-				on_error(xhr)
-		},
-	}, opt))
-}
-
-function post(url, data, on_success, on_error) {
-	if (typeof data != 'string')
-		data = {data: JSON.stringify(data)}
-	ajax(url, url, on_success, on_error, {
-		type: 'POST',
-		data: data,
-	})
-}
-
-// restartable ajax request with ui feedback.
-function load_content(dst_id, url, on_success, on_error) {
-
-	var sel = $(dst_id)
-	var timeout = setTimeout(function() {
-		sel.html('')
-		sel.addClass('loading')
-	}, C('loading_delay', 2000))
-
-	var done = function() {
-		clearTimeout(timeout)
-		sel.removeClass('loading')
-	}
-
-	ajax(dst_id, url,
-		function(data) {
-			done()
-			if (on_success)
-				on_success(data)
-		},
-		function(xhr) {
-			done()
-			sel.html('<a><img src="/load_error.gif"></a>').find('a')
-				.attr('title', xhr.responseText)
-				.click(function() {
-					sel.html('')
-					sel.addClass('loading')
-					load_content(dst_id, url, on_success, on_error)
-				})
-			if (on_error)
-				on_error(xhr)
-		}
-	)
-}
-
-// ajax request on the main pane: redirect to homepage on 404.
-function load_main(url, on_success, on_error) {
-	load_content('#main', url, on_success, function(xhr) {
-		check(xhr.status != 404)
-	})
-}
-
 // prods ---------------------------------------------------------------------
 
 function format_prods(prods) {
@@ -171,29 +12,16 @@ function format_prods(prods) {
 var g_prods
 function update_prods(prods) {
 
-	if (prods) {
-		for (var i=0; i < prods.length; i++) {
-			var prod = prods[i]
-			if (prod.discount)
-				prod.discount = '(%'+prod.discount+' off'+
-					(prod.msrp && ' MSRP $'+prod.msrp || '')+')'
-			else
-				delete prod.discount
-		}
-	}
-
 	prods = prods || g_prods
 
 	$('#main').html(format_prods(prods))
 
 	$('#main [pid] a').click(function() {
-		var pid = parseInt($(this).closest('[pid]').attr('pid'))
-		exec('/browse/p/'+pid)
+		exec('/browse/p/'+upid(this, 'pid'))
 	})
 
 	$('#main .buybutton').click(function() {
-		var pid = parseInt($(this).parents('[pid]').first().attr('pid'))
-		add_to_cart(pid)
+		add_to_cart(upid(this, 'pid'))
 	})
 
 	g_prods = prods
@@ -286,7 +114,7 @@ function select_brand(bid, scroll) {
 }
 
 var g_brands_catid
-function load_brands(catid, bid) {
+function load_brands(catid, bid) { // used in cat.js
 	if (g_brands_catid == catid)
 		return
 	load_content('#brands', '/brands.json/all/'+catid, function(brands) {
@@ -463,108 +291,6 @@ action.p = function(pid) {
 	load_main('/prod.json/'+pid, update_prod)
 }
 
-// cart ----------------------------------------------------------------------
-
-var g_cart
-function get_cart() {
-	g_cart = g_cart || JSON.parse($.cookie('cart') || '[]')
-	return g_cart
-}
-
-function set_cart() {
-	$.cookie('cart', JSON.stringify(g_cart), {path: '/'})
-}
-
-function cart_item_index(pid, coid) {
-	var key = pid+' '+coid
-	var cart = get_cart()
-	for (var i = 0; i < cart.length; i++) {
-		if (cart[i].k == key)
-			return i
-	}
-	cart.push({k: key, n: 0})
-	return cart.length-1
-}
-
-function cart_item_count() {
-	var cart = get_cart()
-	var n = 0
-	for (var i = 0; i < cart.length; i++) {
-		n = n + cart[i].n
-	}
-	return n
-}
-
-function add_prod_to_cart(pid, coid) {
-	var cart = get_cart()
-	var i = cart_item_index(pid, coid)
-	cart[i].n = cart[i].n + 1
-	set_cart()
-	return cart
-}
-
-function drag_prod_img_to_cart(finish) {
-	var img = $('#prod_img').clone()
-		.attr('id', '')
-		.css({position: 'absolute'})
-		.appendTo($('#fly_img_div'))
-	var srp_abs = img.parent().offset()
-	var dst_abs = $('#cart_icon').offset()
-	img.animate({
-		top: dst_abs.top - srp_abs.top,
-		left: dst_abs.left - srp_abs.left,
-		width: $('#cart_icon').width(),
-		height: $('#cart_icon').height(),
-		opacity: 0,
-	}, 500, function() {
-		img.remove()
-		finish()
-	})
-}
-
-function set_cart_icon() {
-	var n = cart_item_count()
-	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
-	$('#cart_item_count').html((n < 10 ? '0' : '') + n)
-	$('#cart_icon').click(function() {
-		exec('/browse/cart')
-	})
-}
-
-var g_ci_top
-function update_cart_icon() {
-	var ci = $('#cart_icon_div')
-	g_ci_top = g_ci_top || ci.position().top - ci.offset().top
-	ci.animate({top: g_ci_top - 20}, 100, 'easeOutExpo', function() {
-		set_cart_icon()
-		ci.animate({top: g_ci_top}, 500, 'easeOutBounce', function() {
-			ci.css('top', '')
-		})
-	})
-}
-
-function add_to_cart(pid, coid) {
-	drag_prod_img_to_cart(function() {
-		add_prod_to_cart(pid, coid)
-		update_cart_icon()
-	})
-}
-
-
-function init_cart() {
-	set_cart_icon(get_cart())
-}
-
-function update_cart_page(cart) {
-	apply_template('#cart_page_template', cart, '#main')
-}
-
-action.cart = function(action) {
-	if (!action) {
-		load_main('/cart.json', update_cart_page)
-	}
-}
-
 // brand page ----------------------------------------------------------------
 
 function update_brand_page(brand) {
@@ -635,3 +361,4 @@ $(document).ready(function() {
 	init_cart()
 	url_changed()
 })
+

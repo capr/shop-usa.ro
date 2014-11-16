@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang=ro>
 <head>
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
@@ -8,6 +8,7 @@
 	<script src="/jquery.js"></script>
 	<script src="/mustache.js"></script>
 	<script src="/util.js"></script>
+	<script src="/strings.ro.js"></script>
 	<script src="/jquery.history.js"></script>
 	<script src="/jquery.cookie.js"></script>
 	<script src="/jquery.quicksearch.js"></script>
@@ -17,6 +18,7 @@
 	<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 	<script src="/browse.js"></script>
 	<script src="/cat.js"></script>
+	<script src="/cart.js"></script>
 </head>
 <body>
 <table>
@@ -51,17 +53,19 @@
 				</tr>
 			</table>
 			<table width=100%>
-				<td></td>
-				<td align=right style="text-align: right;">
-					<a id=cart_icon_link>
-						<div id=cart_icon_div style="position: relative;" align=right>
-							<img id=cart_icon>
-							<div style="float: right; position: relative; top: 11px; left: -21px;">
-								<span id=cart_item_count></span>
+				<tr>
+					<td></td>
+					<td align=right style="text-align: right;">
+						<a id=cart_icon_link>
+							<div id=cart_icon_div style="position: relative;" align=right>
+								<img id=cart_icon>
+								<div style="float: right; position: relative; top: 11px; left: -21px;">
+									<span id=cart_item_count></span>
+								</div>
 							</div>
-						</div>
-					</a>
-				</td>
+						</a>
+					</td>
+				</tr>
 			</table>
 			<table width=100% class=navbar id=top_navbar style="display: none">
 				<tr>
@@ -90,11 +94,14 @@
 			<table width=100%>
 				<tr height=140>
 					<td align=center>
-						<span class=gray>Made with
-						<a href="http://luapower.com/" target=_blank>Lua Power</a>,
-						Love, Spice, and
-						<a href="http://openresty.org/" target=_blank>Everything Nice</a>,
-						<br>by Cosmin Apreutesei</a>
+						<span class=gray>
+							Made with
+								<a href="http://luapower.com/" target=_blank>Lua Power</a>,
+								Love, Spice, and
+								<a href="http://openresty.org/" target=_blank>Everything Nice</a>,
+								<br>
+								by Cosmin Apreutesei
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -110,9 +117,9 @@
 				<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 			</td>
 			<td>
-				<b>{{{bname}}}</b> {{{name}}}
+				<a><b>{{{bname}}}</b> {{{name}}}</a>
 				<br>
-				<span class=price>${{{price}}}</span>
+				<span class=price><t class=en>$</t>{{{price}}}<t class=ro> Lei</t></span>
 				<span class=discount>{{{discount}}}</span>
 				<br>
 				<button type=button class=buybutton>add to bag</button>
@@ -132,10 +139,19 @@
 		<br>
 		<a><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
-		<span class=price>${{{price}}}</span>
-		<span class=discount>{{{discount}}}</span>
+		<span class=price><t class=en>$</t>{{{price}}}<t class=ro> Lei</t></span>
+		{{#discount}}
+			<br>
+			<span class=discount>
+				<t class=ro>({{{discount}}}% {{#msrp}} din {{{msrp}}} Lei{{/msrp}})</t>
+				<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
+			</span>
+		{{/discount}}
 		<br>
-		<button type=button class=buybutton pid={{{pid}}}>add to bag</button>
+		<button type=button class=buybutton pid={{{pid}}}>
+			<t class=en>add to bag</t>
+			<t class=ro>adauga in cos</t>
+		</button>
 		<br>
 		<br>
 	</div>
@@ -144,7 +160,7 @@
 <script type="text/x-mustache" id=brands_list_template>
 	<b>Brands</b>
 	<br>
-	<input id=brand_search type=text style="width: 220px" placeholder="Enter Brand"></input>
+	<input id=brand_search type=text style="width: 220px" placeholder="Brand"></input>
 	<div style="width: 220px; height: 200px; overflow: auto">
 		<ul id=brands_list>
 		{{#.}}
@@ -157,7 +173,8 @@
 
 <script type="text/x-mustache" id=brands_template>
 	<span class=small><a bid={{{bid}}}>{{{bname}}}</a>
-		<span class=gray>({{pcount}})</span></span>
+		<span class=gray>({{pcount}})</span>
+	</span>
 </script>
 
 <script type="text/x-mustache" id=product_page_template>
@@ -193,7 +210,10 @@
 				</table>
 				<br>
 				<br>
-				<button type=button class="buybutton orange" pid={{{pid}}}>add to bag</button>
+				<button type=button class="buybutton orange" pid={{{pid}}}>
+					<t class=en>add to bag</t>
+					<t class=ro>adauga in cos</t>
+				</button>
 			</td>
 		</tr>
 		<tr>
@@ -240,8 +260,52 @@
 </script>
 
 <script type="text/x-mustache" id=cart_page_template>
+	<h2>
+		<t class=en>Shopping Bag</t>
+		<t class=ro>In Cos</t>
+	</h2>
+	<hr>
+	<div id=cart_buy_now>{{{buy_now}}}</div>
+	<div class=cart_total><b>Total:</b>
+		<span class=price>
+			<t class=en>${{{total}}}</t>
+			<t class=ro>{{{total}}} Lei</t>
+		</span>
+	</div>
+	<h2>
+		<t class=en>Saved for later ({{{buylater_count}}} items)</t>
+		<t class=ro>Pastrate ({{{buylater_count}}} produse)</t>
+	</h2>
+	<hr>
+	<div id=cart_buy_later>{{{buy_later}}}</div>
+</script>
+
+<script type="text/x-mustache" id=cart_list_template>
+	<ul class=cart_list>
 	{{#.}}
+		<li ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
+		<table><tr>
+			<td width=300 height=100>
+				<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+			</td>
+			<td>
+				<a><b>{{{bname}}}</b> {{{name}}}</a>
+				<br>
+				<span class=price>${{{price}}}</span>
+				<span class=discount>{{{discount}}}</span>
+				{{#vnames}}{{.}} {{/vnames}}
+				<br>
+				<a action=remove><t class=en>Remove</t><t class=ro>Sterge</t></span>
+				</a> |
+				{{#buylater}}<a action=move_to_cart><t class=en>Move to cart</t><t class=ro>Muta in cos</t></a>{{/buylater}}
+				{{^buylater}}<a action=buy_later><t class=en>Save for later</t><t class=ro>Pastreaza</t></a>{{/buylater}}
+				<br>
+				<br>
+			</td>
+		</tr></table>
+		</li>
 	{{/.}}
+	</ul>
 </script>
 
 <script type="text/x-mustache" id=topbar_template>
