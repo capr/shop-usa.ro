@@ -156,7 +156,9 @@ local function check_img()
 
 	if kind == 'p' then
 
-		--check(false)
+		if env == 'dev' then
+			check(false)
+		end
 
 		--check for short form and make an internal redirect.
 		local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'

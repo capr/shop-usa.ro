@@ -120,7 +120,7 @@ function update_pagenav(prod_count, cur_page, bid) {
 
 	// keyboard page navigation
 	bind_keydown('page', function(event) {
-		console.log(event.which)
+		if ($('#gallery a[imgid]').length) return // gallery uses left/right too
 		if (event.which == 39) {
 			exec_cat(g_catid, cur_page + 1, bid)
 		} else if (event.which == 37) {

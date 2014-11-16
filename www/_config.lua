@@ -16,5 +16,5 @@ function config.dev()
 	db_name = 'prestashop'
 end
 
-local env = glue.readfile('../env')
+env = glue.readfile('../env')
 config[env]()
