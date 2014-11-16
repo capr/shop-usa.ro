@@ -58,7 +58,7 @@ local t = query([[
 		al.name as vname,
 		pl.name,
 		coalesce(pa.price, p.price) as price,
-		coalesce(pa.old_price, p.old_price) as old_price,
+		pa.old_price as old_price,
 		m.name as bname,
 		i.id_image as imgid,
 		ci.buylater
