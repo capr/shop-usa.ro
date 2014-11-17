@@ -55,19 +55,6 @@ local function droptable(name)
 	pq('drop table if exists '..name..';')
 end
 
---ddl commands
-subst'table  create table if not exists'
-
---type domains
-subst'id     int unsigned'
-subst'pk     int unsigned primary key auto_increment'
-subst'name   varchar(32)'
-subst'email  varchar(128)'
-subst'pass   varchar(32)'
-subst'bool   tinyint not null'
-subst'atime  timestamp default current_timestamp'
-subst'mtime  timestamp' --on update current_timestamp
-
 local function fkname(tbl, col)
 	return string.format('fk_%s_%s', tbl, col:gsub('%s', ''):gsub(',', '_'))
 end
@@ -97,22 +84,42 @@ end
 
 ------------------------------------------------------------------------------
 
+--ddl commands
+subst'table  create table if not exists'
+
+--type domains
+subst'id     int unsigned'
+subst'pk     int unsigned primary key auto_increment'
+subst'name   varchar(32)'
+subst'email  varchar(128)'
+subst'pass   varchar(32)'
+subst'bool   tinyint not null default 0'
+subst'bool1  tinyint not null default 1'
+subst'atime  timestamp default current_timestamp'
+subst'mtime  timestamp' --on update current_timestamp
+
+--drop everything
 droptable'ordritem'
 droptable'ordr'
 droptable'cartitem'
 droptable'usr'
 
+--create everything
 ddl[[
 $table usr (
 	uid         $pk,
 	firstname   $name,
 	lastname    $name,
 	email       $email,
-	passwd      $pass,
-	active      $bool default 1,
+	emailvalid  $bool,
+	pass        $pass,
+	facebookid  $name,
+	googleid    $name,
+	twitterid   $name,
+	active      $bool1,
 	birthday    date,
-	newsletter  $bool default 0,
-	admin       $bool default 0,
+	newsletter  $bool,
+	admin       $bool,
 	note        text,
 	clientip    $name,
 	atime       $atime,
@@ -128,17 +135,9 @@ $table cartitem (
 	coid        $id, $fk(cartitem, coid, ps_product_attribute, id_product_attribute),
 	qty         $id not null default 1,
 	pos         $id,
-	buylater    $bool default 0,
+	buylater    $bool,
 	atime       $atime,
 	mtime       $mtime
-);
-]]
-
-ddl[[
-$table addr (
-	aid         $pk,
-	uid         $id not null, $fk(addr, uid, usr),
-
 );
 ]]
 
@@ -146,7 +145,15 @@ ddl[[
 $table ordr (
 	oid         $pk,
 	uid         $id, $fk(ordr, uid, usr),
-	aid         $id not null, $fk(addr, aid, addr)
+	name        $name,
+	phone       $name,
+	addr        text,
+	city        $name,
+	county      $name,
+	country     $name,
+	note        text,
+	delivery    $name,
+	payment     $name,
 	atime       $atime,
 	mtime       $mtime
 );

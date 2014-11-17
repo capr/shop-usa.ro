@@ -1,3 +1,6 @@
+.en, .ro { display:none; } /* hide all elements with a language class */
+.en:lang(en), .ro:lang(ro) { display: inline; } /* show elements that match their lang class */
+
 html, body, table, tr, td, div, img, ul, hr {
 	margin: 0;
 	padding: 0;
@@ -201,6 +204,27 @@ hr {
 	font-weight: bold;
 }
 
-.en, .ro { display:none; } /* hide all elements with a language class */
-.en:lang(en), .ro:lang(ro) { display: inline; } /* show elements that match their lang class */
+.btn {
+	display: block;
+	cursor: pointer;
+	border: 0;
+	font-weight: normal;
+	font-size: 14px;
+	padding-top: 4px;
+	padding-bottom: 2px;
+	padding-left: 1em;
+	padding-right: 1em;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
 
+.btn_google   { background-color: rgb(217, 83, 79); }
+.btn_facebook { background-color: rgb(45, 108, 162); }
+.btn_twitter  { background-color: rgb(42, 171, 210); }
+
+.btn { color: #fff; }
+.btn:visited { color: #fff; }
+.btn:hover { color: #ccc; }
+
+.fa-eye { position: relative; lefT: -24px; }
+input .inside-right { padding-right: 28px; }

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang=ro>
+<html lang=ro currency=usd>
 <head>
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
 	<link rel="stylesheet" type="text/css" href="/main.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
+	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
 	<script src="/jquery.js"></script>
 	<script src="/mustache.js"></script>
 	<script src="/util.js"></script>
@@ -15,11 +16,10 @@
 	<script src="/jquery.jqzoom.js"></script>
 	<script src="/jquery.easing.js"></script>
 	<script src="/jquery.sortable.js"></script>
-	<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 	<script src="/browse.js"></script>
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>
-	<script src="/session.js"></script>
+	<script src="/facebook.js"></script>
 	<script src="/checkout.js"></script>
 </head>
 <body>
@@ -317,8 +317,10 @@
 			<td>
 				<a><b>{{{bname}}}</b> {{{name}}}</a>
 				<br>
-				<span class=price>${{{price}}}</span>
-				<span class=discount>{{{discount}}}</span>
+				<span class=price>
+					<t class=en>${{{price}}}</t>
+					<t class=ro>{{{price}}} Lei</t>
+				</span>
 				{{#vnames}}{{.}} {{/vnames}}
 				<br>
 				<a action=remove><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
@@ -332,45 +334,93 @@
 	</ul>
 </script>
 
-<script type="text/x-mustache" id=checkout_template>
-
-	<table width=80% style="border-spacing: 10px;">
+<script type="text/x-mustache" id=login_section_template>
+	<table width=100%>
 		<tr>
-			<td width=65%>
-				<h3><t class=ro>Contul meu:</t></h3>
-				<table width=50%>
+			<td width=40%>
+				<a class="btn btn_facebook">
+					<i class="fa fa-facebook" style="width:16px; height:20px"></i>
+						<t class=en>Sign in with Facebook</t>
+						<t class=ro>Intra cu Facebook</t>
+				</a>
+				<a class="btn btn_twitter">
+					<i class="fa fa-twitter" style="width:16px; height:20px"></i>
+						<t class=en>Sign in with Twitter</t>
+						<t class=ro>Intra cu Twitter</t>
+				</a>
+				<a class="btn btn_google">
+					<i class="fa fa-google-plus" style="width:16px; height:20px"></i>
+						<t class=en>Sign in with Google</t>
+						<t class=ro>Intra cu Google</t>
+				</a>
+			</td>
+			<td width=60% style="padding-left: 10px">
+				<table width=100% style="border-spacing: 5px">
+					<tr>
+						<td><label><t class=en>Email:</t><t class=ro>Email:</t></label></td>
+						<td><input id=email type=text></input></td>
+					</tr>
+					<tr>
+						<td><label><t class=en>Password:</t><t class=ro>Parola:</t></label></td>
+						<td nowrap>
+							<input id=pass type=password></input>
+							<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
+							<t class=en><a title="See the password" class="fa fa-eye inside-right"></a></t>
+						</td>
+					</tr>
 					<tr>
 						<td>
-							<div id=fb-root>
-								<fb:login-button scope="public_profile,email" onlogin="facebook_checklogin()"></fb:login-button>
-							</div>
+						</td>
+						<td align=right>
+							<button class=orange>Login</button>
+							<button>Creaza cont</button>
 						</td>
 					</tr>
 				</table>
 			</td>
-			<td width=35%>
-			</td>
 		</tr>
+	</table>
+</script>
 
+<script type="text/x-mustache" id=account_section_template>
+	<table width=100%>
+		<tr>
+			<td><label><t class=en>Email:</t><t class=ro>Email:</t></label></td>
+			<td><input id=email type=text></input></td>
+		</tr>
+	</table>
+</script>
+
+<script type="text/x-mustache" id=checkout_cart_section_template>
+	<table width=100%>
+		{{#items}}
+		{{^buylater}}
 		<tr>
 			<td>
-				<h3><t class=en>The Products:</t><t class=ro>Produsele comandate:</t></h3>
-				<table width=50%>
-					<tr>
-						<td>
-							{{#items}}
-								<div ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
-									<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
-								</div>
-							{{/items}}
-						</td>
-					</tr>
-				</table>
-			</td>
-			<td>
+				<div ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
+					<table width=100%>
+						<tr>
+							<td width=15%>
+								<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+							</td>
+							<td>
+								<a><b>{{{bname}}}</b> {{{name}}}</a>
+								<br>
+								<span class=price>
+									<t class=en>${{{price}}}</t>
+									<t class=ro>{{{price}}} Lei</t>
+								</span>
+								{{#vnames}}{{.}} {{/vnames}}
+								<br>
+								<br>
+							</td>
+						</tr>
+					</table>
+				</div>
 			</td>
 		</tr>
-
+		{{/buylater}}
+		{{/items}}
 		<tr>
 			<td align=right>
 				<br>
@@ -385,8 +435,28 @@
 				</span>
 				<br>
 			</td>
-			<td>
+		</tr>
+	</table>
+</script>
+
+<script type="text/x-mustache" id=checkout_template>
+
+	<table width=80% style="border-spacing: 10px;">
+
+		<tr>
+			<td width=75%>
+				<h3><t class=ro>Contul meu:</t></h3>
+				<div id=account_section></div>
 			</td>
+			<td width=35%></td>
+		</tr>
+
+		<tr>
+			<td>
+				<h3><t class=en>The Products:</t><t class=ro>Produsele comandate:</t></h3>
+				<div id=cart_section></div>
+			</td>
+			<td></td>
 		</tr>
 
 		<tr>
@@ -500,8 +570,6 @@
 		</tr>
 
 	</table>
-
-	<script src="/facebook.js"></s\cript>
 </script>
 
 <script type="text/x-mustache" id=topbar_template>

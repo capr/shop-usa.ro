@@ -1,31 +1,40 @@
 
-function facebook_status_changed(response) {
-	console.log('facebook_status_changed', response)
-	if (response.status === 'connected') {
-		facebook_login_success(response)
-	} else if (response.status === 'not_authorized') {
-		facebook_login_fail(response)
-	} else {
-		facebook_login_fail(response)
-	}
+function facebook_check(success, fail) {
+	FB.getLoginStatus(function(response) {
+		if (response.status === 'connected') {
+			FB.api('/me', function(me_response) {
+				success({
+					facebookid: response.authResponse.userID,
+					email:      me_response.email,
+				})
+			})
+		} else {
+			fail()
+		}
+	})
 }
 
-// as specified in <fb:login-button onlogin="...">
-function facebook_checklogin() {
-	FB.getLoginStatus(function(response) {
-		facebook_status_changed(response)
-	})
+function facebook_login(success, fail) {
+	FB.login(function(response) {
+		if (response.authResponse) {
+			FB.api('/me', function(me_response) {
+				success({
+					facebookid: response.authResponse.userID,
+					email:      me_response.email,
+				})
+			})
+		} else {
+			fail()
+		}
+	}, {scope: 'public_profile,email'})
 }
 
 window.fbAsyncInit = function() {
 	FB.init({
-		appId      : '725102964211663',
-		cookie     : true,  // enable cookies to allow the server to access the session
-		xfbml      : true,  // parse social plugins on this page
-		version    : 'v2.1' // use version 2.1
-	})
-	FB.getLoginStatus(function(response) {
-		facebook_status_changed(response)
+		appId   : '725102964211663',
+		cookie  : true,  // enable cookies to allow the server to access the session
+		xfbml   : true,  // parse social plugins on this page
+		version : 'v2.1' // use version 2.1
 	})
 }
 
@@ -40,14 +49,3 @@ function init_facebook() {
 	}(document, 'script', 'facebook-jssdk'))
 }
 
-function facebook_login_success(response) {
-	FB.api('/me', function(response) {
-		console.log('/me', response)
-	})
-}
-
-function facebook_login_fail(response) {
-	//
-}
-
-init_facebook()
