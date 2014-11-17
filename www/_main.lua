@@ -4,7 +4,6 @@ local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
 local pp_ = require'pp'
-local cookie_ = require'resty.cookie'
 require'_session'
 require'_config'
 
@@ -73,21 +72,6 @@ end
 
 function clamp(x, min, max)
 	return math.min(math.max(x, min), max)
-end
-
-local cookie_obj
-function cookie(name, val, opt)
-	cookie_obj = cookie_obj or assert(cookie_:new())
-	if val == nil then
-		return ngx.unescape_uri(assert(cookie_obj:get(name)))
-	else
-		local t = glue.update({
-			key = name,
-			value = ngx.escape_uri(val),
-			path = '/'
-		}, opt)
-		assert(cookie_obj:set(t))
-	end
 end
 
 --reply API ------------------------------------------------------------------

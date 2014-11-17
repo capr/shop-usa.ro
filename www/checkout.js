@@ -1,5 +1,5 @@
 
-function update_checkout_page(cart) {
+function checkout_update_cart(cart) {
 
 	var total = 0
 	$.each(cart.buynow, function(i,e) { total += e.price; })
@@ -12,10 +12,35 @@ function update_checkout_page(cart) {
 		total:          total,
 	}
 
-	apply_template('#checkout_template', data, '#main')
+	apply_template('#checkout_cart_section_template', data, '#cart_section')
+}
+
+function checkout_update_account(usr) {
+
+	if (!usr.emailvalid && !usr.haspass)
+		apply_template('#login_section_template', {}, '#account_section')
+	else
+		apply_template('#account_section_template', {}, '#account_section')
+
+	$('.fa-eye').click(function() {
+		$('#pass').attr('type',
+			$('#pass').attr('type') == 'password' ? 'text' : 'password')
+	})
+
+	$('.btn_facebook').click(function() {
+		facebook_login(function(auth) {
+			post('/login.json', auth)
+		}, function() {
+			alert('Failed')
+		})
+	})
+
 }
 
 action.checkout = function() {
-	load_main('/cart.json', update_checkout_page)
+	apply_template('#checkout_template', {}, '#main')
+	load_main('/cart.json', checkout_update_cart)
+	//get('#account', '/login.json', checkout_update_account)
+	load_content('#account', '/account.json', checkout_update_account)
 }
 
