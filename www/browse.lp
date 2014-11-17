@@ -19,6 +19,8 @@
 	<script src="/browse.js"></script>
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>
+	<script src="/session.js"></script>
+	<script src="/checkout.js"></script>
 </head>
 <body>
 <table>
@@ -56,14 +58,14 @@
 				<tr>
 					<td></td>
 					<td align=right style="text-align: right;">
-						<a id=cart_icon_link>
-							<div id=cart_icon_div style="position: relative;" align=right>
+						<div id=cart_icon_div style="position: relative;" align=right>
+							<a id=cart_icon_link>
 								<img id=cart_icon>
 								<div style="float: right; position: relative; top: 11px; left: -21px;">
-									<span id=cart_item_count></span>
+									<span id=cart_icon_item_count></span>
 								</div>
-							</div>
-						</a>
+							</a>
+						</div>
 					</td>
 				</tr>
 			</table>
@@ -261,29 +263,51 @@
 
 <script type="text/x-mustache" id=cart_page_template>
 	<h2>
-		<t class=en>Shopping Bag</t>
-		<t class=ro>In Cos</t>
+		<t class=en>Shopping Bag
+			{{#buynow_count}}({{{buynow_count}}} items){{/buynow_count}}
+			{{^buynow_count}}(empty){{/buynow_count}}
+		</t>
+		<t class=ro>In Cos
+			{{#buynow_count}}({{{buynow_count}}} produse){{/buynow_count}}
+			{{^buynow_count}}(nici un produs){{/buynow_count}}
+		</t>
 	</h2>
 	<hr>
-	<div id=cart_buy_now>{{{buy_now}}}</div>
+	{{^buynow_count}}
+	<t class="gray en">Add products to your shopping bag in order to buy them.</t>
+	<t class="gray ro">Adauga produse in cos pentru a le putea cumpara.</t>
+	{{/buynow_count}}
+	<div id=cart_buynow>{{{buynow}}}</div>
 	<div class=cart_total><b>Total:</b>
 		<span class=price>
 			<t class=en>${{{total}}}</t>
 			<t class=ro>{{{total}}} Lei</t>
 		</span>
 		<br>
-		<button class=buybutton><t class=en>Buy</t><t class=ro>Comanda</t></button>
+		{{#buynow_count}}
+		<button class="buybutton orange"><t class=en>Place Order</t><t class=ro>Comanda</t></button>
+		{{/buynow_count}}
 	</div>
 	<h2>
-		<t class=en>Saved for later ({{{buylater_count}}} items)</t>
-		<t class=ro>Pastrate ({{{buylater_count}}} produse)</t>
+		<t class=en>Saved for later
+			{{#buylater_count}}({{{buylater_count}}} items){{/buylater_count}}
+			{{^buylater_count}}(empty){{/buylater_count}}
+		</t>
+		<t class=ro>Pastrate pentru mai tarziu
+			{{#buylater_count}}({{{buylater_count}}} produse){{/buylater_count}}
+			{{^buylater_count}}(nici un produs){{/buylater_count}}
+		</t>
 	</h2>
 	<hr>
-	<div id=cart_buy_later>{{{buy_later}}}</div>
+	{{^buylater_count}}
+	<t class="gray en">Drag products from your shopping bag to this area to save them for later.</t>
+	<t class="gray ro">Trage produsele pe care vrei sa le cumperi cu alta ocazie in aceasta zona.</t>
+	{{/buylater_count}}
+	<div id=cart_buylater>{{{buylater}}}</div>
 </script>
 
 <script type="text/x-mustache" id=cart_list_template>
-	<ul class=cart_list>
+	<ul class=cart_list style="min-height: 200px">
 	{{#.}}
 		<li ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
 		<table><tr>
@@ -297,17 +321,187 @@
 				<span class=discount>{{{discount}}}</span>
 				{{#vnames}}{{.}} {{/vnames}}
 				<br>
-				<a action=remove><t class=en>Remove</t><t class=ro>Sterge</t></span>
-				</a> |
+				<a action=remove><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
+				<span class="gray small">&nbsp;|&nbsp;</span>
 				{{#buylater}}<a action=move_to_cart><t class=en>Move to cart</t><t class=ro>Muta in cos</t></a>{{/buylater}}
-				{{^buylater}}<a action=buy_later><t class=en>Save for later</t><t class=ro>Pastreaza</t></a>{{/buylater}}
-				<br>
-				<br>
+				{{^buylater}}<a action=buy_later><t class=en>Save for later</t><t class=ro>Pastreaza pentru mai tarziu</t></a>{{/buylater}}
 			</td>
 		</tr></table>
 		</li>
 	{{/.}}
 	</ul>
+</script>
+
+<script type="text/x-mustache" id=checkout_template>
+
+	<table width=80% style="border-spacing: 10px;">
+		<tr>
+			<td width=65%>
+				<h3><t class=ro>Contul meu:</t></h3>
+				<table width=50%>
+					<tr>
+						<td>
+							<div id=fb-root>
+								<fb:login-button scope="public_profile,email" onlogin="facebook_checklogin()"></fb:login-button>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td width=35%>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<h3><t class=en>The Products:</t><t class=ro>Produsele comandate:</t></h3>
+				<table width=50%>
+					<tr>
+						<td>
+							{{#items}}
+								<div ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
+									<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+								</div>
+							{{/items}}
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>
+			</td>
+		</tr>
+
+		<tr>
+			<td align=right>
+				<br>
+				<br>
+				<span class=subtotal>
+					<t class=en>Subtotal:</t>
+					<t class=ro>Subtotal:</t>
+					<span class=price>
+						<t class=en>${{{total}}}</t>
+						<t class=ro>{{{total}}} Lei</t>
+					</span>
+				</span>
+				<br>
+			</td>
+			<td>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<h3><t class=en>Delivery:</t><t class=ro>Cum le livram?</t></h3>
+				<table width=100%>
+					<tr>
+						<td width=30>
+							<input type=radio name=delivery_method value=home>
+						</td>
+						<td>
+							<t class=en>Home delivery</t>
+							<t class=ro>La adresa mea, prin curier, cu plata ramburs.</t>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type=radio name=delivery_method value=office>
+						</td>
+						<td>
+							<t class=en>At your store</t>
+							<t class=ro>Le ridic personal de la sediul shop-usa.ro, cu plata cash.</t>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>
+			</td>
+		</tr>
+
+		<tr>
+			<td align=right>
+				<br>
+				<br>
+				<span class=subtotal>
+					<t class=en>Shipping cost:</t>
+					<t class=ro>Cost livrare:</t>
+					<span class=price>
+						<t class=en>${{{total}}}</t>
+						<t class=ro>{{{total}}} Lei</t>
+					</span>
+				</span>
+				<br>
+			</td>
+			<td>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<h3><t class=en>Delivery Address:</t><t class=ro>Adresa de livrare:</t></h3>
+				<table width=100%>
+					<tr>
+						<td><label><t class=en>Name:</t><t class=ro>Nume:</t></label></td>
+						<td><input id=addr_name type=text></input></td>
+					</tr>
+					<tr>
+						<td><label><t class=en>Phone:</t><t class=ro>Telefon:</t></label></td>
+						<td><input id=addr_phone type=text></input></td>
+					</tr>
+					<tr>
+						<td><label><t class=en>Address:</t><t class=ro>Adresa:</t></label></td>
+						<td><input id=addr_street type=text placeholder="Strada, Numar, Bloc, Scara, Apart., Interfon"></input></td>
+					</tr>
+					<tr>
+						<td><label><t class=en>City:</t><t class=ro>Oras:</t></label></td>
+						<td><input id=addr_city type=text placeholder=""></input></td>
+					</tr>
+					<tr>
+						<td><label><t class=en>County:</t><t class=ro>Judet/Sector:</t></label></td>
+						<td><input id=addr_county type=text placeholder=""></input></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<h3><t class=en>Other details (optional):</t><t class=ro>Alte detalii (optional):</t></h3>
+			</td>
+			<td>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<textarea id=note rows=6 placeholder="Ora preferata, detalii adresa, etc."></textarea>
+			</td>
+			<td valign=top class=gray>
+				Ne puteti lasa un mesaj sau puteti contacta direct operatorii nostri.
+			</td>
+		</tr>
+
+		<tr>
+			<td align=right>
+				<br>
+				<br>
+				<span class=subtotal>Total:
+					<span class=price>
+						<t class=en>${{{total}}}</t>
+						<t class=ro>{{{total}}} Lei</t>
+					</span>
+				</span>
+				<br>
+				<br>
+				<button class="buybutton orange"><t class=en>Place Order</t><t class=ro>Comanda</t></button>
+			</td>
+			<td>
+			</td>
+		</tr>
+
+	</table>
+
+	<script src="/facebook.js"></s\cript>
 </script>
 
 <script type="text/x-mustache" id=topbar_template>

@@ -15,52 +15,35 @@ end
 
 --session state --------------------------------------------------------------
 
-session = once(function()
+local session = once(function()
 	session_.persistent = true
 	session_.cookie.lifetime = 365 * 24 * 3600 --one year
 	return assert(session_.start())
 end)
 
-sessid = once(function()
+uid = once(function()
 	local session = session()
 	local t = session.data
-	if t.sessid then
+	if t.uid then
 		if not query1([[
-			select 1 from session where sessid = ?
-		]], t.sessid) then
-			t.sessid = nil
+			select 1 from usr where uid = ?
+		]], t.uid) then
+			t.uid = nil
 		end
 	end
-	if not t.sessid then
-		t.sessid = iquery([[
-			insert into session (clientip) values (?)
+	if not t.uid then
+		t.uid = iquery([[
+			insert into usr (clientip) values (?)
 		]], ngx.var.remote_addr)
 		session:save()
 	end
-	return t.sessid
-end)
-
-uid = once(function()
-	return query1('select uid from session where sessid = ?', sessid())
-end)
-
-cartid = once(function()
-	local cartid = query1(
-		'select cartid from cart where uid = ? or sessid = ?', uid(), sessid())
-	if not cartid then
-		cartid = iquery(
-			'insert into cart (uid, sessid) values (?, ?)', uid(), sessid())
-	end
-	return cartid
+	return t.uid
 end)
 
 admin = once(function()
 	return query1([[
-		select u.admin from usr u
-		inner join session s on u.uid = s.uid
-		where s.sessid = ?
-	]], sessid()) == 1
+		select u.admin from usr u where u.uid = ?
+	]], uid()) == 1
 end)
 
 editmode = admin
-

@@ -1,21 +1,4 @@
 
-// keyboard navigation -------------------------------------------------------
-
-var keydown_events = {} // {id: handler}
-
-function bind_keydown(id, func) {
-	keydown_events[id] = func
-}
-
-
-function init_keydown() {
-	$(document).keydown(function(event) {
-		$.each(keydown_events, function(id, func) {
-			func(event)
-		})
-	})
-}
-
 // prods ---------------------------------------------------------------------
 
 function format_prods(prods) {

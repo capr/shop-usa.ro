@@ -33,8 +33,13 @@ end
 function quote(v)
 	if v == nil then
 		return 'null'
+	elseif v == true then
+		return 1
+	elseif v == false then
+		return 0
+	else
+		return ngx.quote_sql_str(tostring(v))
 	end
-	return ngx.quote_sql_str(tostring(v))
 end
 
 local tran = {}

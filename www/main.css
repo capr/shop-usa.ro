@@ -16,10 +16,16 @@ table, tr, td {
    border-collapse: separate;
 }
 
-input, select {
+input, select, textarea {
 	box-sizing: border-box;
 	border: 1px solid #ccc;
 	width: 100%;
+}
+
+input[type=radio] {
+	box-sizing: border-box;
+	border: 0;
+	width: auto;
 }
 
 a {
@@ -149,7 +155,7 @@ img.disabled {
 	opacity: 0.2;
 }
 
-#cart_item_count {
+#cart_icon_item_count {
 	color: #fff;
 	font-weight: bold;
 	font-size: 12px;
@@ -188,6 +194,11 @@ hr {
 	border-top: 1px solid #ccc;
 	margin-top: 20px;
 	margin-bottom: 20px;
+}
+
+.subtotal {
+	font-size: 18px;
+	font-weight: bold;
 }
 
 .en, .ro { display:none; } /* hide all elements with a language class */

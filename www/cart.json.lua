@@ -3,10 +3,10 @@ local action = ...
 
 local function out_summary()
 	local count = query1([[
-		select count(1) from cartitem where cartid = ? and buylater = 0
-	]], cartid())
+		select count(1) from cartitem where uid = ? and buylater = 0
+	]], uid())
 	out_json({
-		cartid = cartid(),
+		uid = uid(),
 		count = tonumber(count),
 	})
 end
@@ -18,14 +18,13 @@ end
 
 if POST then
 	local data = json(POST.data)
-	check(data.cartid == cartid())
 	if action == 'add' then
 		query([[
 			insert into cartitem
-				(cartid, pid, coid, qty, pos, buylater)
+				(uid, pid, coid, pos, buylater)
 			values
-				(?, ?, ?, 1, ?, ?)
-		]], cartid(), data.pid, data.coid, data.pos or 0, data.buylater or 0)
+				(?, ?, ?, ?, ?)
+		]], uid(), data.pid, data.coid, data.pos or 0, data.buylater or 0)
 		out_summary()
 		return
 	elseif action == 'reorder' then
@@ -33,24 +32,24 @@ if POST then
 			query([[
 				update cartitem
 				set pos = ?, buylater = ?
-				where ciid = ? and cartid = ?
-			]], i, data.buylater[i] and 1 or 0, ciid, cartid())
+				where ciid = ? and uid = ?
+			]], i, data.buylater[i] and 1 or 0, ciid, uid())
 		end
 	elseif action == 'remove' then
-		query('delete from cartitem where ciid = ? and cartid = ?',
-			data.ciid, cartid())
+		query('delete from cartitem where ciid = ? and uid = ?',
+			data.ciid, uid())
 	elseif action == 'move_to_cart' then
-		query('update cartitem set buylater = 0 where ciid = ? and cartid = ?',
-			data.ciid, cartid())
+		query('update cartitem set buylater = 0 where ciid = ? and uid = ?',
+			data.ciid, uid())
 	elseif action == 'buy_later' then
-		query('update cartitem set buylater = 1 where ciid = ? and cartid = ?',
-			data.ciid, cartid())
+		query('update cartitem set buylater = 1 where ciid = ? and uid = ?',
+			data.ciid, uid())
 	end
 end
 
 local t = query([[
 	select
-		ci.cartid,
+		ci.uid,
 		ci.ciid,
 		ci.coid,
 		p.id_product as pid,
@@ -83,19 +82,19 @@ local t = query([[
 	left join ps_image i
 		on i.id_image = pai.id_image
 	where
-		ci.cartid = ?
+		ci.uid = ?
 		and p.active = 1
 	order by
 		ci.buylater,
 		ci.pos, ci.atime,
 		a.position, a.id_attribute,
 		i.position, i.id_image
-]], cartid())
+]], uid())
 
 local cjson = require'cjson'
-local cart = {cartid = cartid(), buy_now = {}, buy_later = {}}
+local cart = {uid = uid(), buynow = {}, buylater = {}}
 for i,grp in groupby(t, 'buylater') do
-	local items = grp[1].buylater == 1 and cart.buy_later or cart.buy_now
+	local items = grp[1].buylater == 1 and cart.buylater or cart.buynow
 	for i,ci in groupby(grp, 'ciid') do
 		local t = ci[1]
 		local combi = {

@@ -34,6 +34,8 @@ end
 
 --ddl vocabulary -------------------------------------------------------------
 
+local nodrop --= true
+
 local function constable(name)
 	return query1([[
 		select c.table_name from information_schema.table_constraints c
@@ -42,12 +44,14 @@ local function constable(name)
 end
 
 local function dropfk(name)
+	if nodrop then return end
 	local tbl = constable(name)
 	if not tbl then return end
 	pq('alter table '..tbl..' drop foreign key '..name..';')
 end
 
 local function droptable(name)
+	if nodrop then return end
 	pq('drop table if exists '..name..';')
 end
 
@@ -64,14 +68,18 @@ subst'bool   tinyint not null'
 subst'atime  timestamp default current_timestamp'
 subst'mtime  timestamp' --on update current_timestamp
 
+local function fkname(tbl, col)
+	return string.format('fk_%s_%s', tbl, col:gsub('%s', ''):gsub(',', '_'))
+end
+
 function macro.fk(tbl, col, ftbl, fcol, ondelete, onupdate)
 	ondelete = ondelete or 'cascade'
 	onupdate = onupdate or 'restrict'
 	local a1 = ondelete ~= 'restrict' and ' on delete '..ondelete or ''
 	local a2 = onupdate ~= 'restrict' and ' on update '..onupdate or ''
 	return string.format(
-		'constraint fk_%s_%s foreign key (%s) references %s (%s)%s%s',
-		tbl, col:gsub('%s', ''):gsub(',', '_'), col, ftbl, fcol or col, a1, a2)
+		'constraint %s foreign key (%s) references %s (%s)%s%s',
+		fkname(tbl, col), col, ftbl, fcol or col, a1, a2)
 end
 
 function macro.uk(tbl, col)
@@ -80,71 +88,76 @@ function macro.uk(tbl, col)
 		tbl, col:gsub('%s', ''):gsub(',', '_'), col)
 end
 
-local function fk(tbl, ...)
+local function fk(tbl, col, ...)
+	if constable(fkname(tbl, col)) then return end
 	local sql = string.format('alter table %s add ', tbl)..
-		macro.fk(tbl, ...)..';'
+		macro.fk(tbl, col, ...)..';'
 	pq(sql)
 end
 
 ------------------------------------------------------------------------------
 
-dropfk'fk_session_cartid'
-dropfk'fk_usr_cartid'
-
+droptable'ordritem'
+droptable'ordr'
 droptable'cartitem'
-droptable'cart'
-droptable'session'
 droptable'usr'
 
 ddl[[
 $table usr (
 	uid         $pk,
-	firstname   $name not null,
-	lastname    $name not null,
-	email       $email not null,
-	passwd      $pass not null,
-	active      $bool,
+	firstname   $name,
+	lastname    $name,
+	email       $email,
+	passwd      $pass,
+	active      $bool default 1,
 	birthday    date,
-	newsletter  $bool,
-	admin       $bool,
+	newsletter  $bool default 0,
+	admin       $bool default 0,
 	note        text,
-	cartid      $id,
+	clientip    $name,
 	atime       $atime,
 	mtime       $mtime
 );
 ]]
-
-ddl[[
-$table session (
-	sessid      $pk,
-	uid         $id, $fk(session, uid, usr),
-	clientip    varchar(32),
-	cartid      $id,
-	atime       $atime,
-	mtime       $mtime
-);
-]]
-
-ddl[[
-$table cart (
-	cartid      $pk,
-	uid         $id, $fk(cart, uid, usr),
-	sessid      $id, $fk(cart, sessid, session)
-);
-]]
-
-fk('session', 'cartid', 'cart')
-fk('usr', 'cartid', 'cart')
 
 ddl[[
 $table cartitem (
 	ciid        $pk,
-	cartid      $id not null, $fk(cartitem, cartid, cart),
+	uid         $id not null, $fk(cartitem, uid, usr),
 	pid         $id not null, $fk(cartitem, pid, ps_product, id_product),
 	coid        $id, $fk(cartitem, coid, ps_product_attribute, id_product_attribute),
-	qty         $id not null,
+	qty         $id not null default 1,
 	pos         $id,
-	buylater    $bool,
+	buylater    $bool default 0,
+	atime       $atime,
+	mtime       $mtime
+);
+]]
+
+ddl[[
+$table addr (
+	aid         $pk,
+	uid         $id not null, $fk(addr, uid, usr),
+
+);
+]]
+
+ddl[[
+$table ordr (
+	oid         $pk,
+	uid         $id, $fk(ordr, uid, usr),
+	aid         $id not null, $fk(addr, aid, addr)
+	atime       $atime,
+	mtime       $mtime
+);
+]]
+
+ddl[[
+$table ordritem (
+	oiid        $pk,
+	oid         $id not null, $fk(ordritem, oid, ordr),
+	coid        $id not null, $fk(ordritem, coid, ps_product_attribute, id_product_attribute),
+	qty         $id not null default 1,
 	atime       $atime,
 	mtime       $mtime
 );
