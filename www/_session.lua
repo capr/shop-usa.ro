@@ -17,6 +17,7 @@ end
 
 session = once(function()
 	session_.persistent = true
+	session_.cookie.secure = false
 	session_.check.ssi = false --ssi will change after browser closes
 	session_.check.ua = false  --user could upgrade the browser
 	session_.cookie.lifetime = 2 * 365 * 24 * 3600 --2 years
