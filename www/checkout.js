@@ -15,12 +15,8 @@ function checkout_update_cart(cart) {
 	apply_template('#checkout_cart_section_template', data, '#cart_section')
 }
 
-function checkout_update_account(usr) {
-
-	if (!usr.emailvalid && !usr.haspass)
-		apply_template('#login_section_template', {}, '#account_section')
-	else
-		apply_template('#account_section_template', {}, '#account_section')
+function create_login_section(dst_id) {
+	apply_template('#login_section_template', {}, dst_id)
 
 	$('.fa-eye').click(function() {
 		$('#pass').attr('type',
@@ -34,9 +30,17 @@ function checkout_update_account(usr) {
 			alert('Failed')
 		})
 	})
+}
+
+function checkout_update_account(usr) {
+
+	if (!usr.emailvalid && !usr.haspass)
+		create_login_section('#account_section')
+	else
+		apply_template('#account_section_template', {}, '#account_section')
 
 	$('#relogin').click(function() {
-		apply_template('#login_section_template', {}, '#account_section')
+		create_login_section('#account_section')
 	})
 
 }
