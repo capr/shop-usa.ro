@@ -385,11 +385,20 @@
 <script type="text/x-mustache" id=account_section_template>
 	<table width=100%>
 		<tr>
-			<td><label><t class=en>Email:</t><t class=ro>Email:</t></label></td>
-			<td><input id=email type=text></input></td>
+			<td>Email:</td>
+			<td>{{email}}</td>
 		</tr>
 		<tr>
-			<a id=relogin>Different user?</a>
+			<td><t class=en>Nume:</t><t class=ro>Nume:</t></td>
+			<td>{{firstname}} {{lastname}}</td>
+		</tr>
+		<tr>
+			<br>
+			<br>
+			<a id=relogin class=gray>
+				<t class=en>Not {{firstname}} {{lastname}}?</t>
+				<t class=ro>Nu esti {{firstname}} {{lastname}}?</t>
+			</a>
 		</tr>
 	</table>
 </script>
