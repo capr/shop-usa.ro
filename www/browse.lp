@@ -284,6 +284,7 @@
 			<t class=ro>{{{total}}} Lei</t>
 		</span>
 		<br>
+		<br>
 		{{#buynow_count}}
 		<button class="buybutton orange"><t class=en>Place Order</t><t class=ro>Comanda</t></button>
 		{{/buynow_count}}
@@ -385,8 +386,13 @@
 <script type="text/x-mustache" id=account_section_template>
 	<table width=100%>
 		<tr>
-			<td>Email:</td>
+			<td width=30%>Email:</td>
 			<td>{{email}}</td>
+			<td rowspan=2>
+			{{#facebookid}}
+			<img src="http://graph.facebook.com/{{facebookid}}/picture">
+			{{/facebookid}}
+			</td>
 		</tr>
 		<tr>
 			<td>

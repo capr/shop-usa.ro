@@ -5,7 +5,8 @@ local t = query1([[
 		u.lastname,
 		u.email,
 		u.emailvalid,
-		u.pass is not null as haspass
+		u.pass is not null as haspass,
+		u.facebookid
 	from
 		usr u
 	where
