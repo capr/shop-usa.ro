@@ -389,16 +389,22 @@
 			<td>{{email}}</td>
 		</tr>
 		<tr>
-			<td><t class=en>Nume:</t><t class=ro>Nume:</t></td>
+			<td>
+				<t class=en>Name:</t>
+				<t class=ro>Nume:</t>
+			</td>
 			<td>{{firstname}} {{lastname}}</td>
 		</tr>
 		<tr>
-			<br>
-			<br>
-			<a id=relogin class=gray>
-				<t class=en>Not {{firstname}} {{lastname}}?</t>
-				<t class=ro>Nu esti {{firstname}} {{lastname}}?</t>
-			</a>
+			<td>
+				<br>
+				<br>
+				<a id=relogin class=gray>
+					<t class=en>Not {{firstname}} {{lastname}}?</t>
+					<t class=ro>Nu esti {{firstname}} {{lastname}}?</t>
+				</a>
+			</td>
+			<td></td>
 		</tr>
 	</table>
 </script>
