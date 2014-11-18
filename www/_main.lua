@@ -142,7 +142,7 @@ local function check_domain()
 	if method ~= 'GET' then return end
 	ngx.redirect(
 		(always_schema or schema)..'://'..(always_domain or domain)
-		.. ngx.var.uri .. ngx.var.args, ngx.HTTP_MOVED_PERMANENTLY)
+		.. ngx.var.uri .. (ngx.var.query_string or ''), ngx.HTTP_MOVED_PERMANENTLY)
 end
 
 local function check_img()
