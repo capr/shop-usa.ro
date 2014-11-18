@@ -56,7 +56,7 @@ local function transfer_user(old_uid, new_uid)
 end
 
 local function set_valid_email(uid, email)
-	query('update usr set email = ?, emailvalid = 1 where uid = ?', uid, email)
+	query('update usr set email = ?, emailvalid = 1 where uid = ?', email, uid)
 end
 
 local function set_email_pass(uid, email, pass)

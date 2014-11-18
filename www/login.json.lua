@@ -1,4 +1,5 @@
 
 check(POST)
 local auth = json(POST.data)
-login(auth)
+local uid = login(auth)
+pp(query1('select * from usr where uid = ?', uid))
