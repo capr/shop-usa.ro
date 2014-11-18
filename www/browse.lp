@@ -398,7 +398,6 @@
 		<tr>
 			<td>
 				<br>
-				<br>
 				<a id=relogin class=gray>
 					<t class=en>Not {{firstname}} {{lastname}}?</t>
 					<t class=ro>Nu esti {{firstname}} {{lastname}}?</t>
