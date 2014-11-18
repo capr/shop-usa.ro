@@ -64,15 +64,6 @@ local function set_email_pass(uid, email, pass)
 		email, pass, uid)
 end
 
-local function update_user(uid, auth)
-	if auth.emailvalid then
-		set_valid_email(uid, auth.email)
-	end
-	if auth.emailpass then
-		set_email_pass(uid, auth.email, auth.pass)
-	end
-end
-
 local function is_anonymous(uid)
 	return query1([[
 		select 1 from usr where
@@ -81,51 +72,30 @@ local function is_anonymous(uid)
 end
 
 local function save_user(uid)
+	local session = session()
 	session.data.uid = uid
 	session:save()
 end
 
 function login(auth)
-	assert(auth.type == 'pass')
-	local uid = auth.pass(auth)
-	if not uid then return end
-	if suid and uid ~= suid and is_anonymous(suid) then
-		transfer_user(suid, uid)
-	end
-	if uid ~= suid then
-		save_user(uid)
-	end
-end
-
-function create_account(auth)
-	assert(auth.type == 'pass')
-	local uid = auth.pass(auth)
+	auth = auth or {}
+	local uid = authenticate(auth)
+	local suid = authenticate()
 	if not uid then
-		uid = suid or (auth.create and create_user())
-	elseif suid and uid ~= suid and is_anonymous(suid) then
-		transfer_user(suid, uid)
-	end
-	if uid then
-		update_user(uid, auth)
-		if uid ~= suid then
-			save_user(uid)
+		if auth.login_only then return end
+		uid = suid or create_user()
+	else
+		if auth.create_only then return end
+		if suid and uid ~= suid and is_anonymous(suid) then
+			transfer_user(suid, uid)
 		end
 	end
-	local uid = create_account()
-	set_email_pass(uid, auth.email, auth.pass)
-	save_user(uid)
-end
-
-function login(auth)
-	local uid = authenticate(auth)
-	local suid = auth.session()
-	if not uid then
-		uid = suid or (auth.create and create_user())
-	elseif suid and uid ~= suid and is_anonymous(suid) then
-		transfer_user(suid, uid)
-	end
 	if uid then
-		update_user(uid, auth)
+		if auth.type == 'pass' and auth.create_only then
+			set_email_pass(uid, auth.email, auth.pass)
+		else
+			set_valid_email(uid, auth.email)
+		end
 		if uid ~= suid then
 			save_user(uid)
 		end
