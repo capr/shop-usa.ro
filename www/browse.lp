@@ -402,14 +402,13 @@
 			<td>{{firstname}} {{lastname}}</td>
 		</tr>
 		<tr>
-			<td>
+			<td colspan=3>
 				<br>
 				<a id=relogin class=gray>
 					<t class=en>Not {{firstname}} {{lastname}}?</t>
 					<t class=ro>Nu esti {{firstname}} {{lastname}}?</t>
 				</a>
 			</td>
-			<td></td>
 		</tr>
 	</table>
 </script>
