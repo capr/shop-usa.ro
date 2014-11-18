@@ -37,7 +37,7 @@ function checkout_update_account(usr) {
 
 	$('#relogin').click(function() {
 		apply_template('#login_section_template', {}, '#account_section')
-	}
+	})
 
 }
 
