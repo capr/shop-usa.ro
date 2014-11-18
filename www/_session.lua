@@ -24,26 +24,24 @@ session = once(function()
 	return assert(session_.start())
 end)
 
-local function authenticate(auth)
-	return query1([[
-		select
-			u.uid
-		from
-			usr u
-		where
-			u.pass = ?
-			or u.facebookid = ?
-			or u.googleid = ?
-			or u.twitterid = ?
-		]],
-		auth.pass,
-		auth.facebookid,
-		auth.googleid,
-		auth.twitterid)
+local auth = {}
+
+function auth.session()
+	local uid = session().data.uid
+	return query1('select 1 from usr where uid = ?', uid) == 1 and uid
 end
 
-local function validate_uid(uid)
-	return query1('select uid from usr where uid = ?', uid)
+function auth.pass(auth)
+	return query1('select uid from usr where email = ? and pass = ?',
+		auth.email, auth.pass)
+end
+
+function auth.facebook(auth)
+	return query1('select uid from usr where facebookid = ?', auth.facebookid)
+end
+
+function authenticate(a)
+	return auth[a and a.type or 'session'](a)
 end
 
 local function create_user()
@@ -52,34 +50,86 @@ local function create_user()
 	]], ngx.var.remote_addr)
 end
 
-local function anonymous(uid)
+local function transfer_user(old_uid, new_uid)
+	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
+	query('delete from usr where uid = ?', old_uid)
+end
+
+local function set_valid_email(uid, email)
+	query('update usr set email = ?, emailvalid = 1 where uid = ?', uid, email)
+end
+
+local function set_email_pass(uid, email, pass)
+	query('update usr set email = ?, emailvalid = 0, pass = ? where uid = ?',
+		email, pass, uid)
+end
+
+local function update_user(uid, auth)
+	if auth.emailvalid then
+		set_valid_email(uid, auth.email)
+	end
+	if auth.emailpass then
+		set_email_pass(uid, auth.email, auth.pass)
+	end
+end
+
+local function is_anonymous(uid)
 	return query1([[
 		select 1 from usr where
 			pass is null and not emailvalid and uid = ?
 	]], uid) == 1
 end
 
-local function transfer_user(old_uid, new_uid)
-	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
-	query('delete from usr where uid = ?', old_uid)
+local function save_user(uid)
+	session.data.uid = uid
+	session:save()
 end
 
 function login(auth)
-	local session = session()
-	local uid =
-		auth and login(auth)
-		or validate_uid(session.data.uid)
-		or create_user()
-
-	--save the new uid if different from the current one
-	if uid ~= session.data.uid then
-		if session.data.uid and anonymous(session.data.uid) then
-			transfer_user(session.data.uid, uid)
-		end
-		session.data.uid = uid
-		session:save()
+	assert(auth.type == 'pass')
+	local uid = auth.pass(auth)
+	if not uid then return end
+	if suid and uid ~= suid and is_anonymous(suid) then
+		transfer_user(suid, uid)
 	end
+	if uid ~= suid then
+		save_user(uid)
+	end
+end
 
+function create_account(auth)
+	assert(auth.type == 'pass')
+	local uid = auth.pass(auth)
+	if not uid then
+		uid = suid or (auth.create and create_user())
+	elseif suid and uid ~= suid and is_anonymous(suid) then
+		transfer_user(suid, uid)
+	end
+	if uid then
+		update_user(uid, auth)
+		if uid ~= suid then
+			save_user(uid)
+		end
+	end
+	local uid = create_account()
+	set_email_pass(uid, auth.email, auth.pass)
+	save_user(uid)
+end
+
+function login(auth)
+	local uid = authenticate(auth)
+	local suid = auth.session()
+	if not uid then
+		uid = suid or (auth.create and create_user())
+	elseif suid and uid ~= suid and is_anonymous(suid) then
+		transfer_user(suid, uid)
+	end
+	if uid then
+		update_user(uid, auth)
+		if uid ~= suid then
+			save_user(uid)
+		end
+	end
 	return uid
 end
 
