@@ -16,7 +16,7 @@ end
 --session state --------------------------------------------------------------
 
 session = once(function()
-	session_.persistent = true
+	session_.cookie.persistent = true
 	session_.cookie.secure = false
 	session_.check.ssi = false --ssi will change after browser closes
 	session_.check.ua = false  --user could upgrade the browser
