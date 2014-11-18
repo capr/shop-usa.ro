@@ -135,7 +135,7 @@ end
 
 local function check_domain()
 	if not always_domain or not always_schema then return end
-	local domain = ngx.req.header.host
+	local domain = ngx.header.host
 	local schema = ngx_var.ssl_session_id and 'https' or 'http'
 	if domain == always_domain and schema == always_schema then return end
 	local method = ngx.req.get_method()
