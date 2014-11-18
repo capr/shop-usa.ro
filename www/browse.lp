@@ -401,7 +401,7 @@
 					<table width=100%>
 						<tr>
 							<td width=15%>
-								<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+								<a><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 							</td>
 							<td>
 								<a><b>{{{bname}}}</b> {{{name}}}</a>

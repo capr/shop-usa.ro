@@ -28,7 +28,7 @@ local auth = {}
 
 function auth.session()
 	local uid = session().data.uid
-	return query1('select 1 from usr where uid = ?', uid) == 1 and uid
+	return query1('select 1 from usr where uid = ?', uid) and uid or nil
 end
 
 function auth.pass(auth)
@@ -59,7 +59,7 @@ local function transfer_cart(old_uid, new_uid)
 end
 
 local function set_valid_email(uid, email)
-	query('update usr set email = ?, emailvalid = 1 where uid = ?', uid, email)
+	query('update usr set email = ?, emailvalid = 1 where uid = ?', email, uid)
 end
 
 local function set_email_pass(uid, email, pass)
@@ -71,7 +71,7 @@ local function is_anonymous(uid)
 	return query1([[
 		select 1 from usr where
 			pass is null and not emailvalid and uid = ?
-	]], uid) == 1
+	]], uid) ~= nil
 end
 
 local function save_user(uid)
@@ -115,8 +115,8 @@ uid = once(login)
 
 admin = once(function()
 	return query1([[
-		select u.admin from usr u where u.uid = ?
-	]], uid()) == 1
+		select 1 from usr u where u.uid = ? and u.admin = 1
+	]], uid()) ~= nil
 end)
 
 editmode = admin
