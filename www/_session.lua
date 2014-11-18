@@ -121,9 +121,9 @@ local function set_email_pass(uid, email, pass)
 end
 
 function auth.pass(auth)
-	if auth.action = 'login' then
+	if auth.action == 'login' then
 		return pass_uid(auth.email, auth.pass)
-	elseif auth.action = 'create' then
+	elseif auth.action == 'create' then
 		if not email_exists(auth.email) then
 			local uid = anonymous_uid(session_uid()) or create_user()
 			set_email_pass(uid, auth.email, auth.pass)
