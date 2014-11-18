@@ -26,7 +26,7 @@ function create_login_section(dst_id) {
 	$('.btn_facebook').click(function() {
 		facebook_login(function(auth) {
 			post('/login.json', auth, function(usr) {
-				checkout_update_account()
+				checkout_update_account(usr)
 			})
 		}, function() {
 			alert('Failed')
