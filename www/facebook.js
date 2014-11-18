@@ -1,32 +1,15 @@
 
-function facebook_check(success, fail) {
-	FB.getLoginStatus(function(response) {
-		if (response.status === 'connected') {
-			FB.api('/me', function(me_response) {
-				console.log(response)
-				console.log(me_response)
-				success({
-					type:       'facebook',
-					facebookid: response.authResponse.userID,
-					email:      me_response.email,
-				})
-			})
-		} else {
-			fail()
-		}
-	})
-}
-
 function facebook_login(success, fail) {
 	FB.login(function(response) {
 		if (response.authResponse) {
 			FB.api('/me', function(me_response) {
-				console.log(response)
-				console.log(me_response)
 				success({
 					type:       'facebook',
 					facebookid: response.authResponse.userID,
 					email:      me_response.email,
+					firstname:  me_response.first_name,
+					lastname:   me_response.last_name,
+					gender:     me_response.gender,
 				})
 			})
 		} else {

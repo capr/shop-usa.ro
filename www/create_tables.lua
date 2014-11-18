@@ -108,8 +108,6 @@ droptable'usr'
 ddl[[
 $table usr (
 	uid         $pk,
-	firstname   $name,
-	lastname    $name,
 	email       $email,
 	emailvalid  $bool,
 	pass        $pass,
@@ -117,6 +115,9 @@ $table usr (
 	googleid    $name,
 	twitterid   $name,
 	active      $bool1,
+	firstname   $name,
+	lastname    $name,
+	gender      $name,
 	birthday    date,
 	newsletter  $bool,
 	admin       $bool,

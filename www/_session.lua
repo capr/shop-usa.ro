@@ -58,13 +58,20 @@ local function transfer_cart(old_uid, new_uid)
 	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
 end
 
-local function set_valid_email(uid, email)
-	query('update usr set email = ?, emailvalid = 1 where uid = ?', email, uid)
+local function update_email_pass(uid, auth)
+	query('update usr set email = ?, emailvalid = 0, pass = ? where uid = ?',
+		auth.email, auth.pass, uid)
 end
 
-local function set_email_pass(uid, email, pass)
-	query('update usr set email = ?, emailvalid = 0, pass = ? where uid = ?',
-		email, pass, uid)
+local function update_user_info(uid, auth)
+	query([[
+		update usr set
+			email = ?, emailvalid = 1,
+			firstname = ?,
+			lastname = ?,
+			gender = ?
+		where uid = ?
+	]], auth.email, auth.firstname, auth.lastname, auth.gender, uid)
 end
 
 local function is_anonymous(uid)
@@ -100,9 +107,9 @@ function login(auth)
 	end
 	if uid then
 		if auth.type == 'pass' and auth.create_only then
-			set_email_pass(uid, auth.email, auth.pass)
+			update_email_pass(uid, auth)
 		else
-			set_valid_email(uid, auth.email)
+			update_user_info(uid, auth)
 		end
 		if uid ~= suid then
 			save_user(uid)
