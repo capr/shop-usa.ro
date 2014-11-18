@@ -29,10 +29,10 @@ function create_login_section(dst_id) {
 				if (status.success)
 					action.checkout()
 				else
-					alert('Login failed')
+					alert(S('login_failed', 'Login Failed'))
 			})
 		}, function() {
-			alert('Failed')
+			alert(S('login_failed', 'Login Failed'))
 		})
 	})
 }

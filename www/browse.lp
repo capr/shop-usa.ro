@@ -370,9 +370,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>
-						</td>
-						<td align=right>
+						<td colspan=2 align=right>
 							<button class=orange>Login</button>
 							<button>Creaza cont</button>
 						</td>
