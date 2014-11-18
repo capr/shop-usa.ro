@@ -42,7 +42,7 @@ function checkout_update_account(usr) {
 	if (!usr.emailvalid == 1 && !usr.haspass)
 		create_login_section('#account_section')
 	else
-		apply_template('#account_section_template', {}, '#account_section')
+		apply_template('#account_section_template', usr, '#account_section')
 
 	$('#relogin').click(function() {
 		create_login_section('#account_section')
