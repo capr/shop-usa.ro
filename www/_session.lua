@@ -107,7 +107,7 @@ uid = once(login)
 
 admin = once(function()
 	return query1([[
-		select 1 from usr u where u.uid = ? and u.admin == 1
+		select 1 from usr u where u.uid = ? and u.admin = 1
 	]], uid()) ~= nil
 end)
 
