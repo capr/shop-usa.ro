@@ -3,6 +3,8 @@ function facebook_check(success, fail) {
 	FB.getLoginStatus(function(response) {
 		if (response.status === 'connected') {
 			FB.api('/me', function(me_response) {
+				console.login(response)
+				console.log(me_response)
 				success({
 					type:       'facebook',
 					facebookid: response.authResponse.userID,
