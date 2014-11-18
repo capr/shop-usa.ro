@@ -388,6 +388,9 @@
 			<td><label><t class=en>Email:</t><t class=ro>Email:</t></label></td>
 			<td><input id=email type=text></input></td>
 		</tr>
+		<tr>
+			<a id=relogin>Different user?</a>
+		</tr>
 	</table>
 </script>
 
