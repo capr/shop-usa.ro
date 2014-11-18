@@ -58,21 +58,30 @@ local function transfer_cart(old_uid, new_uid)
 	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
 end
 
-local function update_email_pass(uid, auth)
+local update = {}
+
+function update.pass(uid, auth)
+	if not auth.create_only then return end
 	query('update usr set email = ?, emailvalid = 0, pass = ? where uid = ?',
 		auth.email, auth.pass, uid)
 end
 
-local function update_user_info(uid, auth)
+function update.facebook(uid, auth)
 	query([[
 		update usr set
 			email = ?, emailvalid = 1,
+			facebookid = ?,
 			firstname = ?,
 			lastname = ?,
 			gender = ?
 		where uid = ?
-	]], auth.email, auth.firstname, auth.lastname, auth.gender, uid)
-	ngx.say('user info updated')
+	]], auth.email, auth.facebookid,
+		auth.firstname, auth.lastname, auth.gender, uid)
+end
+
+local function update_user(uid, auth)
+	local update = update[auth.type]
+	if update then update(uid, auth) end
 end
 
 local function is_anonymous(uid)
@@ -89,7 +98,7 @@ local function save_user(uid)
 end
 
 function login(auth)
-	auth = auth or {}
+	auth = auth or {type = 'session'}
 	local uid = authenticate(auth)
 	local suid = authenticate()
 	if not uid then
@@ -107,11 +116,7 @@ function login(auth)
 		end
 	end
 	if uid then
-		if auth.type == 'pass' and auth.create_only then
-			update_email_pass(uid, auth)
-		else
-			update_user_info(uid, auth)
-		end
+		update_user(uid, auth)
 		if uid ~= suid then
 			save_user(uid)
 		end
