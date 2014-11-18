@@ -4,6 +4,7 @@ function facebook_check(success, fail) {
 		if (response.status === 'connected') {
 			FB.api('/me', function(me_response) {
 				success({
+					type:       'facebook',
 					facebookid: response.authResponse.userID,
 					email:      me_response.email,
 				})
@@ -19,6 +20,7 @@ function facebook_login(success, fail) {
 		if (response.authResponse) {
 			FB.api('/me', function(me_response) {
 				success({
+					type:       'facebook',
 					facebookid: response.authResponse.userID,
 					email:      me_response.email,
 				})

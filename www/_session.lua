@@ -50,9 +50,12 @@ local function create_user()
 	]], ngx.var.remote_addr)
 end
 
-local function transfer_user(old_uid, new_uid)
+local function delete_user(uid)
+	query('delete from usr where uid = ?', uid)
+end
+
+local function transfer_cart(old_uid, new_uid)
 	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
-	query('delete from usr where uid = ?', old_uid)
 end
 
 local function set_valid_email(uid, email)
@@ -86,8 +89,13 @@ function login(auth)
 		uid = suid or create_user()
 	else
 		if auth.create_only then return end
-		if suid and uid ~= suid and is_anonymous(suid) then
-			transfer_user(suid, uid)
+		if suid and uid ~= suid then
+			if auth.transfer_cart then
+				transfer_cart(suid, uid)
+			end
+			if is_anonymous(suid) then
+				delete_user(suid)
+			end
 		end
 	end
 	if uid then
