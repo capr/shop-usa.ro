@@ -72,6 +72,7 @@ local function update_user_info(uid, auth)
 			gender = ?
 		where uid = ?
 	]], auth.email, auth.firstname, auth.lastname, auth.gender, uid)
+	ngx.say('user info updated')
 end
 
 local function is_anonymous(uid)
