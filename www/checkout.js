@@ -36,7 +36,7 @@ function create_login_section(dst_id) {
 
 function checkout_update_account(usr) {
 
-	if (!usr.emailvalid == 1, && !usr.haspass)
+	if (!usr.emailvalid == 1 && !usr.haspass)
 		create_login_section('#account_section')
 	else
 		apply_template('#account_section_template', {}, '#account_section')
