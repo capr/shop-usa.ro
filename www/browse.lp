@@ -388,7 +388,7 @@
 		<tr>
 			<td width=30%>Email:</td>
 			<td>{{email}}</td>
-			<td rowspan=2>
+			<td rowspan=2 align=right>
 			{{#facebookid}}
 			<img src="http://graph.facebook.com/{{facebookid}}/picture">
 			{{/facebookid}}
