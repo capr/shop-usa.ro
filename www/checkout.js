@@ -25,7 +25,9 @@ function create_login_section(dst_id) {
 
 	$('.btn_facebook').click(function() {
 		facebook_login(function(auth) {
-			post('/login.json', auth)
+			post('/login.json', auth, function(usr) {
+				checkout_update_account()
+			})
 		}, function() {
 			alert('Failed')
 		})
@@ -34,7 +36,7 @@ function create_login_section(dst_id) {
 
 function checkout_update_account(usr) {
 
-	if (!usr.emailvalid && !usr.haspass)
+	if (!usr.emailvalid == 1, && !usr.haspass)
 		create_login_section('#account_section')
 	else
 		apply_template('#account_section_template', {}, '#account_section')
