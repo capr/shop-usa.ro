@@ -13,7 +13,26 @@ function once(f) --per-request memoization
 	end
 end
 
---session state --------------------------------------------------------------
+--user management ------------------------------------------------------------
+
+local function delete_user(uid)
+	query('delete from usr where uid = ?', uid)
+end
+
+local function transfer_cart(old_uid, new_uid)
+	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
+end
+
+local function is_anonymous(uid)
+	return query1('select 1 from usr where uid = ? and anonymous = 1') ~= nil
+end
+
+local function set_pass(uid, pass)
+	query('update usr set email = ?, emailvalid = 0, pass = ? where uid = ?',
+		email, auth.pass, uid)
+end
+
+--session cookie -------------------------------------------------------------
 
 session = once(function()
 	session_.cookie.persistent = true
@@ -24,101 +43,138 @@ session = once(function()
 	return assert(session_.start())
 end)
 
-local auth = {}
+local function session_uid()
+	return session().data.uid
+end
+
+local function save_uid(uid)
+	assert(uid)
+	local session = session()
+	if uid ~= session.data.uid then
+		session.data.uid = uid
+		session:save()
+	end
+end
+
+--facebook -------------------------------------------------------------------
+
+local function facebook_graph_request(url, args)
+	local res = ngx.location.capture('/graph.facebook.com'..url, {args = args})
+	if not res then return end
+	if res.status ~= 200 then return end
+	return json(res.body)
+end
+
+local function facebook_validate(auth)
+	local t = facebook_graph_request('/debug_token', {
+		input_token = auth.accesstoken,
+		access_token = auth.accesstoken,
+	})
+	return t and t.data and t.data.is_valid
+		and t.data.app_id == facebook_app_id
+		and t.data.user_id == auth.facebookid
+end
+
+--authentication -------------------------------------------------------------
+
+local auth = {} --auth.<type>(auth) -> uid, can_create
+
+local function valid_uid(uid)
+	return uid and query1('select uid from usr where uid = ?', uid)
+end
+
+local function anonymous_uid(uid)
+	return uid and query1('select uid from usr where uid = ? and anonymous = 1', uid)
+end
+
+local function create_user()
+	return iquery('insert into usr (clientip) values (?)', ngx.var.remote_addr)
+end
 
 function auth.session()
-	local uid = session().data.uid
-	return query1('select 1 from usr where uid = ?', uid) and uid or nil
+	return valid_uid(session_uid()) or create_user()
+end
+
+local function encrypt_pass(pass)
+	return ngx.encode_base64(ngx.ngx.sha1_bin(pass))
+end
+
+local function pass_uid(email, pass)
+	return query1('select uid from usr where email = ? and pass = ?',
+		email, encrypt_pass(pass))
+end
+
+local function email_exists(email)
+	return query1('select 1 from usr where email = ?', email) ~= nil
+end
+
+local function set_email_pass(uid, email, pass)
+	return iquery([[
+		update usr set
+			anonymous = 0,
+			emailvalid = 0,
+			email = ?,
+			pass = ?
+		where
+			uid = ?
+	]], email, encrypt_pass(pass))
 end
 
 function auth.pass(auth)
-	return query1('select uid from usr where email = ? and pass = ?',
-		auth.email, auth.pass)
+	if auth.action = 'login' then
+		return pass_uid(auth.email, auth.pass)
+	elseif auth.action = 'create' then
+		if not email_exists(auth.email) then
+			local uid = anonymous_uid(session_uid()) or create_user()
+			set_email_pass(uid, auth.email, auth.pass)
+			return uid
+		end
+	end
+end
+
+local function facebookid_uid(facebookid)
+	return query1('select uid from usr where facebookid = ?', facebookid)
 end
 
 function auth.facebook(auth)
-	return query1('select uid from usr where facebookid = ?', auth.facebookid)
+	if facebook_validate(auth) then
+		local uid =
+			facebookid_uid(auth.facebookid)
+			or anonymous_uid(session_uid())
+			or create_user()
+		query([[
+			update usr set
+				anonymous = 0,
+				emailvalid = 1,
+				email = ?,
+				facebookid = ?,
+				firstname = ?,
+				lastname = ?,
+				gender = ?
+			where
+				uid = ?
+		]], auth.email, auth.facebookid,
+			auth.firstname, auth.lastname, auth.gender, uid)
+		return uid
+	end
 end
 
 function authenticate(a)
 	return auth[a and a.type or 'session'](a)
 end
 
-local function create_user()
-	return iquery([[
-		insert into usr (clientip) values (?)
-	]], ngx.var.remote_addr)
-end
-
-local function delete_user(uid)
-	query('delete from usr where uid = ?', uid)
-end
-
-local function transfer_cart(old_uid, new_uid)
-	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
-end
-
-local update = {}
-
-function update.pass(uid, auth)
-	if not auth.create_only then return end
-	query('update usr set email = ?, emailvalid = 0, pass = ? where uid = ?',
-		auth.email, auth.pass, uid)
-end
-
-function update.facebook(uid, auth)
-	query([[
-		update usr set
-			email = ?, emailvalid = 1,
-			facebookid = ?,
-			firstname = ?,
-			lastname = ?,
-			gender = ?
-		where uid = ?
-	]], auth.email, auth.facebookid,
-		auth.firstname, auth.lastname, auth.gender, uid)
-end
-
-local function update_user(uid, auth)
-	local update = update[auth.type]
-	if update then update(uid, auth) end
-end
-
-local function is_anonymous(uid)
-	return query1([[
-		select 1 from usr where
-			pass is null and not emailvalid and uid = ?
-	]], uid) ~= nil
-end
-
-local function save_user(uid)
-	local session = session()
-	session.data.uid = uid
-	session:save()
-end
-
 function login(auth)
-	auth = auth or {type = 'session'}
 	local uid = authenticate(auth)
-	local suid = authenticate()
-	if not uid then
-		if auth.login_only then return end
-		uid = suid or create_user()
-	else
-		if auth.create_only then return end
-		if suid and uid ~= suid then
-			if auth.transfer_cart then
-				transfer_cart(suid, uid)
-			end
-			if is_anonymous(suid) then
-				delete_user(suid)
-			end
-		end
-	end
+	local suid = valid_uid(session_uid())
 	if uid then
-		update_user(uid, auth)
 		if uid ~= suid then
-			save_user(uid)
+			if suid then
+				transfer_cart(suid, uid)
+				if is_anonymous(suid) then
+					delete_user(suid)
+				end
+			end
+			save_uid(uid)
 		end
 	end
 	return uid
@@ -133,3 +189,4 @@ admin = once(function()
 end)
 
 editmode = admin
+

@@ -35,14 +35,46 @@ function create_login_section(dst_id) {
 			alert(S('login_failed', 'Login Failed'))
 		})
 	})
+
+	var pass_auth = function(action) {
+		return {
+			type:  'pass',
+			action: action,
+			email:  $('#email').val(),
+			pass:   $('#pass').val(),
+		}
+	}
+
+	$('#btn_login').click(function() {
+		var auth =
+		post('/login.json', pass_auth('login'), function(status) {
+			if (status.success) {
+				action.checkout()
+			} else {
+				alert(S('login_failed', 'Login Failed'))
+			}
+		})
+	})
+
+	$('#btn_create_account').click(function() {
+		post('/login.json', pass_auth('create'), function(status) {
+			if (status.success) {
+				action.checkout()
+			} else {
+				alert(S('login_failed', 'Login Failed'))
+			}
+		})
+	})
+
 }
 
 function checkout_update_account(usr) {
 
-	if (!usr.emailvalid == 1 && !usr.haspass)
+	if (usr.anonymous) {
 		create_login_section('#account_section')
-	else
+	} else {
 		apply_template('#account_section_template', usr, '#account_section')
+	}
 
 	$('#relogin').click(function() {
 		create_login_section('#account_section')
@@ -53,7 +85,6 @@ function checkout_update_account(usr) {
 action.checkout = function() {
 	apply_template('#checkout_template', {}, '#main')
 	load_main('/cart.json', checkout_update_cart)
-	//get('#account', '/login.json', checkout_update_account)
 	load_content('#account', '/account.json', checkout_update_account)
 }
 

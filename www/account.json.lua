@@ -4,8 +4,7 @@ local t = query1([[
 		u.firstname,
 		u.lastname,
 		u.email,
-		u.emailvalid,
-		u.pass is not null as haspass,
+		case when u.emailvalid = 0 and u.pass is null then 1 else 0 end as anonymous,
 		u.facebookid
 	from
 		usr u
@@ -14,7 +13,6 @@ local t = query1([[
 		and u.uid = ?
 ]], uid())
 
-t.emailvalid = t.emailvalid == 1
-t.haspass = t.haspass == 1
+t.anonymous = t.anonymous == 1
 
 out_json(t)

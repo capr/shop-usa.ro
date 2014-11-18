@@ -1,20 +1,31 @@
 
+function facebook_get_me(auth, success) {
+	FB.api('/me', function(me) {
+		success({
+			type:        'facebook',
+			accesstoken: auth.accessToken,
+			facebookid:  auth.userID,
+			email:       me.email,
+			firstname:   me.first_name,
+			lastname:    me.last_name,
+			gender:      me.gender,
+		})
+	})
+}
+
+function facebook_connect(success) {
+	FB.getLoginStatus(function(response)
+		if (response.status == 'connected')
+			facebook_get_me(response.authResponse, success)
+	})
+}
+
 function facebook_login(success, fail) {
 	FB.login(function(response) {
-		if (response.authResponse) {
-			FB.api('/me', function(me_response) {
-				success({
-					type:       'facebook',
-					facebookid: response.authResponse.userID,
-					email:      me_response.email,
-					firstname:  me_response.first_name,
-					lastname:   me_response.last_name,
-					gender:     me_response.gender,
-				})
-			})
-		} else {
-			fail()
-		}
+		if (response.authResponse)
+			facebook_get_me(response.authResponse, success)
+		else
+			if (fail) fail()
 	}, {scope: 'public_profile,email'})
 }
 
@@ -24,6 +35,9 @@ window.fbAsyncInit = function() {
 		cookie  : true,  // enable cookies to allow the server to access the session
 		xfbml   : true,  // parse social plugins on this page
 		version : 'v2.1' // use version 2.1
+	})
+	facebook_connect(function(auth) {
+		post('/login.json', auth)
 	})
 }
 

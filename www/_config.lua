@@ -2,6 +2,8 @@ setfenv(1, require'_g')
 
 local config = {}
 
+facebook_app_id = '725102964211663'
+
 function config.prod()
 	db_host = '127.0.0.1'
 	db_user = 'shop-usa'

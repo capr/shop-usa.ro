@@ -1,7 +1,7 @@
 .en, .ro { display:none; } /* hide all elements with a language class */
 .en:lang(en), .ro:lang(ro) { display: inline; } /* show elements that match their lang class */
 
-html, body, table, tr, td, div, img, ul, hr {
+html, body, table, tr, td, div, img, ul, hr, button {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -105,18 +105,18 @@ button {
 	font-weight: normal;
 	font-size: 14px;
 	font-variant: small-caps;
-	padding-top: 2px;
-	padding-bottom: 5px;
-	padding-left: 2em;
-	padding-right: 2em;
-}
-
-.buybutton {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 1.5em;
+	padding-right: 1.5em;
 }
 
 button:hover {
 	color: #cc8800;
 }
+
+.buybutton {}
+.orderbutton {}
 
 .orange {
 	background: #ff8800;

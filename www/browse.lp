@@ -124,7 +124,10 @@
 				<span class=price><t class=en>$</t>{{{price}}}<t class=ro> Lei</t></span>
 				<span class=discount>{{{discount}}}</span>
 				<br>
-				<button type=button class=buybutton>add to bag</button>
+				<button type=button class=buybutton>
+					<t class=en>add to bag</t>
+					<t class=ro>adauga in cos</t>
+				</button>
 				<br>
 				<br>
 			</td>
@@ -286,7 +289,10 @@
 		<br>
 		<br>
 		{{#buynow_count}}
-		<button class="buybutton orange"><t class=en>Place Order</t><t class=ro>Comanda</t></button>
+		<button class="orderbutton orange">
+			<t class=en>Place Order</t>
+			<t class=ro>Comanda</t>
+		</button>
 		{{/buynow_count}}
 	</div>
 	<h2>
@@ -338,7 +344,7 @@
 <script type="text/x-mustache" id=login_section_template>
 	<table width=100%>
 		<tr>
-			<td width=40%>
+			<td width=38%>
 				<a class="btn btn_facebook">
 					<i class="fa fa-facebook" style="width:16px; height:20px"></i>
 						<t class=en>Sign in with Facebook</t>
@@ -355,14 +361,24 @@
 						<t class=ro>Intra cu Google</t>
 				</a>
 			</td>
-			<td width=60% style="padding-left: 10px">
-				<table width=100% style="border-spacing: 5px">
+			<td width=62% style="padding-left: 10px">
+				<table width=100% style="border-spacing: 4px">
 					<tr>
-						<td><label><t class=en>Email:</t><t class=ro>Email:</t></label></td>
+						<td width=1% nowrap>
+							<label>
+								<t class=en>Email:</t>
+								<t class=ro>Email:</t>
+							</label>
+						</td>
 						<td><input id=email type=text></input></td>
 					</tr>
 					<tr>
-						<td><label><t class=en>Password:</t><t class=ro>Parola:</t></label></td>
+						<td nowrap>
+							<label>
+								<t class=en>Password:</t>
+								<t class=ro>Parola:</t>
+							</label>
+						</td>
 						<td nowrap>
 							<input id=pass type=password></input>
 							<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
@@ -370,9 +386,17 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan=2 align=right>
-							<button class=orange>Login</button>
-							<button>Creaza cont</button>
+						<td colspan=2 align=right nowrap>
+							<button type=button class=orange id=btn_login>Login</button>
+							<button type=button id=btn_create_account>Creaza cont</button>
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2 align=right nowrap>
+							<a class=gray id=btn_forgot_pass>
+								<t class=en>Forgot password?</t>
+								<t class=ro>Ai uitat parola?</t>
+							</a>
 						</td>
 					</tr>
 				</table>
@@ -583,7 +607,10 @@
 				</span>
 				<br>
 				<br>
-				<button class="buybutton orange"><t class=en>Place Order</t><t class=ro>Comanda</t></button>
+				<button type=button class="orderbutton orange">
+					<t class=en>Place Order</t>
+					<t class=ro>Comanda</t>
+				</button>
 			</td>
 			<td>
 			</td>
