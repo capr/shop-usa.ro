@@ -3,6 +3,8 @@ setfenv(1, require'_g')
 local config = {}
 
 facebook_app_id = '725102964211663'
+facebook_app_secret = require'_facebook_secret'
+
 google_client_id = '113821693132-an9cmghgm2fockigiubs1rp7tmfr9vnb.apps.googleusercontent.com'
 google_client_secret = require'_google_secret'
 

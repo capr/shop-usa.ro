@@ -50,7 +50,7 @@ end
 
 local function facebook_validate(auth)
 	local t = facebook_graph_request('/debug_token', {
-		input_token = auth.accesstoken,
+		input_token = facebook_app_id..'|'..facebook_app_secret,
 		access_token = auth.accesstoken,
 	})
 	local ok = t and t.data and t.data.is_valid
