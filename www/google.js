@@ -24,7 +24,7 @@ function google_login(successm, fail) {
 		}
 	}
 	gapi.auth.signIn(params)
-})
+}
 
 function google_logout() {
 	gapi.auth.signOut()

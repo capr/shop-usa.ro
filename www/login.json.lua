@@ -12,7 +12,7 @@ if uid then
 			u.email,
 			u.anonymous,
 			u.facebookid,
-			u.googleid,
+			u.googleid
 		from
 			usr u
 		where
