@@ -51,7 +51,7 @@ end
 
 local function facebook_graph_request(url, args)
 	local res = ngx.location.capture('/graph.facebook.com'..url, {args = args})
-	pp(res)
+	pp(url, res)
 	if not res then return end
 	if res.status ~= 200 then return end
 	return json(res.body)
