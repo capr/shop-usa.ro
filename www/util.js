@@ -148,17 +148,6 @@ function upid(e, attr) {
 	return parseInt($(e).closest('['+attr+']').attr(attr))
 }
 
-// code loading --------------------------------------------------------------
-
-// load a js library asynchronously
-function load_js(id, url) {
-	var js, xjs = document.getElementsByTagName('script')[0]
-	if (document.getElementById(id)) return
-	js = document.createElement(s); js.id = id
-	js.src = url
-	xjs.parentNode.insertBefore(js, xjs)
-}
-
 // content loading -----------------------------------------------------------
 
 // restartable ajax request.

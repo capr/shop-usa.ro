@@ -1,5 +1,5 @@
 
-function google_login(successm, fail) {
+function google_login(success, fail) {
 	var params = {
 		clientid: '113821693132-an9cmghgm2fockigiubs1rp7tmfr9vnb.apps.googleusercontent.com',
 		scope:    'https://www.googleapis.com/auth/plus.login',
@@ -9,11 +9,14 @@ function google_login(successm, fail) {
 	params.callback = function(authResult) {
 		console.log(authResult)
 		if (authResult.status.signed_in) {
-			var token = authResult.access_token
-			success({
-				type:        'google',
-				accesstoken: token,
-			})
+			gapi.client.plus.people.get({userId: 'me'}).execute(function(resp) {
+				console.login(resp)
+				success({
+					type:        'google',
+					accesstoken: authResult.access_token,
+					code:        authResult.code,
+				})
+			}
 		} else {
 			// Update the app to reflect a signed out user
 			// Possible error values:
