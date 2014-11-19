@@ -55,7 +55,6 @@ local function facebook_validate(auth)
 	})
 	local ok = t and t.data and t.data.is_valid
 		and t.data.app_id == facebook_app_id
-		and t.data.user_id == auth.facebookid
 	if not ok then
 		ngx.log(ngx.ERR, 'facebook_validate: ', pp.format(auth, ' '), ' ', pp.format(t, ' '))
 	end
