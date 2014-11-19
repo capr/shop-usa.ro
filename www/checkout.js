@@ -38,7 +38,7 @@ function create_login_section(dst_id) {
 
 	$('.btn_google').click(function() {
 		google_login(function(auth) {
-			console.log(auth)
+			console.log('google_login: ', auth)
 			/*
 			post('/login.json', auth, function(status) {
 				if (status.success)
