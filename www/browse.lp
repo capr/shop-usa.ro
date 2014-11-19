@@ -345,16 +345,11 @@
 <script type="text/x-mustache" id=login_section_template>
 	<table width=100%>
 		<tr>
-			<td width=38%>
+			<td width=38% valign=top>
 				<a class="btn btn_facebook">
 					<i class="fa fa-facebook" style="width:16px; height:20px"></i>
 						<t class=en>Sign in with Facebook</t>
 						<t class=ro>Intra cu Facebook</t>
-				</a>
-				<a class="btn btn_twitter">
-					<i class="fa fa-twitter" style="width:16px; height:20px"></i>
-						<t class=en>Sign in with Twitter</t>
-						<t class=ro>Intra cu Twitter</t>
 				</a>
 				<a class="btn btn_google">
 					<i class="fa fa-google-plus" style="width:16px; height:20px"></i>
