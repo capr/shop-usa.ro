@@ -30,7 +30,7 @@ function google_logout() {
 	gapi.auth.signOut()
 }
 
-init_google() {
+function init_google() {
 	//
 }
 
