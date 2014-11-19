@@ -51,7 +51,6 @@ end
 
 local function facebook_graph_request(url, args)
 	local res = ngx.location.capture('/graph.facebook.com'..url, {args = args})
-	pp{url, args, res}
 	if not res then return end
 	if res.status ~= 200 then return end
 	return json(res.body)
@@ -62,7 +61,6 @@ local function facebook_validate(auth)
 		input_token = auth.accesstoken,
 		access_token = auth.accesstoken,
 	})
-	pp(t)
 	return t and t.data and t.data.is_valid
 		and t.data.app_id == facebook_app_id
 		and t.data.user_id == auth.facebookid
