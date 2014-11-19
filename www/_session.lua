@@ -56,10 +56,15 @@ local function facebook_validate(auth)
 	local ok = t and t.data and t.data.is_valid
 		and t.data.app_id == facebook_app_id
 	if not ok then
-		ngx.log(ngx.ERR, 'facebook_validate: ', pp.format(auth, ' '), ' ', pp.format(t, ' '))
+		ngx.log(ngx.ERR, 'facebook_validate: ', pp.format(auth, ' '), ' -> ',
+			pp.format(t, ' '))
 	end
 	return ok
 end
+
+--google requests ------------------------------------------------------------
+
+
 
 --authentication -------------------------------------------------------------
 
@@ -151,6 +156,10 @@ function auth.facebook(auth)
 			auth.gender, uid)
 		return uid
 	end
+end
+
+function auth.google(auth)
+	--
 end
 
 function authenticate(a)

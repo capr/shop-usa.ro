@@ -11,7 +11,8 @@ if uid then
 			u.lastname,
 			u.email,
 			u.anonymous,
-			u.facebookid
+			u.facebookid,
+			u.googleid,
 		from
 			usr u
 		where

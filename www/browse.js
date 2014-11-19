@@ -377,6 +377,7 @@ $(document).ready(function() {
 	init_pagenav()
 	init_cart()
 	init_facebook()
+	init_google()
 	url_changed()
 })
 

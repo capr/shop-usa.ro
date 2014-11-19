@@ -36,6 +36,19 @@ function create_login_section(dst_id) {
 		})
 	})
 
+	$('.btn_google').click(function() {
+		google_login(function(auth) {
+			post('/login.json', auth, function(status) {
+				if (status.success)
+					action.checkout()
+				else
+					alert(S('login_failed', 'Login Failed'))
+			})
+		}, function() {
+			alert(S('login_failed', 'Login Failed'))
+		})
+	})
+
 	var pass_auth = function(action) {
 		return {
 			type:  'pass',
