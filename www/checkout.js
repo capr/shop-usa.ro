@@ -85,6 +85,6 @@ function checkout_update_account(usr) {
 action.checkout = function() {
 	apply_template('#checkout_template', {}, '#main')
 	load_main('/cart.json', checkout_update_cart)
-	load_content('#account', '/account.json', checkout_update_account)
+	load_content('#account', '/login.json', checkout_update_account)
 }
 

@@ -13,21 +13,10 @@ function once(f) --per-request memoization
 	end
 end
 
---user management ------------------------------------------------------------
-
-local function delete_user(uid)
-	query('delete from usr where uid = ?', uid)
-end
-
-local function transfer_cart(old_uid, new_uid)
-	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
-end
-
 --session cookie -------------------------------------------------------------
 
 session = once(function()
 	session_.cookie.persistent = true
-	session_.cookie.secure = false
 	session_.check.ssi = false --ssi will change after browser closes
 	session_.check.ua = false  --user could upgrade the browser
 	session_.cookie.lifetime = 2 * 365 * 24 * 3600 --2 years
@@ -47,7 +36,7 @@ local function save_uid(uid)
 	end
 end
 
---facebook -------------------------------------------------------------------
+--facebook graph requests ----------------------------------------------------
 
 local function facebook_graph_request(url, args)
 	local res = ngx.location.capture('/graph.facebook.com'..url, {args = args})
@@ -111,6 +100,14 @@ local function set_email_pass(uid, email, pass)
 	]], email, encrypt_pass(pass), uid)
 end
 
+local function delete_user(uid)
+	query('delete from usr where uid = ?', uid)
+end
+
+local function transfer_cart(old_uid, new_uid)
+	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
+end
+
 function auth.pass(auth)
 	if auth.action == 'login' then
 		return pass_uid(auth.email, auth.pass)
@@ -144,8 +141,8 @@ function auth.facebook(auth)
 				gender = ?
 			where
 				uid = ?
-		]], auth.email, auth.facebookid,
-			auth.firstname, auth.lastname, auth.gender, uid)
+		]], auth.email, auth.facebookid, auth.firstname, auth.lastname,
+			auth.gender, uid)
 		return uid
 	end
 end
@@ -171,9 +168,9 @@ function login(auth)
 	return uid
 end
 
-uid = once(login)
+uid = once(login) --TODO: reset cache when suid changes
 
-admin = once(function()
+admin = once(function() --TODO: same here
 	return query1([[
 		select 1 from usr u where u.uid = ? and u.admin = 1
 	]], uid()) ~= nil
