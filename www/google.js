@@ -30,11 +30,13 @@ function google_login(success, fail) {
 	}
 	gapi.auth.signIn(params)
 
+	/*
 	gapi.client.load('oauth2', 'v2', function() {
 		gapi.client.oauth2.userinfo.get().execute(function(resp) {
 			console.log(resp.email)
 		})
 	})
+	*/
 }
 
 function google_logout() {
