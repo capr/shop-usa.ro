@@ -82,6 +82,7 @@ local function google_validate(auth)
 	local t = google_api_request('/plus/v1/people/me',
 		{access_token = auth.accesstoken})
 	pp(t)
+	print'here'
 end
 
 --authentication -------------------------------------------------------------
