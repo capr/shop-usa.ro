@@ -67,7 +67,7 @@ end
 local function google_api_request(url, args, auth_header)
 	local res = ngx.location.capture('/content.googleapis.com'..url, {
 		args = args,
-		vars = {authorization_header = auth_header},
+		--vars = {authorization_header = auth_header},
 	})
 	if res and res.status == 200 then
 		return json(res.body)
@@ -79,7 +79,8 @@ local function google_api_request(url, args, auth_header)
 end
 
 local function google_validate(auth)
-	local t = google_api_request('/plus/v1/people/me', nil, 'Bearer '..auth.accesstoken)
+	local t = google_api_request('/plus/v1/people/me',
+		{access_token = auth.accesstoken})
 	pp(t)
 end
 
