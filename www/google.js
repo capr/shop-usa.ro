@@ -7,19 +7,9 @@ function google_login(success, fail) {
 		cookiepolicy: 'single_host_origin',
 	}
 	params.callback = function(authResult) {
-		console.log('callback called')
 		console.log(authResult)
 		if (authResult.status.signed_in) {
-			gapi.client.load('plus','v1', function() {
-				gapi.client.plus.people.get({userId: 'me'}).execute(function(resp) {
-					console.log(resp)
-					success({
-						type:        'google',
-						accesstoken: authResult.access_token,
-						//code:        authResult.code,
-					})
-				})
-			})
+			success({type: 'google', access_token: authResult.access_token})
 		} else {
 			// Update the app to reflect a signed out user
 			// Possible error values:
@@ -29,16 +19,7 @@ function google_login(success, fail) {
 			fail()
 		}
 	}
-	console.log('calling signIn')
 	gapi.auth.signIn(params)
-
-	/*
-	gapi.client.load('oauth2', 'v2', function() {
-		gapi.client.oauth2.userinfo.get().execute(function(resp) {
-			console.log(resp.email)
-		})
-	})
-	*/
 }
 
 function google_logout() {
@@ -46,7 +27,6 @@ function google_logout() {
 }
 
 function init_google() {
-	console.log('init_google...')
 	$.getScript('https://apis.google.com/js/client:platform.js')
 }
 

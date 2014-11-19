@@ -36,57 +36,15 @@ local function save_uid(uid)
 	end
 end
 
---facebook graph requests ----------------------------------------------------
-
-local function facebook_graph_request(url, args)
-	local res = ngx.location.capture('/graph.facebook.com'..url, {args = args})
-	if res and res.status == 200 then
-		return json(res.body)
-	else
-		ngx.log(ngx.ERR, 'facebook_graph_request: ',
-			url, ' ', pp.format(args, ' '), ' -> ', pp.format(res, ' '))
-	end
-end
-
-local function facebook_validate(auth)
-	local t = facebook_graph_request('/debug_token', {
-		input_token = auth.accesstoken,
-		access_token = facebook_app_id..'|'..facebook_app_secret,
-	})
-	local ok = t and t.data and t.data.is_valid
-		and t.data.app_id == facebook_app_id
-	if not ok then
-		ngx.log(ngx.ERR, 'facebook_validate: ', pp.format(auth, ' '), ' -> ',
-			pp.format(t, ' '))
-	end
-	return ok
-end
-
---google requests ------------------------------------------------------------
-
-local function google_api_request(url, args, auth_header)
-	local res = ngx.location.capture('/content.googleapis.com'..url, {
-		args = args,
-		--vars = {authorization_header = auth_header},
-	})
-	if res and res.status == 200 then
-		return json(res.body)
-	else
-		ngx.log(ngx.ERR, 'google_api_request: ',
-			url, ' ', 'auth_header=', auth_header, '; ',
-			pp.format(args, ' '), ' -> ', pp.format(res, ' '))
-	end
-end
-
-local function google_validate(auth)
-	local t = google_api_request('/plus/v1/people/me',
-		{access_token = auth.accesstoken})
-	pp(t)
-end
-
---authentication -------------------------------------------------------------
+--authentication frontend ----------------------------------------------------
 
 local auth = {} --auth.<type>(auth) -> uid, can_create
+
+function authenticate(a)
+	return auth[a and a.type or 'session'](a)
+end
+
+--session-cookie authentication ----------------------------------------------
 
 local function valid_uid(uid)
 	return uid and query1('select uid from usr where uid = ?', uid)
@@ -103,6 +61,8 @@ end
 function auth.session()
 	return valid_uid(session_uid()) or create_user()
 end
+
+--password authentication ----------------------------------------------------
 
 local function encrypt_pass(pass)
 	return ngx.encode_base64(ngx.sha1_bin(pass))
@@ -149,42 +109,103 @@ function auth.pass(auth)
 	end
 end
 
-local function facebookid_uid(facebookid)
+--facebook authentication ----------------------------------------------------
+
+local function facebook_uid(facebookid)
 	return query1('select uid from usr where facebookid = ?', facebookid)
 end
 
-function auth.facebook(auth)
-	if facebook_validate(auth) then
-		local uid =
-			facebookid_uid(auth.facebookid)
-			or anonymous_uid(session_uid())
-			or create_user()
-		query([[
-			update usr set
-				anonymous = 0,
-				emailvalid = 1,
-				email = ?,
-				facebookid = ?,
-				firstname = ?,
-				lastname = ?,
-				gender = ?
-			where
-				uid = ?
-		]], auth.email, auth.facebookid, auth.firstname, auth.lastname,
-			auth.gender, uid)
-		return uid
+local function facebook_graph_request(url, args)
+	local res = ngx.location.capture('/graph.facebook.com'..url, {args = args})
+	if res and res.status == 200 then
+		local t = json(res.body)
+		if t and not t.error then
+			return t
+		end
 	end
+	ngx.log(ngx.ERR, 'facebook_graph_request: ', url, ' ',
+		pp.format(args, ' '), ' -> ', pp.format(res, ' '))
+end
+
+function auth.facebook(auth)
+	--get info from facebook
+	local t = facebook_graph_request('/v2.1/me',
+		{access_token = auth.access_token})
+	if not t then return end
+
+	--grab a uid
+	local uid =
+		facebook_uid(t.id)
+		or anonymous_uid(session_uid())
+		or create_user()
+
+	--deanonimize user and update its info
+	query([[
+		update usr set
+			anonymous = 0,
+			emailvalid = 1,
+			email = ?,
+			facebookid = ?,
+			firstname = ?,
+			lastname = ?,
+			gender = ?
+		where
+			uid = ?
+	]], t.email, t.id, t.first_name, t.last_name, t.gender, uid)
+
+	return uid
+end
+
+--google+ authentication -----------------------------------------------------
+
+local function google_uid(googleid)
+	return query1('select uid from usr where googleid = ?', googleid)
+end
+
+local function google_api_request(url, args)
+	local res = ngx.location.capture('/content.googleapis.com'..url, {args = args})
+	if res and res.status == 200 then
+		return json(res.body)
+	end
+	ngx.log(ngx.ERR, 'google_api_request: ', url, ' ',
+		pp.format(args, ' '), ' -> ', pp.format(res, ' '))
 end
 
 function auth.google(auth)
-	if google_validate(auth) then
+	--get info from google
+	local t = google_api_request('/plus/v1/people/me',
+		{access_token = auth.access_token})
+	if not t then return end
 
-	end
+	--grab a uid
+	local uid =
+		google_uid(t.id)
+		or anonymous_uid(session_uid())
+		or create_user()
+
+	--deanonimize user and update its info
+	query([[
+		update usr set
+			anonymous = 0,
+			emailvalid = 1,
+			email = ?,
+			googleid = ?,
+			gimgurl = ?,
+			firstname = ?,
+			lastname = ?
+		where
+			uid = ?
+	]], t.emails and t.emails[1] and t.emails[1].value,
+		t.id,
+		t.image and t.image.url,
+		t.name and t.name.givenName,
+		t.name and t.name.familyName,
+		uid)
+
+	return uid
 end
 
-function authenticate(a)
-	return auth[a and a.type or 'session'](a)
-end
+--authentication logic -------------------------------------------------------
 
 function login(auth)
 	local uid = authenticate(auth)

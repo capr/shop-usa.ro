@@ -92,6 +92,7 @@ subst'id     int unsigned'
 subst'pk     int unsigned primary key auto_increment'
 subst'name   varchar(32)'
 subst'email  varchar(128)'
+subst'url    varchar(2048)'
 subst'pass   varchar(32)'
 subst'bool   tinyint not null default 0'
 subst'bool1  tinyint not null default 1'
@@ -114,6 +115,7 @@ $table usr (
 	pass        $pass,
 	facebookid  $name,
 	googleid    $name,
+	gimgurl     $url,
 	twitterid   $name,
 	active      $bool1,
 	firstname   $name,
