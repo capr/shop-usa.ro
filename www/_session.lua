@@ -65,18 +65,7 @@ end
 --google requests ------------------------------------------------------------
 
 local function google_validate(auth)
-	md5(rand)
- // Create a state token to prevent request forgery.
-  // Store it in the session for later validation.
-  $state = md5(rand());
-  $app['session']->set('state', $state);
-  // Set the client ID, token state, and application name in the HTML while
-  // serving it.
-  return $app['twig']->render('index.html', array(
-      'CLIENT_ID' => CLIENT_ID,
-      'STATE' => $state,
-      'APPLICATION_NAME' => APPLICATION_NAME
-  ));
+end
 
 --authentication -------------------------------------------------------------
 
