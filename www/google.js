@@ -2,7 +2,7 @@
 function google_login(success, fail) {
 	var params = {
 		clientid: '113821693132-an9cmghgm2fockigiubs1rp7tmfr9vnb.apps.googleusercontent.com',
-		scope:    'https://www.googleapis.com/auth/plus.login',
+		scope:    'https://www.googleapis.com/auth/plus.login email',
 		requestvisibleactions: 'http://schema.org/AddAction',
 		cookiepolicy: 'single_host_origin',
 	}
@@ -29,6 +29,12 @@ function google_login(success, fail) {
 		}
 	}
 	gapi.auth.signIn(params)
+
+	gapi.client.load('oauth2', 'v2', function() {
+		gapi.client.oauth2.userinfo.get().execute(function(resp) {
+			console.log(resp.email)
+		})
+	})
 }
 
 function google_logout() {
