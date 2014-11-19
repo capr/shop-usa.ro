@@ -6,7 +6,7 @@ function google_login(successm, fail) {
 		requestvisibleactions: 'http://schema.org/AddAction',
 		cookiepolicy: 'single_host_origin',
 	}
-	var params.callback = function(authResult) {
+	params.callback = function(authResult) {
 		console.log(authResult)
 		if (authResult.status.signed_in) {
 			var token = authResult.access_token
