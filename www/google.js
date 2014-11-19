@@ -9,12 +9,14 @@ function google_login(success, fail) {
 	params.callback = function(authResult) {
 		console.log(authResult)
 		if (authResult.status.signed_in) {
-			gapi.client.plus.people.get({userId: 'me'}).execute(function(resp) {
-				console.login(resp)
-				success({
-					type:        'google',
-					accesstoken: authResult.access_token,
-					code:        authResult.code,
+			gapi.client.load('plus','v1', function() {
+				gapi.client.plus.people.get({userId: 'me'}).execute(function(resp) {
+					console.login(resp)
+					success({
+						type:        'google',
+						accesstoken: authResult.access_token,
+						code:        authResult.code,
+					})
 				})
 			})
 		} else {
