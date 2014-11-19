@@ -64,7 +64,23 @@ end
 
 --google requests ------------------------------------------------------------
 
+local function google_api_request(url, args, auth_header)
+	local res = ngx.location.capture('/content.googleapis.com'..url, {
+		args = args,
+		vars = {authorization_header = auth_header},
+	})
+	if res and res.status == 200 then
+		return json(res.body)
+	else
+		ngx.log(ngx.ERR, 'google_api_request: ',
+			url, ' ', 'auth_header=', auth_header, '; ',
+			pp.format(args, ' '), ' -> ', pp.format(res, ' '))
+	end
+end
+
 local function google_validate(auth)
+	local t = google_api_request('/plus/v1/people/me', nil, 'Bearer '..auth.accesstoken)
+	pp(t)
 end
 
 --authentication -------------------------------------------------------------

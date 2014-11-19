@@ -16,7 +16,7 @@ function google_login(success, fail) {
 					success({
 						type:        'google',
 						accesstoken: authResult.access_token,
-						code:        authResult.code,
+						//code:        authResult.code,
 					})
 				})
 			})

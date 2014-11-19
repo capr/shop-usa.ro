@@ -39,16 +39,15 @@ function create_login_section(dst_id) {
 	$('.btn_google').click(function() {
 		google_login(function(auth) {
 			console.log('google_login: ', auth)
-			/*
 			post('/login.json', auth, function(status) {
 				if (status.success)
-					action.checkout()
+					alert('success')
+					//action.checkout()
 				else
 					alert(S('login_failed', 'Login Failed'))
 			})
-			*/
 		}, function() {
-			//alert(S('login_failed', 'Login Failed'))
+			alert(S('login_failed', 'Login Failed'))
 		})
 	})
 
