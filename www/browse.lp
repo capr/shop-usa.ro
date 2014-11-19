@@ -415,6 +415,9 @@
 			{{#facebookid}}
 			<img src="http://graph.facebook.com/{{facebookid}}/picture">
 			{{/facebookid}}
+			{{#gimgurl}}
+			<img src="{{gimgurl}}">
+			{{/gimgurl}}
 			</td>
 		</tr>
 		<tr>

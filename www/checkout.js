@@ -15,6 +15,10 @@ function checkout_update_cart(cart) {
 	apply_template('#checkout_cart_section_template', data, '#cart_section')
 }
 
+function login_failed() {
+	alert(S('login_failed', 'Login Failed'))
+}
+
 function create_login_section(dst_id) {
 	apply_template('#login_section_template', {}, dst_id)
 
@@ -24,31 +28,11 @@ function create_login_section(dst_id) {
 	})
 
 	$('.btn_facebook').click(function() {
-		facebook_login(function(auth) {
-			post('/login.json', auth, function(status) {
-				if (status.success)
-					action.checkout()
-				else
-					alert(S('login_failed', 'Login Failed'))
-			})
-		}, function() {
-			alert(S('login_failed', 'Login Failed'))
-		})
+		facebook_login(action.checkout, login_failed)
 	})
 
 	$('.btn_google').click(function() {
-		google_login(function(auth) {
-			console.log('google_login: ', auth)
-			post('/login.json', auth, function(status) {
-				if (status.success)
-					alert('success')
-					//action.checkout()
-				else
-					alert(S('login_failed', 'Login Failed'))
-			})
-		}, function() {
-			alert(S('login_failed', 'Login Failed'))
-		})
+		google_login(action.checkout, login_failed)
 	})
 
 	var pass_auth = function(action) {
@@ -61,24 +45,11 @@ function create_login_section(dst_id) {
 	}
 
 	$('#btn_login').click(function() {
-		var auth =
-		post('/login.json', pass_auth('login'), function(status) {
-			if (status.success) {
-				action.checkout()
-			} else {
-				alert(S('login_failed', 'Login Failed'))
-			}
-		})
+		post('/login.json', pass_auth('login'), action.checkout, login_failed)
 	})
 
 	$('#btn_create_account').click(function() {
-		post('/login.json', pass_auth('create'), function(status) {
-			if (status.success) {
-				action.checkout()
-			} else {
-				alert(S('login_failed', 'Login Failed'))
-			}
-		})
+		post('/login.json', pass_auth('create'), action.checkout, login_failed)
 	})
 
 }
