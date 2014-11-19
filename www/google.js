@@ -16,7 +16,7 @@ function google_login(success, fail) {
 					accesstoken: authResult.access_token,
 					code:        authResult.code,
 				})
-			}
+			})
 		} else {
 			// Update the app to reflect a signed out user
 			// Possible error values:
