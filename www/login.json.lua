@@ -1,6 +1,5 @@
 
-check(POST)
-local auth = json(POST.data)
+local auth = POST and json(POST.data)
 local uid = login(auth)
 
 local t = {success = uid ~= nil, uid = uid}
