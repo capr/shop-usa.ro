@@ -24,6 +24,8 @@ function print(...)
 	end
 end
 
+_G.__index.print = print --override Lua's print() for pp.
+
 function json(v)
 	if type(v) == 'table' then
 		return cjson.encode(v)
