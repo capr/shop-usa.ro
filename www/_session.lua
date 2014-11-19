@@ -61,6 +61,7 @@ local function facebook_validate(auth)
 		input_token = auth.accesstoken,
 		access_token = auth.accesstoken,
 	})
+	pp(t)
 	return t and t.data and t.data.is_valid
 		and t.data.app_id == facebook_app_id
 		and t.data.user_id == auth.facebookid
