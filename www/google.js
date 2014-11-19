@@ -11,7 +11,7 @@ function google_login(success, fail) {
 		if (authResult.status.signed_in) {
 			gapi.client.load('plus','v1', function() {
 				gapi.client.plus.people.get({userId: 'me'}).execute(function(resp) {
-					console.login(resp)
+					console.log(resp)
 					success({
 						type:        'google',
 						accesstoken: authResult.access_token,
