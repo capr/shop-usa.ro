@@ -31,6 +31,6 @@ function google_logout() {
 }
 
 function init_google() {
-	//
+	$.getScript('https://apis.google.com/js/client:platform.js')
 }
 

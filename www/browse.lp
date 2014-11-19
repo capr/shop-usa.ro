@@ -20,8 +20,8 @@
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>
 	<script src="/facebook.js"></script>
+	<script src="/google.js"></script>
 	<script src="/checkout.js"></script>
-	<script src="https://apis.google.com/js/client:platform.js" async defer></script>
 </head>
 <body>
 <table>

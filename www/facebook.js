@@ -42,6 +42,8 @@ window.fbAsyncInit = function() {
 }
 
 function init_facebook() {
+	$.getScript('//connect.facebook.net/en_US/sdk.js')
+	/*
 	// load the SDK asynchronously
 	(function(d, s, id) {
 		var js, fjs = d.getElementsByTagName(s)[0]
@@ -50,5 +52,6 @@ function init_facebook() {
 		js.src = '//connect.facebook.net/en_US/sdk.js'
 		fjs.parentNode.insertBefore(js, fjs)
 	}(document, 'script', 'facebook-jssdk'))
+	*/
 }
 
