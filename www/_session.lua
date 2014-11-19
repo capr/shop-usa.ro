@@ -40,9 +40,12 @@ end
 
 local function facebook_graph_request(url, args)
 	local res = ngx.location.capture('/graph.facebook.com'..url, {args = args})
-	if not res then return end
-	if res.status ~= 200 then return end
-	return json(res.body)
+	if res and res.status == 200 then
+		return json(res.body)
+	else
+		ngx.log(ngx.ERR, 'facebook_graph_request: ',
+			url, ' ', pp.format(args), ' -> ', pp.format(res))
+	end
 end
 
 local function facebook_validate(auth)
@@ -50,9 +53,13 @@ local function facebook_validate(auth)
 		input_token = auth.accesstoken,
 		access_token = auth.accesstoken,
 	})
-	return t and t.data and t.data.is_valid
+	local ok = t and t.data and t.data.is_valid
 		and t.data.app_id == facebook_app_id
 		and t.data.user_id == auth.facebookid
+	if not ok then
+		ngx.log('facebook_validate: ', pp.format(auth), ' ', pp.format(t))
+	end
+	return ok
 end
 
 --authentication -------------------------------------------------------------
@@ -85,7 +92,7 @@ local function pass_uid(email, pass)
 end
 
 local function email_exists(email)
-	return query1('select 1 from usr where email = ?', email) ~= nil
+	return query1('select 1 from usr where email = ? and pass is not null', email)
 end
 
 local function set_email_pass(uid, email, pass)

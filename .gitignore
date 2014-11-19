@@ -3,4 +3,5 @@ nginx/logs/
 img/
 www/_env.lua
 www/_dbpass.lua
+www/_google_secret.lua
 env

@@ -1,16 +1,16 @@
 setfenv(1, require'_g')
 glue = require'glue'
+pp = require'pp'
 local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
-local pp_ = require'pp'
 require'_session'
 require'_config'
 
 --print API ------------------------------------------------------------------
 
 function print(...)
-	local n = select('#',...)
+	local n = select('#', ...)
 	if n == 0 then return end
 	ngx.header['Content-Type'] = 'text/plain'
 	if n == 1 then
@@ -22,10 +22,6 @@ function print(...)
 		end
 		ngx.say(table.concat(t, '\t'))
 	end
-end
-
-function pp(v)
-	print(pp_.format(v, '   '))
 end
 
 function json(v)
