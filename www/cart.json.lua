@@ -49,7 +49,6 @@ end
 
 local t = query([[
 	select
-		ci.uid,
 		ci.ciid,
 		ci.coid,
 		p.id_product as pid,
@@ -92,7 +91,7 @@ local t = query([[
 ]], uid())
 
 local cjson = require'cjson'
-local cart = {uid = uid(), buynow = {}, buylater = {}}
+local cart = {buynow = {}, buylater = {}}
 for i,grp in groupby(t, 'buylater') do
 	local items = grp[1].buylater == 1 and cart.buylater or cart.buynow
 	for i,ci in groupby(grp, 'ciid') do

@@ -37,34 +37,29 @@ function quote(v)
 		return 1
 	elseif v == false then
 		return 0
-	else
+	elseif type(v) == 'string' or type(v) == 'number' then
 		return ngx.quote_sql_str(tostring(v))
+	else
+		return nil, 'invalid arg '.. require'pp'.format(v)
 	end
 end
-
-local tran = {}
 
 local function set_params(sql, ...)
 	local t = {}
 	for i = 1, select('#', ...) do
 		local arg = select(i, ...)
-		t[i] = quote(arg)
+		local v, err = quote(arg)
+		if err then
+			error(err .. ' in query "' .. sql .. '"')
+		end
+		t[i] = v
 	end
 	--TODO: skip string literals
 	local i = 0
 	return sql:gsub('%?', function() i = i + 1; return t[i] end)
 end
 
-local function run_query(sql)
-	assert_db(db:send_query(sql))
-	local t, err = assert_db(db:read_result())
-	if err == 'again' then --multi-result/multi-statement query
-		t = {t}
-		repeat
-			local t1, err = assert_db(db:read_result())
-			t[#t+1] = t1
-		until not err
-	end
+local function remove_nulls(t)
 	for i,t in ipairs(t) do
 		for k,v in pairs(t) do
 			if v == ngx.null then
@@ -72,44 +67,63 @@ local function run_query(sql)
 			end
 		end
 	end
-	return t
 end
 
-function query(sql, ...) --execute, iterate rows, close
+local function count_cols(t)
+	if not t[1] then return end
+	local n = 0
+	for k,v in pairs(t[1]) do
+		n = n + 1
+	end
+	return n
+end
+
+local function run_query(sql)
+	assert_db(db:send_query(sql))
+	local t, err = assert_db(db:read_result())
+	local n = count_cols(t)
+	remove_nulls(t)
+	if err == 'again' then --multi-result/multi-statement query
+		t = {t}
+		repeat
+			local t1, err = assert_db(db:read_result())
+			remove_nulls(t1)
+			t[#t+1] = t1
+		until not err
+	end
+	return t, n
+end
+
+function query_(sql, ...) --execute, iterate rows, close
 	connect()
 	sql = set_params(sql, ...)
-	if #tran > 0 then --we're inside atomic()
-		table.insert(tran[#tran], sql)
-	else
-		return run_query(sql)
-	end
-end
-
---concatenate queries instead of running them, and then run them all
---as a single multi-statement query, wrapped inside a transaction.
---NOTE: results of intermediate queries are not available immediately.
-function atomic(func)
-	local t = {'start transaction'}
-	table.insert(tran, t)
-	func()
-	table.remove(tran)
-	table.insert(t, 'commit;')
-	local sql = table.concat(t, ';')
 	return run_query(sql)
 end
 
---query frontends ------------------------------------------------------------
+function query(...)
+	return (query_(...))
+end
 
 function query1(sql, ...) --query first row (or first row/column) and close
-	local row = query(sql, ...)[1]
+	local t, n = query_(sql, ...)
+	local row = t[1]
 	if not row then return end
-	local k,v = next(row)
-	if not next(row, k) then return v end --first row/col
+	if n == 1 then
+		local _,v = next(row)
+		return v
+	end --first row/col
 	return row --first row
 end
 
 function iquery(sql, ...) --insert query: return autoincremented id
-	return query(sql, ...).insert_id
+	return query_(sql, ...).insert_id
+end
+
+function atomic(func)
+	query'start transaction'
+	local ok, err = glue.pcall(func)
+	query(ok and 'commit' or 'rollback')
+	assert(ok, err)
 end
 
 function groupby(items, col, cb)

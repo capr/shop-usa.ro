@@ -14,7 +14,7 @@ function facebook_get_me(auth, success) {
 }
 
 function facebook_connect(success) {
-	FB.getLoginStatus(function(response)
+	FB.getLoginStatus(function(response) {
 		if (response.status == 'connected')
 			facebook_get_me(response.authResponse, success)
 	})

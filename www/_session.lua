@@ -23,15 +23,6 @@ local function transfer_cart(old_uid, new_uid)
 	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
 end
 
-local function is_anonymous(uid)
-	return query1('select 1 from usr where uid = ? and anonymous = 1') ~= nil
-end
-
-local function set_pass(uid, pass)
-	query('update usr set email = ?, emailvalid = 0, pass = ? where uid = ?',
-		email, auth.pass, uid)
-end
-
 --session cookie -------------------------------------------------------------
 
 session = once(function()
@@ -96,7 +87,7 @@ function auth.session()
 end
 
 local function encrypt_pass(pass)
-	return ngx.encode_base64(ngx.ngx.sha1_bin(pass))
+	return ngx.encode_base64(ngx.sha1_bin(pass))
 end
 
 local function pass_uid(email, pass)
@@ -117,7 +108,7 @@ local function set_email_pass(uid, email, pass)
 			pass = ?
 		where
 			uid = ?
-	]], email, encrypt_pass(pass))
+	]], email, encrypt_pass(pass), uid)
 end
 
 function auth.pass(auth)
@@ -170,7 +161,7 @@ function login(auth)
 		if uid ~= suid then
 			if suid then
 				transfer_cart(suid, uid)
-				if is_anonymous(suid) then
+				if anonymous_uid(suid) then
 					delete_user(suid)
 				end
 			end
