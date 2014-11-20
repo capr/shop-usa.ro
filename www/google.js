@@ -1,7 +1,7 @@
 
 function google_login(success, fail) {
 	var params = {
-		clientid: '113821693132-an9cmghgm2fockigiubs1rp7tmfr9vnb.apps.googleusercontent.com',
+		clientid: C('google_client_id'),
 		scope:    'https://www.googleapis.com/auth/plus.login email',
 		requestvisibleactions: 'http://schema.org/AddAction',
 		cookiepolicy: 'single_host_origin',

@@ -5,7 +5,6 @@ local lp = require'_lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
 require'_session'
-require'_config'
 
 --print API ------------------------------------------------------------------
 

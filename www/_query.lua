@@ -2,13 +2,6 @@
 setfenv(1, require'_g')
 local mysql = require'resty.mysql'
 
-db_host = '127.0.0.1'
-db_user = 'root'
-db_pass = ''
-db_name = 'prestashop'
-connect_timeout = 1 --seconds
-db_timeout = 30 --seconds
-
 local db --global db object
 
 local function assert_db(ret, err, errno, sqlstate)
@@ -19,15 +12,15 @@ end
 local function connect()
 	if conn then return end
 	db = assert(mysql:new())
-	db:set_timeout(connect_timeout * 1000)
+	db:set_timeout(config('db_conn_timeout', 3) * 1000)
 	assert_db(db:connect{
-		host = db_host,
-		port = 3306,
-		database = db_name,
-		user = db_user,
-		password = db_pass,
+		host     = config('db_host', '127.0.0.1'),
+		port     = 3306,
+		database = config('db_name', 'prestashop'),
+		user     = config('db_user', 'root'),
+		password = config('db_pass'),
 	})
-	db:set_timeout(db_timeout * 1000)
+	db:set_timeout(config('db_query_timeout', 30) * 1000)
 end
 
 function quote(v)

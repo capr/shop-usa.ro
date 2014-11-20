@@ -9,6 +9,7 @@
 	<script src="/jquery.js"></script>
 	<script src="/mustache.js"></script>
 	<script src="/util.js"></script>
+	<script src="/config.js"></script>
 	<script src="/strings.ro.js"></script>
 	<script src="/jquery.history.js"></script>
 	<script src="/jquery.cookie.js"></script>

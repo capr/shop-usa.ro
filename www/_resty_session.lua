@@ -175,7 +175,7 @@ function session.start(opts)
         self.check.addr   and ngx_var.remote_addr     or "",
         self.check.scheme and ngx_var.scheme          or ""
     }
-    local now, i, e, d, h = time(), getcookie(ngx.var["cookie_" .. self.name])
+    local now, i, e, d, h = time(), getcookie(ngx_var["cookie_" .. self.name])
     if i and e and e > now then
         self.id = i
         self.expires = e

@@ -2,17 +2,6 @@ setfenv(1, require'_g')
 require'_query'
 local session_ = require'_resty_session'
 
-function once(f) --per-request memoization
-	return function()
-		local v = REQ[f]
-		if v == nil then
-			v = f()
-			REQ[f] = v
-		end
-		return v
-	end
-end
-
 --session cookie -------------------------------------------------------------
 
 session = once(function()
