@@ -41,6 +41,7 @@ function out_json(v)
 	ngx.exit(0)
 end
 
+--buffered output for luapages template.
 local outbuf
 function out(s)
 	outbuf = outbuf or {}
