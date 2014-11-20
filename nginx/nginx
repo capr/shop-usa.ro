@@ -1,6 +1,8 @@
 #!/bin/sh
 DIR="$(dirname "$(readlink -f "$0")")"
-[ -f ../env ] || { echo "../env file not found."; exit 1; }
-ENV=`cat ../env`
+[ "$ENV" ] || {
+    [ -f ../env ] || { echo "../env file not found."; exit 1; }
+    ENV=`cat ../env`
+}
 [ "$(uname -m)" != x86_64 ] && P=linux32 || P=linux64
 LD_LIBRARY_PATH="$DIR/../../bin/$P:/usr/local/lib" /usr/local/openresty/nginx/sbin/nginx -p "$DIR" -c "$DIR/conf/nginx.$ENV.conf" "$@"
