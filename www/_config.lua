@@ -13,8 +13,6 @@ function config.prod()
 	db_user = 'shop-usa'
 	db_pass = require'_dbpass'
 	db_name = 'prestashop'
-	always_schema  = 'http'
-	always_domain  = 'shop-usa.ro'
 end
 
 function config.dev()
@@ -22,8 +20,6 @@ function config.dev()
 	db_user = 'root'
 	db_pass = 'abcd12'
 	db_name = 'prestashop'
-	always_schema  = 'http'
-	always_domain  = '10.1.1.105'
 end
 
 env = glue.readfile('../env')

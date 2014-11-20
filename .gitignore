@@ -1,5 +1,7 @@
 nginx/*_temp
 nginx/logs/
+nginx/ssl/
+nginx/conf/secrets.conf
 img/
 www/_env.lua
 www/_dbpass.lua

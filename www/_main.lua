@@ -131,19 +131,6 @@ end
 
 --main -----------------------------------------------------------------------
 
-local function check_domain()
-	if not always_domain or not always_schema then return end
-	local domain = ngx.var.http_host
-	if not domain then return end --http/1.0
-	local schema = ngx.var.ssl_session_id and 'https' or 'http'
-	if domain == always_domain and schema == always_schema then return end
-	local method = ngx.req.get_method()
-	if method ~= 'GET' then return end
-	ngx.redirect(
-		(always_schema or schema)..'://'..(always_domain or domain)
-		.. ngx.var.uri .. (ngx.var.query_string or ''), ngx.HTTP_MOVED_PERMANENTLY)
-end
-
 local function check_img()
 	local path = ngx.var.uri
 	local kind = path:match'^/img/([^/]+)'
@@ -172,7 +159,6 @@ local function check_img()
 end
 
 local function main()
-	check_domain()
 	check_img()
 	parse_request()
 	local act, args = parse_path()
