@@ -55,8 +55,8 @@ local t = query([[
 		a.id_attribute as vid,
 		al.name as vname,
 		pl.name,
-		coalesce(pa.price, p.price) as price,
-		pa.old_price as old_price,
+		cast(round(coalesce(pa.price, p.price) * 1.55 * ?, -1) - 1 as decimal(20, 0)) as price,
+		cast(round(coalesce(pa.old_price, p.old_price) * 1.55 * ?, -1) - 1 as decimal(20, 0)) as old_price,
 		m.name as bname,
 		i.id_image as imgid,
 		ci.buylater
@@ -88,7 +88,7 @@ local t = query([[
 		ci.pos, ci.atime,
 		a.position, a.id_attribute,
 		i.position, i.id_image
-]], uid())
+]], usd_rate(), usd_rate(), uid())
 
 local cjson = require'cjson'
 local cart = {buynow = {}, buylater = {}}

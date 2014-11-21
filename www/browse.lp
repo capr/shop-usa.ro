@@ -124,12 +124,20 @@
 				<a><b>{{{bname}}}</b> {{{name}}}</a>
 				<br>
 				<span class=price><t class=en>$</t>{{{price}}}<t class=ro> Lei</t></span>
-				<span class=discount>{{{discount}}}</span>
+				{{#discount}}
+					<br>
+					<span class=discount>
+						<t class=ro>({{{discount}}}% {{#msrp}} din {{{msrp}}} Lei{{/msrp}})</t>
+						<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
+					</span>
+				{{/discount}}
+				<!--
 				<br>
 				<button type=button class=buybutton>
 					<t class=en>add to bag</t>
 					<t class=ro>adauga in cos</t>
 				</button>
+				-->
 				<br>
 				<br>
 			</td>
@@ -154,11 +162,13 @@
 				<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
 			</span>
 		{{/discount}}
+		<!--
 		<br>
 		<button type=button class=buybutton pid={{{pid}}}>
 			<t class=en>add to bag</t>
 			<t class=ro>adauga in cos</t>
 		</button>
+		-->
 		<br>
 		<br>
 	</div>
