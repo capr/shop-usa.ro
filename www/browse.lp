@@ -519,20 +519,24 @@
 				<table width=100%>
 					<tr>
 						<td width=30>
-							<input type=radio name=delivery_method value=home>
+							<input type=radio id=delivery_home name=delivery_method value=home>
 						</td>
 						<td>
-							<t class=en>Home delivery</t>
-							<t class=ro>La adresa mea, prin curier, cu plata ramburs.</t>
+							<label for=delivery_home>
+								<t class=en>Home delivery</t>
+								<t class=ro>La adresa mea, prin curier, cu plata ramburs.</t>
+							</label>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type=radio name=delivery_method value=office>
+							<input type=radio id=delivery_store name=delivery_method value=store>
 						</td>
 						<td>
-							<t class=en>At your store</t>
-							<t class=ro>Le ridic personal de la sediul shop-usa.ro, cu plata cash.</t>
+							<label for=delivery_store>
+								<t class=en>At your store</t>
+								<t class=ro>Le ridic personal de la sediul shop-usa.ro, cu plata cash.</t>
+							</label>
 						</td>
 					</tr>
 				</table>
@@ -549,8 +553,8 @@
 					<t class=en>Shipping cost:</t>
 					<t class=ro>Cost livrare:</t>
 					<span class=price>
-						<t class=en>${{{total}}}</t>
-						<t class=ro>{{{total}}} Lei</t>
+						<t class=en>$<span class=shipping_cost></span></t>
+						<t class=ro><span class=shipping_cost></span> Lei</t>
 					</span>
 				</span>
 				<br>
@@ -611,8 +615,8 @@
 				<br>
 				<span class=subtotal>Total:
 					<span class=price>
-						<t class=en>${{{total}}}</t>
-						<t class=ro>{{{total}}} Lei</t>
+						<t class=en>$<span class=grand_total></span></t>
+						<t class=ro><span class=grand_total></span> Lei</t>
 					</span>
 				</span>
 				<br>

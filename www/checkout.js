@@ -1,9 +1,18 @@
 
+var g_shipping_cost
+var g_subtotal
+function checkout_update_totals() {
+	var total = g_subtotal + g_shipping_cost
+	$('.shipping_cost').html(g_shipping_cost)
+	$('.grand_total').html(total)
+}
+
 function checkout_update_cart(cart) {
 
 	var total = 0
 	$.each(cart.buynow, function(i,e) { total += e.price; })
-	total = total.toFixed(2)
+	g_subtotal = total
+	checkout_update_totals()
 
 	var data = {
 		items:          cart.buynow,
@@ -51,6 +60,13 @@ function create_login_section(dst_id) {
 	$('#btn_create_account').click(function() {
 		post('/login.json', pass_auth('create'), action.checkout, login_failed)
 	})
+
+	$('input[name="delivery_method"]').click(function() {
+		g_shipping_cost = $(this).val() == 'home' ? 25 : 0
+		checkout_update_totals()
+	})
+
+	$('input[name="delivery_method"][value="home"]').trigger('click')
 
 }
 
