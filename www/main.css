@@ -167,6 +167,7 @@ img.disabled {
 button.disabled {
 	color: #666;
 	background: #ccc;
+	cursor: default;
 }
 
 button.disabled:hover {

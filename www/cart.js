@@ -113,7 +113,6 @@ function update_cart_page() {
 
 	var total = 0
 	$.each(g_cart.buynow, function(i,e) { total += e.price; })
-	total = total.toFixed(2)
 
 	apply_template('#cart_page_template', {
 		buynow:         apply_template('#cart_list_template', g_cart.buynow),
