@@ -22,6 +22,7 @@ function checkout_update_cart(cart) {
 	}
 
 	apply_template('#checkout_cart_section_template', data, '#cart_section')
+
 }
 
 function login_failed() {
@@ -61,11 +62,6 @@ function create_login_section(dst_id) {
 		post('/login.json', pass_auth('create'), action.checkout, login_failed)
 	})
 
-	$('input[name="delivery_method"]').click(function() {
-		g_shipping_cost = $(this).val() == 'home' ? 25 : 0
-		checkout_update_totals()
-	})
-
 }
 
 function checkout_update_account(usr) {
@@ -76,8 +72,6 @@ function checkout_update_account(usr) {
 		apply_template('#account_section_template', usr, '#account_section')
 	}
 
-	$('input[name="delivery_method"][value="home"]').trigger('click')
-
 	$('#relogin').click(function() {
 		create_login_section('#account_section')
 	})
@@ -85,7 +79,15 @@ function checkout_update_account(usr) {
 }
 
 action.checkout = function() {
+
 	apply_template('#checkout_template', {}, '#main')
+
+	$('input[name="delivery_method"]').click(function() {
+		g_shipping_cost = $(this).val() == 'home' ? 25 : 0
+		checkout_update_totals()
+	})
+	$('input[name="delivery_method"][value="home"]').trigger('click')
+
 	load_main('/cart.json', checkout_update_cart)
 	load_content('#account', '/login.json', checkout_update_account)
 }
