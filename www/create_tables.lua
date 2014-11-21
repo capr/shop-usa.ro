@@ -88,18 +88,21 @@ end
 subst'table  create table if not exists'
 
 --type domains
-subst'id     int unsigned'
-subst'pk     int unsigned primary key auto_increment'
-subst'name   varchar(32)'
-subst'email  varchar(128)'
-subst'url    varchar(2048)'
-subst'pass   varchar(32)'
-subst'bool   tinyint not null default 0'
-subst'bool1  tinyint not null default 1'
-subst'atime  timestamp default current_timestamp'
-subst'mtime  timestamp' --on update current_timestamp
+subst'id      int unsigned'
+subst'pk      int unsigned primary key auto_increment'
+subst'name    varchar(32)'
+subst'email   varchar(128)'
+subst'url     varchar(2048)'
+subst'pass    varchar(32)'
+subst'bool    tinyint not null default 0'
+subst'bool1   tinyint not null default 1'
+subst'atime   timestamp default current_timestamp'
+subst'mtime   timestamp' --on update current_timestamp
+subst'price   decimal(20,6)'
+subst'currate decimal(20,6)'
 
 --drop everything
+droptable'convrate'
 droptable'ordritem'
 droptable'ordr'
 droptable'cartitem'
@@ -174,3 +177,11 @@ $table ordritem (
 );
 ]]
 
+ddl[[
+$table convrate (
+	ron         $currate not null,
+	usd         $currate not null,
+	date        date not null,
+	primary key (ron, usd, date)
+)
+]]

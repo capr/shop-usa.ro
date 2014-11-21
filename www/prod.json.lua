@@ -44,7 +44,7 @@ local init_dvids = {} --{did = dvid}
 for i,t in ipairs(query([[
 	select
 		pa.id_product_attribute as coid,
-		pa.price,
+		cast(round(pa.price * 1.55 * ?, -1) - 1 as decimal(20, 0)) as price,
 		pa.quantity as qty,
 		pa.default_on,
 		ag.id_attribute_group as did,
@@ -71,7 +71,7 @@ for i,t in ipairs(query([[
 		pa.id_product = ?
 	order by
 		coid, dvid
-]], pid)) do
+]], usd_rate(), pid)) do
 
 	dnames[t.did] = t.dname
 	dvnames[t.dvid] = t.dvname

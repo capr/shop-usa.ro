@@ -30,9 +30,10 @@ local function try_call(func, ...)
 			ngx.log(ngx.ERR, err)
 			err = 'Internal error'
 		end
+		ngx.status = 500
 		ngx.header.content_type = 'text/plain'
 		ngx.say(err)
-		ngx.exit(500)
+		ngx.exit(0)
 	end
 	return pass(xpcall(func, debug.traceback, ...))
 end

@@ -20,8 +20,8 @@ if bid then
 			and cp.id_category = ?
 		where
 			p.active = 1
-			]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
-	]], catid)
+]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
+]], catid)
 else
 	prod_count = query1([[
 		select
@@ -38,9 +38,9 @@ local prods = query([[
 	select
 		p.id_product as pid,
 		pl.name,
-		p.price,
+		cast(round(p.price * 1.55 * ?, -1) - 1 as decimal(20, 0)) as price,
 		p.discount,
-		p.msrp,
+		cast(round(p.msrp * 1.55 * ?, -1) - 1 as decimal(20, 0)) as msrp,
 		i.id_image as imgid,
 		m.name as bname
 	from
@@ -58,11 +58,11 @@ local prods = query([[
 		m.id_manufacturer = p.id_manufacturer
 	where
 		p.active = 1
-		]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
+]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
 	order by
 		p.date_upd
 	limit
-]]..offset..', '..pagesize, catid)
+]]..offset..', '..pagesize, usd_rate(), usd_rate(), catid)
 
 
 out_json({
