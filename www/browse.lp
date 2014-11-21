@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
+	<meta name="google-site-verification" content="RN6WqC6KH1tVHYgmN36WWgglVxLNelRCul4wwaFyGyA" />
 	<link rel="stylesheet" type="text/css" href="/main.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
