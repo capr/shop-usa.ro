@@ -12,10 +12,10 @@ function S(name, val) {
 // global C() for general config values.
 var C_ = {}
 function C(name, val) {
-	if (typeof(val) === 'undefined')
-		console.log('error: missing config value for ', name)
 	if (val && !C_[name])
 		C_[name] = val
+	if (typeof(C_[name]) === 'undefined')
+		console.log('error: missing config value for ', name)
 	return C_[name]
 }
 
