@@ -66,8 +66,6 @@ function create_login_section(dst_id) {
 		checkout_update_totals()
 	})
 
-	$('input[name="delivery_method"][value="home"]').trigger('click')
-
 }
 
 function checkout_update_account(usr) {
@@ -77,6 +75,8 @@ function checkout_update_account(usr) {
 	} else {
 		apply_template('#account_section_template', usr, '#account_section')
 	}
+
+	$('input[name="delivery_method"][value="home"]').trigger('click')
 
 	$('#relogin').click(function() {
 		create_login_section('#account_section')
