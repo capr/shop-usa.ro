@@ -1,4 +1,7 @@
 
+package.path = os.getenv'LUA_PATH'
+package.cpath = os.getenv'LUA_CPATH'
+
 --cached config function.
 local conf = {}
 local null = conf

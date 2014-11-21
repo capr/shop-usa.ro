@@ -6,6 +6,8 @@ local function out_summary()
 		select count(1) from cartitem where uid = ? and buylater = 0
 	]], uid())
 	out_json({
+		ppath=package.path,
+		cpath=package.cpath,
 		uid = uid(),
 		count = tonumber(count),
 	})
