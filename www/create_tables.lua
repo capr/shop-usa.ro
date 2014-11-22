@@ -98,8 +98,7 @@ subst'bool    tinyint not null default 0'
 subst'bool1   tinyint not null default 1'
 subst'atime   timestamp default current_timestamp'
 subst'mtime   timestamp' --on update current_timestamp
-subst'price   decimal(20,6)'
-subst'currate decimal(20,6)'
+subst'money   decimal(20,6)'
 
 --drop everything
 droptable'convrate'
@@ -151,7 +150,7 @@ $table cartitem (
 ddl[[
 $table ordr (
 	oid         $pk,
-	uid         $id, $fk(ordr, uid, usr),
+	uid         $id not null, $fk(ordr, uid, usr),
 	name        $name,
 	phone       $name,
 	addr        text,
@@ -159,8 +158,8 @@ $table ordr (
 	county      $name,
 	country     $name,
 	note        text,
-	delivery    $name,
-	payment     $name,
+	delivery    $name not null,
+	shipping    $money not null,
 	atime       $atime,
 	mtime       $mtime
 );
@@ -172,6 +171,7 @@ $table ordritem (
 	oid         $id not null, $fk(ordritem, oid, ordr),
 	coid        $id not null, $fk(ordritem, coid, ps_product_attribute, id_product_attribute),
 	qty         $id not null default 1,
+	price       $money not null,
 	atime       $atime,
 	mtime       $mtime
 );
@@ -179,8 +179,8 @@ $table ordritem (
 
 ddl[[
 $table convrate (
-	ron         $currate not null,
-	usd         $currate not null,
+	ron         $money not null,
+	usd         $money not null,
 	date        date not null,
 	primary key (ron, usd, date)
 )
