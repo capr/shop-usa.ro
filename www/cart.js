@@ -141,7 +141,7 @@ function update_cart_page() {
 		buy_later(ciid, update_cart_page)
 	})
 
-	$('.orderbutton').click(function() {
+	$('.checkoutbutton').click(function() {
 		exec('/browse/checkout')
 	})
 

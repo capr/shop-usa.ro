@@ -18,6 +18,7 @@
 	<script src="/jquery.jqzoom.js"></script>
 	<script src="/jquery.easing.js"></script>
 	<script src="/jquery.sortable.js"></script>
+	<script src="/jquery.validate.js"></script>
 	<script src="/browse.js"></script>
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>
@@ -124,7 +125,10 @@
 			<td>
 				<a><b>{{{bname}}}</b> {{{name}}}</a>
 				<br>
-				<span class=price><t class=en>$</t>{{{price}}}<t class=ro> Lei</t></span>
+				<span class=price>
+					<t class=en>${{{price}}}</t>
+					<t class=ro> Lei</t>
+				</span>
 				{{#discount}}
 					<br>
 					<span class=discount>
@@ -155,7 +159,10 @@
 		<br>
 		<a><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
-		<span class=price><t class=en>$</t>{{{price}}}<t class=ro> Lei</t></span>
+		<span class=price>
+			<t class=en>${{{price}}}</t>
+			<t class=ro> Lei</t>
+		</span>
 		{{#discount}}
 			<br>
 			<span class=discount>
@@ -302,7 +309,7 @@
 		<br>
 		<br>
 		{{#buynow_count}}
-		<button class="orderbutton orange">
+		<button class="checkoutbutton orange">
 			<t class=en>Place Order</t>
 			<t class=ro>Comanda</t>
 		</button>
@@ -355,6 +362,10 @@
 </script>
 
 <script type="text/x-mustache" id=login_section_template>
+	<h3>
+		<t class=en>Account:</t>
+		<t class=ro>Contul meu:</t>
+	</h3>
 	<table width=100%>
 		<tr>
 			<td width=38% valign=top>
@@ -368,6 +379,11 @@
 						<t class=en>Sign in with Google</t>
 						<t class=ro>Intra cu Google</t>
 				</a>
+				<a class="btn btn_no_account">
+					<i class="fa fa-check-square-o" style="width:16px; height:18px"></i>
+						<t class=en>Order without account</t>
+						<t class=ro>Comanda fara cont</t>
+				</a>
 			</td>
 			<td width=62% style="padding-left: 10px">
 				<table width=100% style="border-spacing: 4px">
@@ -378,7 +394,7 @@
 								<t class=ro>Email:</t>
 							</label>
 						</td>
-						<td><input id=email type=text></input></td>
+						<td><input id=email type=text email required></input></td>
 					</tr>
 					<tr>
 						<td nowrap>
@@ -388,7 +404,7 @@
 							</label>
 						</td>
 						<td nowrap>
-							<input id=pass type=password></input>
+							<input id=pass type=password required></input>
 							<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
 							<t class=en><a title="See the password" class="fa fa-eye inside-right"></a></t>
 						</td>
@@ -414,25 +430,58 @@
 </script>
 
 <script type="text/x-mustache" id=account_section_template>
-	<table width=100%>
+	<h3>
+		<t class=en>Contact details:</t>
+		<t class=ro>Datele de contact:</t>
+	</h3>
+	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td width=30%>Email:</td>
-			<td>{{email}}</td>
+			<td>
+				{{#facebookid}}
+					{{email}}
+				{{/facebookid}}
+				{{#googleid}}
+					{{email}}
+				{{/googleid}}
+				{{^facebookid}}{{^googleid}}
+					<input id=usr_email type=text value="{{email}}">
+				{{/googleid}}{{/facebookid}}
+			</td>
 			<td rowspan=2 align=right>
-			{{#facebookid}}
-			<img src="//graph.facebook.com/{{facebookid}}/picture">
-			{{/facebookid}}
-			{{#gimgurl}}
-			<img src="{{gimgurl}}">
-			{{/gimgurl}}
+				{{#facebookid}}
+					<img src="//graph.facebook.com/{{facebookid}}/picture">
+				{{/facebookid}}
+				{{#gimgurl}}
+					<img src="{{gimgurl}}">
+				{{/gimgurl}}
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<t class=en>Name:</t>
+				<t class=en>Full Name:</t>
 				<t class=ro>Nume:</t>
 			</td>
-			<td>{{firstname}} {{lastname}}</td>
+			<td>
+				{{#facebookid}}
+					{{firstname}} {{lastname}}
+				{{/facebookid}}
+				{{#googleid}}
+					{{firstname}} {{lastname}}
+				{{/googleid}}
+				{{^facebookid}}{{^googleid}}
+					<input id=usr_name type=text value="{{firstname}} {{lastname}}">
+				{{/googleid}}{{/facebookid}}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<t class=en>Phone:</t>
+				<t class=ro>Telefon:</t>
+			</td>
+			<td>
+				<input id=usr_phone type=text value="{{phone}}">
+			</td>
 		</tr>
 		<tr>
 			<td colspan=3>
@@ -500,7 +549,6 @@
 
 		<tr>
 			<td width=75%>
-				<h3><t class=ro>Contul meu:</t></h3>
 				<div id=account_section></div>
 			</td>
 			<td width=35%></td>
@@ -564,31 +612,33 @@
 			</td>
 		</tr>
 
-		<tr>
+		<tr id=address_section>
 			<td>
 				<h3><t class=en>Delivery Address:</t><t class=ro>Adresa de livrare:</t></h3>
-				<table width=100%>
-					<tr>
-						<td><label><t class=en>Name:</t><t class=ro>Nume:</t></label></td>
-						<td><input id=addr_name type=text></input></td>
-					</tr>
-					<tr>
-						<td><label><t class=en>Phone:</t><t class=ro>Telefon:</t></label></td>
-						<td><input id=addr_phone type=text></input></td>
-					</tr>
-					<tr>
-						<td><label><t class=en>Address:</t><t class=ro>Adresa:</t></label></td>
-						<td><input id=addr_street type=text placeholder="Strada, Numar, Bloc, Scara, Apart., Interfon"></input></td>
-					</tr>
-					<tr>
-						<td><label><t class=en>City:</t><t class=ro>Oras:</t></label></td>
-						<td><input id=addr_city type=text placeholder=""></input></td>
-					</tr>
-					<tr>
-						<td><label><t class=en>County:</t><t class=ro>Judet/Sector:</t></label></td>
-						<td><input id=addr_county type=text placeholder=""></input></td>
-					</tr>
-				</table>
+				<form id=addr_form>
+					<table width=100% style="border-spacing: 4px">
+						<tr>
+							<td><label for=addr_name><t class=en>Name:</t><t class=ro>Nume:</t></label></td>
+							<td><input id=addr_name type=text required></input></td>
+						</tr>
+						<tr>
+							<td><label for=addr_phone><t class=en>Phone:</t><t class=ro>Telefon:</t></label></td>
+							<td><input id=addr_phone type=text required></input></td>
+						</tr>
+						<tr>
+							<td><label for=addr_street><t class=en>Address:</t><t class=ro>Adresa:</t></label></td>
+							<td><input id=addr_street type=text placeholder="Strada, Numar, Bloc, Scara, Apart., Interfon" required></input></td>
+						</tr>
+						<tr>
+							<td><label for=addr_city><t class=en>City:</t><t class=ro>Oras:</t></label></td>
+							<td><input id=addr_city type=text placeholder="" required></input></td>
+						</tr>
+						<tr>
+							<td><label for=addr_county><t class=en>County:</t><t class=ro>Judet/Sector:</t></label></td>
+							<td><input id=addr_county type=text placeholder="" required></input></td>
+						</tr>
+					</table>
+				</form>
 			</td>
 			<td>
 			</td>
@@ -596,7 +646,10 @@
 
 		<tr>
 			<td>
-				<h3><t class=en>Other details (optional):</t><t class=ro>Alte detalii (optional):</t></h3>
+				<h3>
+					<t class=en>Other details (optional):</t>
+					<t class=ro>Alte mentiuni (optional):</t>
+				</h3>
 			</td>
 			<td>
 			</td>

@@ -45,6 +45,10 @@ function create_login_section(dst_id) {
 		google_login(action.checkout, login_failed)
 	})
 
+	$('.btn_no_account').click(function() {
+		get('/login.json', action.checkout)
+	})
+
 	var pass_auth = function(action) {
 		return {
 			type:  'pass',
@@ -76,6 +80,8 @@ function checkout_update_account(usr) {
 		create_login_section('#account_section')
 	})
 
+	load_main('/cart.json', checkout_update_cart)
+
 }
 
 action.checkout = function() {
@@ -83,12 +89,30 @@ action.checkout = function() {
 	apply_template('#checkout_template', {}, '#main')
 
 	$('input[name="delivery_method"]').click(function() {
-		g_shipping_cost = $(this).val() == 'home' ? 25 : 0
+		var home = $(this).val() == 'home'
+		g_shipping_cost = home ? 25 : 0
 		checkout_update_totals()
+		if (home)
+			$('#address_section').show()
+		else
+			$('#address_section').hide()
 	})
 	$('input[name="delivery_method"][value="home"]').trigger('click')
 
-	load_main('/cart.json', checkout_update_cart)
 	load_content('#account', '/login.json', checkout_update_account)
+
+	$('#addr_form').validate({
+		debug: true,
+		submitHandler: function() {
+			console.log('submit')
+		}
+	})
+
+	$('.orderbutton').click(function() {
+
+		$('#addr_form').submit()
+
+	})
+
 }
 

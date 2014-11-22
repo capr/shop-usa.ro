@@ -83,6 +83,7 @@ local function delete_user(uid)
 end
 
 local function transfer_cart(old_uid, new_uid)
+	query('update cartitem set buylater = 1 where uid = ?', new_uid)
 	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
 end
 
@@ -90,6 +91,8 @@ function auth.pass(auth)
 	if auth.action == 'login' then
 		return pass_uid(auth.email, auth.pass)
 	elseif auth.action == 'create' then
+		if not auth.email or #auth.email < 1 then return end
+		if not auth.pass or #auth.pass < 1 then return end
 		if not email_exists(auth.email) then
 			local uid = anonymous_uid(session_uid()) or create_user()
 			set_email_pass(uid, auth.email, auth.pass)
