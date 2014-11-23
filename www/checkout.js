@@ -1,18 +1,33 @@
+(function() {
+
+// form validation -----------------------------------------------------------
+
+function error_placement(error, element) {
+	var div = $('.error[for="'+$(element).attr('id')+'"]')
+	div.css('left', $(element).width() + 20)
+	div.append(error)
+	return false
+}
+
+// totals --------------------------------------------------------------------
 
 var g_shipping_cost
 var g_subtotal
-function checkout_update_totals() {
+
+function update_totals() {
 	var total = g_subtotal + g_shipping_cost
 	$('.shipping_cost').html(g_shipping_cost)
 	$('.grand_total').html(total)
 }
 
-function checkout_update_cart(cart) {
+// cart section --------------------------------------------------------------
+
+function update_cart(cart) {
 
 	var total = 0
 	$.each(cart.buynow, function(i,e) { total += e.price; })
 	g_subtotal = total
-	checkout_update_totals()
+	update_totals()
 
 	var data = {
 		items:          cart.buynow,
@@ -25,31 +40,33 @@ function checkout_update_cart(cart) {
 
 }
 
+function load_cart() {
+	load_main('/cart.json', update_cart)
+}
+
+// login section -------------------------------------------------------------
+
 function login_failed() {
 	var a = $('#account_section')
 	a.css({position: 'relative'})
-	a.animate({top: 0}, // just because it won't start otherwise
-		{
-			duration: 400,
-			progress: function(_,t) {
-				a.css('left', 30 * (1-t) * Math.sin(t * Math.PI * 6))
+	// note: top: 0 is just beacause the animation won't start with no attrs.
+	a.animate({top: 0}, {
+		duration: 400,
+		progress: function(_,t) {
+			a.css('left', 30 * (1-t) * Math.sin(t * Math.PI * 6))
 		},
 	})
 }
 
-var want_anonymous = false
-
-function error_placement(error, element) {
-	var div = $('.error[for="'+$(element).attr('id')+'"]')
-	div.css('left', $(element).width() + 20)
-	div.append(error)
-	return false
-}
+var g_want_anonymous = false
 
 var validate_login
 
-function create_login_section(dst_id) {
-	apply_template('#login_section_template', {}, dst_id)
+function create_login_section() {
+
+	apply_template('#login_section_template', {}, '#account_section')
+
+	g_want_anonymous = false
 
 	$('.fa-eye').click(function() {
 		$('#pass').attr('type',
@@ -65,7 +82,7 @@ function create_login_section(dst_id) {
 	})
 
 	$('.btn_no_account').click(function() {
-		want_anonymous = true
+		g_want_anonymous = true
 		post('/login.json', {type: 'anonymous'}, action.checkout)
 	})
 
@@ -79,7 +96,7 @@ function create_login_section(dst_id) {
 			$('#btn_login').click()
 	})
 
-	var pass_auth = function(action) {
+	function pass_auth(action) {
 		return {
 			type:  'pass',
 			action: action,
@@ -130,38 +147,53 @@ function create_login_section(dst_id) {
 
 }
 
-function checkout_update_account(usr) {
+// user section --------------------------------------------------------------
 
-	if (usr.anonymous && !want_anonymous) {
-		create_login_section('#account_section')
-	} else {
-		apply_template('#account_section_template', usr, '#account_section')
-	}
+var validate_usr
+
+function create_user_section(usr) {
+	apply_template('#user_section_template', usr, '#account_section')
 
 	$('#relogin').click(function() {
-		create_login_section('#account_section')
+		create_login_section()
 	})
 
-	load_main('/cart.json', checkout_update_cart)
+	var validator = $('#usr_form').validate({
+		rules: {
+
+		},
+		messages: {
+
+		},
+		errorPlacement: error_placement,
+	})
+
+	validate_usr = function() {
+		if (!$('#usr_form').valid()) {
+			validator.focusInvalid()
+			return false
+		}
+		return true
+	}
 
 }
 
-action.checkout = function() {
+// shipping section ----------------------------------------------------------
 
-	apply_template('#checkout_template', {}, '#main')
+var validate_addr
 
-	$('input[name="delivery_method"]').click(function() {
+function update_shipping_section() {
+
+	$('input[name="shipping_method"]').click(function() {
 		var home = $(this).val() == 'home'
 		g_shipping_cost = home ? 25 : 0
-		checkout_update_totals()
+		update_totals()
 		if (home)
 			$('#address_section').show()
 		else
 			$('#address_section').hide()
 	})
-	$('input[name="delivery_method"][value="home"]').trigger('click')
-
-	load_content('#account', '/login.json', checkout_update_account)
+	$('input[name="shipping_method"][value="home"]').trigger('click')
 
 	var validator = $('#addr_form').validate({
 		rules: {
@@ -171,29 +203,58 @@ action.checkout = function() {
 		},
 		errorPlacement: error_placement,
 	})
-	var validate = function() {
+
+	validate_addr = function() {
+		if (!$('#address_section').is(":visible"))
+			return true
 		if (!$('#addr_form').valid()) {
 			validator.focusInvalid()
 			return false
 		}
 		return true
 	}
+}
+
+// ordering ------------------------------------------------------------------
+
+function create_order() {
+
+	if ($('#login_form').length) {
+		if (!validate_login())
+			return
+		$('#email').focus()
+		return
+	}
+
+	if ($('#usr_form').length)
+		if (!validate_usr())
+			return
+
+	if (!validate_addr())
+		return
+
+}
+
+// main ----------------------------------------------------------------------
+
+action.checkout = function() {
+
+	apply_template('#checkout_template', {}, '#main')
+
+	load_content('#account_section', '/login.json', function(usr) {
+		if (usr.anonymous && !g_want_anonymous)
+			create_login_section()
+		else
+			create_user_section(usr)
+		load_cart()
+	})
+
+	update_shipping_section()
 
 	$('.orderbutton').click(function() {
-
-		if ($('#login_form').length) {
-			if (validate_login())
-				$('#email').focus()
-			return
-		}
-
-		if ($('#addr_form').length) {
-			//validate_addr()
-		}
-
-		validate()
-		//
+		create_order()
 	})
 
 }
 
+})()

@@ -41,6 +41,12 @@ String.prototype.format = function() {
 	return s
 }
 
+if (typeof String.prototype.trim !== 'function') {
+	String.prototype.trim = function() {
+		return this.replace(/^\s+|\s+$/g, '')
+	}
+}
+
 function firstname(name) {
 	name = name.trim()
 	var a = name.split(' ', 1)
@@ -116,6 +122,13 @@ function url_changed() {
 	var handler = action[act]
 	if (handler)
 		handler.apply(null, args)
+}
+
+function setlink(sel, url) {
+	$(sel).attr('href', url).click(function(event) {
+		event.preventDefault()
+		exec(url)
+	})
 }
 
 // persistence ---------------------------------------------------------------

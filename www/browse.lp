@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=<%=GET.lang or 'ro'%>>
+<html lang=<%=GET.en and 'en' or 'ro'%>>
 <head>
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
@@ -210,9 +210,9 @@
 			</td>
 			<td valign=top width=300>
 				<div style="min-height: 100px">
-					<img src="/img/m/{{{bid}}}.jpg">
+					<a class=brandlink><img src="/img/m/{{{bid}}}.jpg"></a>
 				</div>
-				<b>{{{bname}}}</b> {{{name}}}
+				<a class=brandlink><b>{{{bname}}}</b></a> {{{name}}}
 				<br>
 				<br>
 				<div id=combi style="min-height: 60px"></div>
@@ -388,14 +388,12 @@
 					<table width=100% style="border-spacing: 4px">
 						<tr>
 							<td width=1 nowrap>
-								<label for=email>
-									<t class=en>Email:</t>
-									<t class=ro>Email:</t>
-								</label>
+								<label for=email>Email:</label>
 							</td>
 							<td nowrap>
 								<div class=errdiv1><div for=email class="error errdiv2"></div></div>
-								<input id=email name=email type=text class=email placeholder="foo@bar.com" required>
+								<input id=email name=email type=text class=email
+									placeholder="name@domain.com" required>
 							</td>
 						</tr>
 						<tr>
@@ -433,66 +431,77 @@
 	</form>
 </script>
 
-<script type="text/x-mustache" id=account_section_template>
+<script type="text/x-mustache" id=user_section_template>
 	<h3>
 		<t class=en>Contact details:</t>
 		<t class=ro>Datele de contact:</t>
 	</h3>
-	<table width=100% style="border-spacing: 5px;">
-		<tr>
-			<td width=30%>Email:</td>
-			<td>
-				{{#facebookid}}
-					{{email}}
-				{{/facebookid}}
-				{{#googleid}}
-					{{email}}
-				{{/googleid}}
-				{{^facebookid}}{{^googleid}}
-					<input id=usr_email type=text value="{{email}}">
-				{{/googleid}}{{/facebookid}}
-			</td>
-			<td rowspan=2 align=right>
-				{{#facebookid}}
-					<img src="//graph.facebook.com/{{facebookid}}/picture">
-				{{/facebookid}}
-				{{#gimgurl}}
-					<img src="{{gimgurl}}">
-				{{/gimgurl}}
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<t class=en>Full Name:</t>
-				<t class=ro>Nume:</t>
-			</td>
-			<td>
-				{{#facebookid}}{{name}}{{/facebookid}}
-				{{#googleid}}{{name}}{{/googleid}}
-				{{^facebookid}}{{^googleid}}
-					<input id=usr_name type=text value="{{name}}">
-				{{/googleid}}{{/facebookid}}
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<t class=en>Phone:</t>
-				<t class=ro>Telefon:</t>
-			</td>
-			<td>
-				<input id=usr_phone type=text value="{{phone}}">
-			</td>
-		</tr>
-		<tr>
-			<td colspan=3>
-				<br>
-				<a id=relogin class=gray>
-					<t class=en>Not {{name}}?</t>
-					<t class=ro>Nu esti {{name}}?</t>
-				</a>
-			</td>
-		</tr>
-	</table>
+	<form id=usr_form>
+		<table width=100% style="border-spacing: 5px;">
+			<tr>
+				<td width=30%>
+					<label for=usr_email>Email:</label>
+				</td>
+				<td>
+					{{#facebookid}}
+						{{email}}
+					{{/facebookid}}
+					{{#googleid}}
+						{{email}}
+					{{/googleid}}
+					{{^facebookid}}{{^googleid}}
+						<div class=errdiv1><div for=usr_email class="error errdiv2"></div></div>
+						<input id=usr_email name=usr_email class=email type=text
+							value="{{email}}" placeholder="name@domain.com" required>
+					{{/googleid}}{{/facebookid}}
+				</td>
+				<td rowspan=2 align=right>
+					{{#facebookid}}
+						<img src="//graph.facebook.com/{{facebookid}}/picture">
+					{{/facebookid}}
+					{{#gimgurl}}
+						<img src="{{gimgurl}}">
+					{{/gimgurl}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<t class=en>Full Name:</t>
+					<t class=ro>Nume:</t>
+				</td>
+				<td>
+					{{#facebookid}}{{name}}{{/facebookid}}
+					{{#googleid}}{{name}}{{/googleid}}
+					{{^facebookid}}{{^googleid}}
+						<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
+						<t class=en><input id=usr_name name=usr_name type=text
+							value="{{name}}" placeholder="Name Surname" required></t>
+						<t class=ro><input id=usr_name name=usr_name type=text
+							value="{{name}}" placeholder="Nume Complet" required></t>
+					{{/googleid}}{{/facebookid}}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<t class=en>Phone:</t>
+					<t class=ro>Telefon:</t>
+				</td>
+				<td>
+					<div class=errdiv1><div for=usr_phone class="error errdiv2"></div></div>
+					<input id=usr_phone name=usr_phne type=text value="{{phone}}" required>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=3>
+					<br>
+					<a id=relogin class=gray>
+						<t class=en>Not {{name}}?</t>
+						<t class=ro>Nu esti {{name}}?</t>
+					</a>
+				</td>
+			</tr>
+		</table>
+	</form>
 </script>
 
 <script type="text/x-mustache" id=checkout_cart_section_template>
@@ -564,25 +573,25 @@
 
 		<tr>
 			<td>
-				<h3><t class=en>Delivery:</t><t class=ro>Cum le livram?</t></h3>
+				<h3><t class=en>Shipping:</t><t class=ro>Cum le livram?</t></h3>
 				<table width=100%>
 					<tr>
 						<td width=30>
-							<input type=radio id=delivery_home name=delivery_method value=home>
+							<input type=radio id=shipping_home name=shipping_method value=home>
 						</td>
 						<td>
-							<label for=delivery_home>
-								<t class=en>Home delivery</t>
+							<label for=shipping_home>
+								<t class=en>Ship to my address, cash on delivery.</t>
 								<t class=ro>La adresa mea, prin curier, cu plata ramburs.</t>
 							</label>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input type=radio id=delivery_store name=delivery_method value=store>
+							<input type=radio id=shipping_store name=shipping_method value=store>
 						</td>
 						<td>
-							<label for=delivery_store>
+							<label for=shipping_store>
 								<t class=en>At your store</t>
 								<t class=ro>Le ridic personal de la sediul shop-usa.ro, cu plata cash.</t>
 							</label>
@@ -614,7 +623,10 @@
 
 		<tr id=address_section>
 			<td>
-				<h3><t class=en>Delivery Address:</t><t class=ro>Adresa de livrare:</t></h3>
+				<h3>
+					<t class=en>Shipping Address:</t>
+					<t class=ro>Adresa de livrare:</t>
+				</h3>
 				<form id=addr_form>
 					<table width=100% style="border-spacing: 4px">
 						<tr>
@@ -626,7 +638,8 @@
 							</td>
 							<td>
 								<div class=errdiv1><div for=addr_name class="error errdiv2"></div></div>
-								<input id=addr_name name=addr_name type=text required>
+								<t class=en><input id=addr_name name=addr_name type=text placeholder="Name Surname" required></t>
+								<t class=ro><input id=addr_name name=addr_name type=text placeholder="Nume Complet" required></t>
 							</td>
 						</tr>
 						<tr>
@@ -637,8 +650,7 @@
 								</label>
 							</td>
 							<td>
-								<div class=errdiv1><div for=addr_phone class="error errdiv2"></div>
-								</div>
+								<div class=errdiv1><div for=addr_phone class="error errdiv2"></div></div>
 								<input id=addr_phone name=addr_phone type=text required>
 							</td>
 						</tr>
@@ -650,8 +662,7 @@
 								</label>
 							</td>
 							<td>
-								<div class=errdiv1><div for=addr_street class="error errdiv2"></div>
-								</div>
+								<div class=errdiv1><div for=addr_street class="error errdiv2"></div></div>
 								<t class=ro>
 									<input id=addr_street name=addr_street type=text
 										placeholder="Strada, Numar, Bloc, Scara, Apart., Interfon"
@@ -672,8 +683,7 @@
 								</label>
 							</td>
 							<td>
-								<div class=errdiv1><div for=addr_city class="error errdiv2"></div>
-								</div>
+								<div class=errdiv1><div for=addr_city class="error errdiv2"></div></div>
 								<input id=addr_city name=addr_city type=text placeholder="" required>
 							</td>
 						</tr>
@@ -681,12 +691,11 @@
 							<td>
 								<label for=addr_county>
 									<t class=en>County:</t>
-									<t class=ro>Judet/Sector:</t>
+									<t class=ro>Judet:</t>
 								</label>
 							</td>
 							<td>
-								<div class=errdiv1><div for=addr_county class="error errdiv2"></div>
-								</div>
+								<div class=errdiv1><div for=addr_county class="error errdiv2"></div></div>
 								<input id=addr_county name=addr_county type=text placeholder="" required>
 							</td>
 						</tr>

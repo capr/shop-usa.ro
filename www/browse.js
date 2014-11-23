@@ -16,8 +16,8 @@ function update_prods(prods) {
 
 	$('#main').html(format_prods(prods))
 
-	$('#main [pid] a').click(function() {
-		exec('/browse/p/'+upid(this, 'pid'))
+	$('#main [pid] a').each(function(i, e) {
+		setlink(this, '/browse/p/'+upid(this, 'pid'))
 	})
 
 	$('#main .buybutton').click(function() {
@@ -295,6 +295,8 @@ function update_prod(prod) {
 	$('#dimsel select[did]').change(dimsel_changed)
 
 	dimsel_changed()
+
+	setlink('.brandlink', '/browse/brand/' + prod.bid)
 
 	$('#main .buybutton').click(function() {
 		var pid = parseInt($(this).attr('pid'))

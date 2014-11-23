@@ -139,7 +139,7 @@ local function check_img()
 
 	if kind == 'p' then
 
-		if env == 'dev' then
+		if config('no_images') then
 			check(false)
 		end
 

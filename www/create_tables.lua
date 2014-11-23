@@ -158,8 +158,8 @@ $table ordr (
 	county      $name,
 	country     $name,
 	note        text,
-	delivery    $name not null,
-	shipping    $money not null,
+	shiptype    $name not null,
+	shipcost    $money not null,
 	atime       $atime,
 	mtime       $mtime
 );
