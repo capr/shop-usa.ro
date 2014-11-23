@@ -10,7 +10,6 @@
 	<script src="/mustache.js"></script>
 	<script src="/util.js"></script>
 	<script src="/config.js"></script>
-	<script src="/strings.ro.js"></script>
 	<script src="/jquery.history.js"></script>
 	<script src="/jquery.cookie.js"></script>
 	<script src="/jquery.quicksearch.js"></script>
