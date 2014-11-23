@@ -1,11 +1,13 @@
 
-(function()
+(function() {
+
 var params = {
 	clientid: C('google_client_id'),
 	scope:    'https://www.googleapis.com/auth/plus.login email',
 	requestvisibleactions: 'http://schema.org/AddAction',
 	cookiepolicy: 'single_host_origin',
 }
+
 params.callback = function(authResult) {
 	if (authResult.status.signed_in) {
 		post('/login.json', {
@@ -20,6 +22,7 @@ params.callback = function(authResult) {
 		if (fail) fail()
 	}
 }
+
 function google_login(success, fail) {
 	gapi.auth.signIn(params)
 }
