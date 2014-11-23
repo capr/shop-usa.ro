@@ -7,7 +7,7 @@ function google_login(success, fail) {
 		cookiepolicy: 'single_host_origin',
 	}
 	params.callback = function(authResult) {
-		if (authResult.status.signed_in && authResult.status.method == 'AUTO') {
+		if (authResult.status.signed_in) {
 			post('/login.json', {
 				type: 'google',
 				access_token: authResult.access_token,
