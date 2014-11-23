@@ -183,7 +183,7 @@
 <script type="text/x-mustache" id=brands_list_template>
 	<b>Brands</b>
 	<br>
-	<input id=brand_search type=text style="width: 220px" placeholder="Brand"></input>
+	<input id=brand_search type=text style="width: 220px" placeholder="Brand">
 	<div style="width: 220px; height: 200px; overflow: auto">
 		<ul id=brands_list>
 		{{#.}}
@@ -397,7 +397,7 @@
 								<div style="position: absolute">
 									<div class=error for=email style="position: relative"></div>
 								</div>
-								<input id=email name=email type=text class=email required></input>
+								<input id=email name=email type=text class=email placeholder="foo@bar.com" required>
 							</td>
 						</tr>
 						<tr>
@@ -411,7 +411,7 @@
 								<div style="position: absolute">
 									<div class=error for=pass style="position: relative"></div>
 								</div>
-								<input id=pass name=pass type=password required></input>
+								<input id=pass name=pass type=password required>
 								<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
 								<t class=en><a title="See the password" class="fa fa-eye inside-right"></a></t>
 							</td>
@@ -627,23 +627,72 @@
 					<table width=100% style="border-spacing: 4px">
 						<tr>
 							<td><label for=addr_name><t class=en>Name:</t><t class=ro>Nume:</t></label></td>
-							<td><input id=addr_name type=text required></input></td>
+							<td>
+								<div style="position: absolute">
+									<div class=error for=addr_name style="position: relative"></div>
+								</div>
+								<input id=addr_name name=addr_name type=text required>
+							</td>
 						</tr>
 						<tr>
 							<td><label for=addr_phone><t class=en>Phone:</t><t class=ro>Telefon:</t></label></td>
-							<td><input id=addr_phone type=text required></input></td>
+							<td>
+								<div style="position: absolute">
+									<div class=error for=addr_phone style="position: relative"></div>
+								</div>
+								<input id=addr_phone name=addr_phone type=text required>
+							</td>
 						</tr>
 						<tr>
-							<td><label for=addr_street><t class=en>Address:</t><t class=ro>Adresa:</t></label></td>
-							<td><input id=addr_street type=text placeholder="Strada, Numar, Bloc, Scara, Apart., Interfon" required></input></td>
+							<td>
+								<label for=addr_street>
+									<t class=en>Address:</t>
+									<t class=ro>Adresa:</t>
+								</label>
+							</td>
+							<td>
+								<div style="position: absolute">
+									<div class=error for=addr_street style="position: relative"></div>
+								</div>
+								<t class=ro>
+									<input id=addr_street name=addr_street type=text
+										placeholder="Strada, Numar, Bloc, Scara, Apart., Interfon"
+										required>
+								</t>
+								<t class=en>
+									<input id=addr_street name=addr_street type=text
+										placeholder="Street Name, Number, Building, etc."
+										required>
+								</t>
+							</td>
 						</tr>
 						<tr>
-							<td><label for=addr_city><t class=en>City:</t><t class=ro>Oras:</t></label></td>
-							<td><input id=addr_city type=text placeholder="" required></input></td>
+							<td>
+								<label for=addr_city>
+									<t class=en>City:</t>
+									<t class=ro>Oras:</t>
+								</label>
+							</td>
+							<td>
+								<div style="position: absolute">
+									<div class=error for=addr_city style="position: relative"></div>
+								</div>
+								<input id=addr_city name=addr_city type=text placeholder="" required>
+							</td>
 						</tr>
 						<tr>
-							<td><label for=addr_county><t class=en>County:</t><t class=ro>Judet/Sector:</t></label></td>
-							<td><input id=addr_county type=text placeholder="" required></input></td>
+							<td>
+								<label for=addr_county>
+									<t class=en>County:</t>
+									<t class=ro>Judet/Sector:</t>
+								</label>
+							</td>
+							<td>
+								<div style="position: absolute">
+									<div class=error for=addr_county style="position: relative"></div>
+								</div>
+								<input id=addr_county name=addr_county type=text placeholder="" required>
+							</td>
 						</tr>
 					</table>
 				</form>

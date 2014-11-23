@@ -39,6 +39,15 @@ function login_failed() {
 
 var want_anonymous = false
 
+function error_placement(error, element) {
+	var div = $('.error[for="'+$(element).attr('id')+'"]')
+	div.css('left', $(element).width() + 20)
+	div.append(error)
+	return false
+}
+
+var validate_login
+
 function create_login_section(dst_id) {
 	apply_template('#login_section_template', {}, dst_id)
 
@@ -97,15 +106,11 @@ function create_login_section(dst_id) {
 					'Enter at least {0} characters')),
 			},
 		},
-		errorPlacement: function(error, element) {
-			var div = $('.error[for="'+$(element).attr('id')+'"]')
-			div.css('left', $(element).width() + 20)
-			div.append(error)
-			return false
-		},
+		errorPlacement: error_placement,
 	})
-	var validate = function() {
-		if (!$('#login_form').valid()) {
+
+	validate_login = function() {
+		if ($('#login_form').length && !$('#login_form').valid()) {
 			validator.focusInvalid()
 			login_failed()
 			return false
@@ -114,12 +119,12 @@ function create_login_section(dst_id) {
 	}
 
 	$('#btn_login').click(function() {
-		if (validate())
+		if (validate_login())
 			post('/login.json', pass_auth('login'), action.checkout, login_failed)
 	})
 
 	$('#btn_create_account').click(function() {
-		if (validate())
+		if (validate_login())
 			post('/login.json', pass_auth('create'), action.checkout, login_failed)
 	})
 
@@ -158,17 +163,35 @@ action.checkout = function() {
 
 	load_content('#account', '/login.json', checkout_update_account)
 
-	$('#addr_form').validate({
-		debug: true,
-		submitHandler: function() {
-			console.log('submit')
-		}
+	var validator = $('#addr_form').validate({
+		rules: {
+		},
+		messages: {
+			required: S('field_required', 'You need to enter this'),
+		},
+		errorPlacement: error_placement,
 	})
+	var validate = function() {
+		if (!$('#addr_form').valid()) {
+			validator.focusInvalid()
+			return false
+		}
+		return true
+	}
 
 	$('.orderbutton').click(function() {
 
-		$('#addr_form').submit()
+		if (validate_login()) {
+			$('#email').focus()
+			return
+		}
 
+		if ($('#addr_form').length) {
+			//validate_addr()
+		}
+
+		validate()
+		//
 	})
 
 }

@@ -41,31 +41,6 @@ String.prototype.format = function() {
 	return s
 }
 
-// validation ----------------------------------------------------------------
-
-
-/*
-function email_valid(email) {
-	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-	return re.test(email)
-}
-
-function validate(elements) {
-	$.each(elements, function(i, e) {
-		var tag = $(e).prop('tagName').toLowerCase()
-	})
-}
-
-function validate(sel)
-	$.each(sel, function(i, e) {
-		if (validate($(e).val()))
-			$(e).removeClass('error')
-		else
-			$(e).addClass('error')
-	})
-}
-*/
-
 // follow scroll -------------------------------------------------------------
 
 function follow_scroll(element_id, margin) {
