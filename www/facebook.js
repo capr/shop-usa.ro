@@ -24,7 +24,7 @@ function facebook_login(success, fail) {
 }
 
 function facebook_logout(success, fail) {
-
+	//
 }
 
 window.fbAsyncInit = function() {
