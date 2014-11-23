@@ -28,11 +28,6 @@ function google_login(success, fail) {
 	gapi.auth.signIn(params)
 }
 
-function google_logout() {
-	gapi.auth.signOut()
-	force_prompt = true
-}
-
 function init_google() {
 	$.getScript('https://apis.google.com/js/client:platform.js')
 }

@@ -134,8 +134,6 @@ function checkout_update_account(usr) {
 	}
 
 	$('#relogin').click(function() {
-		facebook_logout()
-		google_logout()
 		create_login_section('#account_section')
 	})
 

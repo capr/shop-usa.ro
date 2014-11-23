@@ -23,10 +23,6 @@ function facebook_login(success, fail) {
 	}, {scope: 'public_profile,email'})
 }
 
-function facebook_logout(success, fail) {
-	//
-}
-
 window.fbAsyncInit = function() {
 	FB.init({
 		appId   : C('facebook_app_id'),
