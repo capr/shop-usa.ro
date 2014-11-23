@@ -9,10 +9,12 @@ function google_login(success, fail) {
 	params.callback = function(authResult) {
 		console.log(authResult.status)
 		if (authResult.status.signed_in) {
-			post('/login.json', {
-				type: 'google',
-				access_token: authResult.access_token,
-			}, success, fail)
+			if (authResult.status.method == 'AUTO') {
+				post('/login.json', {
+					type: 'google',
+					access_token: authResult.access_token,
+				}, success, fail)
+			}
 		} else {
 			// Possible error values:
 			//   "user_signed_out" - User is signed-out
