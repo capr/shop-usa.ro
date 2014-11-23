@@ -122,8 +122,8 @@ function update_cart_page() {
 		total:          total,
 	}, '#main')
 
-	$('#main [pid] a:not([action])').click(function() {
-		exec('/browse/p/'+upid(this, 'pid'))
+	$('#main [pid] a:not([action])').each(function() {
+		setlink(this, '/browse/p/'+upid(this, 'pid'))
 	})
 
 	$('#main [pid] a[action="remove"]').click(function() {
