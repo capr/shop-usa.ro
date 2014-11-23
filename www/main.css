@@ -243,3 +243,13 @@ input.error {
 	box-shadow: 0px 0px 3px #f00;
 }
 
+/* error message floating divs */
+.errdiv1 {
+	position: absolute;
+	width: 0;
+}
+.errdiv2 {
+	position: relative;
+	white-space: nowrap;
+}
+

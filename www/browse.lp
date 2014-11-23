@@ -394,9 +394,7 @@
 								</label>
 							</td>
 							<td>
-								<div style="position: absolute">
-									<div class=error for=email style="position: relative"></div>
-								</div>
+								<div class=errdiv1><div for=email class="error errdiv2"></div></div>
 								<input id=email name=email type=text class=email placeholder="foo@bar.com" required>
 							</td>
 						</tr>
@@ -408,9 +406,7 @@
 								</label>
 							</td>
 							<td nowrap>
-								<div style="position: absolute">
-									<div class=error for=pass style="position: relative"></div>
-								</div>
+								<div class=errdiv1><div for=pass class="error errdiv2"></div></div>
 								<input id=pass name=pass type=password required>
 								<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
 								<t class=en><a title="See the password" class="fa fa-eye inside-right"></a></t>
@@ -626,19 +622,26 @@
 				<form id=addr_form>
 					<table width=100% style="border-spacing: 4px">
 						<tr>
-							<td><label for=addr_name><t class=en>Name:</t><t class=ro>Nume:</t></label></td>
 							<td>
-								<div style="position: absolute">
-									<div class=error for=addr_name style="position: relative"></div>
-								</div>
+								<label for=addr_name>
+									<t class=en>Name:</t>
+									<t class=ro>Nume:</t>
+								</label>
+							</td>
+							<td>
+								<div class=errdiv1><div for=addr_name class="error errdiv2"></div></div>
 								<input id=addr_name name=addr_name type=text required>
 							</td>
 						</tr>
 						<tr>
-							<td><label for=addr_phone><t class=en>Phone:</t><t class=ro>Telefon:</t></label></td>
 							<td>
-								<div style="position: absolute">
-									<div class=error for=addr_phone style="position: relative"></div>
+								<label for=addr_phone>
+									<t class=en>Phone:</t>
+									<t class=ro>Telefon:</t>
+								</label>
+							</td>
+							<td>
+								<div class=errdiv1><div for=addr_phone class="error errdiv2"></div>
 								</div>
 								<input id=addr_phone name=addr_phone type=text required>
 							</td>
@@ -651,8 +654,7 @@
 								</label>
 							</td>
 							<td>
-								<div style="position: absolute">
-									<div class=error for=addr_street style="position: relative"></div>
+								<div class=errdiv1><div for=addr_street class="error errdiv2"></div>
 								</div>
 								<t class=ro>
 									<input id=addr_street name=addr_street type=text
@@ -674,8 +676,7 @@
 								</label>
 							</td>
 							<td>
-								<div style="position: absolute">
-									<div class=error for=addr_city style="position: relative"></div>
+								<div class=errdiv1><div for=addr_city class="error errdiv2"></div>
 								</div>
 								<input id=addr_city name=addr_city type=text placeholder="" required>
 							</td>
@@ -688,8 +689,7 @@
 								</label>
 							</td>
 							<td>
-								<div style="position: absolute">
-									<div class=error for=addr_county style="position: relative"></div>
+								<div class=errdiv1><div for=addr_county class="error errdiv2"></div>
 								</div>
 								<input id=addr_county name=addr_county type=text placeholder="" required>
 							</td>
