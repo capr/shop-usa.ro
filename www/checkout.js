@@ -110,7 +110,7 @@ function create_login_section(dst_id) {
 	})
 
 	validate_login = function() {
-		if ($('#login_form').length && !$('#login_form').valid()) {
+		if (!$('#login_form').valid()) {
 			validator.focusInvalid()
 			login_failed()
 			return false
@@ -181,8 +181,9 @@ action.checkout = function() {
 
 	$('.orderbutton').click(function() {
 
-		if (validate_login()) {
-			$('#email').focus()
+		if ($('#login_form').length) {
+			if (validate_login())
+				$('#email').focus()
 			return
 		}
 
