@@ -16,7 +16,7 @@ function update_prods(prods) {
 
 	$('#main').html(format_prods(prods))
 
-	$('#main [pid] a').each(function(i, e) {
+	$('#main [pid] a').each(function() {
 		setlink(this, '/browse/p/'+upid(this, 'pid'))
 	})
 
@@ -91,13 +91,13 @@ function format_pagenav(prod_count, cur_page) {
 
 function update_pagenav(prod_count, cur_page, bid) {
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
-	$('.pagenav a').click(function() {
+	$('.pagenav a').each(function() {
 		var s = $(this).html()
 		var pagenum =
 			(s == '«' && cur_page-1) ||
 			(s == '»' && cur_page+1) ||
 			parseInt(s)
-		exec_cat(g_catid, pagenum, bid)
+		setlink(this, cat_url(g_catid, pagenum, bid))
 	})
 	$('.navbar').show()
 
@@ -141,9 +141,9 @@ function load_brands(catid, bid) { // used in cat.js
 			$('#brand_search').hide()
 		$('#brand_search').quicksearch('#brands_list li').cache()
 
-		$('#brands_list a[bid]').click(function() {
+		$('#brands_list a[bid]').each(function() {
 			var bid = parseInt($(this).attr('bid'))
-			exec_cat(g_brands_catid, 1, bid)
+			setlink(this, cat_url(catid, 1, bid))
 		})
 
 		select_brand(bid, true)
@@ -168,9 +168,9 @@ function update_brands(brands) {
 	var s = multi_column('#brands_template', brands, 4)
 	$('#main').html('<br><br>'+s)
 
-	$('#main a[bid]').click(function() {
+	$('#main a[bid]').each(function() {
 		var bid = $(this).attr('bid')
-		exec('/browse/brand/'+bid)
+		setlink(this, '/browse/brand/'+bid)
 	})
 }
 
@@ -182,9 +182,9 @@ action.brands = function(search) {
 }
 
 function init_letters() {
-	$('#letters a').click(function() {
+	$('#letters a').each(function() {
 		var search = $(this).attr('search')
-		exec('/browse/brands/'+search)
+		setlink(this, '/browse/brands/'+search)
 	})
 }
 
@@ -318,9 +318,9 @@ function update_brand_page(brand) {
 
 	$('#bcat').html(format_cats(brand.cats))
 
-	$('#bcat a').click(function() {
+	$('#bcat a').each(function() {
 		var catid = $(this).parent().attr('catid')
-		exec_cat(catid, 1, brand.bid)
+		setlink(this, cat_url(catid, 1, brand.bid))
 	})
 
 	$('#bcat ul').show()
@@ -349,9 +349,9 @@ function init_topbar() {
 	}
 	apply_template('#topbar_template', {items: t}, '#topbar')
 
-	$('#topbar a[catid]').click(function() {
+	$('#topbar a[catid]').each(function() {
 		var catid = $(this).attr('catid')
-		exec_cat(catid)
+		setlink(this, cat_url(catid))
 	})
 }
 

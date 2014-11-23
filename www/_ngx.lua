@@ -15,7 +15,7 @@ local function config(var, default)
 				val = default
 			end
 		end
-		conf[val] = val == nil and null or val
+		conf[var] = val == nil and null or val
 	end
 	if val == null then
 		return nil

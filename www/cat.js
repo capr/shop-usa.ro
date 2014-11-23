@@ -95,9 +95,9 @@ function select_cat(catid) {
 
 function cat_make_clickable(catid) {
 	$('#cat ul[catid] > a').off('click')
-	$('#cat ul[catid]:visible > a').click(function() {
+	$('#cat ul[catid]:visible > a').each(function() {
 		var catid = $(this).parent().attr('catid')
-		exec_cat(catid)
+		setlink(this, cat_url(catid))
 	})
 }
 
@@ -116,15 +116,19 @@ action.cat = function(catid, pagenum, bid) {
 	})
 }
 
-function exec_cat(catid, pagenum, bid) {
+function cat_url(catid, pagenum, bid) {
 
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
 
-	exec('/browse/cat'+
+	return '/browse/cat'+
 		((catid != g_home_catid || pagenum > 1 || bid) && '/'+catid || '')+
 		((pagenum > 1 || bid) ? '/'+pagenum : '')+
-		(bid && '/'+bid || ''))
+		(bid && '/'+bid || '')
+}
+
+function exec_cat(catid, pagenum, bid) {
+	exec(cat_url(catid, pagenum, bid))
 }
 
 function invalidate_cats() {
