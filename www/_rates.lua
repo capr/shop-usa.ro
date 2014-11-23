@@ -5,6 +5,6 @@ usd_rate = once(function()
 		select ron from convrate
 		where usd = 1 and date <= now()
 		order by date desc limit 1
-	]]
+	]] or '40.00'
 end)
 

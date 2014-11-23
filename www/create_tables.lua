@@ -185,3 +185,4 @@ $table convrate (
 	primary key (ron, usd, date)
 )
 ]]
+
