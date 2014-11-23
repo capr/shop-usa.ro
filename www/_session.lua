@@ -2,6 +2,10 @@ setfenv(1, require'_g')
 require'_query'
 local session_ = require'_resty_session'
 
+local function fullname(firstname, lastname)
+	return glue.trim((firstname or '')..' '..(lastname or ''))
+end
+
 --session cookie -------------------------------------------------------------
 
 session = once(function()
@@ -143,12 +147,11 @@ function auth.facebook(auth)
 			emailvalid = 1,
 			email = ?,
 			facebookid = ?,
-			firstname = ?,
-			lastname = ?,
+			name = ?,
 			gender = ?
 		where
 			uid = ?
-	]], t.email, t.id, t.first_name, t.last_name, t.gender, uid)
+	]], t.email, t.id, fullname(t.first_name, t.last_name), t.gender, uid)
 
 	return uid
 end
@@ -188,15 +191,13 @@ function auth.google(auth)
 			email = ?,
 			googleid = ?,
 			gimgurl = ?,
-			firstname = ?,
-			lastname = ?
+			name = ?
 		where
 			uid = ?
 	]], t.emails and t.emails[1] and t.emails[1].value,
 		t.id,
 		t.image and t.image.url,
-		t.name and t.name.givenName,
-		t.name and t.name.familyName,
+		t.name and fullname(t.name.givenName, t.name.familyName),
 		uid)
 
 	return uid

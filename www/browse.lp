@@ -387,13 +387,13 @@
 				<td width=62% style="padding-left: 10px">
 					<table width=100% style="border-spacing: 4px">
 						<tr>
-							<td width=1% nowrap>
+							<td width=1 nowrap>
 								<label for=email>
 									<t class=en>Email:</t>
 									<t class=ro>Email:</t>
 								</label>
 							</td>
-							<td>
+							<td nowrap>
 								<div class=errdiv1><div for=email class="error errdiv2"></div></div>
 								<input id=email name=email type=text class=email placeholder="foo@bar.com" required>
 							</td>
@@ -467,14 +467,10 @@
 				<t class=ro>Nume:</t>
 			</td>
 			<td>
-				{{#facebookid}}
-					{{firstname}} {{lastname}}
-				{{/facebookid}}
-				{{#googleid}}
-					{{firstname}} {{lastname}}
-				{{/googleid}}
+				{{#facebookid}}{{name}}{{/facebookid}}
+				{{#googleid}}{{name}}{{/googleid}}
 				{{^facebookid}}{{^googleid}}
-					<input id=usr_name type=text value="{{firstname}} {{lastname}}">
+					<input id=usr_name type=text value="{{name}}">
 				{{/googleid}}{{/facebookid}}
 			</td>
 		</tr>
@@ -491,8 +487,8 @@
 			<td colspan=3>
 				<br>
 				<a id=relogin class=gray>
-					<t class=en>Not {{firstname}} {{lastname}}?</t>
-					<t class=ro>Nu esti {{firstname}} {{lastname}}?</t>
+					<t class=en>Not {{name}}?</t>
+					<t class=ro>Nu esti {{name}}?</t>
 				</a>
 			</td>
 		</tr>

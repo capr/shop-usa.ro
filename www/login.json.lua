@@ -9,10 +9,9 @@ local uid = action(auth) or ngx.exit(ngx.HTTP_FORBIDDEN)
 local t = query1([[
 	select
 		u.uid,
-		u.firstname,
-		u.lastname,
 		u.email,
 		u.anonymous,
+		u.name,
 		u.facebookid,
 		u.googleid,
 		u.gimgurl

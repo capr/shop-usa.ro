@@ -41,6 +41,12 @@ String.prototype.format = function() {
 	return s
 }
 
+function firstname(name) {
+	name = name.trim()
+	var a = name.split(' ', 1)
+	return a.length > 0 ? a[0] : name
+}
+
 // follow scroll -------------------------------------------------------------
 
 function follow_scroll(element_id, margin) {
