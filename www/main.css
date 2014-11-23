@@ -156,9 +156,6 @@ td .thumb {
 }
 
 /* grid|list icons */
-img.enabled {
-
-}
 img.disabled {
 	opacity: 0.2;
 }
@@ -169,13 +166,13 @@ img.disabled {
 	font-size: 12px;
 }
 
-button.disabled {
+button:disabled {
 	color: #666;
 	background: #ccc;
 	cursor: default;
 }
 
-button.disabled:hover {
+button:hover:disabled {
 	color: #666;
 }
 

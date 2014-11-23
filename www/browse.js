@@ -41,8 +41,8 @@ function load_prods(catid, pagenum, bid) {
 var g_viewstyle = 'grid'
 
 function update_viewstyle_icons() {
-	$('a[viewstyle] img').addClass('disabled').removeClass('enabled')
-	$('a[viewstyle="'+g_viewstyle+'"] img').addClass('enabled').removeClass('disabled')
+	$('a[viewstyle] img').addClass('disabled')
+	$('a[viewstyle="'+g_viewstyle+'"] img').removeClass('disabled')
 }
 
 function init_viewstyle() {
@@ -256,11 +256,11 @@ function dimsel_changed() {
 	apply_template('#product_combi_template', co, '#combi')
 
 	if (!combi.price || !combi.qty || combi.qty < 1) {
-		$('.buybutton').prop('disabled', true).addClass('disabled')
+		$('.buybutton').prop('disabled', true)
 			.attr('title', S('not_available_msg',
 				'Item not available.\nPlease choose another combination.'))
 	} else {
-		$('.buybutton').prop('disabled', false).removeClass('disabled')
+		$('.buybutton').prop('disabled', false)
 			.attr('title', '')
 	}
 

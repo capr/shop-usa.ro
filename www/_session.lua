@@ -47,7 +47,7 @@ local function anonymous_uid(uid)
 end
 
 local function create_user()
-	ngx.sleep(0.5) --make filling it up a bit harder
+	ngx.sleep(0.2) --make filling it up a bit harder
 	return iquery('insert into usr (clientip) values (?)', ngx.var.remote_addr)
 end
 
@@ -68,7 +68,7 @@ local function encrypt_pass(pass)
 end
 
 local function pass_uid(email, pass)
-	ngx.sleep(1) --make brute-forcing a bit harder
+	ngx.sleep(0.2) --make brute-forcing a bit harder
 	return query1('select uid from usr where email = ? and pass = ?',
 		email, encrypt_pass(pass))
 end

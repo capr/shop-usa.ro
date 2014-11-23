@@ -56,6 +56,7 @@ function login_failed() {
 			a.css('left', 30 * (1-t) * Math.sin(t * Math.PI * 6))
 		},
 	})
+	$('#btn_login').prop('disabled', false)
 }
 
 var g_want_anonymous = false
@@ -135,9 +136,11 @@ function create_login_section() {
 		return true
 	}
 
-	$('#btn_login').click(function() {
-		if (validate_login())
+	$('#btn_login').prop('disbled', false).click(function() {
+		if (validate_login()) {
+			$(this).prop('disbled', true)
 			post('/login.json', pass_auth('login'), action.checkout, login_failed)
+		}
 	})
 
 	$('#btn_create_account').click(function() {
