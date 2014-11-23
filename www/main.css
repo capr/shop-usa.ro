@@ -236,3 +236,10 @@ hr {
 
 .fa-eye { position: relative; left: -24px; }
 input .inside-right { padding-right: 28px; }
+
+input.error {
+	background-color: #fee;
+	border-color: #f00;
+	box-shadow: 0px 0px 3px #f00;
+}
+

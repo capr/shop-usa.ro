@@ -17,7 +17,6 @@ local function session_uid()
 end
 
 local function save_uid(uid)
-	assert(uid)
 	local session = session()
 	if uid ~= session.data.uid then
 		session.data.uid = uid
@@ -51,6 +50,12 @@ function auth.session()
 	return valid_uid(session_uid()) or create_user()
 end
 
+--anonymous authentication ---------------------------------------------------
+
+function auth.anonymous()
+	return anonymous_uid(session_uid()) or create_user()
+end
+
 --password authentication ----------------------------------------------------
 
 local function encrypt_pass(pass)
@@ -75,7 +80,7 @@ local function set_email_pass(uid, email, pass)
 			pass = ?
 		where
 			uid = ?
-	]], email, encrypt_pass(pass), uid)
+	]], glue.trim(email), encrypt_pass(pass), uid)
 end
 
 local function delete_user(uid)
@@ -91,7 +96,7 @@ function auth.pass(auth)
 	if auth.action == 'login' then
 		return pass_uid(auth.email, auth.pass)
 	elseif auth.action == 'create' then
-		if not auth.email or #auth.email < 1 then return end
+		if not auth.email or #glue.trim(auth.email) < 1 then return end
 		if not auth.pass or #auth.pass < 1 then return end
 		if not email_exists(auth.email) then
 			local uid = anonymous_uid(session_uid()) or create_user()
@@ -210,6 +215,7 @@ function login(auth)
 					delete_user(suid)
 				end
 			end
+			assert(uid)
 			save_uid(uid)
 		end
 	end
@@ -217,6 +223,11 @@ function login(auth)
 end
 
 uid = once(login) --TODO: reset cache when suid changes
+
+function logout()
+	save_uid(nil)
+	return authenticate()
+end
 
 admin = once(function() --TODO: same here
 	return query1([[

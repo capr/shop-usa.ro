@@ -152,6 +152,7 @@ $table ordr (
 	oid         $pk,
 	uid         $id not null, $fk(ordr, uid, usr),
 	name        $name,
+	email       $email,
 	phone       $name,
 	addr        text,
 	city        $name,

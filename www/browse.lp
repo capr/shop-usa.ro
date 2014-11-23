@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang=ro currency=usd>
+<html lang=<%=GET.lang or 'ro'%>>
 <head>
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
-	<meta name="google-site-verification" content="RN6WqC6KH1tVHYgmN36WWgglVxLNelRCul4wwaFyGyA" />
 	<link rel="stylesheet" type="text/css" href="/main.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
@@ -127,12 +126,12 @@
 				<br>
 				<span class=price>
 					<t class=en>${{{price}}}</t>
-					<t class=ro> Lei</t>
+					<t class=ro>{{{price}}} Lei</t>
 				</span>
 				{{#discount}}
 					<br>
 					<span class=discount>
-						<t class=ro>({{{discount}}}% {{#msrp}} din {{{msrp}}} Lei{{/msrp}})</t>
+						<t class=ro>({{{discount}}}%{{#msrp}} <s>{{{msrp}}} Lei</s>{{/msrp}})</t>
 						<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
 					</span>
 				{{/discount}}
@@ -161,12 +160,12 @@
 		<br>
 		<span class=price>
 			<t class=en>${{{price}}}</t>
-			<t class=ro> Lei</t>
+			<t class=ro>{{{price}}} Lei</t>
 		</span>
 		{{#discount}}
 			<br>
 			<span class=discount>
-				<t class=ro>({{{discount}}}% {{#msrp}} din {{{msrp}}} Lei{{/msrp}})</t>
+				<t class=ro>({{{discount}}}%{{#msrp}} <s>{{{msrp}}} Lei</s>{{/msrp}})</t>
 				<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
 			</span>
 		{{/discount}}
@@ -363,70 +362,80 @@
 
 <script type="text/x-mustache" id=login_section_template>
 	<h3>
-		<t class=en>Account:</t>
+		<t class=en>My account:</t>
 		<t class=ro>Contul meu:</t>
 	</h3>
-	<table width=100%>
-		<tr>
-			<td width=38% valign=top>
-				<a class="btn btn_facebook">
-					<i class="fa fa-facebook" style="width:16px; height:20px"></i>
-						<t class=en>Sign in with Facebook</t>
-						<t class=ro>Intra cu Facebook</t>
-				</a>
-				<a class="btn btn_google">
-					<i class="fa fa-google-plus" style="width:16px; height:20px"></i>
-						<t class=en>Sign in with Google</t>
-						<t class=ro>Intra cu Google</t>
-				</a>
-				<a class="btn btn_no_account">
-					<i class="fa fa-check-square-o" style="width:16px; height:18px"></i>
-						<t class=en>Order without account</t>
-						<t class=ro>Comanda fara cont</t>
-				</a>
-			</td>
-			<td width=62% style="padding-left: 10px">
-				<table width=100% style="border-spacing: 4px">
-					<tr>
-						<td width=1% nowrap>
-							<label>
-								<t class=en>Email:</t>
-								<t class=ro>Email:</t>
-							</label>
-						</td>
-						<td><input id=email type=text email required></input></td>
-					</tr>
-					<tr>
-						<td nowrap>
-							<label>
-								<t class=en>Password:</t>
-								<t class=ro>Parola:</t>
-							</label>
-						</td>
-						<td nowrap>
-							<input id=pass type=password required></input>
-							<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
-							<t class=en><a title="See the password" class="fa fa-eye inside-right"></a></t>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 align=right nowrap>
-							<button type=button class=orange id=btn_login>Login</button>
-							<button type=button id=btn_create_account>Creaza cont</button>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2 align=right nowrap>
-							<a class=gray id=btn_forgot_pass>
-								<t class=en>Forgot password?</t>
-								<t class=ro>Ai uitat parola?</t>
-							</a>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
+	<form id=login_form>
+		<table width=100%>
+			<tr>
+				<td width=38% valign=top>
+					<a class="btn btn_facebook">
+						<i class="fa fa-facebook" style="width:16px; height:20px"></i>
+							<t class=en>Sign in with Facebook</t>
+							<t class=ro>Intra cu Facebook</t>
+					</a>
+					<a class="btn btn_google">
+						<i class="fa fa-google-plus" style="width:16px; height:20px"></i>
+							<t class=en>Sign in with Google</t>
+							<t class=ro>Intra cu Google</t>
+					</a>
+					<a class="btn btn_no_account">
+						<i class="fa fa-check-square-o" style="width:16px; height:18px"></i>
+							<t class=en>Order without sign in</t>
+							<t class=ro>Comanda fara cont</t>
+					</a>
+				</td>
+				<td width=62% style="padding-left: 10px">
+					<table width=100% style="border-spacing: 4px">
+						<tr>
+							<td width=1% nowrap>
+								<label for=email>
+									<t class=en>Email:</t>
+									<t class=ro>Email:</t>
+								</label>
+							</td>
+							<td>
+								<div style="position: absolute">
+									<div class=error for=email style="position: relative"></div>
+								</div>
+								<input id=email name=email type=text class=email required></input>
+							</td>
+						</tr>
+						<tr>
+							<td nowrap>
+								<label for=pass>
+									<t class=en>Password:</t>
+									<t class=ro>Parola:</t>
+								</label>
+							</td>
+							<td nowrap>
+								<div style="position: absolute">
+									<div class=error for=pass style="position: relative"></div>
+								</div>
+								<input id=pass name=pass type=password required></input>
+								<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
+								<t class=en><a title="See the password" class="fa fa-eye inside-right"></a></t>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2 align=right nowrap>
+								<button type=button class=orange id=btn_login>Login</button>
+								<button type=button id=btn_create_account>Creaza cont</button>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2 align=right nowrap>
+								<a class=gray id=btn_forgot_pass>
+									<t class=en>Forgot password?</t>
+									<t class=ro>Ai uitat parola?</t>
+								</a>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</form>
 </script>
 
 <script type="text/x-mustache" id=account_section_template>
@@ -556,7 +565,7 @@
 
 		<tr>
 			<td>
-				<h3><t class=en>The Products:</t><t class=ro>Produsele comandate:</t></h3>
+				<h3><t class=en>My Products:</t><t class=ro>Produsele comandate:</t></h3>
 				<div id=cart_section></div>
 			</td>
 			<td></td>
@@ -659,7 +668,7 @@
 				<textarea id=note rows=6 placeholder="Ora preferata, detalii adresa, etc."></textarea>
 			</td>
 			<td valign=top class=gray>
-				Ne puteti lasa un mesaj sau puteti contacta direct operatorii nostri.
+				Ne poti lasa un mesaj sau poti contacta direct operatorii nostri.
 			</td>
 		</tr>
 

@@ -26,8 +26,18 @@ function checkout_update_cart(cart) {
 }
 
 function login_failed() {
-	alert(S('login_failed', 'Login Failed'))
+	var a = $('#account_section')
+	a.css({position: 'relative'})
+	a.animate({top: 0}, // just because it won't start otherwise
+		{
+			duration: 400,
+			progress: function(_,t) {
+				a.css('left', 30 * (1-t) * Math.sin(t * Math.PI * 6))
+		},
+	})
 }
+
+var want_anonymous = false
 
 function create_login_section(dst_id) {
 	apply_template('#login_section_template', {}, dst_id)
@@ -46,7 +56,18 @@ function create_login_section(dst_id) {
 	})
 
 	$('.btn_no_account').click(function() {
-		get('/login.json', action.checkout)
+		want_anonymous = true
+		post('/login.json', {type: 'anonymous'}, action.checkout)
+	})
+
+	$('#email').keypress(function(e) {
+		if(e.keyCode == 13)
+			$('#pass').focus()
+	})
+
+	$('#pass').keypress(function(e) {
+		if(e.keyCode == 13)
+			$('#btn_login').click()
 	})
 
 	var pass_auth = function(action) {
@@ -58,19 +79,55 @@ function create_login_section(dst_id) {
 		}
 	}
 
+	var validator = $('#login_form').validate({
+		rules: {
+			pass: { minlength: 6 }
+		},
+		messages: {
+			email: {
+				required: S('email_required_error',
+					'We need your email to contact you'),
+				email: S('email_format_error',
+					'Your email must look valid'),
+			},
+			pass: {
+				required: S('pass_required_error',
+					'You need a password to sign in'),
+				minlength: $.validator.format(S('pass_format_error',
+					'Enter at least {0} characters')),
+			},
+		},
+		errorPlacement: function(error, element) {
+			var div = $('.error[for="'+$(element).attr('id')+'"]')
+			div.css('left', $(element).width() + 20)
+			div.append(error)
+			return false
+		},
+	})
+	var validate = function() {
+		if (!$('#login_form').valid()) {
+			validator.focusInvalid()
+			login_failed()
+			return false
+		}
+		return true
+	}
+
 	$('#btn_login').click(function() {
-		post('/login.json', pass_auth('login'), action.checkout, login_failed)
+		if (validate())
+			post('/login.json', pass_auth('login'), action.checkout, login_failed)
 	})
 
 	$('#btn_create_account').click(function() {
-		post('/login.json', pass_auth('create'), action.checkout, login_failed)
+		if (validate())
+			post('/login.json', pass_auth('create'), action.checkout, login_failed)
 	})
 
 }
 
 function checkout_update_account(usr) {
 
-	if (usr.anonymous) {
+	if (usr.anonymous && !want_anonymous) {
 		create_login_section('#account_section')
 	} else {
 		apply_template('#account_section_template', usr, '#account_section')
