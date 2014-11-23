@@ -26,7 +26,8 @@ params.callback = function(authResult) {
 function google_login(success, fail) {
 	gapi.auth.signIn(params)
 }
-)()
+
+})()
 
 function google_logout() {
 	gapi.auth.signOut()
