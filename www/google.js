@@ -1,15 +1,17 @@
 
+var force_prompt = false
 function google_login(success, fail) {
 	var params = {
 		clientid: C('google_client_id'),
 		scope:    'https://www.googleapis.com/auth/plus.login email',
 		requestvisibleactions: 'http://schema.org/AddAction',
 		cookiepolicy: 'single_host_origin',
+		approval_prompt: force_prompt ? 'force' : 'auto',
 	}
 	params.callback = function(authResult) {
-		console.log(authResult.status)
 		if (authResult.status.signed_in) {
 			if (authResult.status.method == 'AUTO') {
+				force_prompt = false
 				post('/login.json', {
 					type: 'google',
 					access_token: authResult.access_token,
@@ -28,6 +30,7 @@ function google_login(success, fail) {
 
 function google_logout() {
 	gapi.auth.signOut()
+	force_prompt = true
 }
 
 function init_google() {
