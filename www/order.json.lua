@@ -49,7 +49,7 @@ query([[
 	where
 		ci.buylater = 0
 		and ci.uid = ?
-]], oid, uid())
+]], oid, usd_rate(), uid())
 
 --clear the cart.
 query('delete from cartitem where buylater = 0 and uid = ?', uid())

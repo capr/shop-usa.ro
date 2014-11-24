@@ -7,9 +7,6 @@
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
 	<script src="/jquery.js"></script>
-	<script src="/mustache.js"></script>
-	<script src="/util.js"></script>
-	<script src="/config.js"></script>
 	<script src="/jquery.history.js"></script>
 	<script src="/jquery.cookie.js"></script>
 	<script src="/jquery.quicksearch.js"></script>
@@ -18,6 +15,10 @@
 	<script src="/jquery.sortable.js"></script>
 	<script src="/jquery.validate.js"></script>
 	<script src="/jquery.autocomplete.js"></script>
+	<script src="/mustache.js"></script>
+	<script src="/util.js"></script>
+	<script src="/config.js"></script>
+	<script src="/analytics.js"></script>
 	<script src="/browse.js"></script>
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>

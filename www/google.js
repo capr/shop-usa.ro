@@ -31,4 +31,3 @@ function google_login(success, fail) {
 function init_google() {
 	$.getScript('https://apis.google.com/js/client:platform.js')
 }
-
