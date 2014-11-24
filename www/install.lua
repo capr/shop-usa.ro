@@ -65,7 +65,6 @@ qsubst'pk      int unsigned primary key auto_increment'
 qsubst'name    varchar(32)'
 qsubst'email   varchar(128)'
 qsubst'url     varchar(2048)'
-qsubst'pass    varchar(32)'
 qsubst'bool    tinyint not null default 0'
 qsubst'bool1   tinyint not null default 1'
 qsubst'atime   timestamp default current_timestamp'
@@ -86,7 +85,7 @@ $table usr (
 	anonymous   $bool1,
 	email       $email,
 	emailvalid  $bool,
-	pass        $pass,
+	pass        $name,
 	facebookid  $name,
 	googleid    $name,
 	gimgurl     $url,
@@ -99,6 +98,8 @@ $table usr (
 	admin       $bool,
 	note        text,
 	clientip    $name,
+	authtoken   $name,
+	tokenatime  timestamp,
 	atime       $atime,
 	mtime       $mtime
 );

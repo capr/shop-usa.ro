@@ -175,9 +175,3 @@ function groupby(items, col, cb)
 	return ipairs(t)
 end
 
---macros ---------------------------------------------------------------------
-
-function qmacro.ronprice(col, rate)
-	return string.format('cast(round((%s) * 1.55 * (%s), -1) - 1 as decimal(20, 0))', col, rate)
-end
-

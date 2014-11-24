@@ -7,12 +7,7 @@ local time       = ngx.time
 local type       = type
 local json       = require "cjson"
 local aes        = require "resty.aes"
-local ffi        = require "ffi"
-local ffi_cdef   = ffi.cdef
-local ffi_new    = ffi.new
-local ffi_str    = ffi.string
-local ffi_typeof = ffi.typeof
-local C          = ffi.C
+local random     = require "_resty_random"
 
 local ENCODE_CHARS = {
     ["+"] = "-",
@@ -41,19 +36,6 @@ local CIPHER_SIZES = {
     ["192"] = 192,
     ["256"] = 256
 }
-
-ffi_cdef[[
-typedef unsigned char u_char;
-int RAND_pseudo_bytes(u_char *buf, int num);
-]]
-
-local t = ffi_typeof("uint8_t[?]")
-
-local function random(len)
-    local s = ffi_new(t, len)
-    C.RAND_pseudo_bytes(s, len)
-    return ffi_str(s, len)
-end
 
 local function enabled(val)
     if val == nil then return nil end

@@ -330,6 +330,29 @@ action.brand = function(bid) {
 	load_main('/brand.json/'+bid, update_brand_page)
 }
 
+// password reset page ------------------------------------------------------
+
+action.reset_password = function(token) {
+
+	if (token) {
+
+		function login_ok() {
+			exec('/reset_password')
+		}
+
+		function login_failed() {
+			//
+		}
+
+		post('/login.json', {type: 'token', token: token}, login_ok, login_failed)
+
+	} else {
+
+		//
+
+	}
+}
+
 // top bar -------------------------------------------------------------------
 
 function init_topbar() {

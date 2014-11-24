@@ -1,4 +1,5 @@
 setfenv(1, require'_g')
+local random = require "_resty_random"
 require'_query'
 local session_ = require'_resty_session'
 
@@ -73,8 +74,8 @@ local function pass_uid(email, pass)
 		email, encrypt_pass(pass))
 end
 
-local function email_exists(email)
-	return query1('select 1 from usr where email = ? and pass is not null', email)
+local function pass_email_uid(email)
+	return query1('select uid from usr where email = ? and pass is not null', email)
 end
 
 local function set_email_pass(uid, email, pass)
@@ -104,12 +105,37 @@ function auth.pass(auth)
 	elseif auth.action == 'create' then
 		if not auth.email or #glue.trim(auth.email) < 1 then return end
 		if not auth.pass or #auth.pass < 1 then return end
-		if not email_exists(auth.email) then
+		if not pass_email_uid(auth.email) then
 			local uid = anonymous_uid(session_uid()) or create_user()
 			set_email_pass(uid, auth.email, auth.pass)
 			return uid
 		end
 	end
+end
+
+--one-time token authentication ----------------------------------------------
+
+function auth.token(auth)
+	ngx.sleep(0.2) --make brute forcing a bit harder
+	local uid = query1([[
+		select uid from usr where authtoken = ?
+			and tokenatime > now() - 2 * 3600
+	]], auth.token)
+	if uid then
+		query([[
+			update usr set authtoken = null, tokenatime = null where uid = ?
+		]], uid)
+	end
+	return uid
+end
+
+function gen_auth_token(email)
+	local uid = pass_email_uid(email)
+	if not uid then return end
+	local token = glue.tohex(random(16))
+	query([[
+		update usr set authtoken = ?, tokenatime = now() where uid = ?
+	]], token, uid)
 end
 
 --facebook authentication ----------------------------------------------------
