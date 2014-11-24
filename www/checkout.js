@@ -57,6 +57,7 @@ function login_failed() {
 		},
 	})
 	$('#btn_login').prop('disabled', false)
+	$('#btn_create_account').prop('disabled', false)
 }
 
 var g_want_anonymous = false
@@ -138,14 +139,16 @@ function create_login_section() {
 
 	$('#btn_login').prop('disbled', false).click(function() {
 		if (validate_login()) {
-			$(this).prop('disbled', true)
+			$(this).prop('disabled', true)
 			post('/login.json', pass_auth('login'), action.checkout, login_failed)
 		}
 	})
 
 	$('#btn_create_account').click(function() {
-		if (validate_login())
+		if (validate_login()) {
+			$(this).prop('disabled', true)
 			post('/login.json', pass_auth('create'), action.checkout, login_failed)
+		}
 	})
 
 }
@@ -166,7 +169,20 @@ function create_user_section(usr) {
 
 		},
 		messages: {
-
+			usr_email: {
+				required: S('email_required_error',
+					'We need your email to contact you'),
+				email: S('email_format_error',
+					'Your email must look valid'),
+			},
+			usr_name: {
+				required: S('name_required_error',
+					'We need your name to contact you'),
+			},
+			usr_phone: {
+				required: S('phone_required_error',
+					'We need your phone to contact you'),
+			},
 		},
 		errorPlacement: error_placement,
 	})
@@ -178,6 +194,54 @@ function create_user_section(usr) {
 		}
 		return true
 	}
+
+}
+
+// county/city autocomplete --------------------------------------------------
+
+var g_cities
+function update_citites(cities) {
+	g_cities = cities
+	update_autocomplete()
+}
+
+function update_autocomplete() {
+	if(!g_cities) return
+	if (!$('#addr_form').length) return
+
+	var counties = []
+	var all_cities = []
+	var county_map = {} // {city: county}
+	$.each(g_cities, function(county, cities) {
+		counties.push(county)
+		$.each(cities, function(city) {
+			all_cities.push(city)
+			county_map[city] = county
+		})
+	})
+	$('#addr_county').autocomplete({lookup: counties})
+
+	$('#addr_city').focus(function() {
+
+		var county = $('#addr_county').val()
+
+		var cities
+		if (county in g_cities) {
+			cities = []
+			$.each(g_cities[county], function(city) {
+				cities.push(city)
+			})
+		} else
+			cities = all_cities
+
+		$('#addr_city').autocomplete({
+			lookup: cities,
+		}).change(function() {
+			var city = $(this).val()
+			var county = county_map[city]
+			$('#addr_county').val(county)
+		})
+	})
 
 }
 
@@ -202,7 +266,28 @@ function update_shipping_section() {
 		rules: {
 		},
 		messages: {
-			required: S('field_required', 'You need to enter this'),
+			/*
+			addr_name: {
+				required: S('name_required_error',
+					'We need your name to contact you'),
+			},
+			addr_phone: {
+				required: S('phone_required_error',
+					'We need your phone to contact you'),
+			},
+			*/
+			addr_street: {
+				required: S('street_required_error',
+					'We need your full address'),
+			},
+			addr_city: {
+				required: S('city_required_error',
+					'We need your city'),
+			},
+			addr_county: {
+				required: S('county_required_error',
+					'We need your county'),
+			},
 		},
 		errorPlacement: error_placement,
 	})
@@ -216,9 +301,20 @@ function update_shipping_section() {
 		}
 		return true
 	}
+
+	update_autocomplete()
 }
 
 // ordering ------------------------------------------------------------------
+
+function order_placed(data) {
+	alert(data)
+}
+
+function order_error() {
+	alert(S('order_error',
+		'We failed to place the order.\nPlease try again or contact us directly.'))
+}
 
 function create_order() {
 
@@ -235,6 +331,17 @@ function create_order() {
 
 	if (!validate_addr())
 		return
+
+	post('/order.json', {
+		email    : $('#usr_email').val().trim(),
+		name     : $('#usr_name').val().trim(),
+		phone    : $('#usr_phone').val().trim(),
+		street   : $('#addr_street').val().trim(),
+		city     : $('#addr_city').val().trim(),
+		county   : $('#addr_county').val().trim(),
+		note     : $('#order_note').val().trim(),
+		shiptype : $('input[name=shipping_method]:checked').val(),
+	}, order_placed, order_error)
 
 }
 
@@ -257,6 +364,8 @@ action.checkout = function() {
 	$('.orderbutton').click(function() {
 		create_order()
 	})
+
+	get('/cities.json', update_citites)
 
 }
 

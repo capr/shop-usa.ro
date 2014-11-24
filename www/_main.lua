@@ -69,6 +69,20 @@ function uint_arg(s)
 	return s and tonumber(s:match'(%d+)$')
 end
 
+function str_arg(s)
+	if not s then return end
+	s = glue.trim(s)
+	return s ~= '' and s or nil
+end
+
+function enum_arg(s, ...)
+	for i=1,select('#',...) do
+		if s == select(i,...) then
+			return s
+		end
+	end
+end
+
 function clamp(x, min, max)
 	return math.min(math.max(x, min), max)
 end

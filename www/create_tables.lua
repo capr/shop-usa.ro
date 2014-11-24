@@ -4,34 +4,6 @@ local function pq(sql, ...)
 	return query(sql, ...)
 end
 
---ddl macro language ---------------------------------------------------------
-
-local substs = {}
-
-local function subst(def) --'name type'
-	local name, val = def:match'(%w+)%s+(.*)'
-	substs[name] = val
-end
-
-local macro = {}
-
-local function macro_subst(name, args)
-	local macro = assert(macro[name], 'invalid macro')
-	args = args:sub(2,-2)..','
-	local t = {}
-	for arg in args:gmatch'([^,]+)' do
-		arg = glue.trim(arg)
-		t[#t+1] = arg
-	end
-	return macro(unpack(t))
-end
-
-local function ddl(sql)
-	sql = sql:gsub('$(%w+)(%b())', macro_subst)
-	sql = sql:gsub('$(%w+)', substs)
-	pq(sql)
-end
-
 --ddl vocabulary -------------------------------------------------------------
 
 local nodrop --= true
@@ -59,7 +31,7 @@ local function fkname(tbl, col)
 	return string.format('fk_%s_%s', tbl, col:gsub('%s', ''):gsub(',', '_'))
 end
 
-function macro.fk(tbl, col, ftbl, fcol, ondelete, onupdate)
+function qmacro.fk(tbl, col, ftbl, fcol, ondelete, onupdate)
 	ondelete = ondelete or 'cascade'
 	onupdate = onupdate or 'restrict'
 	local a1 = ondelete ~= 'restrict' and ' on delete '..ondelete or ''
@@ -69,7 +41,7 @@ function macro.fk(tbl, col, ftbl, fcol, ondelete, onupdate)
 		fkname(tbl, col), col, ftbl, fcol or col, a1, a2)
 end
 
-function macro.uk(tbl, col)
+function qmacro.uk(tbl, col)
 	return string.format(
 		'constraint uk_%s_%s unique key (%s)',
 		tbl, col:gsub('%s', ''):gsub(',', '_'), col)
@@ -78,27 +50,27 @@ end
 local function fk(tbl, col, ...)
 	if constable(fkname(tbl, col)) then return end
 	local sql = string.format('alter table %s add ', tbl)..
-		macro.fk(tbl, col, ...)..';'
+		qmacro.fk(tbl, col, ...)..';'
 	pq(sql)
 end
 
 ------------------------------------------------------------------------------
 
 --ddl commands
-subst'table  create table if not exists'
+qsubst'table  create table if not exists'
 
 --type domains
-subst'id      int unsigned'
-subst'pk      int unsigned primary key auto_increment'
-subst'name    varchar(32)'
-subst'email   varchar(128)'
-subst'url     varchar(2048)'
-subst'pass    varchar(32)'
-subst'bool    tinyint not null default 0'
-subst'bool1   tinyint not null default 1'
-subst'atime   timestamp default current_timestamp'
-subst'mtime   timestamp' --on update current_timestamp
-subst'money   decimal(20,6)'
+qsubst'id      int unsigned'
+qsubst'pk      int unsigned primary key auto_increment'
+qsubst'name    varchar(32)'
+qsubst'email   varchar(128)'
+qsubst'url     varchar(2048)'
+qsubst'pass    varchar(32)'
+qsubst'bool    tinyint not null default 0'
+qsubst'bool1   tinyint not null default 1'
+qsubst'atime   timestamp default current_timestamp'
+qsubst'mtime   timestamp' --on update current_timestamp
+qsubst'money   decimal(20,6)'
 
 --drop everything
 droptable'convrate'

@@ -2,6 +2,8 @@
 setfenv(1, require'_g')
 local mysql = require'resty.mysql'
 
+--db connection --------------------------------------------------------------
+
 local db --global db object
 
 local function assert_db(ret, err, errno, sqlstate)
@@ -22,6 +24,36 @@ local function connect()
 	})
 	db:set_timeout(config('db_query_timeout', 30) * 1000)
 end
+
+--macro substitution ---------------------------------------------------------
+
+local substs = {}
+
+function qsubst(def) --'name type'
+	local name, val = def:match'(%w+)%s+(.*)'
+	substs[name] = val
+end
+
+qmacro = {}
+
+local function macro_subst(name, args)
+	local macro = assert(qmacro[name], 'invalid macro')
+	args = args:sub(2,-2)..','
+	local t = {}
+	for arg in args:gmatch'([^,]+)' do
+		arg = glue.trim(arg)
+		t[#t+1] = arg
+	end
+	return macro(unpack(t))
+end
+
+local function preprocess(sql)
+	sql = sql:gsub('$(%w+)(%b())', macro_subst)
+	sql = sql:gsub('$(%w+)', substs)
+	return sql
+end
+
+--arg substitution -----------------------------------------------------------
 
 function quote(v)
 	if v == nil then
@@ -52,6 +84,8 @@ local function set_params(sql, ...)
 	return sql:gsub('%?', function() i = i + 1; return t[i] end)
 end
 
+--result processing ----------------------------------------------------------
+
 local function remove_nulls(t)
 	for i,t in ipairs(t) do
 		for k,v in pairs(t) do
@@ -71,7 +105,10 @@ local function count_cols(t)
 	return n
 end
 
+--query execution ------------------------------------------------------------
+
 local function run_query(sql)
+	sql = preprocess(sql)
 	assert_db(db:send_query(sql))
 	local t, err = assert_db(db:read_result())
 	local n = count_cols(t)
@@ -92,6 +129,8 @@ function query_(sql, ...) --execute, iterate rows, close
 	sql = set_params(sql, ...)
 	return run_query(sql)
 end
+
+--query frontends ------------------------------------------------------------
 
 function query(...)
 	return (query_(...))
@@ -119,6 +158,8 @@ function atomic(func)
 	assert(ok, err)
 end
 
+--result structuring ---------------------------------------------------------
+
 function groupby(items, col, cb)
 	local t = {}
 	local v
@@ -133,3 +174,10 @@ function groupby(items, col, cb)
 	end
 	return ipairs(t)
 end
+
+--macros ---------------------------------------------------------------------
+
+function qmacro.ronprice(col, rate)
+	return string.format('cast(round((%s) * 1.55 * (%s), -1) - 1 as decimal(20, 0))', col, rate)
+end
+

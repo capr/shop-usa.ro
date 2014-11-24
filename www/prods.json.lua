@@ -38,9 +38,9 @@ local prods = query([[
 	select
 		p.id_product as pid,
 		pl.name,
-		cast(round(p.price * 1.55 * ?, -1) - 1 as decimal(20, 0)) as price,
+		$ronprice(p.price, ?) as price,
+		$ronprice(p.msrp, ?) as msrp,
 		p.discount,
-		cast(round(p.msrp * 1.55 * ?, -1) - 1 as decimal(20, 0)) as msrp,
 		i.id_image as imgid,
 		m.name as bname
 	from

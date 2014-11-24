@@ -17,6 +17,7 @@
 	<script src="/jquery.easing.js"></script>
 	<script src="/jquery.sortable.js"></script>
 	<script src="/jquery.validate.js"></script>
+	<script src="/jquery.autocomplete.js"></script>
 	<script src="/browse.js"></script>
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>
@@ -488,7 +489,7 @@
 				</td>
 				<td>
 					<div class=errdiv1><div for=usr_phone class="error errdiv2"></div></div>
-					<input id=usr_phone name=usr_phne type=text value="{{phone}}" required>
+					<input id=usr_phone name=usr_phone type=text value="{{phone}}" required>
 				</td>
 			</tr>
 			<tr>
@@ -629,6 +630,7 @@
 				</h3>
 				<form id=addr_form>
 					<table width=100% style="border-spacing: 4px">
+						<!--
 						<tr>
 							<td>
 								<label for=addr_name>
@@ -654,6 +656,7 @@
 								<input id=addr_phone name=addr_phone type=text required>
 							</td>
 						</tr>
+						-->
 						<tr>
 							<td>
 								<label for=addr_street>
@@ -718,7 +721,7 @@
 		</tr>
 		<tr>
 			<td>
-				<textarea id=note rows=6 placeholder="Ora preferata, detalii adresa, etc."></textarea>
+				<textarea id=order_note rows=6 placeholder="Ora preferata, detalii adresa, etc."></textarea>
 			</td>
 			<td valign=top class=gray>
 				Ne poti lasa un mesaj sau poti contacta direct operatorii nostri.

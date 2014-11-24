@@ -55,8 +55,8 @@ local t = query([[
 		a.id_attribute as vid,
 		al.name as vname,
 		pl.name,
-		cast(round(coalesce(pa.price, p.price) * 1.55 * ?, -1) - 1 as decimal(20, 0)) as price,
-		cast(round(coalesce(pa.old_price, p.msrp) * 1.55 * ?, -1) - 1 as decimal(20, 0)) as old_price,
+		$ronprice(pa.price, ?) as price,
+		$ronprice(pa.old_price, ?) as old_price,
 		m.name as bname,
 		i.id_image as imgid,
 		ci.buylater

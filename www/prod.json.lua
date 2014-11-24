@@ -7,9 +7,6 @@ pid = check(uint_arg(pid))
 local prod = query1([[
 	select
 		p.id_product as pid,
-		p.price,
-		p.discount,
-		p.msrp,
 		pl.name as name,
 		pl.description as descr,
 		m.id_manufacturer as bid,
@@ -44,8 +41,8 @@ local init_dvids = {} --{did = dvid}
 for i,t in ipairs(query([[
 	select
 		pa.id_product_attribute as coid,
-		cast(round(pa.price * 1.55 * ?, -1) - 1 as decimal(20, 0)) as price,
-		cast(round(pa.old_price * 1.55 * ?, -1) - 1 as decimal(20, 0)) as old_price,
+		$ronprice(pa.price, ?) as price,
+		$ronprice(pa.old_price, ?) as old_price,
 		pa.quantity as qty,
 		pa.default_on,
 		ag.id_attribute_group as did,
