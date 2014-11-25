@@ -64,6 +64,7 @@ qsubst'id      int unsigned'
 qsubst'pk      int unsigned primary key auto_increment'
 qsubst'name    varchar(32)'
 qsubst'email   varchar(128)'
+qsubst'hash    varchar(40)' --hmac_sha1 in hex
 qsubst'url     varchar(2048)'
 qsubst'bool    tinyint not null default 0'
 qsubst'bool1   tinyint not null default 1'
@@ -79,13 +80,13 @@ droptable'cartitem'
 droptable'usr'
 
 --create everything
-ddl[[
+pq[[
 $table usr (
 	uid         $pk,
 	anonymous   $bool1,
 	email       $email,
 	emailvalid  $bool,
-	pass        $name,
+	pass        $hash,
 	facebookid  $name,
 	googleid    $name,
 	gimgurl     $url,
@@ -98,14 +99,20 @@ $table usr (
 	admin       $bool,
 	note        text,
 	clientip    $name,
-	authtoken   $name,
-	tokenatime  timestamp,
 	atime       $atime,
 	mtime       $mtime
 );
 ]]
 
-ddl[[
+pq[[
+$table usrtoken (
+	token       $hash not null primary key,
+	uid         $id not null,
+	atime       timestamp
+);
+]]
+
+pq[[
 $table cartitem (
 	ciid        $pk,
 	uid         $id not null, $fk(cartitem, uid, usr),
@@ -119,7 +126,7 @@ $table cartitem (
 );
 ]]
 
-ddl[[
+pq[[
 $table ordr (
 	oid         $pk,
 	uid         $id not null, $fk(ordr, uid, usr),
@@ -138,7 +145,7 @@ $table ordr (
 );
 ]]
 
-ddl[[
+pq[[
 $table ordritem (
 	oiid        $pk,
 	oid         $id not null, $fk(ordritem, oid, ordr),
@@ -150,7 +157,7 @@ $table ordritem (
 );
 ]]
 
-ddl[[
+pq[[
 $table convrate (
 	ron         $money not null,
 	usd         $money not null,

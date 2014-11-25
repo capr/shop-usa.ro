@@ -1,4 +1,4 @@
-setfenv(1, require'_g')
+setfenv(1, require'g')
 
 usd_rate = once(function()
 	return query1[[

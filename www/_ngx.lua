@@ -1,4 +1,5 @@
 
+--overwrite these because they are only appended to package.c/path by default.
 package.path = os.getenv'LUA_PATH'
 package.cpath = os.getenv'LUA_CPATH'
 
@@ -22,6 +23,15 @@ local function config(var, default)
 	else
 		return val
 	end
+end
+
+--global S() for internationalizing strings.
+local S_ = {}
+local function S(name, val)
+	if val and not S_[name] then
+		S_[name] = val
+	end
+	return S_[name]
 end
 
 --global error handler: log or print the error.
@@ -53,11 +63,13 @@ local function once(f)
 	end
 end
 
-local g = require'_g'
+local g = require'g'
 g.config = config
 g.once = once
+g.S = S
+require'config' --load static config
 
-local main = require'_main'
+local main = require'main'
 try_call(function()
 	g.__index = _G
 	main()

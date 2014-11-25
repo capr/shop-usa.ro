@@ -7,7 +7,7 @@ local time       = ngx.time
 local type       = type
 local json       = require "cjson"
 local aes        = require "resty.aes"
-local random     = require "_resty_random"
+local random_string = require'resty_random'
 
 local ENCODE_CHARS = {
     ["+"] = "-",
@@ -135,7 +135,7 @@ local session = {
         length  = tonumber(ngx_var.session_identifier_length) or 16
 }}
 
-session.secret = ngx_var.session_secret or random(session.cipher.size / 8)
+session.secret = ngx_var.session_secret or random_string(session.cipher.size / 8)
 session.__index = session
 
 function session.start(opts)
@@ -181,7 +181,7 @@ function session.start(opts)
 end
 
 function session:regenerate(flush)
-    self.id = random(self.identifier.length)
+    self.id = random_string(self.identifier.length)
     if flush then self.data = {} end
     return self:save()
 end

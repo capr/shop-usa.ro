@@ -1,4 +1,4 @@
-require'_cat'
+require'cat'
 
 local bid = ...
 bid = check(tonumber(bid))

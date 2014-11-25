@@ -14,7 +14,7 @@ DIR="$(dirname "$(readlink -f "$0")")"
 }
 [ "$(uname -m)" != x86_64 ] && P=linux32 || P=linux64
 
-WEBBL="$DIR/$WEBB_DIR/?.lua"
+WEBBL="$DIR/$WEBB_DIR/_?.lua"
 LPB="$DIR/$LUAPOWER_DIR/bin/$P"
 LPBL="$LPB/lua/?.lua"
 LPBB="$LPB/clib/?.so"

@@ -1,11 +1,14 @@
-setfenv(1, require'_g')
+setfenv(1, require'g')
 glue = require'glue'
 pp = require'pp'
-local lp = require'_lp'
+mustache = require'hige'
+local lp = require'lp'
 local lfs = require'lfs'
 local cjson = require'cjson'
-require'_session'
-require'_rates'
+require'query'
+require'sendmail'
+require'session'
+require'rates'
 
 --print API ------------------------------------------------------------------
 
@@ -54,6 +57,12 @@ function dump_outbuf()
 	outbuf = nil
 end
 
+function luapage(file)
+	lp.setoutfunc'out'
+	local template = glue.readfile()
+	chunk = lp.compile(template, action, _G)
+end
+
 --request API ----------------------------------------------------------------
 
 local function parse_request()
@@ -87,13 +96,12 @@ function clamp(x, min, max)
 	return math.min(math.max(x, min), max)
 end
 
---reply API ------------------------------------------------------------------
-
-function check(ret, ...)
-	if ret then return ret, ... end
-	ngx.status = 404
-	ngx.exit(0)
+function home_url(path)
+	path = path or ''
+	return (config'base_url' or ngx.var.scheme..'://'..ngx.var.host) .. path
 end
+
+check = assert
 
 --action API -----------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-require'_cat'
+require'cat'
 
 if POST then
 	check(editmode())

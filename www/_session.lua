@@ -1,10 +1,14 @@
-setfenv(1, require'_g')
-local random = require "_resty_random"
-require'_query'
-local session_ = require'_resty_session'
+setfenv(1, require'g')
+local random_string = require'resty_random'
+local session_ = require'resty_session'
 
 local function fullname(firstname, lastname)
 	return glue.trim((firstname or '')..' '..(lastname or ''))
+end
+
+local function salted_hash(token, salt)
+	token = ngx.hmac_sha1(check(salt), check(token))
+	return glue.tohex(token) --40 bytes
 end
 
 --session cookie -------------------------------------------------------------
@@ -64,14 +68,14 @@ end
 
 --password authentication ----------------------------------------------------
 
-local function encrypt_pass(pass)
-	return ngx.encode_base64(ngx.sha1_bin(pass))
+local function pass_hash(pass)
+	return salted_hash(pass, check(config('pass_salt')))
 end
 
 local function pass_uid(email, pass)
 	ngx.sleep(0.2) --make brute-forcing a bit harder
 	return query1('select uid from usr where email = ? and pass = ?',
-		email, encrypt_pass(pass))
+		email, pass_hash(pass))
 end
 
 local function pass_email_uid(email)
@@ -87,7 +91,7 @@ local function set_email_pass(uid, email, pass)
 			pass = ?
 		where
 			uid = ?
-	]], glue.trim(email), encrypt_pass(pass), uid)
+	]], glue.trim(email), pass_hash(pass), uid)
 end
 
 local function delete_user(uid)
@@ -115,27 +119,53 @@ end
 
 --one-time token authentication ----------------------------------------------
 
-function auth.token(auth)
-	ngx.sleep(0.2) --make brute forcing a bit harder
-	local uid = query1([[
-		select uid from usr where authtoken = ?
-			and tokenatime > now() - 2 * 3600
-	]], auth.token)
-	if uid then
-		query([[
-			update usr set authtoken = null, tokenatime = null where uid = ?
-		]], uid)
-	end
-	return uid
+local function gen_token(uid)
+	ngx.sleep(math.random(0.2, 0.4)) --make time analysis a bit harder
+	local token = pass_hash(random_string(32))
+	--add the token to db (breaks on collisions)
+	query([[
+		insert into usrtoken (token, uid) values (?, ?)
+	]], pass_hash(token), uid)
+	return token
 end
 
-function gen_auth_token(email)
+function send_auth_token(email)
+	--find the user with this email
 	local uid = pass_email_uid(email)
 	if not uid then return end
-	local token = glue.tohex(random(16))
-	query([[
-		update usr set authtoken = ?, tokenatime = now() where uid = ?
-	]], token, uid)
+
+	--generate a new token for it
+	local token = gen_token(uid)
+
+	--send it to the user
+	local subj = S('reset_pass_subject', 'Your reset password link')
+	local file = string.format('reset_pass_email.%s.m', config'lang')
+	local template = check(glue.readfile('../www/'..file))
+	local msg = mustache.render(template, {
+		url = home_url('/reset_pass/'..token),
+	})
+	return sendmail(
+		'Echipa shop-usa.ro <admin@shop-usa.ro>',
+		'<'..email..'>', subj, msg)
+end
+
+local function token_uid(token)
+	return query1([[
+		select uid from usrtoken where token = ? and atime > now() - ?
+	]], pass_hash(token), config('pass_token_lifetime', 3600))
+end
+
+function auth.token(auth)
+	ngx.sleep(0.2) --make brute forcing a bit harder
+
+	--find the user
+	local uid = token_uid(auth.token)
+	if not uid then return end
+
+	--remove the token (it's single use)
+	query('delete from usrtoken where token = ?', token)
+
+	return uid
 end
 
 --facebook authentication ----------------------------------------------------

@@ -1,5 +1,5 @@
 --database query function
-setfenv(1, require'_g')
+setfenv(1, require'g')
 local mysql = require'resty.mysql'
 
 --db connection --------------------------------------------------------------
