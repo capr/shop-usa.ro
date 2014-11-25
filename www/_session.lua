@@ -123,6 +123,9 @@ local token_lifetime = config('pass_token_lifetime', 3600)
 
 local function gen_token(uid)
 
+	--now it's a good time to garbage-collect expired tokens
+	query('delete from usrtoken where atime < now() - ?', token_lifetime)
+
 	--check if too many tokens were requested
 	local n = query1([[
 		select count(1) from usrtoken where
@@ -136,9 +139,8 @@ local function gen_token(uid)
 	local token = pass_hash(random_string(32))
 
 	--add the token to db (break on collisions)
-	query([[
-		insert into usrtoken (token, uid) values (?, ?)
-	]], pass_hash(token), uid)
+	query('insert into usrtoken (token, uid) values (?, ?)',
+		pass_hash(token), uid)
 
 	return token
 end
