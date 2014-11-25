@@ -125,10 +125,10 @@ local function gen_token(uid)
 
 	--check if too many tokens were requested
 	local n = query1([[
-		select count(1) from usrtoken where
+		select count(1) as int from usrtoken where
 			uid = ? and atime > now() - ?
 	]], uid, token_lifetime)
-	if tonumber(n) > config('pass_token_maxcount', 3) then
+	if n > config('pass_token_maxcount', 3) then
 		return
 	end
 
