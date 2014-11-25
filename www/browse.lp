@@ -820,24 +820,6 @@
 	</form>
 </script>
 
-<script type="text/x-mustache" id=token_sent_template>
-	<table width=50% height=400 style="border-spacing: 5px">
-		<tr height=100><td> </td></tr>
-		<tr>
-			<td valign=top>
-				<t class=en>
-					A message has been sent to you with the link to reset your password.
-					Please check your mailbox and continue from there.
-				</t>
-				<t class=ro>
-					Un mesaj a fost trimis pe adresa ta cu linkul pentru schimbarea parolei.
-					Te rugam sa-ti verifici mail-ul pentru a continua.
-				</t>
-			</td>
-		</tr>
-	</table>
-</script>
-
 <script type="text/x-mustache" id=reset_pass_template>
 	<form id=reset_pass_form>
 		<table width=50% height=400 style="border-spacing: 5px">
@@ -852,7 +834,10 @@
 			</tr>
 			<tr height=1>
 				<td width=1 valign=top class=nowrap>
-					<label for=pass>Password: </label>
+					<label for=pass>
+						<t class=en>Password:</t>
+						<t class=ro>Parola:</t>
+					</label>
 				</td>
 				<td valign=top>
 					<input type=password id=pass name=pass class=pass autocomplete=off required>
@@ -878,20 +863,34 @@
 	</form>
 </script>
 
-<script type="text/x-mustache" id=password_changed_template>
+<script type="text/x-mustache" id=message_template>
 	<table width=50% height=400 style="border-spacing: 5px">
 		<tr height=100><td> </td></tr>
 		<tr>
-			<td valign=top>
-				<t class=en>
-					Your password was changed.
-				</t>
-				<t class=ro>
-					Parola a fost schimbata.
-				</t>
+			<td valign=top>{{{message}}}</td>
 			</td>
 		</tr>
 	</table>
+</script>
+
+<script type="text/x-mustache" id=token_sent_template>
+	<t class=en>
+		A message with the link to reset your password has been sent
+		to your email address. Please check your inbox and continue from there.
+	</t>
+	<t class=ro>
+		Un mesaj linkul pentru schimbarea parolei a fost trimis pe adresa ta.
+		Te rugam sa-ti verifici mail-ul pentru a continua.
+	</t>
+</script>
+
+<script type="text/x-mustache" id=password_changed_template>
+	<t class=en>
+		Your password was changed.
+	</t>
+	<t class=ro>
+		Parola a fost schimbata.
+	</t>
 </script>
 
 </body>

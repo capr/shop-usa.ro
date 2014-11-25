@@ -359,9 +359,15 @@ action.forgot_password = function() {
 	})
 }
 
+function apply_message_template(message_template) {
+	apply_template('message', {
+		message: apply_template(message_template)
+	}, '#main')
+}
+
 action.token_sent = function() {
 	hide_nav()
-	apply_template('token_sent', {}, '#main')
+	apply_message_template('token_sent')
 }
 
 action.login = function(token) {
@@ -416,7 +422,7 @@ action.reset_password = function(token) {
 
 action.password_changed = function() {
 	hide_nav()
-	apply_template('password_changed', {}, '#main')
+	apply_message_template('password_changed')
 }
 
 // top bar -------------------------------------------------------------------

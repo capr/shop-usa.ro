@@ -79,7 +79,7 @@ local function pass_hash(pass)
 end
 
 local function pass_uid(email, pass)
-	ngx.sleep(0.2) --make brute-forcing a bit harder
+	ngx.sleep(0.2) --slow down brute-forcing
 	return query1([[
 		select uid from usr where
 			active = 1 and email = ? and pass = ?
@@ -151,9 +151,10 @@ local function gen_token(uid)
 		select count(1) from usrtoken where
 			uid = ? and atime > now() - ?
 	]], uid, token_lifetime)
-	assert(tonumber(n) <= config('pass_token_maxcount', 3), 'too many active tokens')
+	if tonumber(n) > config('pass_token_maxcount', 3) then
+		return
+	end
 
-	ngx.sleep(0.2) --make filling it up a bit harder
 	local token = pass_hash(random_string(32))
 
 	--add the token to db (break on collisions)
@@ -182,7 +183,7 @@ function send_auth_token(email)
 end
 
 local function token_uid(token)
-	ngx.sleep(0.2) --make brute forcing a bit harder
+	ngx.sleep(0.2) --slow down brute-forcing
 	return query1([[
 		select uid from usrtoken where token = ? and atime > now() - ?
 	]], pass_hash(token), token_lifetime)
@@ -193,7 +194,8 @@ function auth.token(auth)
 	local uid = token_uid(auth.token)
 	if not uid then return end
 
-	--remove the token (it's single use)
+	--remove the token because it's single use, and also to allow
+	--the user to keep forgetting his password as much as he wants.
 	query('delete from usrtoken where token = ?', pass_hash(auth.token))
 
 	return uid
