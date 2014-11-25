@@ -69,7 +69,7 @@ end
 --password authentication ----------------------------------------------------
 
 local function pass_hash(pass)
-	return salted_hash(pass, check(config('pass_salt')))
+	return salted_hash(pass, check(config'pass_salt'))
 end
 
 local function pass_uid(email, pass)
@@ -119,13 +119,27 @@ end
 
 --one-time token authentication ----------------------------------------------
 
+local token_lifetime = config('pass_token_lifetime', 3600)
+
 local function gen_token(uid)
-	ngx.sleep(math.random(0.2, 0.4)) --make time analysis a bit harder
+
+	--check if too many tokens were requested
+	local n = query1([[
+		select count(1) from usrtoken where
+			uid = ? and atime > now() - ?
+	]], uid, token_lifetime)
+	if n > config('pass_token_maxcount', 3) then
+		return
+	end
+
+	ngx.sleep(math.random(0.8, 1.4)) --make time analysis a bit harder
 	local token = pass_hash(random_string(32))
-	--add the token to db (breaks on collisions)
+
+	--add the token to db (break on collisions)
 	query([[
 		insert into usrtoken (token, uid) values (?, ?)
 	]], pass_hash(token), uid)
+
 	return token
 end
 
@@ -134,8 +148,9 @@ function send_auth_token(email)
 	local uid = pass_email_uid(email)
 	if not uid then return end
 
-	--generate a new token for it
+	--generate a new token for him if we can
 	local token = gen_token(uid)
+	if not token then return end
 
 	--send it to the user
 	local subj = S('reset_pass_subject', 'Your reset password link')
@@ -152,7 +167,7 @@ end
 local function token_uid(token)
 	return query1([[
 		select uid from usrtoken where token = ? and atime > now() - ?
-	]], pass_hash(token), config('pass_token_lifetime', 3600))
+	]], pass_hash(token), token_lifetime)
 end
 
 function auth.token(auth)
