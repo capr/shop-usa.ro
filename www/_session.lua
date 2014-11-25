@@ -6,11 +6,6 @@ local function fullname(firstname, lastname)
 	return glue.trim((firstname or '')..' '..(lastname or ''))
 end
 
-local function salted_hash(token, salt)
-	token = ngx.hmac_sha1(check(salt), check(token))
-	return glue.tohex(token) --40 bytes
-end
-
 --session cookie -------------------------------------------------------------
 
 session = once(function()
@@ -74,8 +69,13 @@ end
 
 --password authentication ----------------------------------------------------
 
+local function salted_hash(token, salt)
+	token = ngx.hmac_sha1(assert(salt), assert(token))
+	return glue.tohex(token) --40 bytes
+end
+
 local function pass_hash(pass)
-	return salted_hash(pass, check(config'pass_salt'))
+	return salted_hash(pass, config'pass_salt')
 end
 
 local function pass_uid(email, pass)
@@ -192,7 +192,7 @@ function auth.token(auth)
 	if not uid then return end
 
 	--remove the token (it's single use)
-	query('delete from usrtoken where token = ?', pass_hash(token))
+	query('delete from usrtoken where token = ?', pass_hash(auth.token))
 
 	return uid
 end
