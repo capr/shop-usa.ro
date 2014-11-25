@@ -158,21 +158,21 @@ function memoize(f) {
 	}
 }
 
-var template = memoize(function(name) {
-	var templ = $('#' + name + '_template').html()
+var template_render = memoize(function(name) {
+	var template = $('#' + name + '_template').html()
 	return function(data) {
-		return Mustache.render(templ, data)
+		return Mustache.render(template, data)
 	}
 })
 
 function multi_column(template_name, items, col_count) {
 	var s = '<table width=100%>'
-	var template = template(template_name)
+	var render = template_render(template_name)
 	var w = 100 / col_count
 	$.each(items, function(i, item) {
 		if (i % col_count == 0)
 			s = s + '<tr>'
-		s = s + '<td width='+w+'%>' + template(item) + '</td>'
+		s = s + '<td width='+w+'%>' + render(item) + '</td>'
 		if (i % col_count == col_count - 1 || i == items.length)
 			s = s + '</tr>'
 	})
@@ -181,7 +181,7 @@ function multi_column(template_name, items, col_count) {
 }
 
 function apply_template(template_name, data, dest_id) {
-	var s = template(template_name)(data)
+	var s = template_render(template_name)(data)
 	if (dest_id)
 		$(dest_id).html(s)
 	else
