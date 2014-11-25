@@ -877,12 +877,10 @@
 		<tr>
 			<td valign=top>
 				<t class=en>
-					A message has been sent to you with the link to reset your password.
-					Please check your mailbox and continue from there.
+					Your password was changed.
 				</t>
 				<t class=ro>
-					Un mesaj a fost trimis pe adresa ta cu linkul pentru schimbarea parolei.
-					Te rugam sa-ti verifici mail-ul pentru a continua.
+					Parola a fost schimbata.
 				</t>
 			</td>
 		</tr>
