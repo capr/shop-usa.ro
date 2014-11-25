@@ -5,7 +5,7 @@ local mime = require'mime'
 local ltn12 = require'ltn12'
 
 local function strip_name(email)
-	return email:match'(<.->)' or email
+	return '<'..(email:match'<(.-)>' or email)..'>'
 end
 
 function sendmail(from, rcpt, subj, msg)
