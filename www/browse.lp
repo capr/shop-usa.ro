@@ -753,6 +753,11 @@
 	</table>
 </script>
 
+<script type="text/x-mustache" id=forgot_password_template>
+
+</script>
+
+
 <script type="text/x-mustache" id=topbar_template>
 	<table style="float: right;">
 		<tr>

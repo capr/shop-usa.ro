@@ -348,7 +348,7 @@ function create_order() {
 // main ----------------------------------------------------------------------
 
 action.checkout = function() {
-
+	hide_nav()
 	apply_template('#checkout_template', {}, '#main')
 
 	load_content('#account_section', '/login.json', function(usr) {

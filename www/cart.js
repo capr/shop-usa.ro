@@ -176,6 +176,7 @@ function cart_make_draggable() {
 }
 
 action.cart = function() {
+	hide_nav()
 	load_main('/cart.json', function(cart) {
 		g_cart = cart
 		update_cart_page()

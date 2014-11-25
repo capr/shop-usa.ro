@@ -17,9 +17,6 @@ function sendmail(from, rcpt, subj, msg)
 		},
 		body = mime.eol(0, msg),
 	}
-
-	pp(strip_name(from), strip_name(rcpt))
-
 	assert(smtp.send{
 		from   = strip_name(from),
 		rcpt   = strip_name(rcpt),

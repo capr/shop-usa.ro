@@ -97,7 +97,7 @@ function init_keydown() {
 	})
 }
 
-// history -------------------------------------------------------------------
+// address bar and links -----------------------------------------------------
 
 function init_history() {
 	var History = window.History
@@ -120,8 +120,8 @@ function url_changed() {
 	var act = args[0] || default_action
 	args.shift() // remove action/
 	var handler = action[act]
-	if (handler)
-		handler.apply(null, args)
+	check(handler)
+	handler.apply(null, args)
 }
 
 function setlink(sel, url) {
@@ -129,6 +129,11 @@ function setlink(sel, url) {
 		event.preventDefault()
 		exec(url)
 	})
+}
+
+function hide_nav() {
+	$('.navbar').hide()
+	$('#sidebar').hide()
 }
 
 // persistence ---------------------------------------------------------------

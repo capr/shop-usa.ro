@@ -162,9 +162,7 @@ function select_brand_letter(search) {
 	}
 }
 
-function update_brands(brands) {
-	$('.navbar').hide()
-	$('#sidebar').hide()
+function update_brands_page(brands) {
 	var s = multi_column('#brands_template', brands, 4)
 	$('#main').html('<br><br>'+s)
 
@@ -175,8 +173,9 @@ function update_brands(brands) {
 }
 
 action.brands = function(search) {
+	hide_nav()
 	load_main('/brands.json/'+search, function(brands) {
-		update_brands(brands)
+		update_brands_page(brands)
 		select_brand_letter(search)
 	})
 }
@@ -281,19 +280,13 @@ function dimsel_changed() {
 
 }
 
-function update_prod(prod) {
-
+function update_product_page(prod) {
 	g_prod = prod
-
 	window.scrollTo(0, 0)
-
-	$('.navbar').hide()
-	$('#sidebar').hide()
 
 	apply_template('#product_page_template', prod, '#main')
 
 	$('#dimsel select[did]').change(dimsel_changed)
-
 	dimsel_changed()
 
 	setlink('.brandlink', '/browse/brand/' + prod.bid)
@@ -305,15 +298,13 @@ function update_prod(prod) {
 }
 
 action.p = function(pid) {
-	load_main('/prod.json/'+pid, update_prod)
+	hide_nav()
+	load_main('/prod.json/'+pid, update_product_page)
 }
 
 // brand page ----------------------------------------------------------------
 
 function update_brand_page(brand) {
-	$('#sidebar').hide()
-	$('.navbar').hide()
-
 	apply_template('#brand_page_template', brand, '#main')
 
 	$('#bcat').html(format_cats(brand.cats))
@@ -327,6 +318,7 @@ function update_brand_page(brand) {
 }
 
 action.brand = function(bid) {
+	hide_nav()
 	load_main('/brand.json/'+bid, update_brand_page)
 }
 
