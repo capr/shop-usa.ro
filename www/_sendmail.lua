@@ -9,8 +9,6 @@ local function strip_name(email)
 end
 
 function sendmail(from, rcpt, subj, msg)
-	pp(from, rcpt, subj, msg)
-
 	local source = smtp.message{
 		headers = {
 			from = from,
@@ -19,15 +17,13 @@ function sendmail(from, rcpt, subj, msg)
 		},
 		body = mime.eol(0, msg),
 	}
-
-	r, e = smtp.send{
+	assert(smtp.send{
 		from   = strip_name(from),
 		rcpt   = strip_name(rcpt),
 		source = source,
 		server = config('smtp_host', '127.0.0.1'),
 		port   = config('smtp_port', 25),
-	}
-
-	pp(r, e)
-
+	})
 end
+
+	local subj = S('reset_pass_subject', 'Your reset password link')

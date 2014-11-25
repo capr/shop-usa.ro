@@ -150,20 +150,17 @@ function send_auth_token(email)
 	local uid = pass_email_uid(email)
 	if not uid then return end
 
-	--generate a new token for him if we can
+	--generate a new token for this user if we can
 	local token = gen_token(uid)
 	if not token then return end
 
 	--send it to the user
 	local subj = S('reset_pass_subject', 'Your reset password link')
-	local file = string.format('reset_pass_email.%s.m', config'lang')
-	local template = check(glue.readfile('../www/'..file))
-	local msg = mustache.render(template, {
+	local msg = apply_template('reset_pass_email', {
 		url = home_url('/reset_pass/'..token),
 	})
-	return sendmail(
-		'Echipa SHOP-USA <admin@shop-usa.ro>',
-		'<'..email..'>', subj, msg)
+	local from = config'reset_pass_sender' or string.format('admin@%s', ngx.host)
+	sendmail(from, email, subj, msg)
 end
 
 local function token_uid(token)

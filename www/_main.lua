@@ -1,10 +1,5 @@
 setfenv(1, require'g')
 glue = require'glue'
-pp = require'pp'
-mustache = require'hige'
-local lp = require'lp'
-local lfs = require'lfs'
-local cjson = require'cjson'
 require'query'
 require'sendmail'
 require'session'
@@ -27,7 +22,13 @@ function print(...)
 	end
 end
 
+pp = require'pp'
+
 _G.__index.print = print --override Lua's print() for pp.
+
+--json API -------------------------------------------------------------------
+
+local cjson = require'cjson'
 
 function json(v)
 	if type(v) == 'table' then
@@ -57,10 +58,14 @@ function dump_outbuf()
 	outbuf = nil
 end
 
-function luapage(file)
-	lp.setoutfunc'out'
-	local template = glue.readfile()
-	chunk = lp.compile(template, action, _G)
+--mustache template files  ---------------------------------------------------
+
+local hige = require'hige'
+
+function apply_template(name, data)
+	local file = string.format('%s.%s.m', name, config'lang')
+	local template = assert(glue.readfile('../www/'..file))
+	return hige.render(template, data)
 end
 
 --request API ----------------------------------------------------------------
@@ -118,6 +123,8 @@ local function parse_path()
 	return action, args
 end
 
+local lfs = require'lfs'
+
 local function filepath(file, basedir)
 	basedir = basedir or '../www'
 	if file:find('..', 1, true) then return end --trying to escape
@@ -128,6 +135,8 @@ local function filepath(file, basedir)
 end
 
 local chunks = {} --{action = chunk}
+
+local lp = require'lp'
 
 function action(action, ...)
 	local chunk = chunks[action]
@@ -162,7 +171,7 @@ local function check_img()
 	if kind == 'p' then
 
 		if config('no_images') then
-			check(false)
+			error'no images'
 		end
 
 		--check for short form and make an internal redirect.
