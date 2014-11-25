@@ -24,7 +24,7 @@ function sendmail(from, rcpt, subj, msg)
 	}
 
 	r, e = smtp.send{
-		from   = from,
+		from   = strip_name(from),
 		rcpt   = strip_name(rcpt),
 		source = source,
 		server = config('smtp_host', '127.0.0.1'),
