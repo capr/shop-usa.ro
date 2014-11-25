@@ -166,6 +166,8 @@ function create_user_section(usr) {
 		create_login_section()
 	})
 
+	setlink('#reset_pass', '/browse/reset_password')
+
 	var validator = $('#usr_form').validate({
 		messages: {
 			usr_email: {

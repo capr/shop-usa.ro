@@ -508,11 +508,17 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan=3>
+				<td colspan=2>
 					<br>
 					<a id=relogin class=gray>
 						<t class=en>Not {{name}}?</t>
 						<t class=ro>Nu esti {{name}}?</t>
+					</a>
+				</td>
+				<td align=right>
+					<a id=reset_pass class=gray>
+						<t class=en>Change password</t>
+						<t class=ro>Schimba parola</t>
 					</a>
 				</td>
 			</tr>
