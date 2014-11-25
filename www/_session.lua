@@ -173,27 +173,28 @@ function send_auth_token(email)
 	--send it to the user
 	local subj = S('reset_pass_subject', 'Your reset password link')
 	local msg = apply_template('reset_pass_email', {
-		url = home_url('/reset_pass/'..token),
+		url = home_url('/browse/reset_password/'..token),
 	})
 	local from = config'noreply_email' or home_email()
 	sendmail(from, email, subj, msg)
 end
 
 local function token_uid(token)
+	ngx.sleep(0.2) --make brute forcing a bit harder
 	return query1([[
 		select uid from usrtoken where token = ? and atime > now() - ?
 	]], pass_hash(token), token_lifetime)
 end
 
 function auth.token(auth)
-	ngx.sleep(0.2) --make brute forcing a bit harder
-
 	--find the user
 	local uid = token_uid(auth.token)
 	if not uid then return end
 
 	--remove the token (it's single use)
 	query('delete from usrtoken where token = ?', token)
+
+	print'here'
 
 	return uid
 end
