@@ -327,6 +327,7 @@ action.brand = function(bid) {
 action.forgot_password = function() {
 	hide_nav()
 	apply_template('forgot_pass', {}, '#main')
+	$('#email').focus()
 
 	var validator = $('#forgot_pass_form').validate({
 		messages: {
@@ -341,6 +342,7 @@ action.forgot_password = function() {
 			err.appendTo($('#validation_error'))
 		},
 	})
+
 	$('#btn_send_email').click(function() {
 		if (!$('#forgot_pass_form').valid()) {
 			validator.focusInvalid()
@@ -377,6 +379,7 @@ action.login = function(token) {
 action.reset_password = function(token) {
 
 	apply_template('reset_pass', {}, '#main')
+	$('#pass').focus()
 
 	var validator = $('#reset_pass_form').validate({
 		rules: {
