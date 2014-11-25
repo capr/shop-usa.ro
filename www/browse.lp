@@ -855,7 +855,7 @@
 					<label for=pass>Password: </label>
 				</td>
 				<td valign=top>
-					<input type=password id=pass name=pass class=pass required>
+					<input type=password id=pass name=pass class=pass autocomplete=off required>
 				</td>
 				<td width=1 valign=top class=nowrap>
 					<button class=orange id=btn_reset_pass>
