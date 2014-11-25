@@ -167,7 +167,7 @@ var template = memoize(function(name) {
 
 function multi_column(template_name, items, col_count) {
 	var s = '<table width=100%>'
-	var templ = template(template_name)
+	var template = template(template_name)
 	var w = 100 / col_count
 	$.each(items, function(i, item) {
 		if (i % col_count == 0)
