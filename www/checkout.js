@@ -100,15 +100,6 @@ function create_login_section() {
 			$('#btn_login').click()
 	})
 
-	function pass_auth(action) {
-		return {
-			type:  'pass',
-			action: action,
-			email:  $('#email').val(),
-			pass:   $('#pass').val(),
-		}
-	}
-
 	var validator = $('#login_form').validate({
 		rules: {
 			pass: { minlength: 6 }
@@ -137,6 +128,15 @@ function create_login_section() {
 			return false
 		}
 		return true
+	}
+
+	function pass_auth(action) {
+		return {
+			type:  'pass',
+			action: action,
+			email:  $('#email').val(),
+			pass:   $('#pass').val(),
+		}
 	}
 
 	$('#btn_login').prop('disbled', false).click(function() {

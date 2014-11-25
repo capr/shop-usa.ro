@@ -16,7 +16,7 @@ session = once(function()
 	return assert(session_.start())
 end)
 
-function session_uid()
+local function session_uid()
 	return session().data.uid
 end
 
@@ -128,11 +128,13 @@ function auth.pass(auth)
 	end
 end
 
-function set_pass(uid, pass)
-	pp(query([[
+function set_pass(pass)
+	local uid = session_uid()
+	if not uid then return end --hide the error for privacy
+	query([[
 		update usr set pass = ? where
 			active = 1 and email is not null and uid = ?
-	]], pass_hash(pass), uid))
+	]], pass_hash(pass), uid) --hide any errors for privacy
 end
 
 --one-time token authentication ----------------------------------------------
@@ -173,7 +175,7 @@ function send_auth_token(email)
 	--send it to the user
 	local subj = S('reset_pass_subject', 'Your reset password link')
 	local msg = apply_template('reset_pass_email', {
-		url = home_url('/browse/reset_password/'..token),
+		url = home_url('/browse/login/'..token),
 	})
 	local from = config'noreply_email' or home_email()
 	sendmail(from, email, subj, msg)

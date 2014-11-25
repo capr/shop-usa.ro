@@ -362,56 +362,53 @@ action.token_sent = function() {
 	apply_template('token_sent', {}, '#main')
 }
 
-action.reset_password = function(token) {
-
-	function login_failed() {
-		exec('/browse/forgot_password')
-	}
-
-	function login_ok() {
-
-		apply_template('reset_pass', {}, '#main')
-
-		var validator = $('#reset_pass_form').validate({
-			rules: {
-				pass: { minlength: 6 }
-			},
-			messages: {
-				pass: {
-					required: S('pass_required_error',
-						'You need a password to sign in'),
-					minlength: $.validator.format(S('pass_format_error',
-						'Enter at least {0} characters')),
-				},
-			},
-			errorPlacement: function(err, el) {
-				err.appendTo($('#validation_error'))
-			},
-		})
-
-		$('#btn_reset_pass').click(function() {
-			if (!$('#reset_pass_form').valid()) {
-				validator.focusInvalid()
-			} else {
-				$(this).prop('disabled', true)
-				$('#server_error').hide()
-				post('/reset_pass', { pass: $('#pass').val() }, function() {
-					exec('/browse/password_changed')
-				}, function() {
-					$('#btn_reset_pass').prop('disabled', false)
-					$('#server_error').show()
-				})
-			}
-		})
-
-	}
-
+action.login = function(token) {
 	if (!token) {
-		login_failed()
+		exec('/browse/forgot_password')
 		return
 	}
-	post('/login.json', {type: 'token', token: token}, login_ok, login_failed)
+	post('/login.json', {type: 'token', token: token}, function() {
+		exec('/browse/reset_password')
+	}, function() {
+		exec('/browse/forgot_password')
+	})
+}
 
+action.reset_password = function(token) {
+
+	apply_template('reset_pass', {}, '#main')
+
+	var validator = $('#reset_pass_form').validate({
+		rules: {
+			pass: { minlength: 6 }
+		},
+		messages: {
+			pass: {
+				required: S('pass_required_error',
+					'You need a password to sign in'),
+				minlength: $.validator.format(S('pass_format_error',
+					'Enter at least {0} characters')),
+			},
+		},
+		errorPlacement: function(err, el) {
+			err.appendTo($('#validation_error'))
+		},
+	})
+
+	$('#btn_reset_pass').click(function() {
+		if (!$('#reset_pass_form').valid()) {
+			validator.focusInvalid()
+		} else {
+			$(this).prop('disabled', true)
+			$('#server_error').hide()
+			post('/reset_pass', { pass: $('#pass').val() }, function() {
+				exec('/browse/password_changed')
+			}, function() {
+				$('#btn_reset_pass').prop('disabled', false)
+				$('#server_error').show()
+			})
+		}
+	})
 }
 
 action.password_changed = function() {
