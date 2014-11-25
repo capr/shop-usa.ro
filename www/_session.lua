@@ -145,7 +145,7 @@ function send_auth_token(email)
 		url = home_url('/reset_pass/'..token),
 	})
 	return sendmail(
-		'<admin@shop-usa.ro>',
+		'Echipa SHOP-USA <admin@shop-usa.ro>',
 		'<'..email..'>', subj, msg)
 end
 
