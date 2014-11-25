@@ -131,9 +131,7 @@ local function gen_token(uid)
 		select count(1) from usrtoken where
 			uid = ? and atime > now() - ?
 	]], uid, token_lifetime)
-	if tonumber(n) > config('pass_token_maxcount', 3) then
-		return
-	end
+	assert(tonumber(n) <= config('pass_token_maxcount', 3))
 
 	ngx.sleep(math.random(0.8, 1.4)) --make time analysis a bit harder
 	local token = pass_hash(random_string(32))
