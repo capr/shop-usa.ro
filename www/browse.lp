@@ -40,10 +40,10 @@
 			</div>
 		</td>
 		<td valign=top width=900>
-			<div id=topbar style="height: 40px"></div>
+			<div id=topbar style="height: 30px"></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
-					<?lua
+					<?
 					local letters = {'#'}
 					for byte = string.byte'A', string.byte'Z' do
 						table.insert(letters, string.char(byte))
@@ -51,9 +51,11 @@
 					local w = 900 / #letters
 					for i,letter in ipairs(letters) do
 						local search = letter == '#' and 'other' or letter
-					?>
-					<td align=center width=<?=w?>><a search=<?=search?>><?=letter?></a></td>
-					<?lua
+						?>
+						<td align=center width=<?=w?>>
+							<a search=<?=search?>><?=letter?></a>
+						</td>
+						<?
 					end
 					?>
 				</tr>
@@ -114,6 +116,18 @@
 		</td>
 	</tr>
 </table>
+
+<script type="text/x-mustache" id=topbar_template>
+	<table style="float: right;">
+		<tr>
+		{{#items}}
+			<td valign=middle style="padding-left: 30px; padding-right: 30px;">
+				<a catid={{{catid}}}>{{{catname}}}</a>
+			</td>
+		{{/items}}
+		</tr>
+	</table>
+</script>
 
 <script type="text/x-mustache" id=prod_list_template>
 	<table width=100%>
@@ -755,19 +769,6 @@
 
 <script type="text/x-mustache" id=forgot_password_template>
 
-</script>
-
-
-<script type="text/x-mustache" id=topbar_template>
-	<table style="float: right;">
-		<tr>
-		{{#items}}
-			<td valign=middle height=40 style="padding-left: 30px; padding-right: 30px;">
-				<a catid={{{catid}}}>{{{catname}}}</a>
-			</td>
-		{{/items}}
-		</tr>
-	</table>
 </script>
 
 </body>
