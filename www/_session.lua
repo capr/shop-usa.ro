@@ -192,9 +192,7 @@ function auth.token(auth)
 	if not uid then return end
 
 	--remove the token (it's single use)
-	query('delete from usrtoken where token = ?', token)
-
-	print'here'
+	query('delete from usrtoken where token = ?', pass_hash(token))
 
 	return uid
 end
