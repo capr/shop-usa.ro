@@ -17,10 +17,7 @@ function sendmail(from, rcpt, subj, msg)
 			to = rcpt,
 			subject = subj,
 		},
-		body = {
-			preamble = 'preamble',
-				[1] = { body = mime.eol(0, 'Hello, howz going?') },
-		},
+		body = mime.eol(0, msg),
 	}
 
 	r, e = smtp.send{
