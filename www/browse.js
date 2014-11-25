@@ -5,7 +5,7 @@ function format_prods(prods) {
 	if (g_viewstyle == 'list') {
 		return apply_template('prod_list', prods)
 	} else if (g_viewstyle == 'grid') {
-		return multi_column('#prod_grid_element_template', prods, g_prod_cols)
+		return multi_column('prod_grid_element', prods, g_prod_cols)
 	}
 }
 
@@ -163,7 +163,7 @@ function select_brand_letter(search) {
 }
 
 function update_brands_page(brands) {
-	var s = multi_column('#brands_template', brands, 4)
+	var s = multi_column('brands', brands, 4)
 	$('#main').html('<br><br>'+s)
 
 	$('#main a[bid]').each(function() {
