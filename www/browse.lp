@@ -879,7 +879,7 @@
 		to your email address. Please check your inbox and continue from there.
 	</t>
 	<t class=ro>
-		Un mesaj linkul pentru schimbarea parolei a fost trimis pe adresa ta.
+		Un mesaj cu linkul pentru schimbarea parolei a fost trimis pe adresa ta.
 		Te rugam sa-ti verifici mail-ul pentru a continua.
 	</t>
 </script>
