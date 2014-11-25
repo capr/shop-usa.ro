@@ -40,7 +40,7 @@
 			</div>
 		</td>
 		<td valign=top width=900>
-			<div id=topbar></div>
+			<div id=topbar style="height: 40px"></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
 					<?lua
