@@ -149,14 +149,30 @@ function getback(key) {
 
 // templating ----------------------------------------------------------------
 
-function multi_column(template_id, items, col_count) {
+function memoize(f) {
+	var cache = {}
+	return function(arg) {
+		if (arg in cache)
+			return cache[arg]
+		return cache[arg] = f(arg)
+	}
+}
+
+var template = memoize(function(name) {
+	var templ = $('#' + name + '_template').html()
+	return function(data) {
+		return Mustache.render(templ, data)
+	}
+})
+
+function multi_column(template_name, items, col_count) {
 	var s = '<table width=100%>'
-	var template = $(template_id).html()
+	var templ = template(template_name)
 	var w = 100 / col_count
 	$.each(items, function(i, item) {
 		if (i % col_count == 0)
 			s = s + '<tr>'
-		s = s + '<td width='+w+'%>' + Mustache.render(template, item) + '</td>'
+		s = s + '<td width='+w+'%>' + template(item) + '</td>'
 		if (i % col_count == col_count - 1 || i == items.length)
 			s = s + '</tr>'
 	})
@@ -164,14 +180,12 @@ function multi_column(template_id, items, col_count) {
 	return s
 }
 
-function apply_template(template_id, data, dest_id) {
-	var template = $(template_id).html()
-	var s = Mustache.render(template, data)
-	if (dest_id) {
+function apply_template(template_name, data, dest_id) {
+	var s = template(template_name)(data)
+	if (dest_id)
 		$(dest_id).html(s)
-	} else {
+	else
 		return s
-	}
 }
 
 // find an id attribute in the parents of an element

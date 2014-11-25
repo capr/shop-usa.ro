@@ -114,9 +114,9 @@ function update_cart_page() {
 	var total = 0
 	$.each(g_cart.buynow, function(i,e) { total += e.price; })
 
-	apply_template('#cart_page_template', {
-		buynow:         apply_template('#cart_list_template', g_cart.buynow),
-		buylater:       apply_template('#cart_list_template', g_cart.buylater),
+	apply_template('cart_page', {
+		buynow:         apply_template('cart_list', g_cart.buynow),
+		buylater:       apply_template('cart_list', g_cart.buylater),
 		buylater_count: g_cart.buylater.length,
 		buynow_count:   g_cart.buynow.length,
 		total:          total,

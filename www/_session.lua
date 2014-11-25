@@ -44,11 +44,17 @@ end
 --session-cookie authentication ----------------------------------------------
 
 local function valid_uid(uid)
-	return uid and query1('select uid from usr where uid = ?', uid)
+	return uid and query1([[
+		select uid from usr where
+			active = 1 and uid = ?
+	]], uid)
 end
 
 local function anonymous_uid(uid)
-	return uid and query1('select uid from usr where uid = ? and anonymous = 1', uid)
+	return uid and query1([[
+		select uid from usr where
+			active = 1 and anonymous = 1 and uid = ?
+	]], uid)
 end
 
 local function create_user()
@@ -74,12 +80,17 @@ end
 
 local function pass_uid(email, pass)
 	ngx.sleep(0.2) --make brute-forcing a bit harder
-	return query1('select uid from usr where email = ? and pass = ?',
-		email, pass_hash(pass))
+	return query1([[
+		select uid from usr where
+			active = 1 and email = ? and pass = ?
+	]], email, pass_hash(pass))
 end
 
 local function pass_email_uid(email)
-	return query1('select uid from usr where email = ? and pass is not null', email)
+	return query1([[
+		select uid from usr where
+			active = 1 and pass is not null and email = ?
+	]], email)
 end
 
 local function set_email_pass(uid, email, pass)
@@ -117,6 +128,13 @@ function auth.pass(auth)
 	end
 end
 
+function set_pass(uid, pass)
+	pp(query([[
+		update usr set pass = ? where
+			active = 1 and email is not null and uid = ?
+	]], pass_hash(pass), uid))
+end
+
 --one-time token authentication ----------------------------------------------
 
 local token_lifetime = config('pass_token_lifetime', 3600)
@@ -133,7 +151,7 @@ local function gen_token(uid)
 	]], uid, token_lifetime)
 	assert(tonumber(n) <= config('pass_token_maxcount', 3), 'too many active tokens')
 
-	ngx.sleep(math.random(0.8, 1.4)) --make time analysis a bit harder
+	ngx.sleep(0.2) --make filling it up a bit harder
 	local token = pass_hash(random_string(32))
 
 	--add the token to db (break on collisions)
@@ -146,11 +164,11 @@ end
 function send_auth_token(email)
 	--find the user with this email
 	local uid = pass_email_uid(email)
-	if not uid then return end
+	if not uid then return end --hide the error for privacy
 
 	--generate a new token for this user if we can
 	local token = gen_token(uid)
-	if not token then return end
+	if not token then return end --hide the error for privacy
 
 	--send it to the user
 	local subj = S('reset_pass_subject', 'Your reset password link')

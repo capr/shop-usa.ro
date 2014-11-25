@@ -64,7 +64,7 @@
 				<tr>
 					<td></td>
 					<td align=right style="text-align: right;">
-						<div id=cart_icon_div style="position: relative;" align=right>
+						<div id=cart_icon_div style="position: relative; height: 50px" align=right>
 							<a id=cart_icon_link>
 								<img id=cart_icon>
 								<div style="float: right; position: relative; top: 11px; left: -21px;">
@@ -384,17 +384,17 @@
 		<table width=100%>
 			<tr>
 				<td width=38% valign=top>
-					<a class="btn btn_facebook">
+					<a class=btn id=btn_facebook>
 						<i class="fa fa-facebook" style="width:16px; height:20px"></i>
 							<t class=en>Sign in with Facebook</t>
 							<t class=ro>Intra cu Facebook</t>
 					</a>
-					<a class="btn btn_google">
+					<a class=btn id=btn_google>
 						<i class="fa fa-google-plus" style="width:16px; height:20px"></i>
 							<t class=en>Sign in with Google</t>
 							<t class=ro>Intra cu Google</t>
 					</a>
-					<a class="btn btn_no_account">
+					<a class=btn id=btn_no_account>
 						<i class="fa fa-check-square-o" style="width:16px; height:18px"></i>
 							<t class=en>Order without sign in</t>
 							<t class=ro>Comanda fara cont</t>
@@ -767,8 +767,126 @@
 	</table>
 </script>
 
-<script type="text/x-mustache" id=forgot_password_template>
+<script type="text/x-mustache" id=forgot_pass_template>
+	<form id=forgot_pass_form>
+		<table width=50% height=400 style="border-spacing: 5px">
+			<tr height=100><td> </td></tr>
+			<tr height=1>
+				<td colspan=3 valign=top>
+					<t class=en>
+						Enter your email below, and we will send you an email with a link
+						that will allow you to login and reset your password.
+					</t>
+					<t class=ro>
+						Introdu adresa de email in campul de mai jos, si iti vom trimite
+						un mesaj cu un link care te va ajuta sa iti schimbi parola.
+					</t>
+					<br>
+					<br>
+				</td>
+			</tr>
+			<tr height=1>
+				<td width=1 valign=top class=nowrap>
+					<label for=email>Email: </label>
+				</td>
+				<td valign=top>
+					<input type=text id=email name=email class=email required>
+				</td>
+				<td width=1 valign=top class=nowrap>
+					<button class=orange id=btn_send_email>
+						<t class=en>Send email</t>
+						<t class=ro>Trimite email</t>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td colspan=2 valign=top>
+					<div id=validation_error class=error></div>
+					<div id=server_error class=error style="display: none;">
+						<t class=en>There was an error. Please try again.</t>
+						<t class=ro>S-a produs o eroare. Te rog sa incerci din nou.</t>
+					</label>
+				</td>
+			</tr>
+		</table>
+	</form>
+</script>
 
+<script type="text/x-mustache" id=token_sent_template>
+	<table width=50% height=400 style="border-spacing: 5px">
+		<tr height=100><td> </td></tr>
+		<tr>
+			<td valign=top>
+				<t class=en>
+					A message has been sent to you with the link to reset your password.
+					Please check your mailbox and continue from there.
+				</t>
+				<t class=ro>
+					Un mesaj a fost trimis pe adresa ta cu linkul pentru schimbarea parolei.
+					Te rugam sa-ti verifici mail-ul pentru a continua.
+				</t>
+			</td>
+		</tr>
+	</table>
+</script>
+
+<script type="text/x-mustache" id=reset_pass_template>
+	<form id=reset_pass_form>
+		<table width=50% height=400 style="border-spacing: 5px">
+			<tr height=100><td> </td></tr>
+			<tr height=1>
+				<td colspan=3 valign=top>
+					<t class=en>Enter your new password.</t>
+					<t class=ro>Introdu noua parola.</t>
+					<br>
+					<br>
+				</td>
+			</tr>
+			<tr height=1>
+				<td width=1 valign=top class=nowrap>
+					<label for=pass>Password: </label>
+				</td>
+				<td valign=top>
+					<input type=password id=pass name=pass class=pass required>
+				</td>
+				<td width=1 valign=top class=nowrap>
+					<button class=orange id=btn_reset_pass>
+						<t class=en>Change password</t>
+						<t class=ro>Schimba parola</t>
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td colspan=2 valign=top>
+					<div id=validation_error class=error></div>
+					<div id=server_error class=error style="display: none;">
+						<t class=en>There was an error. Please try again.</t>
+						<t class=ro>S-a produs o eroare. Te rog sa incerci din nou.</t>
+					</label>
+				</td>
+			</tr>
+		</table>
+	</form>
+</script>
+
+<script type="text/x-mustache" id=password_changed_template>
+	<table width=50% height=400 style="border-spacing: 5px">
+		<tr height=100><td> </td></tr>
+		<tr>
+			<td valign=top>
+				<t class=en>
+					A message has been sent to you with the link to reset your password.
+					Please check your mailbox and continue from there.
+				</t>
+				<t class=ro>
+					Un mesaj a fost trimis pe adresa ta cu linkul pentru schimbarea parolei.
+					Te rugam sa-ti verifici mail-ul pentru a continua.
+				</t>
+			</td>
+		</tr>
+	</table>
 </script>
 
 </body>

@@ -36,7 +36,7 @@ function update_cart(cart) {
 		total:          total,
 	}
 
-	apply_template('#checkout_cart_section_template', data, '#cart_section')
+	apply_template('checkout_cart_section', data, '#cart_section')
 
 }
 
@@ -66,7 +66,7 @@ var validate_login
 
 function create_login_section() {
 
-	apply_template('#login_section_template', {}, '#account_section')
+	apply_template('login_section', {}, '#account_section')
 
 	g_want_anonymous = false
 
@@ -75,18 +75,20 @@ function create_login_section() {
 			$('#pass').attr('type') == 'password' ? 'text' : 'password')
 	})
 
-	$('.btn_facebook').click(function() {
+	$('#btn_facebook').click(function() {
 		facebook_login(action.checkout, login_failed)
 	})
 
-	$('.btn_google').click(function() {
+	$('#btn_google').click(function() {
 		google_login(action.checkout, login_failed)
 	})
 
-	$('.btn_no_account').click(function() {
+	$('#btn_no_account').click(function() {
 		g_want_anonymous = true
 		post('/login.json', {type: 'anonymous'}, action.checkout)
 	})
+
+	setlink('#btn_forgot_pass', '/browse/forgot_password')
 
 	$('#email').keypress(function(e) {
 		if(e.keyCode == 13)
@@ -158,16 +160,13 @@ function create_login_section() {
 var validate_usr
 
 function create_user_section(usr) {
-	apply_template('#user_section_template', usr, '#account_section')
+	apply_template('user_section', usr, '#account_section')
 
 	$('#relogin').click(function() {
 		create_login_section()
 	})
 
 	var validator = $('#usr_form').validate({
-		rules: {
-
-		},
 		messages: {
 			usr_email: {
 				required: S('email_required_error',
@@ -263,8 +262,6 @@ function update_shipping_section() {
 	$('input[name="shipping_method"][value="home"]').trigger('click')
 
 	var validator = $('#addr_form').validate({
-		rules: {
-		},
 		messages: {
 			/*
 			addr_name: {
@@ -349,7 +346,7 @@ function create_order() {
 
 action.checkout = function() {
 	hide_nav()
-	apply_template('#checkout_template', {}, '#main')
+	apply_template('checkout', {}, '#main')
 
 	load_content('#account_section', '/login.json', function(usr) {
 		if (usr.anonymous && !g_want_anonymous)

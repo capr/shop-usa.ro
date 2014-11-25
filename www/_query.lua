@@ -97,7 +97,7 @@ local function remove_nulls(t)
 end
 
 local function count_cols(t)
-	if not t[1] then return end
+	if not t[1] then return end --not a result set
 	local n = 0
 	for k,v in pairs(t[1]) do
 		n = n + 1

@@ -3,7 +3,7 @@
 
 function format_prods(prods) {
 	if (g_viewstyle == 'list') {
-		return apply_template('#prod_list_template', prods)
+		return apply_template('prod_list', prods)
 	} else if (g_viewstyle == 'grid') {
 		return multi_column('#prod_grid_element_template', prods, g_prod_cols)
 	}
@@ -133,7 +133,7 @@ function load_brands(catid, bid) { // used in cat.js
 		return
 	load_content('#brands', '/brands.json/all/'+catid, function(brands) {
 
-		apply_template('#brands_list_template', brands, '#brands')
+		apply_template('brands_list', brands, '#brands')
 
 		if ($('#brands_list li').length > 40)
 			$('#brand_search').show()
@@ -252,7 +252,7 @@ function dimsel_changed() {
 			S('low_stock', '<b>Only {0} left</b> in stock').format(combi.qty) ||
 		S('in_stock', '<b>{0} left</b> in stock').format(combi.qty)
 
-	apply_template('#product_combi_template', co, '#combi')
+	apply_template('product_combi', co, '#combi')
 
 	if (!combi.price || !combi.qty || combi.qty < 1) {
 		$('.buybutton').prop('disabled', true)
@@ -269,7 +269,7 @@ function dimsel_changed() {
 	if (!imgs.length)
 		imgs.push(g_prod.imgid)
 
-	apply_template('#product_gallery_template', imgs, '#gallery')
+	apply_template('product_gallery', imgs, '#gallery')
 
 	change_prod_img(imgs[0])
 
@@ -284,7 +284,7 @@ function update_product_page(prod) {
 	g_prod = prod
 	window.scrollTo(0, 0)
 
-	apply_template('#product_page_template', prod, '#main')
+	apply_template('product_page', prod, '#main')
 
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()
@@ -305,7 +305,7 @@ action.p = function(pid) {
 // brand page ----------------------------------------------------------------
 
 function update_brand_page(brand) {
-	apply_template('#brand_page_template', brand, '#main')
+	apply_template('brand_page', brand, '#main')
 
 	$('#bcat').html(format_cats(brand.cats))
 
@@ -324,25 +324,99 @@ action.brand = function(bid) {
 
 // password reset page ------------------------------------------------------
 
+action.forgot_password = function() {
+	hide_nav()
+	apply_template('forgot_pass', {}, '#main')
+
+	var validator = $('#forgot_pass_form').validate({
+		messages: {
+			email: {
+				required: S('email_required_error',
+					'We need your email to contact you'),
+				email: S('email_format_error',
+					'Your email must look valid'),
+			},
+		},
+		errorPlacement: function(err, el) {
+			err.appendTo($('#validation_error'))
+		},
+	})
+	$('#btn_send_email').click(function() {
+		if (!$('#forgot_pass_form').valid()) {
+			validator.focusInvalid()
+		} else {
+			$(this).prop('disabled', true)
+			$('#server_error').hide()
+			post('/send_token', { email: $('#email').val() }, function() {
+				exec('/browse/token_sent')
+			}, function() {
+				$('#btn_send_email').prop('disabled', false)
+				$('#server_error').show()
+			})
+		}
+	})
+}
+
+action.token_sent = function() {
+	hide_nav()
+	apply_template('token_sent', {}, '#main')
+}
+
 action.reset_password = function(token) {
 
-	if (token) {
+	function login_failed() {
+		exec('/browse/forgot_password')
+	}
 
-		function login_ok() {
-			exec('/reset_password')
-		}
+	function login_ok() {
 
-		function login_failed() {
-			//
-		}
+		apply_template('reset_pass', {}, '#main')
 
-		post('/login.json', {type: 'token', token: token}, login_ok, login_failed)
+		var validator = $('#reset_pass_form').validate({
+			rules: {
+				pass: { minlength: 6 }
+			},
+			messages: {
+				pass: {
+					required: S('pass_required_error',
+						'You need a password to sign in'),
+					minlength: $.validator.format(S('pass_format_error',
+						'Enter at least {0} characters')),
+				},
+			},
+			errorPlacement: function(err, el) {
+				err.appendTo($('#validation_error'))
+			},
+		})
 
-	} else {
-
-		//
+		$('#btn_reset_pass').click(function() {
+			if (!$('#reset_pass_form').valid()) {
+				validator.focusInvalid()
+			} else {
+				$(this).prop('disabled', true)
+				$('#server_error').hide()
+				post('/reset_pass', { pass: $('#pass').val() }, function() {
+					exec('/browse/password_changed')
+				}, function() {
+					$('#btn_reset_pass').prop('disabled', false)
+					$('#server_error').show()
+				})
+			}
+		})
 
 	}
+
+	if (!token) {
+		login_failed()
+		return
+	}
+	post('/login.json', {type: 'token', token: token}, login_ok, login_failed)
+
+}
+
+action.password_changed = function() {
+	hide_nav()
+	apply_template('password_changed', {}, '#main')
 }
 
 // top bar -------------------------------------------------------------------
@@ -362,7 +436,7 @@ function init_topbar() {
 	for (var i = 0; i < t.length; i++) {
 		t[i].catname = g_cats[t[i].catid].name
 	}
-	apply_template('#topbar_template', {items: t}, '#topbar')
+	apply_template('topbar', {items: t}, '#topbar')
 
 	$('#topbar a[catid]').each(function() {
 		var catid = $(this).attr('catid')
