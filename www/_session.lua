@@ -157,7 +157,7 @@ function send_auth_token(email)
 	local msg = apply_template('reset_pass_email', {
 		url = home_url('/reset_pass/'..token),
 	})
-	local from = config'reset_pass_sender' or string.format('admin@%s', ngx.host)
+	local from = config'reset_pass_sender' or home_email()
 	sendmail(from, email, subj, msg)
 end
 

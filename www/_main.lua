@@ -106,6 +106,10 @@ function home_url(path)
 	return (config'base_url' or ngx.var.scheme..'://'..ngx.var.host) .. path
 end
 
+function home_email(user)
+	return string.format('%s@%s', user or 'admin', ngx.var.host)
+end
+
 check = assert
 
 --action API -----------------------------------------------------------------
