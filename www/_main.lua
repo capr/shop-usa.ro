@@ -107,7 +107,7 @@ function home_url(path)
 end
 
 function home_email(user)
-	return string.format('%s@%s', user or 'admin', ngx.var.host)
+	return string.format('%s@%s', user or 'no-reply', ngx.var.host)
 end
 
 check = assert
