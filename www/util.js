@@ -117,7 +117,7 @@ var default_action = 'cat'
 function url_changed() {
 
 	// trigger analytics
-	analytics('send', 'pageview', {useBeacon: true})
+	analytics('send', 'pageview', { useBeacon: true })
 
 	var args = location.pathname.split('/')
 	args.shift() // remove /
