@@ -18,7 +18,7 @@
 	<script src="/mustache.js"></script>
 	<script src="/util.js"></script>
 	<script src="/config.js"></script>
-	<script src="/analytics.js" async defer></script>
+	<script src="/analytics.js"></script>
 	<script src="/facebook.js" async defer></script>
 	<script src="/google.js" async defer></script>
 	<script src="/cat.js"></script>
