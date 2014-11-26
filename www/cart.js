@@ -71,7 +71,7 @@ function drag_prod_img_to_cart(finish) {
 }
 
 function set_cart_icon() {
-	var n = g_cart.buynow ? g_cart.buynow.length : g_cart.count
+	var n = g_cart.buynow ? g_cart.buynow.length : g_cart.buynow_count
 	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
 	$('#cart_icon_item_count').html((n < 10 ? '0' : '') + n)
 	$('#cart_icon').click(function() {

@@ -32,6 +32,4 @@ window.fbAsyncInit = function() {
 	})
 }
 
-function init_facebook() {
-	$.getScript('//connect.facebook.net/en_US/sdk.js')
-}
+$.getScript('//connect.facebook.net/en_US/sdk.js')

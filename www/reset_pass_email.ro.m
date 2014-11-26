@@ -1,3 +1,3 @@
-Urmeaza linkul de mai jos pentru a reseta parola:
+Urmeaza linkul de mai jos pentru a schimba parola:
 
 {{url}}

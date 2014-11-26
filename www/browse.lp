@@ -18,14 +18,15 @@
 	<script src="/mustache.js"></script>
 	<script src="/util.js"></script>
 	<script src="/config.js"></script>
-	<script src="/analytics.js"></script>
-	<script src="/browse.js"></script>
+	<script src="/analytics.js" async defer></script>
+	<script src="/facebook.js" async defer></script>
+	<script src="/google.js" async defer></script>
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>
-	<script src="/facebook.js"></script>
-	<script src="/google.js"></script>
+	<script src="/status.js"></script>
 	<script src="/checkout.js"></script>
 	<script src="/resetpass.js"></script>
+	<script src="/browse.js"></script>
 </head>
 <body>
 <table>

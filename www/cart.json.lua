@@ -5,10 +5,7 @@ local function out_summary()
 	local count = query1([[
 		select count(1) from cartitem where uid = ? and buylater = 0
 	]], uid())
-	out_json({
-		uid = uid(),
-		count = tonumber(count),
-	})
+	out_json({ buynow_count = tonumber(count) })
 end
 
 if action == 'summary' then

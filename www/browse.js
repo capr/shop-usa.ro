@@ -1,3 +1,4 @@
+
 // prods ---------------------------------------------------------------------
 
 function format_prods(prods) {
@@ -111,10 +112,6 @@ function update_pagenav(prod_count, cur_page, bid) {
 	})
 }
 
-function init_pagenav() {
-
-}
-
 // brands list ---------------------------------------------------------------
 
 function select_brand(bid, scroll) {
@@ -187,21 +184,6 @@ function init_letters() {
 }
 
 // product page --------------------------------------------------------------
-
-function init_prod() {
-
-	// keyboard image navigation
-	bind_keydown('gallery', function(event) {
-		var img = $('#gallery a[imgid] > img.active')
-		if (!img) return
-		if (event.which == 39) {
-			change_prod_img(img.closest('td').next('td').find('> a').attr('imgid'))
-		} else if (event.which == 37) {
-			change_prod_img(img.closest('td').prev('td').find('> a').attr('imgid'))
-		}
-	})
-
-}
 
 function change_prod_img(imgid) {
 	if (!imgid) return
@@ -294,6 +276,18 @@ function update_product_page(prod) {
 		var pid = parseInt($(this).attr('pid'))
 		add_to_cart(pid, g_combi.coid)
 	})
+
+	// keyboard image navigation
+	bind_keydown('gallery', function(event) {
+		var img = $('#gallery a[imgid] > img.active')
+		if (!img) return
+		if (event.which == 39) {
+			change_prod_img(img.closest('td').next('td').find('> a').attr('imgid'))
+		} else if (event.which == 37) {
+			change_prod_img(img.closest('td').prev('td').find('> a').attr('imgid'))
+		}
+	})
+
 }
 
 action.p = function(pid) {
@@ -360,16 +354,13 @@ function init_sidebar() {
 
 // load page -----------------------------------------------------------------
 
-$(document).ready(function() {
-	init_keydown()
-	init_history()
+$(function() {
 	init_viewstyle()
 	init_letters()
 	init_sidebar()
-	init_prod()
-	init_pagenav()
+
+	init_status()
 	init_cart()
-	init_facebook()
-	init_google()
+
 	url_changed()
 })

@@ -85,13 +85,13 @@ function bind_keydown(id, func) {
 	keydown_events[id] = func
 }
 
-function init_keydown() {
+$(function() {
 	$(document).keydown(function(event) {
 		$.each(keydown_events, function(id, func) {
 			func(event)
 		})
 	})
-}
+})
 
 // address bar and links -----------------------------------------------------
 
@@ -100,12 +100,12 @@ function check(truth) {
 		window.location = '/'
 }
 
-function init_history() {
+$(function() {
 	var History = window.History
 	History.Adapter.bind(window, 'statechange', function() {
 		url_changed()
 	})
-}
+})
 
 function exec(url) {
 	History.pushState(null, null, url)
@@ -115,6 +115,10 @@ var action = {} // {action: handler}
 var default_action = 'cat'
 
 function url_changed() {
+
+	// trigger analytics
+	analytics('send', 'pageview', {useBeacon: true})
+
 	var args = location.pathname.split('/')
 	args.shift() // remove /
 	args.shift() // remove browse/

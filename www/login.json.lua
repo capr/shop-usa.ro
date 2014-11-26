@@ -20,6 +20,12 @@ local t = query1([[
 	where
 		u.uid = ?
 ]], uid)
+
 t.anonymous = t.anonymous == 1
 
+t.buynow_count = tonumber(query1([[
+	select count(1) from cartitem where uid = ? and buylater = 0
+]], uid))
+
 out_json(t)
+
