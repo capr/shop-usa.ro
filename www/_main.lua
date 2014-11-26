@@ -134,12 +134,6 @@ function json(v)
 	end
 end
 
-function out_json(v)
-	setheader('Content-Type', 'application/json')
-	assert(type(v) == 'table')
-	out(cjson.encode(v))
-end
-
 --template API ---------------------------------------------------------------
 
 local hige = require'hige'
@@ -152,23 +146,33 @@ end
 
 --action API -----------------------------------------------------------------
 
---path -> action, args
-local function parse_path()
+local function parse_path() --path -> action, args
 	local path = ngx.var.uri
-	local ext = path:match'%.([^%.]+)$'
-	local action, sargs = path:match'^/([^/]+)(/?.*)$'
+
+	--split path
+	local action, sargs = path:match'^/([^/]+)(/?.*)$' --action/sargs
+
 	sargs = sargs or ''
 	local args = {}
+
+	--consider actions without file extension as args to the implicit app action.
+	local ext = action and action:match'%.([^%.]+)$'
+	if not ext then
+		action, args[1] = 'app', action
+	end
+
+	--collect the rest of the args
 	for s in sargs:gmatch'[^/]+' do
 		args[#args+1] = s
 	end
+
 	return action, args
 end
 
 local lfs = require'lfs'
 
-local function filepath(file, basedir)
-	basedir = basedir or '../www'
+local function filepath(file) --file -> path (if exists)
+	local basedir = '../www'
 	if file:find('..', 1, true) then return end --trying to escape
 	if file:find'^_' then return end --private module
 	local path = basedir .. '/' .. file
@@ -180,7 +184,15 @@ local chunks = {} --{action = chunk}
 
 local lp = require'lp'
 
+
+local mime_types = {
+	html = 'text/html',
+	json = 'application/json',
+}
+
 function action(action, ...)
+
+	--find the action.
 	local chunk = chunks[action]
 	if not chunk then
 		local luapath = filepath(action..'.lua')
@@ -198,6 +210,15 @@ function action(action, ...)
 		setfenv(chunk, getfenv(1))
 		chunks[action] = chunk
 	end
+
+	--set mime type based on action's file extension.
+	local ext = action:match'%.([^%.]+)$'
+	local mime = mime_types[ext]
+	if mime then
+		setheader('Content-Type', mime)
+	end
+
+	--execute the action.
 	chunk(...)
 end
 
@@ -234,7 +255,6 @@ local function main()
 	check_img()
 	parse_request()
 	local act, args = parse_path()
-	act = act or 'browse'
 	action(act, unpack(args))
 end
 

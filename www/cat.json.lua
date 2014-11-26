@@ -81,4 +81,4 @@ local cats = query([[
 ]])
 
 local cats = make_cat_tree(cats)
-out_json(cats)
+out(json(cats))

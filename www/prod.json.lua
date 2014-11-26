@@ -159,4 +159,4 @@ for i,t in ipairs(query([[
 	table.insert(combi.imgs, tonumber(t.imgid))
 end
 
-out_json(prod)
+out(json(prod))

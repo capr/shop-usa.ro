@@ -19,7 +19,7 @@ function update_prods(prods) {
 	$('#main').html(format_prods(prods))
 
 	$('#main [pid] a').each(function() {
-		setlink(this, '/browse/p/'+upid(this, 'pid'))
+		setlink(this, '/p/'+upid(this, 'pid'))
 	})
 
 	$('#main .buybutton').click(function() {
@@ -128,9 +128,9 @@ var g_brands_catid
 function load_brands(catid, bid) { // used in cat.js
 	if (g_brands_catid == catid)
 		return
-	load_content('#brands', '/brands.json/all/'+catid, function(brands) {
+	load_content('#brands', '/brands.json/all/'+catid, function(data) {
 
-		apply_template('brands_list', brands, '#brands')
+		apply_template('brands_list', data.brands, '#brands')
 
 		if ($('#brands_list li').length > 40)
 			$('#brand_search').show()
@@ -165,14 +165,14 @@ function update_brands_page(brands) {
 
 	$('#main a[bid]').each(function() {
 		var bid = $(this).attr('bid')
-		setlink(this, '/browse/brand/'+bid)
+		setlink(this, '/brand/'+bid)
 	})
 }
 
 action.brands = function(search) {
 	hide_nav()
-	load_main('/brands.json/'+search, function(brands) {
-		update_brands_page(brands)
+	load_main('/brands.json/'+search, function(data) {
+		update_brands_page(data.brands)
 		select_brand_letter(search)
 	})
 }
@@ -180,7 +180,7 @@ action.brands = function(search) {
 function init_letters() {
 	$('#letters a').each(function() {
 		var search = $(this).attr('search')
-		setlink(this, '/browse/brands/'+search)
+		setlink(this, '/brands/'+search)
 	})
 }
 
@@ -271,7 +271,7 @@ function update_product_page(prod) {
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()
 
-	setlink('.brandlink', '/browse/brand/' + prod.bid)
+	setlink('.brandlink', '/brand/' + prod.bid)
 
 	$('#main .buybutton').click(function() {
 		var pid = parseInt($(this).attr('pid'))

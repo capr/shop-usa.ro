@@ -121,7 +121,7 @@ function cat_url(catid, pagenum, bid) {
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
 
-	return '/browse/cat'+
+	return '/cat'+
 		((catid != g_home_catid || pagenum > 1 || bid) && '/'+catid || '')+
 		((pagenum > 1 || bid) ? '/'+pagenum : '')+
 		(bid && '/'+bid || '')

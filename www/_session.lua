@@ -176,7 +176,7 @@ function send_auth_token(email)
 	--send it to the user
 	local subj = S('reset_pass_subject', 'Your reset password link')
 	local msg = apply_template('reset_pass_email', {
-		url = home_url('/browse/login/'..token),
+		url = home_url('/login/'..token),
 	})
 	local from = config'noreply_email' or home_email()
 	sendmail(from, email, subj, msg)

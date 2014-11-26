@@ -1,6 +1,6 @@
 <?
 if GET._escaped_fragment_ then
-	action('browse.google', ...)
+	action('app.google', ...)
 	return
 end
 ?><!DOCTYPE html>
@@ -32,7 +32,7 @@ end
 	<script src="/status.js"></script>
 	<script src="/checkout.js"></script>
 	<script src="/resetpass.js"></script>
-	<script src="/browse.js"></script>
+	<script src="/app.js"></script>
 </head>
 <body>
 <table>

@@ -65,7 +65,7 @@ local prods = query([[
 ]]..offset..', '..pagesize, usd_rate(), usd_rate(), catid)
 
 
-out_json({
+out(json({
 	prods = prods,
 	prod_count = prod_count,
-})
+}))

@@ -5,7 +5,7 @@ local function out_summary()
 	local count = query1([[
 		select count(1) from cartitem where uid = ? and buylater = 0
 	]], uid())
-	out_json({ buynow_count = tonumber(count) })
+	out(json({ buynow_count = tonumber(count) }))
 end
 
 if action == 'summary' then
@@ -110,4 +110,4 @@ for i,grp in groupby(t, 'buylater') do
 	end
 end
 
-out_json(cart)
+out(json(cart))

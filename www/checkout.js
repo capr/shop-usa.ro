@@ -88,7 +88,7 @@ function create_login_section() {
 		post('/login.json', {type: 'anonymous'}, action.checkout)
 	})
 
-	setlink('#btn_forgot_pass', '/browse/forgot_password')
+	setlink('#btn_forgot_pass', '/forgot_password')
 
 	$('#email').keypress(function(e) {
 		if(e.keyCode == 13)
@@ -166,7 +166,7 @@ function create_user_section(usr) {
 		create_login_section()
 	})
 
-	setlink('#reset_pass', '/browse/reset_password')
+	setlink('#reset_pass', '/reset_password')
 
 	var validator = $('#usr_form').validate({
 		messages: {

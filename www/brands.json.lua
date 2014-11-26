@@ -32,5 +32,5 @@ local brands = query([[
 		m.name
 ]], catid)
 
-out_json(brands)
+out(json{ brands = brands })
 

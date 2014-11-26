@@ -25,8 +25,8 @@ action.forgot_password = function() {
 		} else {
 			$(this).prop('disabled', true)
 			$('#server_error').hide()
-			post('/send_token', { email: $('#email').val() }, function() {
-				exec('/browse/token_sent')
+			post('/send_token.json', { email: $('#email').val() }, function() {
+				exec('/token_sent')
 			}, function() {
 				$('#btn_send_email').prop('disabled', false)
 				$('#server_error').show()
@@ -48,13 +48,13 @@ action.token_sent = function() {
 
 action.login = function(token) {
 	if (!token) {
-		exec('/browse/forgot_password')
+		exec('/forgot_password')
 		return
 	}
 	post('/login.json', {type: 'token', token: token}, function() {
-		exec('/browse/reset_password')
+		exec('/reset_password')
 	}, function() {
-		exec('/browse/forgot_password')
+		exec('/forgot_password')
 	})
 }
 
@@ -86,8 +86,8 @@ action.reset_password = function(token) {
 		} else {
 			$(this).prop('disabled', true)
 			$('#server_error').hide()
-			post('/reset_pass', { pass: $('#pass').val() }, function() {
-				exec('/browse/password_changed')
+			post('/reset_pass.json', { pass: $('#pass').val() }, function() {
+				exec('/password_changed')
 			}, function() {
 				$('#btn_reset_pass').prop('disabled', false)
 				$('#server_error').show()

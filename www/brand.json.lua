@@ -44,5 +44,5 @@ local cats = query([[
 
 brand.cats = make_cat_tree(cats)
 
-out_json(brand)
+out(json(brand))
 

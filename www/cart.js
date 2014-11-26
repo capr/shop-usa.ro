@@ -75,7 +75,7 @@ function set_cart_icon() {
 	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
 	$('#cart_icon_item_count').html((n < 10 ? '0' : '') + n)
 	$('#cart_icon').click(function() {
-		exec('/browse/cart')
+		exec('/cart')
 	})
 }
 
@@ -123,7 +123,7 @@ function update_cart_page() {
 	}, '#main')
 
 	$('#main [pid] a:not([action])').each(function() {
-		setlink(this, '/browse/p/'+upid(this, 'pid'))
+		setlink(this, '/p/'+upid(this, 'pid'))
 	})
 
 	$('#main [pid] a[action="remove"]').click(function() {
@@ -142,7 +142,7 @@ function update_cart_page() {
 	})
 
 	$('.checkoutbutton').click(function() {
-		exec('/browse/checkout')
+		exec('/checkout')
 	})
 
 	cart_make_draggable()

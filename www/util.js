@@ -118,7 +118,6 @@ function url_changed() {
 	analytics_pageview() // note: title is not available at this time
 	var args = location.pathname.split('/')
 	args.shift() // remove /
-	args.shift() // remove browse/
 	var act = args[0] || default_action
 	args.shift() // remove action/
 	var handler = action[act]
@@ -243,7 +242,7 @@ function load_content(dst_id, url, on_success, on_error) {
 	var timeout = setTimeout(function() {
 		sel.html('')
 		sel.addClass('loading')
-	}, C('loading_delay', 2000))
+	}, C('loading_delay', 1000))
 
 	var done = function() {
 		clearTimeout(timeout)

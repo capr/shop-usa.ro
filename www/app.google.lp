@@ -10,9 +10,9 @@ local function render(name, data)
 end
 
 template.p = [[
-<p><a href="/browse/brand/{{{bid}}}"><img src="/img/m/{{{bid}}}.jpg"></a></p>
+<p><a href="/brand/{{{bid}}}"><img src="/img/m/{{{bid}}}.jpg"></a></p>
 
-<p><a href="/browse/brand/{{{bid}}}"><b>{{{bname}}}</b></a> {{{name}}}</p>
+<p><a href="/brand/{{{bid}}}"><b>{{{bname}}}</b></a> {{{name}}}</p>
 
 <ul>
 {{#dims}}
