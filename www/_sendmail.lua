@@ -17,13 +17,6 @@ function sendmail(from, rcpt, subj, msg)
 		},
 		body = mime.eol(0, msg),
 	}
-	pp({
-		from   = strip_name(from),
-		rcpt   = strip_name(rcpt),
-		source = source,
-		server = config('smtp_host', '127.0.0.1'),
-		port   = config('smtp_port', 25),
-	})
 	assert(smtp.send{
 		from   = strip_name(from),
 		rcpt   = strip_name(rcpt),
