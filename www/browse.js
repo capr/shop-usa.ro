@@ -1,6 +1,8 @@
 
 // prods ---------------------------------------------------------------------
 
+var g_prod_cols = 4
+
 function format_prods(prods) {
 	if (g_viewstyle == 'list') {
 		return apply_template('prod_list', prods)
@@ -29,11 +31,11 @@ function update_prods(prods) {
 
 function load_prods(catid, pagenum, bid) {
 	load_main('/prods.json/'+catid+'/'+pagenum+'/'+(bid||'-')+'/'+g_pagesize,
-	function(response) {
-		update_pagenav(response.prod_count, pagenum, bid)
-		update_prods(response.prods)
-		select_brand(bid)
-	})
+		function(response) {
+			update_pagenav(response.prod_count, pagenum, bid)
+			update_prods(response.prods)
+			select_brand(bid)
+		})
 }
 
 // viewstyle -----------------------------------------------------------------
@@ -56,7 +58,6 @@ function init_viewstyle() {
 
 // page nav ------------------------------------------------------------------
 
-var g_prod_cols = 4
 var g_prod_rows = 16
 var g_pagesize = g_prod_cols * g_prod_rows
 

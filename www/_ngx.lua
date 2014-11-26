@@ -51,21 +51,8 @@ local function try_call(func, ...)
 	return pass(xpcall(func, debug.traceback, ...))
 end
 
---per-request memoization
-local function once(f)
-	return function()
-		local v = ngx.ctx[f]
-		if v == nil then
-			v = f()
-			ngx.ctx[f] = v
-		end
-		return v
-	end
-end
-
 local g = require'g'
 g.config = config
-g.once = once
 g.S = S
 require'config' --load static config
 

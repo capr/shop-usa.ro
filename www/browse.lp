@@ -1,8 +1,14 @@
-<!DOCTYPE html>
-<html lang=<%=GET.en and 'en' or 'ro'%>>
+<?
+if GET._escaped_fragment_ then
+	action('browse.google', ...)
+	return
+end
+?><!DOCTYPE html>
+<html lang=<?=GET.en and 'en' or 'ro'?>>
 <head>
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
+	<meta name="fragment" content="!">
 	<link rel="stylesheet" type="text/css" href="/main.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
@@ -899,5 +905,6 @@
 	</t>
 </script>
 
+<div id=fb-root class=hidden></div>
 </body>
 </html>

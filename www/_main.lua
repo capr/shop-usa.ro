@@ -1,25 +1,119 @@
 setfenv(1, require'g')
+
+--submodule API --------------------------------------------------------------
+
 glue = require'glue'
+
+--per-request memoization
+function once(f)
+	return function()
+		local v = ngx.ctx[f]
+		if v == nil then
+			v = f()
+			ngx.ctx[f] = v
+		end
+		return v
+	end
+end
+
+--load submodules
+
 require'query'
 require'sendmail'
 require'session'
 require'rates'
 
+--request API ----------------------------------------------------------------
+
+local function parse_request()
+	GET = ngx.req.get_uri_args()
+	local method = ngx.req.get_method()
+	if method == 'POST' then
+		ngx.req.read_body()
+		POST = ngx.req.get_post_args()
+	end
+end
+
+function lang()
+	return config'lang'
+end
+
+function home_url(path)
+	path = path or ''
+	return (config'base_url' or ngx.var.scheme..'://'..ngx.var.host) .. path
+end
+
+function home_email(user)
+	return string.format('%s@%s', user or 'no-reply', ngx.var.host)
+end
+
+function clamp(x, min, max)
+	return math.min(math.max(x, min), max)
+end
+
+function uint_arg(s)
+	return s and tonumber(s:match'(%d+)$')
+end
+
+function str_arg(s)
+	if not s then return end
+	s = glue.trim(s)
+	return s ~= '' and s or nil
+end
+
+function enum_arg(s, ...)
+	for i=1,select('#',...) do
+		if s == select(i,...) then
+			return s
+		end
+	end
+end
+
+check = assert
+
+--output API -----------------------------------------------------------------
+
+local outbufs = {}
+local outbuf
+
+function push_outbuf()
+	outbuf = {}
+	table.insert(outbufs, outbuf)
+end
+
+function pop_outbuf()
+	if not outbuf then return end
+	local s = table.concat(table.remove(outbufs))
+	outbuf = outbufs[#outbufs]
+	return s
+end
+
+function out(s)
+	s = tostring(s)
+	if outbuf then
+		outbuf[#outbuf+1] = s
+	else
+		ngx.print(s)
+	end
+end
+
+function setheader(header, val)
+	if outbuf then return end
+	ngx.header[header] = val
+end
+
 --print API ------------------------------------------------------------------
 
 function print(...)
+	setheader('Content-Type', 'text/plain')
 	local n = select('#', ...)
-	if n == 0 then return end
-	ngx.header['Content-Type'] = 'text/plain'
-	if n == 1 then
-		ngx.say(tostring(...))
-	else
-		local t = {}
-		for i=1,n do
-			t[i] = tostring((select(i, ...)))
+	for i=1,n do
+		out(tostring((select(i, ...))))
+		if i < n then
+			out'\t'
 		end
-		ngx.say(table.concat(t, '\t'))
 	end
+	out'\n'
 end
 
 pp = require'pp'
@@ -41,76 +135,20 @@ function json(v)
 end
 
 function out_json(v)
-	ngx.header['Content-Type'] = 'application/json'
-	ngx.say(cjson.encode(v))
-	ngx.exit(0)
+	setheader('Content-Type', 'application/json')
+	assert(type(v) == 'table')
+	out(cjson.encode(v))
 end
 
---buffered output for luapages template.
-local outbuf
-function out(s)
-	outbuf = outbuf or {}
-	outbuf[#outbuf+1] = s
-end
-function dump_outbuf()
-	if not outbuf then return end
-	ngx.say(table.concat(outbuf))
-	outbuf = nil
-end
-
---mustache template files  ---------------------------------------------------
+--template API ---------------------------------------------------------------
 
 local hige = require'hige'
 
-function apply_template(name, data)
-	local file = string.format('%s.%s.m', name, config'lang')
+function render(name, data)
+	local file = string.format('%s.%s.m', name, lang())
 	local template = assert(glue.readfile('../www/'..file))
 	return hige.render(template, data)
 end
-
---request API ----------------------------------------------------------------
-
-local function parse_request()
-	GET = ngx.req.get_uri_args()
-	local method = ngx.req.get_method()
-	if method == 'POST' then
-		ngx.req.read_body()
-		POST = ngx.req.get_post_args()
-	end
-end
-
-function uint_arg(s)
-	return s and tonumber(s:match'(%d+)$')
-end
-
-function str_arg(s)
-	if not s then return end
-	s = glue.trim(s)
-	return s ~= '' and s or nil
-end
-
-function enum_arg(s, ...)
-	for i=1,select('#',...) do
-		if s == select(i,...) then
-			return s
-		end
-	end
-end
-
-function clamp(x, min, max)
-	return math.min(math.max(x, min), max)
-end
-
-function home_url(path)
-	path = path or ''
-	return (config'base_url' or ngx.var.scheme..'://'..ngx.var.host) .. path
-end
-
-function home_email(user)
-	return string.format('%s@%s', user or 'no-reply', ngx.var.host)
-end
-
-check = assert
 
 --action API -----------------------------------------------------------------
 
@@ -160,9 +198,7 @@ function action(action, ...)
 		setfenv(chunk, getfenv(1))
 		chunks[action] = chunk
 	end
-	local ret = chunk(...)
-	dump_outbuf()
-	return ret
+	chunk(...)
 end
 
 --main -----------------------------------------------------------------------

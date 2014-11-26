@@ -69,38 +69,6 @@ ul {
     list-style-type: none;
 }
 
-.menu ul {
-}
-
-.menu ul li {
-    padding-left: 12px;
-}
-
-.loading {
-	background-image: url("loading.gif");
-	background-repeat: no-repeat;
-	min-width: 16px;
-	min-height: 16px;
-}
-
-.gray {
-	color: #999;
-}
-
-.small {
-	font-size: 13px;
-}
-
-.price {
-	color: #ff3300;
-	font-weight: bold;
-}
-
-.discount {
-	color: #000;
-	font-weight: bold;
-}
-
 button {
 	cursor: pointer;
 	color: #000;
@@ -117,6 +85,40 @@ button {
 
 button:hover {
 	color: #cc8800;
+}
+
+/* general vocabulary */
+
+.nowrap { white-space: nowrap; }
+.hidden { display: none; }
+.error { color: #f00; }
+.gray { color: #999; }
+.small { font-size: 13px; }
+
+/* specifics */
+
+.menu ul {
+}
+
+.menu ul li {
+	padding-left: 12px;
+}
+
+.loading {
+	background-image: url("loading.gif");
+	background-repeat: no-repeat;
+	min-width: 16px;
+	min-height: 16px;
+}
+
+.price {
+	color: #ff3300;
+	font-weight: bold;
+}
+
+.discount {
+	color: #000;
+	font-weight: bold;
 }
 
 .buybutton {}
@@ -256,11 +258,3 @@ input.error {
 .autocomplete-suggestions strong { font-weight: bold; }
 .autocomplete-group { padding: 2px 5px; }
 .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
-
-.nowrap {
-	white-space: nowrap;
-}
-
-.error {
-	color: #f00;
-}
