@@ -116,8 +116,16 @@ var default_action = 'cat'
 
 function url_changed() {
 
+	var url = window.location.protocol +
+		'//' + window.location.hostname +
+		window.location.pathname +
+		window.location.search
+
 	// trigger analytics
-	analytics('send', 'pageview', { useBeacon: true })
+	analytics('send', 'pageview', {
+		useBeacon: true,
+		page: url,
+	})
 
 	var args = location.pathname.split('/')
 	args.shift() // remove /
