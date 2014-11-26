@@ -47,13 +47,14 @@ if (typeof String.prototype.trim !== 'function') {
 	}
 }
 
+// 'firstname lastname' -> 'firstname'
 function firstname(name) {
 	name = name.trim()
 	var a = name.split(' ', 1)
 	return a.length > 0 ? a[0] : name
 }
 
-// follow scroll -------------------------------------------------------------
+// UI patterns ---------------------------------------------------------------
 
 function follow_scroll(element_id, margin) {
 	var el = $(element_id)
@@ -76,11 +77,6 @@ function editmode() {
 	return true
 }
 
-function check(truth) {
-	if(!truth)
-		window.location = '/'
-}
-
 // keyboard navigation -------------------------------------------------------
 
 var keydown_events = {} // {id: handler}
@@ -98,6 +94,11 @@ function init_keydown() {
 }
 
 // address bar and links -----------------------------------------------------
+
+function check(truth) {
+	if(!truth)
+		window.location = '/'
+}
 
 function init_history() {
 	var History = window.History
@@ -139,12 +140,12 @@ function hide_nav() {
 // persistence ---------------------------------------------------------------
 
 function store(key, value) {
-    Storage.setItem(key, JSON.stringify(value))
+	Storage.setItem(key, JSON.stringify(value))
 }
 
 function getback(key) {
-    var value = Storage.getItem(key)
-    return value && JSON.parse(value)
+	var value = Storage.getItem(key)
+	return value && JSON.parse(value)
 }
 
 // templating ----------------------------------------------------------------

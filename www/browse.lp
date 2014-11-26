@@ -25,6 +25,7 @@
 	<script src="/facebook.js"></script>
 	<script src="/google.js"></script>
 	<script src="/checkout.js"></script>
+	<script src="/resetpass.js"></script>
 </head>
 <body>
 <table>

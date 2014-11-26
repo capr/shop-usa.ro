@@ -151,7 +151,7 @@ local function gen_token(uid)
 		select count(1) from usrtoken where
 			uid = ? and atime > now() - ?
 	]], uid, token_lifetime)
-	if tonumber(n) > config('pass_token_maxcount', 3) then
+	if tonumber(n) >= config('pass_token_maxcount', 2) then
 		return
 	end
 
