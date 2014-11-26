@@ -115,10 +115,7 @@ var action = {} // {action: handler}
 var default_action = 'cat'
 
 function url_changed() {
-
-	// trigger analytics
-	analytics('send', 'pageview', { useBeacon: true })
-
+	analytics_pageview() // note: title is not available at this time
 	var args = location.pathname.split('/')
 	args.shift() // remove /
 	args.shift() // remove browse/

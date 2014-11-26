@@ -4,3 +4,17 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','analytics');
 
 analytics('create', C('analytics_ua'), 'auto')
+
+function analytics_pageview() {
+
+	// we need to give it the url because it doesn't have it for some reason.
+	var url = window.location.protocol +
+		'//' + window.location.hostname +
+		window.location.pathname +
+		window.location.search
+
+	analytics('send', 'pageview', {
+		useBeacon: true,
+		page: url,
+	})
+}
