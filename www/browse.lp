@@ -65,8 +65,9 @@
 			<table width=100%>
 				<tr>
 					<td>
-						<t class=en>Hi <a id=usr_name></a>!</t>
-						<t class=ro>Salut <a id=usr_name></a>!</t>
+						<t class=en>Hi</t>
+						<t class=ro>Salut</t>
+						<a id=usr_name></a>
 					</td>
 					<td align=right style="text-align: right;">
 						<div id=cart_icon_div style="position: relative; height: 50px" align=right>
