@@ -64,7 +64,10 @@
 			</table>
 			<table width=100%>
 				<tr>
-					<td>Hi <a id=usr_name></a>!</td>
+					<td>
+						<t class=en>Hi <a id=usr_name></a>!</t>
+						<t class=ro>Buna <a id=usr_name></a>!</t>
+					</td>
 					<td align=right style="text-align: right;">
 						<div id=cart_icon_div style="position: relative; height: 50px" align=right>
 							<a id=cart_icon_link>
