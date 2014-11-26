@@ -152,7 +152,7 @@ local function gen_token(uid)
 			uid = ? and atime > now() - ?
 	]], uid, token_lifetime)
 	if tonumber(n) >= config('pass_token_maxcount', 2) then
-		return
+		--return
 	end
 
 	local token = pass_hash(random_string(32))
