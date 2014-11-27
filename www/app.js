@@ -49,6 +49,7 @@ $(function() {
 
 	init_status()
 	init_cart()
+	login()
 
 	url_changed()
 })

@@ -2,12 +2,6 @@
 // cart/actions --------------------------------------------------------------
 
 var g_cart
-function load_cart_summary(finish) {
-	get('/cart.json/summary', function(cart) {
-		g_cart = cart
-		finish()
-	})
-}
 
 function add_prod_to_cart(pid, coid, finish) {
 	var args = {pid: pid, coid: coid}
@@ -79,12 +73,6 @@ function set_cart_icon(n) {
 	})
 }
 
-$(function() {
-	$.bind('buynow_count', function(count) {
-		set_cart_icon(count)
-	})
-})
-
 var g_ci_top
 function update_cart_icon() {
 	var ci = $('#cart_icon_div')
@@ -104,12 +92,9 @@ function add_to_cart(pid, coid) {
 }
 
 function init_cart() {
-	load_cart_summary(set_cart_icon)
-	/* TODO: enable autorefresh
-	setInterval(function() {
-		load_cart_summary(set_cart_icon)
-	}, 5000)
-	*/
+	$(document).bind('app_usr', function(e, usr) {
+		set_cart_icon(usr.buynow_count)
+	})
 }
 
 // cart page -----------------------------------------------------------------

@@ -107,7 +107,7 @@ function update_shipping_section() {
 		else
 			$('#address_section').hide()
 	})
-	$('input[name="shipping_method"][value="home"]').trigger('click')
+	$('input[name="shipping_method"][value="home"]').click()
 
 	var validator = $('#addr_form').validate({
 		messages: {

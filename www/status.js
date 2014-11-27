@@ -12,6 +12,5 @@ function init_status() {
 			setlink('#greeting_anonymous', '/account')
 		}
 	})
-	login()
 }
 
