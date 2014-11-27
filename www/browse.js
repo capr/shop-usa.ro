@@ -92,11 +92,19 @@ function format_pagenav(prod_count, cur_page) {
 	return s
 }
 
+var g_scroll_to_top
 function scroll_to_top() {
-	$('html, body').animate({ scrollTop: 0}, 3000, 'easeOutQuint')
+	if (!g_scroll_to_top) return
+	g_scroll_to_top = false
+	$('html, body').animate({ scrollTop: 0}, 1000, 'easeOutQuint')
+}
+function set_scroll_to_top() {
+	g_scroll_to_top = true
 }
 
 function update_pagenav(prod_count, cur_page, bid) {
+	scroll_to_top()
+
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
 	$('.pagenav a').each(function() {
 		var s = $(this).html()
@@ -107,7 +115,7 @@ function update_pagenav(prod_count, cur_page, bid) {
 
 		var bottom = $(this).closest('#bottom_navbar').length > 0
 
-		setlink(this, cat_url(g_catid, pagenum, bid), bottom && scroll_to_top)
+		setlink(this, cat_url(g_catid, pagenum, bid), bottom && set_scroll_to_top)
 	})
 	$('.navbar').show()
 
