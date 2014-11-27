@@ -239,9 +239,7 @@ local function check_img()
 
 	if kind == 'p' then
 
-		if config('no_images') then
-			error'no images'
-		end
+		check(not config('no_images'))
 
 		--check for short form and make an internal redirect.
 		local imgid, size = path:match'^/img/p/(%d+)-(%w+)%.jpg'

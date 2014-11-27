@@ -169,7 +169,6 @@ function ajax(id, url, on_success, on_error, on_abort, opt) {
 				if (on_abort)
 					on_abort(xhr)
 			} else {
-				allow(xhr.status != 403)
 				if (on_error)
 					on_error(xhr)
 			}

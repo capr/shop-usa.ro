@@ -188,15 +188,13 @@ function create_order() {
 
 action.checkout = function() {
 	hide_nav()
-	render('checkout', {}, '#main')
+	render('checkout', null, '#main')
 
 	acc = account({
-		section: '#account_section',
 		allow_anonymous: true,
-	})
-
-	acc.load(function() {
-		load_cart()
+		on_update: function(usr) {
+			load_cart()
+		},
 	})
 
 	update_shipping_section()

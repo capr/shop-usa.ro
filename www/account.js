@@ -1,8 +1,14 @@
 
-// account({section: selector, allow_anonymous: true|false}) -> account
-// account.load(success)
-// account.validate() -> true | nothing
+// account({options...}) -> account
+// account.load() ^on_update(usr)
+// account.validate() -> true|nothing
 function account(acc) {
+
+	acc = $.extend({
+		section: '#account_section',
+		allow_anonymous: false,
+		on_update: function(usr) {},
+	}, acc)
 
 	var want_anonymous = false
 
@@ -33,7 +39,12 @@ function account(acc) {
 
 
 	function logged_in(usr) {
-		//$(document).trigger('app-usr', usr)
+		acc.on_update(usr)
+		$.event.trigger('app_usr', usr)
+		if (usr.anonymous && !want_anonymous)
+			create_login_section()
+		else
+			create_user_section(usr)
 	}
 
 	var validate_login
@@ -114,7 +125,7 @@ function account(acc) {
 			}
 		}
 
-		$('#btn_login').prop('disbled', false).click(function() {
+		$('#btn_login').click(function() {
 			if (validate_login()) {
 				$(this).prop('disabled', true)
 				post('/login.json', pass_auth('login'), logged_in, login_failed)
@@ -127,17 +138,13 @@ function account(acc) {
 				post('/login.json', pass_auth('create'), logged_in, login_failed)
 			}
 		})
-
-		$(document).trigger('app-usr', null)
-
 	}
 
 	// user section --------------------------------------------------------------
 
-	var usr
 	var validate_usr
 
-	function create_user_section() {
+	function create_user_section(usr) {
 		render('account_info', usr, acc.section)
 
 		$('#relogin').click(function() {
@@ -173,25 +180,9 @@ function account(acc) {
 			}
 			return true
 		}
-
-		$(document).trigger('app-usr', usr)
 	}
 
 	// account ----------------------------------------------------------------
-
-	acc.load = function(success) {
-		load_content(acc.section, '/login.json', function(usr_) {
-			usr = usr_
-
-			if (usr.anonymous && !want_anonymous)
-				create_login_section()
-			else
-				create_user_section()
-
-			if (success)
-				success()
-		})
-	}
 
 	acc.validate = function() {
 
@@ -213,20 +204,17 @@ function account(acc) {
 		}
 	}
 
-	return acc
+	load_content(acc.section, '/login.json', logged_in)
 
+	return acc
 }
 
 action.account = function() {
-
 	render('account', null, '#main')
-
 	var acc = account({
-		section: '#account_section',
-		allow_anonymous: false,
+		on_update: function(usr) {
+			//
+		},
 	})
-
-	acc.load()
-
 }
 

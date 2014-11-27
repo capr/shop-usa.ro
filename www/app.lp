@@ -33,7 +33,7 @@ end
 	<script src="/account.js"></script>
 	<script src="/checkout.js"></script>
 	<script src="/resetpass.js"></script>
-	<script src="/app.js"></script>
+	<script src="/browse.js"></script>
 </head>
 <body>
 <table>
