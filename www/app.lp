@@ -537,8 +537,6 @@ end
 									<t class=ro>Nu esti {{name}}?</t>
 								</a>
 							</td>
-						</tr>
-						<tr>
 							<td align=right nowrap>
 								<a id=reset_pass class=gray>
 									<t class=en>Change password</t>
