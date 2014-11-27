@@ -1,6 +1,6 @@
 
 function init_status() {
-	$(document).bind('app_usr', function(usr) {
+	$(document).bind('app_usr', function(e, usr) {
 		console.log('triggered', usr)
 		if (usr.name) {
 			$('#greeting_anonymous').hide()
