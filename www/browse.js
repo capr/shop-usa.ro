@@ -107,7 +107,7 @@ function update_pagenav(prod_count, cur_page, bid) {
 
 		var bottom = $(this).closest('#bottom_navbar').length > 0
 
-		setlink(this, cat_url(g_catid, pagenum, bid), bottom && scroll_top)
+		setlink(this, cat_url(g_catid, pagenum, bid), bottom && scroll_to_top)
 	})
 	$('.navbar').show()
 
