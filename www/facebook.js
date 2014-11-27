@@ -1,25 +1,25 @@
 
-function facebook_connect(success, fail) {
+function facebook_connect(success, error, opt) {
 	FB.getLoginStatus(function(response) {
 		if (response.status == 'connected')
-			post('/login.json', {
+			login({
 				type: 'facebook',
 				access_token: response.authResponse.accessToken,
-			}, success, fail)
+			}, success, error, opt)
 		else
-			if (fail) fail()
+			if (error) error()
 	})
 }
 
-function facebook_login(success, fail) {
+function facebook_login(success, error, opt) {
 	FB.login(function(response) {
 		if (response.authResponse)
-			post('/login.json', {
+			login({
 				type: 'facebook',
 				access_token: response.authResponse.accessToken,
-			}, success, fail)
+			}, success, error, opt)
 		else
-			if (fail) fail()
+			if (error) error()
 	}, {scope: 'public_profile,email'})
 }
 

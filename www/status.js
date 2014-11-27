@@ -1,6 +1,6 @@
 
 function init_status() {
-	get('/login.json', function(usr) {
+	$(document).bind('app_usr', function(usr) {
 		if (usr.name) {
 			$('#greeting_anonymous').hide()
 			$('#greeting_logged_in').show()
@@ -12,6 +12,7 @@ function init_status() {
 			setlink('#greeting_anonymous', '/account')
 		}
 	})
+	login()
 }
 
 function admin() {

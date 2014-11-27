@@ -1,4 +1,35 @@
 
+// glue ----------------------------------------------------------------------
+
+function memoize(f) {
+	var cache = {}
+	return function(arg) {
+		if (arg in cache)
+			return cache[arg]
+		return cache[arg] = f(arg)
+	}
+}
+
+// return a function that calls a bunch of functions in order
+// with the same args as passed to that function.
+function chain() {
+	var funcs = Array.prototype.slice.call(arguments)
+	return function() {
+		for (var i = 0; i < funcs.length; i++)
+			funcs[i].apply(null, arguments)
+	}
+}
+
+// $.extend() without overriding.
+function merge(dst) {
+	for (var i = 1; i < arguments.length; i++) {
+		var src = arguments[i]
+		for (var k in src)
+			if (!dst.hasOwnProperty(k))
+				dst[k] = src[k]
+	}
+}
+
 // global strings and config values ------------------------------------------
 
 // global S() for internationalizing strings.
@@ -19,7 +50,7 @@ function C(name, val) {
 	return C_[name]
 }
 
-// global lang() for conditionally setting S() values based on language
+// global lang() for conditionally setting S() values based on language.
 function lang() {
 	return document.documentElement.lang
 }
@@ -69,6 +100,11 @@ function follow_scroll(element_id, margin) {
 	}
 	$(window).scroll(adjust_position)
 	$(window).resize(adjust_position)
+}
+
+// find an id attribute in the parents of an element
+function upid(e, attr) {
+	return parseInt($(e).closest('['+attr+']').attr(attr))
 }
 
 // keyboard navigation -------------------------------------------------------
@@ -144,61 +180,121 @@ function getback(key) {
 
 // ajax requests -------------------------------------------------------------
 
+// 1. optionally restartable and abortable on an id.
+// 2. triggers an optional abort() event.
+// 3. presence of data defaults to POST method.
+// 4. non-string data turns json.
+
 var g_xhrs = {} //{id: xhr}
 
 function abort(id) {
-	if (!g_xhrs[id]) return
+	if (!(id in g_xhrs)) return
 	g_xhrs[id].abort()
 	delete g_xhrs[id]
 }
 
-function ajax(id, url, on_success, on_error, on_abort, opt) {
+function ajax(url, opt) {
+	opt = opt || {}
+	var id = opt.id
 
-	abort(id)
+	if (id)
+		abort(id)
 
-	g_xhrs[id] = $.ajax($.extend({
+	var data = opt.data
+	if (data && (typeof data != 'string'))
+		data = {data: JSON.stringify(data)}
+	var type = opt.type || (data ? 'POST' : 'GET')
+
+	var xhr = $.ajax({
 		url: url,
 		success: function(data) {
-			delete g_xhrs[id]
-			if (on_success)
-				on_success(data)
+			if (id)
+				delete g_xhrs[id]
+			if (opt.success)
+				opt.success(data)
 		},
 		error: function(xhr) {
-			delete g_xhrs[id]
+			if (id)
+				delete g_xhrs[id]
 			if (xhr.statusText == 'abort') {
-				if (on_abort)
-					on_abort(xhr)
+				if (opt.abort)
+					opt.abort(xhr)
 			} else {
-				if (on_error)
-					on_error(xhr)
+				if (opt.error)
+					opt.error(xhr)
 			}
 		},
-	}, opt))
-}
-
-function get(url, on_success, on_error) {
-	ajax('get:'+url, url, on_success, on_error)
-}
-
-function post(url, data, on_success, on_error) {
-	if (typeof data != 'string')
-		data = {data: JSON.stringify(data)}
-	ajax('post:'+url, url, on_success, on_error, null, {
-		type: 'POST',
+		type: type,
 		data: data,
 	})
+
+	id = id || xhr
+	g_xhrs[id] = xhr
+
+	return id
+}
+
+function get(url, success, error, opt) {
+	return ajax(url,
+		$.extend({
+			id: 'get:'+url,
+			success: success,
+			error: error,
+		}, opt))
+}
+
+function post(url, data, success, error, opt) {
+	if (typeof data != 'string')
+		data = {data: JSON.stringify(data)}
+	return ajax(url,
+		$.extend({
+			id: 'post:'+url,
+			data: data,
+			success: success,
+			error: error,
+		}, opt))
+}
+
+// ajax request with ui feedback for slow loading and failure.
+// automatically aborts on load_content() and render() calls over the same dst.
+function load_content(dst, url, success, error, opt) {
+
+	var dst = $(dst)
+	var slow_watch = setTimeout(function() {
+		dst.html('')
+		dst.addClass('loading')
+	}, C('slow_loading_feedback_delay', 1000))
+
+	var done = function() {
+		clearTimeout(slow_watch)
+		dst.removeClass('loading')
+	}
+
+	return ajax(url,
+		$.extend({
+			id: $(dst).attr('id'),
+			success: function(data) {
+				done()
+				if (success)
+					success(data)
+			},
+			error: function(xhr) {
+				done()
+				dst.html('<a><img src="/load_error.gif"></a>').find('a')
+					.attr('title', xhr.responseText)
+					.click(function() {
+						dst.html('')
+						dst.addClass('loading')
+						load_content(dst, url, on_success, on_error)
+					})
+				if (error)
+					error(xhr)
+			},
+			abort: done,
+		}, opt))
 }
 
 // templating ----------------------------------------------------------------
-
-function memoize(f) {
-	var cache = {}
-	return function(arg) {
-		if (arg in cache)
-			return cache[arg]
-		return cache[arg] = f(arg)
-	}
-}
 
 var render_func = memoize(function(name) {
 	var template = $('#' + name + '_template').html()
@@ -231,58 +327,16 @@ function render(template_name, data, dst) {
 		return s
 }
 
-// find an id attribute in the parents of an element
-function upid(e, attr) {
-	return parseInt($(e).closest('['+attr+']').attr(attr))
-}
-
-// content loading -----------------------------------------------------------
-
-// restartable ajax request with ui feedback.
-function load_content(dst, url, on_success, on_error) {
-
-	var dst = $(dst)
-	var timeout = setTimeout(function() {
-		dst.html('')
-		dst.addClass('loading')
-	}, C('loading_delay', 1000))
-
-	var done = function() {
-		clearTimeout(timeout)
-		dst.removeClass('loading')
-	}
-
-	ajax($(dst).attr('id'), url,
-		function(data) {
-			done()
-			if (on_success)
-				on_success(data)
-		},
-		function(xhr) {
-			done()
-			dst.html('<a><img src="/load_error.gif"></a>').find('a')
-				.attr('title', xhr.responseText)
-				.click(function() {
-					dst.html('')
-					dst.addClass('loading')
-					load_content(dst, url, on_success, on_error)
-				})
-			if (on_error)
-				on_error(xhr)
-		},
-		function(xhr) {
-			done()
-		}
-	)
-}
+// UI composition ------------------------------------------------------------
 
 // ajax request on the main pane: redirect to homepage on 404.
-function load_main(url, on_success, on_error) {
-	load_content('#main', url, on_success, function(xhr) {
-		check(xhr.status != 404)
-		if (on_error)
-			on_error(xhr)
-	})
+function load_main(url, success, error, opt) {
+	load_content('#main', url, success,
+		function(xhr) {
+			check(xhr.status != 404)
+			if (error)
+				error(xhr)
+		}, opt)
 }
 
 function hide_nav() {

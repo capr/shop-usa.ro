@@ -12,7 +12,7 @@ function google_login(success, fail) {
 		if (authResult.status.signed_in) {
 			if (authResult.status.method == 'AUTO') {
 				force_prompt = false
-				post('/login.json', {
+				login({
 					type: 'google',
 					access_token: authResult.access_token,
 				}, success, fail)

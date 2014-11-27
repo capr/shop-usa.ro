@@ -1,4 +1,17 @@
 
+function login(auth, success, error, opt) {
+	function logged_in(usr) {
+		$(document).trigger('app_usr', usr)
+		if (success)
+			success(usr)
+	}
+	return ajax('/login.json', $.extend({
+			success: logged_in,
+			error: error,
+			data: auth,
+		}, opt))
+}
+
 // account({options...}) -> account
 // account.load() ^on_update(usr)
 // account.validate() -> true|nothing
@@ -40,7 +53,6 @@ function account(acc) {
 
 	function logged_in(usr) {
 		acc.on_update(usr)
-		$.event.trigger('app_usr', usr)
 		if (usr.anonymous && !want_anonymous)
 			create_login_section()
 		else
@@ -68,7 +80,7 @@ function account(acc) {
 
 		$('#btn_no_account').click(function() {
 			want_anonymous = true
-			post('/login.json', {type: 'anonymous'}, logged_in)
+			login({type: 'anonymous'}, logged_in)
 		})
 
 		if (!acc.allow_anonymous)
@@ -128,14 +140,14 @@ function account(acc) {
 		$('#btn_login').click(function() {
 			if (validate_login()) {
 				$(this).prop('disabled', true)
-				post('/login.json', pass_auth('login'), logged_in, login_failed)
+				login(pass_auth('login'), logged_in, login_failed)
 			}
 		})
 
 		$('#btn_create_account').click(function() {
 			if (validate_login()) {
 				$(this).prop('disabled', true)
-				post('/login.json', pass_auth('create'), logged_in, login_failed)
+				login(pass_auth('create'), logged_in, login_failed)
 			}
 		})
 	}
@@ -198,13 +210,14 @@ function account(acc) {
 				return
 
 		return {
-			email: $('#email').val(),
-			name:  $('#name').val(),
-			phone: $('#phone').val(),
+			email: $('#usr_email').val().trim(),
+			name:  $('#usr_name').val().trim(),
+			phone: $('#usr_phone').val().trim(),
 		}
 	}
 
-	load_content(acc.section, '/login.json', logged_in)
+	login(null, logged_in, null, {ui: acc.section})
+	//load_content(acc.section, '/login.json', logged_in)
 
 	return acc
 }
