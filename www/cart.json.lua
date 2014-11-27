@@ -80,6 +80,8 @@ local t = query([[
 	where
 		ci.uid = ?
 		and p.active = 1
+	group by
+		ci.ciid
 	order by
 		ci.buylater,
 		ci.pos, ci.atime,
