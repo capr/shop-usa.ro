@@ -92,6 +92,10 @@ function format_pagenav(prod_count, cur_page) {
 	return s
 }
 
+function scroll_to_top() {
+	window.scrollTo(0, 0)
+}
+
 function update_pagenav(prod_count, cur_page, bid) {
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
 	$('.pagenav a').each(function() {
@@ -100,7 +104,10 @@ function update_pagenav(prod_count, cur_page, bid) {
 			(s == '«' && cur_page-1) ||
 			(s == '»' && cur_page+1) ||
 			parseInt(s)
-		setlink(this, cat_url(g_catid, pagenum, bid))
+
+		var bottom = $(this).closest('#bottom_navbar').length > 0
+
+		setlink(this, cat_url(g_catid, pagenum, bid), bottom && scroll_top)
 	})
 	$('.navbar').show()
 

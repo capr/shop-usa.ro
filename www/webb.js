@@ -160,9 +160,10 @@ function url_changed() {
 	handler.apply(null, args)
 }
 
-function setlink(a, url) {
+function setlink(a, url, hook) {
 	$(a).attr('href', url).click(function(event) {
 		event.preventDefault()
+		if (hook) hook()
 		exec(url)
 	})
 }
