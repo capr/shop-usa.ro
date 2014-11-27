@@ -185,8 +185,8 @@ end
 </script>
 
 <script type="text/x-mustache" id=prod_grid_element_template>
-	<div pid={{{pid}}} class=drop>
-		<div style="min-width: 170px; min-height: 250px; margin: 5px">
+	<div pid={{{pid}}} class=drop style="margin: 5px">
+		<div style="min-width: 170px; min-height: 250px">
 			<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 		</div>
 		<br>
