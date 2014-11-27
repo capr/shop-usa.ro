@@ -1,7 +1,6 @@
 
 function init_status() {
 	$(document).bind('app_usr', function(e, usr) {
-		console.log('triggered', usr)
 		if (usr.name) {
 			$('#greeting_anonymous').hide()
 			$('#greeting_logged_in').show()
@@ -16,10 +15,3 @@ function init_status() {
 	login()
 }
 
-function admin() {
-	return true
-}
-
-function editmode() {
-	return admin()
-}

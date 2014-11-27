@@ -1,18 +1,4 @@
 
-function login(auth, success, error, opt) {
-	function logged_in(usr) {
-		console.log(usr)
-		$(document).trigger('app_usr', usr)
-		if (success)
-			success(usr)
-	}
-	return ajax('/login.json', $.extend({
-			success: logged_in,
-			error: error,
-			data: auth,
-		}, opt))
-}
-
 // account({options...}) -> account
 // account.load() ^on_update(usr)
 // account.validate() -> true|nothing
@@ -50,7 +36,6 @@ function account(acc) {
 		$('#btn_login').prop('disabled', false)
 		$('#btn_create_account').prop('disabled', false)
 	}
-
 
 	function logged_in(usr) {
 		acc.on_update(usr)
@@ -217,7 +202,7 @@ function account(acc) {
 		}
 	}
 
-	login(null, logged_in, null, {ui: acc.section})
+	login(null, logged_in)
 	//load_content(acc.section, '/login.json', logged_in)
 
 	return acc

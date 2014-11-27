@@ -34,6 +34,7 @@ end
 	<script src="/checkout.js"></script>
 	<script src="/resetpass.js"></script>
 	<script src="/browse.js"></script>
+	<script src="/app.js"></script>
 </head>
 <body>
 <table>
@@ -489,7 +490,7 @@ end
 							value="{{email}}" placeholder="name@domain.com" required>
 					{{/googleid}}{{/facebookid}}
 				</td>
-				<td rowspan=2 align=right>
+				<td rowspan=4 align=right>
 					{{#facebookid}}
 						<img src="//graph.facebook.com/{{facebookid}}/picture">
 					{{/facebookid}}
@@ -526,19 +527,26 @@ end
 				</td>
 			</tr>
 			<tr>
-				<td>
+				<td colspan=2>
 					<br>
-					<a id=relogin class=gray>
-						<t class=en>Not {{name}}?</t>
-						<t class=ro>Nu esti {{name}}?</t>
-					</a>
-				</td>
-				<td align=right>
-					<br>
-					<a id=reset_pass class=gray>
-						<t class=en>Change password</t>
-						<t class=ro>Schimba parola</t>
-					</a>
+					<table width=100%>
+						<tr>
+							<td nowrap>
+								<a id=relogin class=gray>
+									<t class=en>Not {{name}}?</t>
+									<t class=ro>Nu esti {{name}}?</t>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td align=right nowrap>
+								<a id=reset_pass class=gray>
+									<t class=en>Change password</t>
+									<t class=ro>Schimba parola</t>
+								</a>
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 		</table>

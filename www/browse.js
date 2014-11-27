@@ -355,15 +355,3 @@ function init_sidebar() {
 	follow_scroll('#sidebar', 20)
 }
 
-// load page -----------------------------------------------------------------
-
-$(function() {
-	init_viewstyle()
-	init_letters()
-	init_sidebar()
-
-	init_status()
-	init_cart()
-
-	url_changed()
-})
