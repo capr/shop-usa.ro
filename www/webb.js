@@ -238,18 +238,14 @@ function ajax(url, opt) {
 function get(url, success, error, opt) {
 	return ajax(url,
 		$.extend({
-			id: 'get:'+url,
 			success: success,
 			error: error,
 		}, opt))
 }
 
 function post(url, data, success, error, opt) {
-	if (typeof data != 'string')
-		data = {data: JSON.stringify(data)}
 	return ajax(url,
 		$.extend({
-			id: 'post:'+url,
 			data: data,
 			success: success,
 			error: error,
