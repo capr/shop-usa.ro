@@ -264,7 +264,7 @@ function load_content(dst, url, success, error, opt) {
 	var slow_watch = setTimeout(function() {
 		dst.html('')
 		dst.addClass('loading')
-	}, C('slow_loading_feedback_delay', 1000))
+	}, C('slow_loading_feedback_delay', 1500))
 
 	var done = function() {
 		clearTimeout(slow_watch)
