@@ -92,13 +92,8 @@ function format_pagenav(prod_count, cur_page) {
 	return s
 }
 
-$.easing.easeOutQuint = function(x, t, b, c, d) {
-	t = t / d - 1
-	return c * (t^5 + 1) + b
-}
-
 function scroll_to_top() {
-	$('html, body').animate({ scrollTop: 0}, 1000, 'easeOutQuint')
+	$('html, body').animate({ scrollTop: 0}, 3000, 'easeOutQuint')
 }
 
 function update_pagenav(prod_count, cur_page, bid) {
