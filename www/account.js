@@ -1,6 +1,7 @@
 
 function login(auth, success, error, opt) {
 	function logged_in(usr) {
+		console.log(usr)
 		$(document).trigger('app_usr', usr)
 		if (success)
 			success(usr)
