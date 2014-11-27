@@ -490,7 +490,7 @@ end
 							value="{{email}}" placeholder="name@domain.com" required>
 					{{/googleid}}{{/facebookid}}
 				</td>
-				<td rowspan=4 align=right>
+				<td rowspan=4 align=right valign=top>
 					{{#facebookid}}
 						<img src="//graph.facebook.com/{{facebookid}}/picture">
 					{{/facebookid}}
