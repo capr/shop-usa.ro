@@ -98,7 +98,7 @@ $.easing.easeOutQuint = function(x, t, b, c, d) {
 }
 
 function scroll_to_top() {
-	$('html, body').animate({ scrollTop: 0}, 500, 'easeOutQuint')
+	$('html, body').animate({ scrollTop: 0}, 1000, 'easeOutQuint')
 }
 
 function update_pagenav(prod_count, cur_page, bid) {
