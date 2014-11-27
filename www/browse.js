@@ -266,8 +266,6 @@ function dimsel_changed() {
 
 function update_product_page(prod) {
 	g_prod = prod
-	window.scrollTo(0, 0)
-
 	render('product_page', prod, '#main')
 
 	$('#dimsel select[did]').change(dimsel_changed)
