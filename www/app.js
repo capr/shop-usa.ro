@@ -5,9 +5,9 @@ var g_prod_cols = 4
 
 function format_prods(prods) {
 	if (g_viewstyle == 'list') {
-		return apply_template('prod_list', prods)
+		return render('prod_list', prods)
 	} else if (g_viewstyle == 'grid') {
-		return multi_column('prod_grid_element', prods, g_prod_cols)
+		return render_multi_column('prod_grid_element', prods, g_prod_cols)
 	}
 }
 
@@ -67,7 +67,8 @@ function clamp(x, min, max) {
 
 function format_pagenav(prod_count, cur_page) {
 	var s = ''
-	if (cur_page > 1) s = s + '<a>&laquo;</a> '
+	if (cur_page > 1)
+		s = s + '<a title="'+S('previous_page', 'previous page')+'">&laquo;</a> '
 	var page_count = Math.ceil(prod_count / g_pagesize)
 	cur_page = clamp(cur_page, 1, page_count)
 	var dotted
@@ -86,7 +87,8 @@ function format_pagenav(prod_count, cur_page) {
 			dotted = true
 		}
 	}
-	if (cur_page < page_count) s = s + ' <a>&raquo;</a>'
+	if (cur_page < page_count)
+		s = s + ' <a title="'+S('next_page', 'next page')+'">&raquo;</a>'
 	return s
 }
 
@@ -130,7 +132,7 @@ function load_brands(catid, bid) { // used in cat.js
 		return
 	load_content('#brands', '/brands.json/all/'+catid, function(data) {
 
-		apply_template('brands_list', data.brands, '#brands')
+		render('brands_list', data.brands, '#brands')
 
 		if ($('#brands_list li').length > 40)
 			$('#brand_search').show()
@@ -160,7 +162,7 @@ function select_brand_letter(search) {
 }
 
 function update_brands_page(brands) {
-	var s = multi_column('brands', brands, 4)
+	var s = render_multi_column('brands', brands, 4)
 	$('#main').html('<br><br>'+s)
 
 	$('#main a[bid]').each(function() {
@@ -234,7 +236,7 @@ function dimsel_changed() {
 			S('low_stock', '<b>Only {0} left</b> in stock').format(combi.qty) ||
 		S('in_stock', '<b>{0} left</b> in stock').format(combi.qty)
 
-	apply_template('product_combi', co, '#combi')
+	render('product_combi', co, '#combi')
 
 	if (!combi.price || !combi.qty || combi.qty < 1) {
 		$('.buybutton').prop('disabled', true)
@@ -251,7 +253,7 @@ function dimsel_changed() {
 	if (!imgs.length)
 		imgs.push(g_prod.imgid)
 
-	apply_template('product_gallery', imgs, '#gallery')
+	render('product_gallery', imgs, '#gallery')
 
 	change_prod_img(imgs[0])
 
@@ -266,7 +268,7 @@ function update_product_page(prod) {
 	g_prod = prod
 	window.scrollTo(0, 0)
 
-	apply_template('product_page', prod, '#main')
+	render('product_page', prod, '#main')
 
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()
@@ -299,7 +301,7 @@ action.p = function(pid) {
 // brand page ----------------------------------------------------------------
 
 function update_brand_page(brand) {
-	apply_template('brand_page', brand, '#main')
+	render('brand_page', brand, '#main')
 
 	$('#bcat').html(format_cats(brand.cats))
 
@@ -333,7 +335,7 @@ function init_topbar() {
 	for (var i = 0; i < t.length; i++) {
 		t[i].catname = g_cats[t[i].catid].name
 	}
-	apply_template('topbar', {items: t}, '#topbar')
+	render('topbar', {items: t}, '#topbar')
 
 	$('#topbar a[catid]').each(function() {
 		var catid = $(this).attr('catid')

@@ -1,9 +1,9 @@
 require'cat'
 
 local bid = ...
-bid = check(tonumber(bid))
+bid = assert(tonumber(bid))
 
-local brand = query1([[
+local brand = check(query1([[
 	select
 		m.id_manufacturer as bid,
 		m.name as bname
@@ -11,7 +11,7 @@ local brand = query1([[
 		ps_manufacturer m
 	where
 		m.id_manufacturer = ?
-]], bid)
+]], bid))
 
 local cats = query([[
 	select

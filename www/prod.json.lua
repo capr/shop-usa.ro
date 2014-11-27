@@ -1,10 +1,9 @@
 
-local pid = ...
-pid = check(uint_arg(pid))
+pid = assert(uint_arg((...)))
 
 --product --------------------------------------------------------------------
 
-local prod = query1([[
+local prod = check(query1([[
 	select
 		p.id_product as pid,
 		pl.name as name,
@@ -25,7 +24,7 @@ local prod = query1([[
 	where
 		p.active = 1
 		and p.id_product = ?
-]], pid)
+]], pid))
 
 --combis ---------------------------------------------------------------------
 

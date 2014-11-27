@@ -22,7 +22,7 @@ end
 	<script src="/jquery.validate.js"></script>
 	<script src="/jquery.autocomplete.js"></script>
 	<script src="/mustache.js"></script>
-	<script src="/util.js"></script>
+	<script src="/webb.js"></script>
 	<script src="/config.js"></script>
 	<script src="/analytics.js"></script>
 	<script src="/facebook.js" async defer></script>
@@ -30,6 +30,7 @@ end
 	<script src="/cat.js"></script>
 	<script src="/cart.js"></script>
 	<script src="/status.js"></script>
+	<script src="/account.js"></script>
 	<script src="/checkout.js"></script>
 	<script src="/resetpass.js"></script>
 	<script src="/app.js"></script>
@@ -71,15 +72,20 @@ end
 			<table width=100%>
 				<tr>
 					<td>
-						<t class=en>Hi</t>
-						<t class=ro>Salut</t>
-						<a id=usr_name></a>!
+						<a id=greeting_anonymous class=hidden>
+							<t class=en>Hi</t><t class=ro>Salut</t>!
+						</a>
+						<span id=greeting_logged_in class=hidden>
+							<t class=en>Hi</t>
+							<t class=ro>Salut</t>
+							<a id=usr_name></a>!
+						</span>
 					</td>
-					<td align=right style="text-align: right;">
-						<div id=cart_icon_div style="position: relative; height: 50px" align=right>
+					<td align=right nowrap>
+						<div id=cart_icon_div style="position: relative; width: 50px; height: 50px">
 							<a id=cart_icon_link>
-								<img id=cart_icon>
-								<div style="float: right; position: relative; top: 11px; left: -21px;">
+								<img style="position: absolute" id=cart_icon>
+								<div style="position: absolute; top: 11px; left: 28px">
 									<span id=cart_icon_item_count></span>
 								</div>
 							</a>
@@ -87,9 +93,9 @@ end
 					</td>
 				</tr>
 			</table>
-			<table width=100% class=navbar id=top_navbar style="display: none">
+			<table width=100% id=top_navbar class="navbar hidden">
 				<tr>
-					<td>
+					<td valign=middle>
 						<table>
 							<tr>
 								<td><a viewstyle=grid><img src="/grid.png"></a></td>
@@ -98,13 +104,13 @@ end
 							</tr>
 						</table>
 					</td>
-					<td align=right>
+					<td vlign=middle align=right>
 						<div class="pagenav small"></div>
 					</td>
 				</tr>
 			</table>
 			<div id=main></div>
-			<table width=100% class=navbar id=bottom_navbar style="display: none">
+			<table width=100% id=bottom_navbar class="navbar hidden">
 				<tr>
 					<td align=right>
 						<div class=pagenav></div>
@@ -387,7 +393,7 @@ end
 	</ul>
 </script>
 
-<script type="text/x-mustache" id=login_section_template>
+<script type="text/x-mustache" id=account_login_template>
 	<h3>
 		<t class=en>My account:</t>
 		<t class=ro>Contul meu:</t>
@@ -459,7 +465,7 @@ end
 	</form>
 </script>
 
-<script type="text/x-mustache" id=user_section_template>
+<script type="text/x-mustache" id=account_info_template>
 	<h3>
 		<t class=en>Contact details:</t>
 		<t class=ro>Datele de contact:</t>
@@ -822,7 +828,7 @@ end
 				<td></td>
 				<td colspan=2 valign=top>
 					<div id=validation_error class=error></div>
-					<div id=server_error class=error style="display: none;">
+					<div id=server_error class="error hidden">
 						<t class=en>There was an error. Please try again.</t>
 						<t class=ro>S-a produs o eroare. Te rog sa incerci din nou.</t>
 					</label>
@@ -865,7 +871,7 @@ end
 				<td></td>
 				<td colspan=2 valign=top>
 					<div id=validation_error class=error></div>
-					<div id=server_error class=error style="display: none;">
+					<div id=server_error class="error hidden">
 						<t class=en>There was an error. Please try again.</t>
 						<t class=ro>S-a produs o eroare. Te rog sa incerci din nou.</t>
 					</label>
@@ -903,6 +909,17 @@ end
 	<t class=ro>
 		Parola a fost schimbata.
 	</t>
+</script>
+
+<script type="text/x-mustache" id=account_template>
+	<table width=80% style="border-spacing: 10px;">
+		<tr>
+			<td width=75%>
+				<div id=account_section></div>
+			</td>
+			<td width=35%></td>
+		</tr>
+	</table>
 </script>
 
 <div id=fb-root class=hidden></div>

@@ -2,21 +2,21 @@
 local shiptypes = {home = true, store = true}
 
 --grab the order
-local o = check(POST and POST.data and json(POST.data))
+local o = assert(json(POST.data))
 
 --order anonymously, but at least grab a session first
-local suid = check(session_uid())
+local suid = allow(session_uid())
 
 --sanitize and validate fields
-local email    = check(str_arg(o.email))
-local name     = check(str_arg(o.name))
-local phone    = check(str_arg(o.phone))
-local addr     = check(str_arg(o.addr))
-local city     = check(str_arg(o.city))
-local county   = check(str_arg(o.county))
+local email    = assert(str_arg(o.email))
+local name     = assert(str_arg(o.name))
+local phone    = assert(str_arg(o.phone))
+local addr     = assert(str_arg(o.addr))
+local city     = assert(str_arg(o.city))
+local county   = assert(str_arg(o.county))
 local country  = 'Romania'
-local note     = check(str_arg(o.note))
-local shiptype = check(enum_arg(o.shiptype, 'home', 'store'))
+local note     = assert(str_arg(o.note))
+local shiptype = assert(enum_arg(o.shiptype, 'home', 'store'))
 local shipcost = shiptype == 'home' and 25 or 0
 
 --TODO: check the total number of items and prices

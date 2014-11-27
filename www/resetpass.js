@@ -2,7 +2,7 @@
 
 action.forgot_password = function() {
 	hide_nav()
-	apply_template('forgot_pass', {}, '#main')
+	render('forgot_pass', {}, '#main')
 	$('#email').focus()
 
 	var validator = $('#forgot_pass_form').validate({
@@ -36,8 +36,8 @@ action.forgot_password = function() {
 }
 
 function apply_message_template(message_template) {
-	apply_template('message', {
-		message: apply_template(message_template)
+	render('message', {
+		message: render(message_template)
 	}, '#main')
 }
 
@@ -60,7 +60,7 @@ action.login = function(token) {
 
 action.reset_password = function(token) {
 
-	apply_template('reset_pass', {}, '#main')
+	render('reset_pass', {}, '#main')
 	$('#pass').focus()
 
 	var validator = $('#reset_pass_form').validate({

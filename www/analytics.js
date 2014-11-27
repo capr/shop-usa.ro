@@ -1,20 +1,26 @@
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','analytics');
+function analytics_pageview() {} // stub
 
-analytics('create', C('analytics_ua'), 'auto')
+(function() {
+	if (C('analytics_ua', false)) return
 
-function analytics_pageview() {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','analytics');
 
-	// we need to give it the url because it doesn't have it for some reason.
-	var url = window.location.protocol +
-		'//' + window.location.hostname +
-		window.location.pathname +
-		window.location.search
+	analytics('create', C('analytics_ua'), 'auto')
 
-	analytics('send', 'pageview', {
-		useBeacon: true,
-		page: url,
-	})
-}
+	analytics_pageview = function() {
+
+		// we need to give it the url because it doesn't have it for some reason.
+		var url = window.location.protocol +
+			'//' + window.location.hostname +
+			window.location.pathname +
+			window.location.search
+
+		analytics('send', 'pageview', {
+			useBeacon: true,
+			page: url,
+		})
+	}
+})()

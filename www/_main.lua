@@ -69,7 +69,15 @@ function enum_arg(s, ...)
 	end
 end
 
-check = assert
+function check(ret, ...)
+	if ret then return ret, ... end
+	ngx.exit(404)
+end
+
+function allow(ret, ...)
+	if ret then return ret, ... end
+	ngx.exit(403)
+end
 
 --output API -----------------------------------------------------------------
 

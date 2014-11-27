@@ -1,6 +1,6 @@
 
 local catid, page, bid, pagesize = ...
-catid = check(uint_arg(catid))
+catid = assert(uint_arg(catid))
 page  = tonumber(page) or 1
 pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
 bid = tonumber(bid)
@@ -33,7 +33,8 @@ else
 	]], catid)
 end
 
---note: "newest first" is actually "oldest first".
+--note: we sort by "oldest first" to get "newest first"
+--because we crawl from page 1 up so page 1 is the oldest.
 local prods = query([[
 	select
 		p.id_product as pid,
@@ -63,7 +64,6 @@ local prods = query([[
 		p.date_upd
 	limit
 ]]..offset..', '..pagesize, usd_rate(), usd_rate(), catid)
-
 
 out(json({
 	prods = prods,

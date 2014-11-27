@@ -15,7 +15,7 @@ function C(name, val) {
 	if (val && !C_[name])
 		C_[name] = val
 	if (typeof(C_[name]) === 'undefined')
-		console.log('error: missing config value for ', name)
+		console.log('warning: missing config value for ', name)
 	return C_[name]
 }
 
@@ -71,12 +71,6 @@ function follow_scroll(element_id, margin) {
 	$(window).resize(adjust_position)
 }
 
-// global state --------------------------------------------------------------
-
-function editmode() {
-	return true
-}
-
 // keyboard navigation -------------------------------------------------------
 
 var keydown_events = {} // {id: handler}
@@ -98,6 +92,11 @@ $(function() {
 function check(truth) {
 	if(!truth)
 		window.location = '/'
+}
+
+function allow(truth) {
+	if(!truth)
+		window.location = '/account'
 }
 
 $(function() {
@@ -125,16 +124,11 @@ function url_changed() {
 	handler.apply(null, args)
 }
 
-function setlink(sel, url) {
-	$(sel).attr('href', url).click(function(event) {
+function setlink(a, url) {
+	$(a).attr('href', url).click(function(event) {
 		event.preventDefault()
 		exec(url)
 	})
-}
-
-function hide_nav() {
-	$('.navbar').hide()
-	$('#sidebar').hide()
 }
 
 // persistence ---------------------------------------------------------------
@@ -148,6 +142,54 @@ function getback(key) {
 	return value && JSON.parse(value)
 }
 
+// ajax requests -------------------------------------------------------------
+
+var g_xhrs = {} //{id: xhr}
+
+function abort(id) {
+	if (!g_xhrs[id]) return
+	g_xhrs[id].abort()
+	delete g_xhrs[id]
+}
+
+function ajax(id, url, on_success, on_error, on_abort, opt) {
+
+	abort(id)
+
+	g_xhrs[id] = $.ajax($.extend({
+		url: url,
+		success: function(data) {
+			delete g_xhrs[id]
+			if (on_success)
+				on_success(data)
+		},
+		error: function(xhr) {
+			delete g_xhrs[id]
+			if (xhr.statusText == 'abort') {
+				if (on_abort)
+					on_abort(xhr)
+			} else {
+				allow(xhr.status != 403)
+				if (on_error)
+					on_error(xhr)
+			}
+		},
+	}, opt))
+}
+
+function get(url, on_success, on_error) {
+	ajax('get:'+url, url, on_success, on_error)
+}
+
+function post(url, data, on_success, on_error) {
+	if (typeof data != 'string')
+		data = {data: JSON.stringify(data)}
+	ajax('post:'+url, url, on_success, on_error, null, {
+		type: 'POST',
+		data: data,
+	})
+}
+
 // templating ----------------------------------------------------------------
 
 function memoize(f) {
@@ -159,16 +201,16 @@ function memoize(f) {
 	}
 }
 
-var template_render = memoize(function(name) {
+var render_func = memoize(function(name) {
 	var template = $('#' + name + '_template').html()
 	return function(data) {
-		return Mustache.render(template, data)
+		return Mustache.render(template, data || {})
 	}
 })
 
-function multi_column(template_name, items, col_count) {
+function render_multi_column(template_name, items, col_count) {
 	var s = '<table width=100%>'
-	var render = template_render(template_name)
+	var render = render_func(template_name)
 	var w = 100 / col_count
 	$.each(items, function(i, item) {
 		if (i % col_count == 0)
@@ -181,11 +223,12 @@ function multi_column(template_name, items, col_count) {
 	return s
 }
 
-function apply_template(template_name, data, dest_id) {
-	var s = template_render(template_name)(data)
-	if (dest_id)
-		$(dest_id).html(s)
-	else
+function render(template_name, data, dst) {
+	var s = render_func(template_name)(data)
+	if (dst) {
+		abort($(dst).attr('id'))
+		$(dst).html(s)
+	} else
 		return s
 }
 
@@ -196,60 +239,21 @@ function upid(e, attr) {
 
 // content loading -----------------------------------------------------------
 
-// restartable ajax request.
-var g_xhrs = {} //{dst_id: xhr}
-function ajax(id, url, on_success, on_error, opt) {
-
-	if (g_xhrs[id]) {
-		g_xhrs[id].abort()
-		delete g_xhrs[id]
-	}
-
-	g_xhrs[id] = $.ajax($.extend({
-		url: url,
-		success: function(data) {
-			delete g_xhrs[id]
-			if (on_success)
-				on_success(data)
-		},
-		error: function(xhr) {
-			delete g_xhrs[id]
-			if (xhr.statusText == 'abort')
-				return
-			if (on_error)
-				on_error(xhr)
-		},
-	}, opt))
-}
-
-function get(url, on_success, on_error) {
-	ajax(url, url, on_success, on_error)
-}
-
-function post(url, data, on_success, on_error) {
-	if (typeof data != 'string')
-		data = {data: JSON.stringify(data)}
-	ajax(url, url, on_success, on_error, {
-		type: 'POST',
-		data: data,
-	})
-}
-
 // restartable ajax request with ui feedback.
-function load_content(dst_id, url, on_success, on_error) {
+function load_content(dst, url, on_success, on_error) {
 
-	var sel = $(dst_id)
+	var dst = $(dst)
 	var timeout = setTimeout(function() {
-		sel.html('')
-		sel.addClass('loading')
+		dst.html('')
+		dst.addClass('loading')
 	}, C('loading_delay', 1000))
 
 	var done = function() {
 		clearTimeout(timeout)
-		sel.removeClass('loading')
+		dst.removeClass('loading')
 	}
 
-	ajax(dst_id, url,
+	ajax($(dst).attr('id'), url,
 		function(data) {
 			done()
 			if (on_success)
@@ -257,15 +261,18 @@ function load_content(dst_id, url, on_success, on_error) {
 		},
 		function(xhr) {
 			done()
-			sel.html('<a><img src="/load_error.gif"></a>').find('a')
+			dst.html('<a><img src="/load_error.gif"></a>').find('a')
 				.attr('title', xhr.responseText)
 				.click(function() {
-					sel.html('')
-					sel.addClass('loading')
-					load_content(dst_id, url, on_success, on_error)
+					dst.html('')
+					dst.addClass('loading')
+					load_content(dst, url, on_success, on_error)
 				})
 			if (on_error)
 				on_error(xhr)
+		},
+		function(xhr) {
+			done()
 		}
 	)
 }
@@ -274,5 +281,13 @@ function load_content(dst_id, url, on_success, on_error) {
 function load_main(url, on_success, on_error) {
 	load_content('#main', url, on_success, function(xhr) {
 		check(xhr.status != 404)
+		if (on_error)
+			on_error(xhr)
 	})
 }
+
+function hide_nav() {
+	$('.navbar').hide()
+	$('#sidebar').hide()
+}
+

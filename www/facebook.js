@@ -24,6 +24,7 @@ function facebook_login(success, fail) {
 }
 
 window.fbAsyncInit = function() {
+	if (!C('facebook_app_id', false)) return
 	FB.init({
 		appId   : C('facebook_app_id'),
 		cookie  : true,  // enable cookies to allow the server to access the session

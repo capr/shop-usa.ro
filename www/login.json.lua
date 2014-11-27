@@ -1,10 +1,8 @@
 
-local action = ... or 'login'
-local actions = {login = login, logout = logout}
-action = check(actions[action])
+local action = _G[assert(enum_arg(... or 'login', 'login', 'logout'))]
 
 local auth = POST and POST.data and json(POST.data)
-local uid = action(auth) or ngx.exit(ngx.HTTP_FORBIDDEN)
+local uid = allow(action(auth))
 
 local t = query1([[
 	select

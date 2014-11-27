@@ -8,6 +8,8 @@ if (lang() == 'ro') {
 S('move_here', 'Pune-l aici')
 S('remove', 'Sterge')
 S('price', '{0} Lei')
+S('next_page', 'pagina urmatoare')
+S('previous_page', 'pagina anterioara')
 S('na', '<span class=notavailable>Nedisponibil</span>')
 S('not_available', 'Nedisponibil')
 S('out_of_stock', 'Lipsa stoc')

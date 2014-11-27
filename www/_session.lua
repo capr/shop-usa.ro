@@ -323,9 +323,11 @@ end
 
 admin = once(function() --TODO: same here
 	return query1([[
-		select 1 from usr u where u.uid = ? and u.admin = 1
+		select 1 from usr u where
+			u.admin = 1 and u.active = 1 and u.uid = ?
 	]], uid()) ~= nil
 end)
 
-editmode = admin
-
+function editmode()
+	return admin()
+end
