@@ -311,7 +311,7 @@ function render_multi_column(template_name, items, col_count) {
 	$.each(items, function(i, item) {
 		if (i % col_count == 0)
 			s = s + '<tr>'
-		s = s + '<td width='+w+'%>' + render(item) + '</td>'
+		s = s + '<td width='+w+'% valign=top>' + render(item) + '</td>'
 		if (i % col_count == col_count - 1 || i == items.length)
 			s = s + '</tr>'
 	})
