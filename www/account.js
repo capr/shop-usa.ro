@@ -209,6 +209,7 @@ function account(acc) {
 }
 
 action.account = function() {
+	hide_nav()
 	render('account', null, '#main')
 	var acc = account({
 		on_update: function(usr) {
