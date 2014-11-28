@@ -4,7 +4,7 @@ if GET._escaped_fragment_ then
 	return
 end
 ?><!DOCTYPE html>
-<html lang=<?=GET.en and 'en' or 'ro'?>>
+<html lang=<?=lang()?>>
 <head>
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
@@ -318,6 +318,10 @@ end
 </script>
 
 <script type="text/x-mustache" id=cart_page_template>
+
+	<t class=en><h1>Shopping cart</h1></t>
+	<t class=ro><h1>Cosul de cumparaturi</h1></t>
+
 	<h2>
 		<t class=en>Shopping Bag
 			{{#buynow_count}}({{{buynow_count}}} items){{/buynow_count}}
@@ -370,25 +374,38 @@ end
 	<ul class=cart_list style="min-height: 200px">
 	{{#.}}
 		<li ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
-		<table><tr>
-			<td width=300 height=100>
-				<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
-			</td>
-			<td>
-				<a><b>{{{bname}}}</b> {{{name}}}</a>
-				<br>
-				<span class=price>
-					<t class=en>${{{price}}}</t>
-					<t class=ro>{{{price}}} Lei</t>
-				</span>
-				{{#vnames}}{{.}} {{/vnames}}
-				<br>
-				<a action=remove><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
-				<span class="gray small">&nbsp;|&nbsp;</span>
-				{{#buylater}}<a action=move_to_cart><t class=en>Move to cart</t><t class=ro>Muta in cos</t></a>{{/buylater}}
-				{{^buylater}}<a action=buy_later><t class=en>Save for later</t><t class=ro>Pastreaza pentru mai tarziu</t></a>{{/buylater}}
-			</td>
-		</tr></table>
+			<table width=100%>
+				<tr>
+					<td width=300 height=100>
+						<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+					</td>
+					<td>
+						<a><b>{{{bname}}}</b> {{{name}}}</a>
+						<br>
+						<span class=price>
+							<t class=en>${{{price}}}</t>
+							<t class=ro>{{{price}}} Lei</t>
+						</span>
+						{{#vnames}}{{.}} {{/vnames}}
+						<br>
+						<a action=remove><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
+						<span class="gray small">&nbsp;|&nbsp;</span>
+						{{#buylater}}
+							<a action=move_to_cart><t class=en>Move to cart</t><t class=ro>Muta in cos</t></a>
+						{{/buylater}}
+						{{^buylater}}
+							<a action=buy_later><t class=en>Save for later</t><t class=ro>Pastreaza pentru mai tarziu</t></a>
+						{{/buylater}}
+					</td>
+					<td align=right valign=top>
+						<span class="gray small">
+							<t class=en>Added</t>
+							<t class=ro>Adaugat</t>
+							<span class=timeago time="{{atime}}"></span>
+						</span>
+					</td>
+				</tr>
+			</table>
 		</li>
 	{{/.}}
 	</ul>
@@ -396,8 +413,8 @@ end
 
 <script type="text/x-mustache" id=account_login_template>
 	<h3>
-		<t class=en>My account:</t>
-		<t class=ro>Contul meu:</t>
+		<t class=en>Enter account:</t>
+		<t class=ro>Intra in cont:</t>
 	</h3>
 	<form id=login_form>
 		<table width=100%>
@@ -572,6 +589,7 @@ end
 								<br>
 								<br>
 							</td>
+							<td align=right></td>
 						</tr>
 					</table>
 				</div>
@@ -599,6 +617,9 @@ end
 
 <script type="text/x-mustache" id=checkout_template>
 
+	<t class=en><h1>Checkout</h1></t>
+	<t class=ro><h1>Comanda</h1></t>
+
 	<table width=80% style="border-spacing: 10px;">
 
 		<tr>
@@ -611,7 +632,7 @@ end
 		<tr>
 			<td>
 				<h3>
-					<t class=en>My Products:</t>
+					<t class=en>Products to buy:</t>
 					<t class=ro>Produsele comandate:</t>
 				</h3>
 				<div id=cart_section></div>
@@ -939,6 +960,8 @@ end
 </script>
 
 <script type="text/x-mustache" id=account_template>
+	<t class=en><h1>Account</h1></t>
+	<t class=ro><h1>Contul meu</h1></t>
 	<table width=80% style="border-spacing: 10px;">
 		<tr>
 			<td width=75%>

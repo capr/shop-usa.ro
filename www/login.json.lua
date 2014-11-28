@@ -12,7 +12,8 @@ local t = query1([[
 		u.name,
 		u.facebookid,
 		u.googleid,
-		u.gimgurl
+		u.gimgurl,
+		u.atime
 	from
 		usr u
 	where

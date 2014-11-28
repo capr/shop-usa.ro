@@ -35,7 +35,7 @@ local function parse_request()
 end
 
 function lang()
-	return config'lang'
+	return GET.lang == 'en' and 'en' or 'ro'
 end
 
 function home_url(path)
@@ -258,7 +258,7 @@ local function check_img()
 end
 
 local function filter_lang(buf)
-	local lang0 = 'ro'
+	local lang0 = lang()
 	buf = buf:gsub('<t class=([^>]+)>(.-)</t>', function(lang, html)
 		if lang ~= lang0 then
 			return ''

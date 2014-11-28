@@ -5,6 +5,12 @@ C('analytics_ua', 'UA-10841867-17')
 
 if (lang() == 'ro') {
 
+S('years_ago', 'acum {0} ani')
+S('months_ago', 'acum {0} luni')
+S('days_ago', 'acum {0} zile')
+S('hours_ago', 'acum {0} ore')
+S('minutes_ago', 'acum {0} minute')
+S('one_minute_ago', 'acum 1 minut')
 S('move_here', 'Pune-l aici')
 S('remove', 'Sterge')
 S('price', '{0} Lei')

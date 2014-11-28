@@ -38,6 +38,10 @@ function update_cart(cart) {
 
 	render('checkout_cart_section', data, '#cart_section')
 
+	$('#main [pid] a:not([action])').each(function() {
+		setlink(this, '/p/'+upid(this, 'pid'))
+	})
+
 }
 
 function load_cart() {

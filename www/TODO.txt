@@ -1,0 +1,36 @@
+FRAMEWORK
+---------
+- language filter: lang() -> GET.lang / setlink() adds ?lang= param
+- language filter: short forms
+	- <anytag:en> ... </anytag>
+	- attr:en=val attr:ro=val ...
+
+BIG BUGS
+--------
+- IE9 and history.js
+
+
+USABILITY BUGS
+--------------
+- scroll changes on back-button from prod page back to browsing page
+- no error message on create account failure
+- no error message on login failure
+
+- "not ?" <- no name
+- "not ?" should log off the user to avoid confusion
+- "save info" button
+
+
+FUNCTIONALITY
+-------------
+- cart: edit quantity
+- account: list of past orders
+- checkout: list of addresses from past orders
+-
+
+
+DESIGN
+------
+- use fa icons for grid/list
+- top bar follow scroll
+

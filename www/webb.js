@@ -78,12 +78,46 @@ if (typeof String.prototype.trim !== 'function') {
 	}
 }
 
-// 'firstname lastname' -> 'firstname'
-function firstname(name) {
+// 'firstname lastname' -> 'firstname'; 'email@domain' -> 'email'
+function firstname(name, email) {
 	name = name.trim()
-	var a = name.split(' ', 1)
-	return a.length > 0 ? a[0] : name
+	if (name) {
+		var a = name.split(' ', 1)
+		return a.length > 0 ? a[0] : name
+	} else {
+		var a = email.split('@', 1)
+		return a.length > 0 ? a[0] : email
+	}
 }
+
+function timeago(datetime) {
+	var s = (Date.now() - Date.parse(datetime)) / 1000
+	if (s > 2 * 365 * 24 * 3600)
+		return S('years_ago', '{0} years ago').format((s / (365 * 24 * 3600)).toFixed(0))
+	else if (s > 2 * 30.5 * 24 * 3600)
+		return S('months_ago', '{0} months ago').format((s / (30.5 * 24 * 3600)).toFixed(0))
+	else if (s > 2 * 24 * 3600)
+		return S('days_ago', '{0} days ago').format((s / (24 * 3600)).toFixed(0))
+	else if (s > 2 * 3600)
+		return S('hours_ago', '{0} hours ago').format((s / 3600).toFixed(0))
+	else if (s > 2 * 60)
+		return S('minutes_ago', '{0} minutes ago').format((s / 60).toFixed(0))
+	else
+		return S('one_minute_ago', '1 minute ago')
+}
+
+var update_timeago
+(function() {
+	function update_timeago_elem() {
+		var time = $(this).attr('time')
+		if (!time) return
+		$(this).html(timeago(time))
+	}
+	update_timeago = function() {
+		$('.timeago').each(update_timeago_elem)
+	}
+	setInterval(update_timeago, 60 * 1000)
+})()
 
 // UI patterns ---------------------------------------------------------------
 

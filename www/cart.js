@@ -114,6 +114,8 @@ function update_cart_page() {
 		total:          total,
 	}, '#main')
 
+	update_timeago()
+
 	$('#main [pid] a:not([action])').each(function() {
 		setlink(this, '/p/'+upid(this, 'pid'))
 	})

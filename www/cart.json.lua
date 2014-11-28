@@ -56,7 +56,8 @@ local t = query([[
 		$ronprice(pa.old_price, ?) as old_price,
 		m.name as bname,
 		i.id_image as imgid,
-		ci.buylater
+		ci.buylater,
+		ci.atime
 	from
 		cartitem ci
 	inner join ps_product p
@@ -100,6 +101,7 @@ for i,grp in groupby(t, 'buylater') do
 			ciid = t.ciid, coid = t.coid, pid = t.pid,
 			name = t.name, price = t.price,  old_price = t.old_price,
 			bname = t.bname, vids = {}, vnames = {}, imgid = t.imgid, imgs = {},
+			atime = t.atime,
 		}
 		table.insert(items, combi)
 		for i,t in groupby(ci, 'vid') do
