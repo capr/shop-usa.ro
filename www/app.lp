@@ -559,6 +559,11 @@ end
 									<t class=en>Change password</t>
 									<t class=ro>Schimba parola</t>
 								</a>
+								|
+								<a id=logout class=gray>
+									<t class=en>Log out</t>
+									<t class=ro>Deconecteaza-te</t>
+								</a>
 							</td>
 						</tr>
 					</table>
