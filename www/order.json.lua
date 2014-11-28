@@ -15,7 +15,7 @@ local addr     = assert(str_arg(o.addr))
 local city     = assert(str_arg(o.city))
 local county   = assert(str_arg(o.county))
 local country  = 'Romania'
-local note     = assert(str_arg(o.note))
+local note     = str_arg(o.note)
 local shiptype = assert(enum_arg(o.shiptype, 'home', 'store'))
 local shipcost = shiptype == 'home' and 25 or 0
 
@@ -41,10 +41,10 @@ query([[
 		(oid, coid, qty, price)
 	select
 		?, ci.coid, ci.qty,
-		$ronprice(pa.price, ?) as price,
+		$ronprice(pa.price, ?) as price
 	from
 		cartitem ci
-		inner join product_attribute pa
+		inner join ps_product_attribute pa
 			on pa.id_product_attribute = ci.coid
 	where
 		ci.buylater = 0
@@ -54,3 +54,4 @@ query([[
 --clear the cart.
 query('delete from cartitem where buylater = 0 and uid = ?', uid())
 
+out(json{ok = true})

@@ -94,11 +94,14 @@ action.reset_password = function(token) {
 			})
 		}
 	})
+
+	setlink('.a_account', '/account')
 }
 
 action.password_changed = function() {
 	hide_nav()
 	apply_message_template('password_changed')
+	setlink('.a_account', '/account')
 }
 
 })()

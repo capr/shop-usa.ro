@@ -16,7 +16,7 @@ session = once(function()
 	return assert(session_.start())
 end)
 
-local function session_uid()
+function session_uid()
 	return session().data.uid
 end
 

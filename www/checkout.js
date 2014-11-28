@@ -152,8 +152,8 @@ function update_shipping_section() {
 
 // placing order -------------------------------------------------------------
 
-function order_placed(data) {
-	alert(data)
+function order_placed() {
+	exec('/order_placed')
 }
 
 function order_error() {
@@ -163,7 +163,7 @@ function order_error() {
 
 var acc
 
-function create_order() {
+function place_order() {
 
 	if (!acc.validate())
 		return
@@ -175,7 +175,7 @@ function create_order() {
 		email    : $('#usr_email').val().trim(),
 		name     : $('#usr_name').val().trim(),
 		phone    : $('#usr_phone').val().trim(),
-		street   : $('#addr_street').val().trim(),
+		addr     : $('#addr_street').val().trim(),
 		city     : $('#addr_city').val().trim(),
 		county   : $('#addr_county').val().trim(),
 		note     : $('#order_note').val().trim(),
@@ -200,11 +200,16 @@ action.checkout = function() {
 	update_shipping_section()
 
 	$('.orderbutton').click(function() {
-		create_order()
+		place_order()
 	})
 
 	get('/cities.json', update_citites)
 
+}
+
+action.order_placed = function() {
+	hide_nav()
+	render('order_placed', null, '#main')
 }
 
 })()

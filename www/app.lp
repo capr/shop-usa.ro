@@ -79,7 +79,7 @@ end
 						<span id=greeting_logged_in class=hidden>
 							<t class=en>Hi</t>
 							<t class=ro>Salut</t>
-							<a id=usr_name></a>!
+							<a id=greeting_name></a>!
 						</span>
 					</td>
 					<td align=right nowrap>
@@ -509,10 +509,8 @@ end
 					{{#googleid}}{{name}}{{/googleid}}
 					{{^facebookid}}{{^googleid}}
 						<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
-						<t class=en><input id=usr_name name=usr_name type=text
-							value="{{name}}" placeholder="Name Surname" required></t>
-						<t class=ro><input id=usr_name name=usr_name type=text
-							value="{{name}}" placeholder="Nume Complet" required></t>
+						<input id=usr_name name=usr_name type=text value="{{name}}"
+							placeholder="Nume Complet" required></t>
 					{{/googleid}}{{/facebookid}}
 				</td>
 			</tr>
@@ -612,7 +610,10 @@ end
 
 		<tr>
 			<td>
-				<h3><t class=en>My Products:</t><t class=ro>Produsele comandate:</t></h3>
+				<h3>
+					<t class=en>My Products:</t>
+					<t class=ro>Produsele comandate:</t>
+				</h3>
 				<div id=cart_section></div>
 			</td>
 			<td></td>
@@ -620,7 +621,10 @@ end
 
 		<tr>
 			<td>
-				<h3><t class=en>Shipping:</t><t class=ro>Cum le livram?</t></h3>
+				<h3>
+					<t class=en>Shipping:</t>
+					<t class=ro>Cum le livram?</t>
+				</h3>
 				<table width=100%>
 					<tr>
 						<td width=30>
@@ -712,16 +716,7 @@ end
 							</td>
 							<td>
 								<div class=errdiv1><div for=addr_street class="error errdiv2"></div></div>
-								<t class=ro>
-									<input id=addr_street name=addr_street type=text
-										placeholder="Strada, Numar, Bloc, Scara, Apart., Interfon"
-										required>
-								</t>
-								<t class=en>
-									<input id=addr_street name=addr_street type=text
-										placeholder="Street Name, Number, Building, etc."
-										required>
-								</t>
+								<input id=addr_street name=addr_street type=text required>
 							</td>
 						</tr>
 						<tr>
@@ -796,6 +791,24 @@ end
 		</tr>
 
 	</table>
+</script>
+
+<script type="text/x-mustache" id=order_placed_template>
+	<t class=en>
+		<h1>Thank you for ordering from us!</h1>
+
+		Your order will be processed shortly and we will call you for confirmation.
+	</t>
+	<t class=ro>
+		<h1>Iti multumim ca ai comandat de la noi!</h1>
+
+		In cel mai scurt timp, comanda ta va fi preluata de unul dintre
+		operatorii nostrii si vei primi un telefon pentru confirmare.
+	</t>
+	<br>
+	<br>
+	<br>
+	<br>
 </script>
 
 <script type="text/x-mustache" id=forgot_pass_template>
@@ -875,12 +888,18 @@ end
 			</tr>
 			<tr>
 				<td></td>
-				<td colspan=2 valign=top>
+				<td height=1 colspan=2 valign=top>
 					<div id=validation_error class=error></div>
 					<div id=server_error class="error hidden">
 						<t class=en>There was an error. Please try again.</t>
 						<t class=ro>S-a produs o eroare. Te rog sa incerci din nou.</t>
 					</label>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=3 valign=top>
+					<t class=en><a class=a_account>Back to account</a></t>
+					<t class=ro><a class=a_account>Inapoi la cont</a></t>
 				</td>
 			</tr>
 		</table>
@@ -911,9 +930,15 @@ end
 <script type="text/x-mustache" id=password_changed_template>
 	<t class=en>
 		Your password was changed.
+		<br>
+		<br>
+		<a class=a_account>Back to account</a>
 	</t>
 	<t class=ro>
 		Parola a fost schimbata.
+		<br>
+		<br>
+		<a class=a_account>Inapoi la cont</a>
 	</t>
 </script>
 
