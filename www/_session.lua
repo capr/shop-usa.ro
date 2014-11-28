@@ -110,6 +110,7 @@ local function delete_user(uid)
 end
 
 local function transfer_cart(old_uid, new_uid)
+	--[=[
 	--if the old user very recently added items to the cart and now wants to
 	--change accounts, then assume it's the new user who added the products,
 	--and move them to her account.
@@ -118,11 +119,11 @@ local function transfer_cart(old_uid, new_uid)
 			now() - atime < ? and uid = ?
 			limit 1
 	]], config('forgot_to_login_period', 24 * 3600), old_uid) then
-		query('update cartitem set buylater = 1 where uid = ?', new_uid)
-		--TODO copy the items instead !!
-		--query('insert into cartitem'
-		query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
-	end
+	]=]
+	query('update cartitem set buylater = 1 where uid = ?', new_uid)
+	--TODO copy the items instead !!
+	--query('insert into cartitem'
+	query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
 end
 
 function auth.pass(auth)

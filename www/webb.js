@@ -119,6 +119,27 @@ var update_timeago
 	setInterval(update_timeago, 60 * 1000)
 })()
 
+// pub/sub -------------------------------------------------------------------
+
+(function() {
+
+	var o = $({})
+
+	function subscribe() {
+		o.on.apply(o, arguments)
+	}
+
+	function unsubscribe() {
+		o.off.apply(o, arguments)
+	}
+
+	function publish() {
+		o.triggerHandler.apply(o, arguments)
+	}
+
+})()
+
+
 // UI patterns ---------------------------------------------------------------
 
 function follow_scroll(element_id, margin) {
