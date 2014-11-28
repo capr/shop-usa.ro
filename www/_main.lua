@@ -257,11 +257,31 @@ local function check_img()
 	end
 end
 
+local function filter_lang(buf)
+	local lang0 = 'ro'
+	buf = buf:gsub('<t class=([^>]+)>(.-)</t>', function(lang, html)
+		if lang ~= lang0 then
+			return ''
+		else
+			return html
+		end
+	end)
+	return buf
+end
+
 local function main()
 	check_img()
 	parse_request()
 	local act, args = parse_path()
-	action(act, unpack(args))
+	if act == 'app' then
+		push_outbuf()
+		action(act, unpack(args))
+		local buf = pop_outbuf()
+		buf = filter_lang(buf)
+		out(buf)
+	else
+		action(act, unpack(args))
+	end
 end
 
 return main

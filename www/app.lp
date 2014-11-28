@@ -858,24 +858,21 @@ end
 </script>
 
 <script type="text/x-mustache" id=reset_pass_template>
+	<t class=en><h1>Change password</h1></t>
+	<t class=ro><h1>Schimba parola</h1></t>
 	<form id=reset_pass_form>
 		<table width=50% height=400 style="border-spacing: 5px">
-			<tr height=100><td> </td></tr>
+			<tr height=50>
+				<td colspan=2> </td>
+			</tr>
 			<tr height=1>
 				<td colspan=3 valign=top>
 					<t class=en>Enter your new password.</t>
 					<t class=ro>Introdu noua parola.</t>
 					<br>
-					<br>
 				</td>
 			</tr>
 			<tr height=1>
-				<td width=1 valign=top class=nowrap>
-					<label for=pass>
-						<t class=en>Password:</t>
-						<t class=ro>Parola:</t>
-					</label>
-				</td>
 				<td valign=top>
 					<input type=password id=pass name=pass class=pass autocomplete=off required>
 				</td>
@@ -887,8 +884,7 @@ end
 				</td>
 			</tr>
 			<tr>
-				<td></td>
-				<td height=1 colspan=2 valign=top>
+				<td height=30 colspan=2 valign=top>
 					<div id=validation_error class=error></div>
 					<div id=server_error class="error hidden">
 						<t class=en>There was an error. Please try again.</t>
@@ -900,6 +896,9 @@ end
 				<td colspan=3 valign=top>
 					<t class=en><a class=a_account>Back to account</a></t>
 					<t class=ro><a class=a_account>Inapoi la cont</a></t>
+					<br>
+					<t class=en><a class=a_home>Back to shopping</a></t>
+					<t class=ro><a class=a_home>Inapoi la cumparaturi</a></t>
 				</td>
 			</tr>
 		</table>
@@ -928,18 +927,15 @@ end
 </script>
 
 <script type="text/x-mustache" id=password_changed_template>
-	<t class=en>
-		Your password was changed.
-		<br>
-		<br>
-		<a class=a_account>Back to account</a>
-	</t>
-	<t class=ro>
-		Parola a fost schimbata.
-		<br>
-		<br>
-		<a class=a_account>Inapoi la cont</a>
-	</t>
+	<t class=en>Your password was changed.</t>
+	<t class=ro>Parola a fost schimbata.</t>
+	<br>
+	<br>
+	<t class=en><a class=a_account>Back to account</a></t>
+	<t class=ro><a class=a_account>Inapoi la cont</a></t>
+	<br>
+	<t class=en><a class=a_home>Back to shopping</a></t>
+	<t class=ro><a class=a_home>Inapoi la cumparaturi</a></t>
 </script>
 
 <script type="text/x-mustache" id=account_template>
