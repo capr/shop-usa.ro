@@ -152,9 +152,7 @@ function account(acc) {
 		setlink('#reset_pass', '/reset_password')
 
 		$('#logout').click(function() {
-			login({type: 'anonymous'}, function() {
-				exec('/account')
-			})
+			login({type: 'anonymous'}, logged_in)
 		})
 
 		var validator = $('#usr_form').validate({
