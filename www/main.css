@@ -39,12 +39,6 @@ input[type=text],[type=password] {
 	padding: 3px;
 }
 
-input.error {
-	background-color: #fee;
-	border-color: #f00;
-	box-shadow: 0px 0px 3px #f00;
-}
-
 a {
 	cursor: pointer;
 	color: #000;
@@ -61,18 +55,6 @@ a:visited {
 
 a:hover {
 	color: #cc8800;
-}
-
-a.active {
-	font-weight: bold;
-}
-
-img.active {
-	border: 1px solid #333;
-}
-
-img.inactive {
-	border: 1px solid #fff;
 }
 
 ul {
@@ -156,6 +138,25 @@ button:hover:disabled {
 }
 
 /* specifics */
+
+input.error {
+	color: #000;
+	background-color: #fee;
+	border-color: #f00;
+	box-shadow: 0px 0px 3px #f00;
+}
+
+a.active {
+	font-weight: bold;
+}
+
+img.active {
+	border: 1px solid #333;
+}
+
+img.inactive {
+	border: 1px solid #fff;
+}
 
 .menu ul {}
 

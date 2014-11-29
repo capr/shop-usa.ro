@@ -97,7 +97,7 @@ function timeago(time) {
 		return S('years_ago', '{0} years ago').format((s / (365 * 24 * 3600)).toFixed(0))
 	else if (s > 2 * 30.5 * 24 * 3600)
 		return S('months_ago', '{0} months ago').format((s / (30.5 * 24 * 3600)).toFixed(0))
-	else if (s > 2 * 24 * 3600)
+	else if (s > 1.5 * 24 * 3600)
 		return S('days_ago', '{0} days ago').format((s / (24 * 3600)).toFixed(0))
 	else if (s > 2 * 3600)
 		return S('hours_ago', '{0} hours ago').format((s / 3600).toFixed(0))

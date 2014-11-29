@@ -130,15 +130,14 @@ function auth.pass(auth)
 	if auth.action == 'login' then
 		return pass_uid(auth.email, auth.pass)
 	elseif auth.action == 'create' then
-		local email = auth.email and glue.trim(auth.email)
-		local pass = auth.pass
-		if not email or #email < 1 then return end
-		if not pass or #pass < 1 then return end
-		if not pass_email_uid(email) then
-			local uid = anonymous_uid(session_uid()) or create_user()
-			set_email_pass(uid, email, pass)
-			return uid
-		end
+		local email = glue.trim(assert(auth.email))
+		assert(#email >= 1)
+		local pass = assert(auth.pass)
+		assert(#pass >= 1)
+		allow(not pass_email_uid(email), 'email_taken')
+		local uid = anonymous_uid(session_uid()) or create_user()
+		set_email_pass(uid, email, pass)
+		return uid
 	end
 end
 
@@ -168,7 +167,7 @@ function auth.update(auth)
 			phone = ?,
 			emailvalid = if(email <> ?, 0, emailvalid)
 		where
-			active = 1 and anonymous = 0 and pass is not null and uid = ?
+			active = 1 and pass is not null and uid = ?
 		]], email, name, phone, email, uid)
 	return uid
 end

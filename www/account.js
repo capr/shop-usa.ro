@@ -193,7 +193,8 @@ function account(acc) {
 
 		validator = $('#usr_form').validate({
 			rules: {
-				usr_email: { email_taken: true },
+				usr_email: { email_taken: true, },
+				usr_phone: { phone_number: true, },
 			},
 			messages: {
 				usr_email: {
@@ -211,6 +212,8 @@ function account(acc) {
 				usr_phone: {
 					required: S('phone_required_error',
 						'We need your phone to contact you'),
+					phone_number: S('phone_invalid_error',
+						'Invalid phone number'),
 				},
 			},
 			errorPlacement: error_placement,
@@ -218,6 +221,10 @@ function account(acc) {
 
 		$.validator.addMethod('email_taken', function() {
 			return !email_taken
+		})
+
+		$.validator.addMethod('phone_number', function(s) {
+			return /^[0-9\+\.\-\s]+$/.test(s)
 		})
 
 		validate_usr = function() {
