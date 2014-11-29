@@ -693,7 +693,7 @@ end
 			<td>
 				<h3>
 					<t class=en>Shipping:</t>
-					<t class=ro>Cum le livram?</t>
+					<t class=ro>Livrare si plata:</t>
 				</h3>
 				<table width=100%>
 					<tr>
