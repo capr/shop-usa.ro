@@ -12,3 +12,8 @@ end)
 function qmacro.ronprice(col, rate)
 	return string.format('cast(round((%s) * 1.55 * (%s), -1) - 1 as decimal(20, 0))', col, rate)
 end
+
+--TODO: move this...
+function qmacro.timeago(col)
+	return string.format('timestampdiff(second, (%s), now())', col)
+end

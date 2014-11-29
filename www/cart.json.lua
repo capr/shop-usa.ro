@@ -57,7 +57,7 @@ local t = query([[
 		m.name as bname,
 		i.id_image as imgid,
 		ci.buylater,
-		timestampdiff(second, ci.atime, now()) as atime_ago
+		$timeago(ci.atime) as atime_ago
 	from
 		cartitem ci
 	inner join ps_product p
