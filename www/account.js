@@ -25,6 +25,13 @@ function account(acc) {
 
 	// login section ----------------------------------------------------------
 
+	function enable_save() {
+		$('#btn_save').prop('disabled', false)
+		if (!$('#btn_cancel').is(':visible'))
+			$('#btn_cancel').css('width', 0).show()
+				.animate({width: '100'}, 300, 'easeOutQuint')
+	}
+
 	function login_failed(xhr) {
 
 		// animate the whole section as if saying "no no"
@@ -41,7 +48,7 @@ function account(acc) {
 		// re-enable the buttons
 		$('#btn_login').prop('disabled', false)
 		$('#btn_create_account').prop('disabled', false)
-		$('#btn_save').prop('disabled', false)
+		enable_save()
 
 		// post a notification with the error, if any
 		var err = xhr.responseText
@@ -221,9 +228,7 @@ function account(acc) {
 			return true
 		}
 
-		$('#usr_email, #usr_name, #usr_phone').on('input', function() {
-			$('#btn_save').prop('disabled', false)
-		})
+		$('#usr_email, #usr_name, #usr_phone').on('input', enable_save)
 
 		$('#btn_save').click(function() {
 			if (!validate_usr())
@@ -238,6 +243,11 @@ function account(acc) {
 				notify(S('changes_saved', 'Changes saved'))
 				logged_in(usr)
 			}, login_failed)
+		})
+
+		$('#btn_cancel').click(function() {
+			login(null, logged_in)
+			return true
 		})
 
 	}

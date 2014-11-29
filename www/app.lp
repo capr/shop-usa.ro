@@ -545,7 +545,11 @@ end
 			{{#show_operations}}
 			<tr>
 				<td colspan=2 align=right>
-					<button id=btn_save class=orange disabled>
+					<button type=button id=btn_cancel class=hidden>
+						<t class=en>Cancel</t>
+						<t class=ro>Anuleaza</t>
+					</button>
+					<button type=button id=btn_save class=orange disabled>
 						<t class=en>Save</t>
 						<t class=ro>Salveaza</t>
 					</button>
