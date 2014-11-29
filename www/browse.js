@@ -22,7 +22,7 @@ function update_prods(prods) {
 		setlink(this, '/p/'+upid(this, 'pid'))
 	})
 
-	$('#main .buybutton').click(function() {
+	$('#main .add_to_cart').click(function() {
 		add_to_cart(upid(this, 'pid'))
 	})
 
@@ -254,12 +254,11 @@ function dimsel_changed() {
 	render('product_combi', co, '#combi')
 
 	if (!combi.price || !combi.qty || combi.qty < 1) {
-		$('.buybutton').prop('disabled', true)
-			.attr('title', S('not_available_msg',
+		$('#add_to_cart').prop('disabled', true).attr('title',
+			S('not_available_msg',
 				'Item not available.\nPlease choose another combination.'))
 	} else {
-		$('.buybutton').prop('disabled', false)
-			.attr('title', '')
+		$('#add_to_cart').prop('disabled', false).attr('title', '')
 	}
 
 	var imgs = combi.imgs || []
@@ -288,7 +287,7 @@ function update_product_page(prod) {
 
 	setlink('.brandlink', '/brand/' + prod.bid)
 
-	$('#main .buybutton').click(function() {
+	$('#add_to_cart').click(function() {
 		var pid = parseInt($(this).attr('pid'))
 		add_to_cart(pid, g_combi.coid)
 	})

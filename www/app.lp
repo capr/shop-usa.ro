@@ -173,7 +173,7 @@ end
 				{{/discount}}
 				<!--
 				<br>
-				<button type=button class=buybutton>
+				<button type=button class=add_to_cart>
 					<t class=en>add to bag</t>
 					<t class=ro>adauga in cos</t>
 				</button>
@@ -207,7 +207,7 @@ end
 		{{/discount}}
 		<!--
 		<br>
-		<button type=button class=buybutton pid={{{pid}}}>
+		<button type=button class=add_to_cart pid={{{pid}}}>
 			<t class=en>add to bag</t>
 			<t class=ro>adauga in cos</t>
 		</button>
@@ -270,7 +270,7 @@ end
 				</table>
 				<br>
 				<br>
-				<button type=button class="buybutton orange" pid={{{pid}}}>
+				<button type=button id=add_to_cart class=orange pid={{{pid}}}>
 					<t class=en>add to bag</t>
 					<t class=ro>adauga in cos</t>
 				</button>
@@ -336,8 +336,10 @@ end
 	</h2>
 	<hr>
 	{{^buynow_count}}
-	<t class="gray en">Add products to your shopping bag in order to buy them.</t>
-	<t class="gray ro">Adauga produse in cos pentru a le putea cumpara.</t>
+	<span class=gray>
+		<t class=en>Add products to your shopping bag in order to buy them.</t>
+		<t class=ro>Adauga produse in cos pentru a le putea cumpara.</t>
+	</span>
 	{{/buynow_count}}
 	<div id=cart_buynow>{{{buynow}}}</div>
 	<div class=cart_total><b>Total:</b>
@@ -348,7 +350,7 @@ end
 		<br>
 		<br>
 		{{#buynow_count}}
-		<button class="checkoutbutton orange">
+		<button id=btn_checkout class=orange>
 			<t class=en>Place Order</t>
 			<t class=ro>Comanda</t>
 		</button>
@@ -362,12 +364,26 @@ end
 		<t class=ro>Pastrate pentru mai tarziu
 			{{#buylater_count}}({{{buylater_count}}} produse){{/buylater_count}}
 			{{^buylater_count}}(nici un produs){{/buylater_count}}
+			<span class=help>
+				Ti-ai selectat multe produse dar ti-a dat seama ca nu le poti cumpara
+				pe toate acum, dar ti-ai dori sa le cumperi alta data? Nu-i nimic!
+				Aici te ajutam noi: acum iti poti pastra produsele selectate in
+				aceasta lista care se va pastra in contul tau, astfel incat sa nu
+				pierzi nimic. Si daca iti selctezi iarna produse pentru vara, nu-ti
+				face griji! Noi iti vom pastra lista pana atunci!
+			</span>
 		</t>
 	</h2>
 	<hr>
 	{{^buylater_count}}
-	<t class="gray en">Drag products from your shopping bag to this area to save them for later.</t>
-	<t class="gray ro">Trage produsele pe care vrei sa le cumperi cu alta ocazie in aceasta zona.</t>
+	<span class=gray>
+		<t class=en>
+			Drag products from your shopping bag to this area to save them for later.
+		</t>
+		<t class=ro>
+			Trage produsele pe care vrei sa le cumperi cu alta ocazie in aceasta zona.
+		</t>
+	</span>
 	{{/buylater_count}}
 	<div id=cart_buylater>{{{buylater}}}</div>
 </script>
@@ -797,7 +813,7 @@ end
 				</span>
 				<br>
 				<br>
-				<button type=button class="orderbutton orange">
+				<button type=button id=btn_place_order class=orange>
 					<t class=en>Place Order</t>
 					<t class=ro>Comanda</t>
 				</button>

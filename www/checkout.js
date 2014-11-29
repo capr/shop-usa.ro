@@ -157,6 +157,7 @@ function update_shipping_section() {
 // placing order -------------------------------------------------------------
 
 function order_placed() {
+	login() // to refresh the cart icon
 	exec('/order_placed')
 }
 
@@ -203,7 +204,7 @@ action.checkout = function() {
 
 	update_shipping_section()
 
-	$('.orderbutton').click(function() {
+	$('#btn_place_order').click(function() {
 		place_order()
 	})
 
