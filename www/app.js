@@ -16,7 +16,6 @@ function hide_nav() {
 	$('#sidebar').hide()
 }
 
-
 // session vocabulary --------------------------------------------------------
 
 function login(auth, success, error, opt, arg) {
@@ -36,12 +35,19 @@ function logout(success, error, opt) {
 	return login(null, success, error, opt, '/logout')
 }
 
+var g_admin = false
 function admin() {
-	return true
+	return g_admin
 }
 
 function editmode() {
 	return admin()
+}
+
+function init_admin() {
+	$(document).bind('app_usr', function(e, usr) {
+		g_admin = usr.admin
+	})
 }
 
 // init ----------------------------------------------------------------------
@@ -51,6 +57,7 @@ $(function() {
 	init_letters()
 	init_sidebar()
 
+	init_admin()
 	init_status()
 	init_cart()
 	login()

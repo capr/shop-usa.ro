@@ -94,7 +94,7 @@ function add_to_cart(pid, coid) {
 
 function init_cart() {
 	$(document).bind('app_usr', function(e, usr) {
-		set_cart_icon(usr && usr.buynow_count || 0)
+		set_cart_icon(usr.buynow_count)
 	})
 }
 
@@ -140,7 +140,6 @@ function update_cart_page() {
 	})
 
 	cart_make_draggable()
-
 }
 
 function cart_make_draggable() {

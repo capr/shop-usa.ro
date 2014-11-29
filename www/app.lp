@@ -12,6 +12,7 @@ end
 	<link rel="stylesheet" type="text/css" href="/main.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.toasty.css">
+	<link rel="stylesheet" type="text/css" href="/jquery.powertip.css">
 	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
 	<script src="/jquery.js"></script>
 	<script src="/jquery.history.js"></script>
@@ -23,6 +24,7 @@ end
 	<script src="/jquery.validate.js"></script>
 	<script src="/jquery.autocomplete.js"></script>
 	<script src="/jquery.toasty.js"></script>
+	<script src="/jquery.powertip.js"></script>
 	<script src="/mustache.js"></script>
 	<script src="/webb.js"></script>
 	<script src="/config.js"></script>

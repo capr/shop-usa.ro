@@ -84,6 +84,13 @@ function select_sidebar_cat(catid) {
 	g_catid = catid
 }
 
+function init_cat() {
+	$(document).bind('app_usr', function(e, usr) {
+		if (g_catid)
+			cat_make_editable(g_catid)
+	})
+}
+
 function select_cat(catid) {
 	check(g_cats[catid])
 	select_sidebar_cat(catid)
