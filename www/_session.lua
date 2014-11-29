@@ -93,18 +93,6 @@ local function pass_email_uid(email)
 		]], email)
 end
 
-local function set_email_pass(uid, email, pass)
-	return iquery([[
-		update usr set
-			anonymous = 0,
-			emailvalid = 0,
-			email = ?,
-			pass = ?
-		where
-			uid = ?
-		]], glue.trim(email), pass_hash(pass), uid)
-end
-
 local function delete_user(uid)
 	query('delete from usr where uid = ?', uid)
 end
@@ -138,7 +126,15 @@ function auth.pass(auth)
 		assert(#pass >= 1)
 		allow(not pass_email_uid(email), 'email_taken')
 		local uid = anonymous_uid(session_uid()) or create_user()
-		set_email_pass(uid, email, pass)
+		query([[
+			update usr set
+				anonymous = 0,
+				emailvalid = 0,
+				email = ?,
+				pass = ?
+			where
+				uid = ?
+			]], email, pass_hash(pass), uid)
 		return uid
 	end
 end

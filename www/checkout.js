@@ -177,13 +177,13 @@ function place_order() {
 		return
 
 	post('/order.json', {
-		email    : $('#usr_email').val().trim(),
-		name     : $('#usr_name').val().trim(),
-		phone    : $('#usr_phone').val().trim(),
-		addr     : $('#addr_street').val().trim(),
-		city     : $('#addr_city').val().trim(),
-		county   : $('#addr_county').val().trim(),
-		note     : $('#order_note').val().trim(),
+		email    : $('#usr_email').val(),
+		name     : $('#usr_name').val(),
+		phone    : $('#usr_phone').val(),
+		addr     : $('#addr_street').val(),
+		city     : $('#addr_city').val(),
+		county   : $('#addr_county').val(),
+		note     : $('#order_note').val(),
 		shiptype : $('input[name=shipping_method]:checked').val(),
 	}, order_placed, order_error)
 

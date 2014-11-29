@@ -516,10 +516,10 @@ end
 				</td>
 				<td>
 					{{#facebookid}}
-						{{email}}
+						<span id=usr_email>{{email}}</span>
 					{{/facebookid}}
 					{{#googleid}}
-						{{email}}
+						<span id=usr_email>{{email}}</span>
 					{{/googleid}}
 					{{^facebookid}}{{^googleid}}
 						<div class=errdiv1><div for=usr_email class="error errdiv2"></div></div>
@@ -542,8 +542,12 @@ end
 					<t class=ro>Nume:</t>
 				</td>
 				<td>
-					{{#facebookid}}{{name}}{{/facebookid}}
-					{{#googleid}}{{name}}{{/googleid}}
+					{{#facebookid}}
+						<span id=usr_name>{{name}}</span>
+					{{/facebookid}}
+					{{#googleid}}
+						<span id=usr_name>{{name}}</span>
+					{{/googleid}}
 					{{^facebookid}}{{^googleid}}
 						<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
 						<input id=usr_name name=usr_name type=text value="{{name}}" placeholder="Nume Complet" required></t>

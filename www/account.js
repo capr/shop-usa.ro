@@ -243,9 +243,9 @@ function account(acc) {
 			$('#btn_save').prop('disabled', true)
 			login({
 				type: 'update',
-				email: $('#usr_email').val().trim(),
-				name:  $('#usr_name').val().trim(),
-				phone: $('#usr_phone').val().trim(),
+				email: $('#usr_email').val(),
+				name:  $('#usr_name').val(),
+				phone: $('#usr_phone').val(),
 			}, function(usr) {
 				notify(S('changes_saved', 'Changes saved'))
 				logged_in(usr)
