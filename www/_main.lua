@@ -5,12 +5,20 @@ setfenv(1, require'g')
 glue = require'glue'
 
 --per-request memoization
+local NIL = {}
+local function enc(v) if v == nil then return NIL else return v end end
+local function dec(v) if v == NIL then return nil else return v end end
 function once(f)
-	return function()
-		local v = ngx.ctx[f]
+	return function(k)
+		local t = ngx.ctx[f]
+		if not t then
+			t = {}
+			ngx.ctx[f] = t
+		end
+		local v = dec(t[enc(k)])
 		if v == nil then
-			v = f()
-			ngx.ctx[f] = v
+			v = f(k)
+			t[enc(k)] = enc(v)
 		end
 		return v
 	end
