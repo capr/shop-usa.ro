@@ -54,4 +54,13 @@ query([[
 --clear the cart.
 query('delete from cartitem where buylater = 0 and uid = ?', uid())
 
+--update user info
+query([[
+	update usr set
+		name = coalesce(name, ?),
+		phone = coalesce(phone, ?)
+	where
+		uid = ?
+]], name, phone, uid())
+
 out(json{ok = true})
