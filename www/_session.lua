@@ -170,12 +170,12 @@ end
 function auth.update(auth)
 	local uid = allow(session_uid())
 	local usr = userinfo(uid)
-	allow(t.uid)
+	allow(usr.uid)
 	local email = glue.trim(assert(auth.email))
 	local name = glue.trim(assert(auth.name))
 	local phone = glue.trim(assert(auth.phone))
 	assert(#email >= 1)
-	if t.haspass then
+	if usr.haspass then
 		local euid = pass_email_uid(email)
 		allow(not euid or euid == uid, 'email_taken')
 	end
