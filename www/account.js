@@ -188,7 +188,7 @@ function account(acc) {
 
 		$('#logout').click(function() {
 			$('#logout').prop('disabled', true)
-			login({type: 'anonymous'}, logged_in)
+			logout(logged_in)
 		})
 
 		validator = $('#usr_form').validate({

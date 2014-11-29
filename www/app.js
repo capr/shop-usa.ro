@@ -19,17 +19,21 @@ function hide_nav() {
 
 // session vocabulary --------------------------------------------------------
 
-function login(auth, success, error, opt) {
+function login(auth, success, error, opt, arg) {
 	function logged_in(usr) {
 		$(document).trigger('app_usr', usr)
 		if (success)
 			success(usr)
 	}
-	return ajax('/login.json', $.extend({
+	return ajax('/login.json' + (arg || ''), $.extend({
 			success: logged_in,
 			error: error,
 			data: auth,
 		}, opt))
+}
+
+function logout(success, error, opt) {
+	return login(null, success, error, opt, '/logout')
 }
 
 function admin() {

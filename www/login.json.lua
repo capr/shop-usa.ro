@@ -1,8 +1,11 @@
 
-local action = _G[assert(enum_arg(... or 'login', 'login', 'logout'))]
-
-local auth = POST and POST.data and json(POST.data)
-local uid = allow(action(auth))
+local uid
+if ... == 'logout' then
+	uid = allow(logout())
+else
+	local auth = POST and POST.data and json(POST.data)
+	uid = allow(login(auth))
+end
 
 local t = query1([[
 	select

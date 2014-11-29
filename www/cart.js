@@ -94,7 +94,7 @@ function add_to_cart(pid, coid) {
 
 function init_cart() {
 	$(document).bind('app_usr', function(e, usr) {
-		set_cart_icon(usr.buynow_count)
+		set_cart_icon(usr && usr.buynow_count || 0)
 	})
 }
 
