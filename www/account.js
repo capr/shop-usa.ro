@@ -11,6 +11,8 @@ function account(acc) {
 	}, acc)
 
 	var want_anonymous = false
+	var email_taken = false
+	var validator
 
 	// form validation --------------------------------------------------------
 
@@ -23,7 +25,9 @@ function account(acc) {
 
 	// login section ----------------------------------------------------------
 
-	function login_failed() {
+	function login_failed(xhr) {
+
+		// animate the whole section as if saying "no no"
 		var a = $(acc.section)
 		a.css({position: 'relative'})
 		// note: top: 0 is just beacause the animation won't start with no attrs.
@@ -33,8 +37,23 @@ function account(acc) {
 				a.css('left', 30 * (1-t) * Math.sin(t * Math.PI * 6))
 			},
 		})
+
+		// re-enable the buttons
 		$('#btn_login').prop('disabled', false)
 		$('#btn_create_account').prop('disabled', false)
+		$('#btn_save').prop('disabled', false)
+
+		// post a notification with the error, if any
+		var err = xhr.responseText
+		if (!err)
+			notify(S('server_error'), 'There was an error. We don\'t know more details.')
+		else if (err == 'email_taken') {
+			notify(S('email_taken', 'This email is already taken'))
+			email_taken = true
+			validator.element('#usr_email')
+			validator.focusInvalid()
+			email_taken = null
+		}
 	}
 
 	function logged_in(usr) {
@@ -84,7 +103,7 @@ function account(acc) {
 				$('#btn_login').click()
 		})
 
-		var validator = $('#login_form').validate({
+		validator = $('#login_form').validate({
 			rules: {
 				pass: { minlength: 6 }
 			},
@@ -94,6 +113,8 @@ function account(acc) {
 						'We need your email to contact you'),
 					email: S('email_format_error',
 						'Your email must look valid'),
+					email_taken: S('email_taken',
+						'This email is already taken'),
 				},
 				pass: {
 					required: S('pass_required_error',
@@ -103,6 +124,10 @@ function account(acc) {
 				},
 			},
 			errorPlacement: error_placement,
+		})
+
+		$.validator.addMethod('email_taken', function() {
+			return !email_taken
 		})
 
 		validate_login = function() {
@@ -155,16 +180,22 @@ function account(acc) {
 		setlink('#reset_pass', '/reset_password')
 
 		$('#logout').click(function() {
+			$('#logout').prop('disabled', true)
 			login({type: 'anonymous'}, logged_in)
 		})
 
-		var validator = $('#usr_form').validate({
+		validator = $('#usr_form').validate({
+			rules: {
+				usr_email: { email_taken: true },
+			},
 			messages: {
 				usr_email: {
 					required: S('email_required_error',
 						'We need your email to contact you'),
 					email: S('email_format_error',
 						'Your email must look valid'),
+					email_taken: S('email_taken',
+						'This email is already taken'),
 				},
 				usr_name: {
 					required: S('name_required_error',
@@ -178,6 +209,10 @@ function account(acc) {
 			errorPlacement: error_placement,
 		})
 
+		$.validator.addMethod('email_taken', function() {
+			return !email_taken
+		})
+
 		validate_usr = function() {
 			if (!$('#usr_form').valid()) {
 				validator.focusInvalid()
@@ -185,6 +220,26 @@ function account(acc) {
 			}
 			return true
 		}
+
+		$('#usr_email, #usr_name, #usr_phone').on('input', function() {
+			$('#btn_save').prop('disabled', false)
+		})
+
+		$('#btn_save').click(function() {
+			if (!validate_usr())
+				return
+			$('#btn_save').prop('disabled', true)
+			login({
+				type: 'update',
+				email: $('#usr_email').val().trim(),
+				name:  $('#usr_name').val().trim(),
+				phone: $('#usr_phone').val().trim(),
+			}, function(usr) {
+				notify(S('changes_saved', 'Changes saved'))
+				logged_in(usr)
+			}, login_failed)
+		})
+
 	}
 
 	// account ----------------------------------------------------------------

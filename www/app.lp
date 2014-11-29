@@ -528,8 +528,7 @@ end
 					{{#googleid}}{{name}}{{/googleid}}
 					{{^facebookid}}{{^googleid}}
 						<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
-						<input id=usr_name name=usr_name type=text value="{{name}}"
-							placeholder="Nume Complet" required></t>
+						<input id=usr_name name=usr_name type=text value="{{name}}" placeholder="Nume Complet" required></t>
 					{{/googleid}}{{/facebookid}}
 				</td>
 			</tr>
@@ -538,11 +537,21 @@ end
 					<t class=en>Phone:</t>
 					<t class=ro>Telefon:</t>
 				</td>
-				<td>
+				<td align=right>
 					<div class=errdiv1><div for=usr_phone class="error errdiv2"></div></div>
 					<input id=usr_phone name=usr_phone type=text value="{{phone}}" required>
 				</td>
 			</tr>
+			{{#show_operations}}
+			<tr>
+				<td colspan=2 align=right>
+					<button id=btn_save class=orange disabled>
+						<t class=en>Save</t>
+						<t class=ro>Salveaza</t>
+					</button>
+				</td>
+			</tr>
+			{{/show_operations}}
 			<tr>
 				<td colspan=2>
 					<br>
@@ -563,7 +572,7 @@ end
 								|
 								<a id=logout class=gray>
 									<t class=en>Log out</t>
-									<t class=ro>Deconecteaza-te</t>
+									<t class=ro>Iesi din cont</t>
 								</a>
 							</td>
 							{{/show_operations}}
@@ -710,33 +719,6 @@ end
 				</h3>
 				<form id=addr_form>
 					<table width=100% style="border-spacing: 4px">
-						<!--
-						<tr>
-							<td>
-								<label for=addr_name>
-									<t class=en>Name:</t>
-									<t class=ro>Nume:</t>
-								</label>
-							</td>
-							<td>
-								<div class=errdiv1><div for=addr_name class="error errdiv2"></div></div>
-								<t class=en><input id=addr_name name=addr_name type=text placeholder="Name Surname" required></t>
-								<t class=ro><input id=addr_name name=addr_name type=text placeholder="Nume Complet" required></t>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<label for=addr_phone>
-									<t class=en>Phone:</t>
-									<t class=ro>Telefon:</t>
-								</label>
-							</td>
-							<td>
-								<div class=errdiv1><div for=addr_phone class="error errdiv2"></div></div>
-								<input id=addr_phone name=addr_phone type=text required>
-							</td>
-						</tr>
-						-->
 						<tr>
 							<td>
 								<label for=addr_street>

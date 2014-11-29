@@ -69,14 +69,18 @@ function enum_arg(s, ...)
 	end
 end
 
-function check(ret, ...)
-	if ret then return ret, ... end
-	ngx.exit(404)
+function check(ret, err)
+	if ret then return ret end
+	ngx.status = 404
+	if err then ngx.print(err) end
+	ngx.exit(0)
 end
 
-function allow(ret, ...)
-	if ret then return ret, ... end
-	ngx.exit(403)
+function allow(ret, err)
+	if ret then return ret, err end
+	ngx.status = 403
+	if err then ngx.print(err) end
+	ngx.exit(0)
 end
 
 --output API -----------------------------------------------------------------

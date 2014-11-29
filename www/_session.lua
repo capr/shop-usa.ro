@@ -42,14 +42,14 @@ local function valid_uid(uid)
 	return uid and query1([[
 		select uid from usr where
 			active = 1 and uid = ?
-	]], uid)
+		]], uid)
 end
 
 local function anonymous_uid(uid)
 	return uid and query1([[
 		select uid from usr where
 			active = 1 and anonymous = 1 and uid = ?
-	]], uid)
+		]], uid)
 end
 
 local function create_user()
@@ -83,14 +83,14 @@ local function pass_uid(email, pass)
 	return query1([[
 		select uid from usr where
 			active = 1 and email = ? and pass = ?
-	]], email, pass_hash(pass))
+		]], email, pass_hash(pass))
 end
 
 local function pass_email_uid(email)
 	return query1([[
 		select uid from usr where
 			active = 1 and pass is not null and email = ?
-	]], email)
+		]], email)
 end
 
 local function set_email_pass(uid, email, pass)
@@ -102,7 +102,7 @@ local function set_email_pass(uid, email, pass)
 			pass = ?
 		where
 			uid = ?
-	]], glue.trim(email), pass_hash(pass), uid)
+		]], glue.trim(email), pass_hash(pass), uid)
 end
 
 local function delete_user(uid)
@@ -118,7 +118,7 @@ local function transfer_cart(old_uid, new_uid)
 		select 1 from cartitem where
 			now() - atime < ? and uid = ?
 			limit 1
-	]], config('forgot_to_login_period', 24 * 3600), old_uid) then
+		]], config('forgot_to_login_period', 24 * 3600), old_uid) then
 	]=]
 	query('update cartitem set buylater = 1 where uid = ?', new_uid)
 	--TODO copy the items instead !!
@@ -130,11 +130,13 @@ function auth.pass(auth)
 	if auth.action == 'login' then
 		return pass_uid(auth.email, auth.pass)
 	elseif auth.action == 'create' then
-		if not auth.email or #glue.trim(auth.email) < 1 then return end
-		if not auth.pass or #auth.pass < 1 then return end
-		if not pass_email_uid(auth.email) then
+		local email = auth.email and glue.trim(auth.email)
+		local pass = auth.pass
+		if not email or #email < 1 then return end
+		if not pass or #pass < 1 then return end
+		if not pass_email_uid(email) then
 			local uid = anonymous_uid(session_uid()) or create_user()
-			set_email_pass(uid, auth.email, auth.pass)
+			set_email_pass(uid, email, pass)
 			return uid
 		end
 	end
@@ -146,7 +148,29 @@ function set_pass(pass)
 	query([[
 		update usr set pass = ? where
 			active = 1 and email is not null and uid = ?
-	]], pass_hash(pass), uid) --hide any errors for privacy
+		]], pass_hash(pass), uid) --hide any errors for privacy
+end
+
+--update info (not really auth, but related) ---------------------------------
+
+function auth.update(auth)
+	local uid = allow(valid_uid(session_uid()))
+	local email = glue.trim(assert(auth.email))
+	local name = glue.trim(assert(auth.name))
+	local phone = glue.trim(assert(auth.phone))
+	assert(#email >= 1)
+	local euid = pass_email_uid(email)
+	allow(not euid or euid == uid, 'email_taken')
+	query([[
+		update usr set
+			email = ?,
+			name = ?,
+			phone = ?,
+			emailvalid = if(email <> ?, 0, emailvalid)
+		where
+			active = 1 and anonymous = 0 and pass is not null and uid = ?
+		]], email, name, phone, email, uid)
+	return uid
 end
 
 --one-time token authentication ----------------------------------------------
@@ -162,7 +186,7 @@ local function gen_token(uid)
 	local n = query1([[
 		select count(1) from usrtoken where
 			uid = ? and atime > now() - ?
-	]], uid, token_lifetime)
+		]], uid, token_lifetime)
 	if tonumber(n) >= config('pass_token_maxcount', 2) then
 		return
 	end
@@ -198,7 +222,7 @@ local function token_uid(token)
 	ngx.sleep(0.2) --slow down brute-forcing
 	return query1([[
 		select uid from usrtoken where token = ? and atime > now() - ?
-	]], pass_hash(token), token_lifetime)
+		]], pass_hash(token), token_lifetime)
 end
 
 function auth.token(auth)
@@ -254,7 +278,7 @@ function auth.facebook(auth)
 			gender = ?
 		where
 			uid = ?
-	]], t.email, t.id, fullname(t.first_name, t.last_name), t.gender, uid)
+		]], t.email, t.id, fullname(t.first_name, t.last_name), t.gender, uid)
 
 	return uid
 end
@@ -297,7 +321,8 @@ function auth.google(auth)
 			name = ?
 		where
 			uid = ?
-	]], t.emails and t.emails[1] and t.emails[1].value,
+		]],
+		t.emails and t.emails[1] and t.emails[1].value,
 		t.id,
 		t.image and t.image.url,
 		t.name and fullname(t.name.givenName, t.name.familyName),
@@ -337,7 +362,7 @@ admin = once(function() --TODO: same here
 	return query1([[
 		select 1 from usr u where
 			u.admin = 1 and u.active = 1 and u.uid = ?
-	]], uid()) ~= nil
+		]], uid()) ~= nil
 end)
 
 function editmode()

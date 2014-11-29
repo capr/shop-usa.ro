@@ -40,7 +40,7 @@
 .toasty_toastMsg {
     width: 300px;
     display: inline-block;
-    background: #EEE;
+    background: #ff9;
     border: 1px solid #AAA;
     margin: 5px;
 }
@@ -49,6 +49,7 @@
     display: inline-block;
     float: right;
     margin-right: 5px;
+	 display: none;
 }
 .toasty_toastMsg .toasty_title{
     text-decoration: underline;
@@ -63,7 +64,7 @@
 }
 .toasty_toastMsg .toasty_autoHideTimer {
     background-color: #FAA;
-    height: 2px;
+    height: 0px;
     position: absolute;
     width: 100%;
 }

@@ -8,12 +8,12 @@ local t = query1([[
 	select
 		u.uid,
 		u.email,
-		u.anonymous,
 		u.name,
+		u.phone,
+		u.anonymous,
 		u.facebookid,
 		u.googleid,
-		u.gimgurl,
-		u.atime
+		u.gimgurl
 	from
 		usr u
 	where
