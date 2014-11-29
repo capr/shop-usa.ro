@@ -595,11 +595,12 @@ end
 							</td>
 							{{#show_operations}}
 							<td align=right nowrap>
-								<a id=reset_pass class=gray>
-									<t class=en>Change password</t>
-									<t class=ro>Schimba parola</t>
-								</a>
-								|
+								{{#haspass}}
+									<a id=reset_pass class=gray>
+										<t class=en>Change password</t>
+										<t class=ro>Schimba parola</t>
+									</a> |
+								{{/haspass}}
 								<a id=logout class=gray>
 									<t class=en>Log out</t>
 									<t class=ro>Iesi din cont</t>

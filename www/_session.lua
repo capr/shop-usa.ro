@@ -157,12 +157,10 @@ function auth.pass(auth)
 end
 
 function set_pass(pass)
-	local uid = session_uid()
-	if not uid then return end --hide the error for privacy
-	query([[
-		update usr set pass = ? where
-			active = 1 and email is not null and uid = ?
-		]], pass_hash(pass), uid) --hide any errors for privacy
+	local usr = userinfo(allow(session_uid()))
+	allow(usr.uid)
+	allow(usr.haspass)
+	query('update usr set pass = ? where uid = ?', pass_hash(pass), uid)
 end
 
 --update info (not really auth, but related) ---------------------------------

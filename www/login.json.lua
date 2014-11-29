@@ -16,7 +16,8 @@ local t = query1([[
 		u.anonymous,
 		u.facebookid,
 		u.googleid,
-		u.gimgurl
+		u.gimgurl,
+		if(u.pass is not null, 1, 0) as haspass
 	from
 		usr u
 	where
@@ -24,6 +25,7 @@ local t = query1([[
 ]], uid)
 
 t.anonymous = t.anonymous == 1
+t.haspass = tonumber(t.haspass) == 1
 
 t.buynow_count = tonumber(query1([[
 	select count(1) from cartitem where uid = ? and buylater = 0
