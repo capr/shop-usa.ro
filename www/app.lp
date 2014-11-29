@@ -517,11 +517,11 @@ end
 				<td>
 					{{#facebookid}}
 						{{email}}
-						<input type=hidden id=usr_email>{{email}}</input>
+						<input type=hidden id=usr_email value="{{email}}">
 					{{/facebookid}}
 					{{#googleid}}
 						{{email}}
-						<input type=hidden id=usr_email>{{email}}</input>
+						<input type=hidden id=usr_email value="{{email}}">
 					{{/googleid}}
 					{{^facebookid}}{{^googleid}}
 						<div class=errdiv1><div for=usr_email class="error errdiv2"></div></div>
@@ -546,11 +546,11 @@ end
 				<td>
 					{{#facebookid}}
 						{{name}}
-						<input type=hidden id=usr_name>{{name}}</input>
+						<input type=hidden id=usr_name value="{{name}}">
 					{{/facebookid}}
 					{{#googleid}}
 						{{name}}
-						<input type=hidden id=usr_name>{{name}}</input>
+						<input type=hidden id=usr_name value="{{name}}">
 					{{/googleid}}
 					{{^facebookid}}{{^googleid}}
 						<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
