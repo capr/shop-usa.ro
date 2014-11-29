@@ -274,11 +274,7 @@ function account(acc) {
 			if (!validate_usr())
 				return
 
-		return {
-			email: $('#usr_email').val().trim(),
-			name:  $('#usr_name').val().trim(),
-			phone: $('#usr_phone').val().trim(),
-		}
+		return true
 	}
 
 	login(null, logged_in)

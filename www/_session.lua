@@ -36,20 +36,37 @@ function authenticate(a)
 	return auth[a and a.type or 'session'](a)
 end
 
+local userinfo = once(function(uid)
+	if not uid then return {} end
+	local t = query1([[
+		select
+			uid,
+			email,
+			anonymous,
+			emailvalid,
+			if(pass is not null, 1, 0) as haspass,
+			googleid,
+			facebookid
+		from
+			usr
+		where
+			active = 1 and uid = ?
+		]], uid)
+	if not t then return {} end
+	t.anonymous = t.anonymous == 1
+	t.emailvalid = t.emailvalid == 1
+	t.haspass = t.haspass == 1
+	return t
+end)
+
 --session-cookie authentication ----------------------------------------------
 
 local function valid_uid(uid)
-	return uid and query1([[
-		select uid from usr where
-			active = 1 and uid = ?
-		]], uid)
+	return userinfo(uid).uid
 end
 
 local function anonymous_uid(uid)
-	return uid and query1([[
-		select uid from usr where
-			active = 1 and anonymous = 1 and uid = ?
-		]], uid)
+	return userinfo(uid).anonymous and uid
 end
 
 local function create_user()
@@ -151,13 +168,17 @@ end
 --update info (not really auth, but related) ---------------------------------
 
 function auth.update(auth)
-	local uid = allow(valid_uid(session_uid()))
+	local uid = allow(session_uid())
+	local usr = userinfo(uid)
+	allow(t.uid)
 	local email = glue.trim(assert(auth.email))
 	local name = glue.trim(assert(auth.name))
 	local phone = glue.trim(assert(auth.phone))
 	assert(#email >= 1)
-	local euid = pass_email_uid(email)
-	allow(not euid or euid == uid, 'email_taken')
+	if t.haspass then
+		local euid = pass_email_uid(email)
+		allow(not euid or euid == uid, 'email_taken')
+	end
 	query([[
 		update usr set
 			email = ?,
