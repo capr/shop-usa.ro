@@ -179,6 +179,7 @@ function auth.update(auth)
 		local euid = pass_email_uid(email)
 		allow(not euid or euid == uid, 'email_taken')
 	end
+	pp(email, name, phone)
 	query([[
 		update usr set
 			email = ?,
