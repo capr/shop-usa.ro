@@ -403,7 +403,7 @@ end
 						<span class="gray small">
 							<t class=en>Added</t>
 							<t class=ro>Adaugat</t>
-							<span class=timeago time="{{atime}}"></span>
+							<span class=timeago timeago="{{atime_ago}}"></span>
 						</span>
 					</td>
 				</tr>
@@ -550,10 +550,11 @@ end
 						<tr>
 							<td nowrap>
 								<a id=relogin class=gray>
-									<t class=en>Not {{name}}?</t>
-									<t class=ro>Nu esti {{name}}?</t>
+									<t class=en>Not {{firstname}}?</t>
+									<t class=ro>Nu esti {{firstname}}?</t>
 								</a>
 							</td>
+							{{#show_operations}}
 							<td align=right nowrap>
 								<a id=reset_pass class=gray>
 									<t class=en>Change password</t>
@@ -565,6 +566,7 @@ end
 									<t class=ro>Deconecteaza-te</t>
 								</a>
 							</td>
+							{{/show_operations}}
 						</tr>
 					</table>
 				</td>

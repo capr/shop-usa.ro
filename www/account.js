@@ -143,6 +143,9 @@ function account(acc) {
 	var validate_usr
 
 	function create_user_section(usr) {
+
+		usr.show_operations = !acc.allow_anonymous
+		usr.firstname = firstname(usr.name, usr.email)
 		render('account_info', usr, acc.section)
 
 		$('#relogin').click(function() {

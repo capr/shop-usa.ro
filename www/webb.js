@@ -80,18 +80,19 @@ if (typeof String.prototype.trim !== 'function') {
 
 // 'firstname lastname' -> 'firstname'; 'email@domain' -> 'email'
 function firstname(name, email) {
-	name = name.trim()
 	if (name) {
+		name = name.trim()
 		var a = name.split(' ', 1)
 		return a.length > 0 ? a[0] : name
 	} else {
+		email = email.trim()
 		var a = email.split('@', 1)
 		return a.length > 0 ? a[0] : email
 	}
 }
 
-function timeago(datetime) {
-	var s = (Date.now() - Date.parse(datetime)) / 1000
+function timeago(time) {
+	var s = (Date.now() / 1000) - time
 	if (s > 2 * 365 * 24 * 3600)
 		return S('years_ago', '{0} years ago').format((s / (365 * 24 * 3600)).toFixed(0))
 	else if (s > 2 * 30.5 * 24 * 3600)
@@ -109,8 +110,14 @@ function timeago(datetime) {
 var update_timeago
 (function() {
 	function update_timeago_elem() {
-		var time = $(this).attr('time')
-		if (!time) return
+		var time = parseInt($(this).attr('time'))
+		if (!time) {
+			// set client-relative time from timeago attribute
+			var time_ago = parseInt($(this).attr('timeago'))
+			if (!time_ago) return
+			time = (Date.now() / 1000) - time_ago
+			$(this).attr('time', time)
+		}
 		$(this).html(timeago(time))
 	}
 	update_timeago = function() {

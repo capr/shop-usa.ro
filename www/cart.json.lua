@@ -57,7 +57,7 @@ local t = query([[
 		m.name as bname,
 		i.id_image as imgid,
 		ci.buylater,
-		ci.atime
+		timestampdiff(second, ci.atime, now()) as atime_ago
 	from
 		cartitem ci
 	inner join ps_product p
@@ -101,7 +101,7 @@ for i,grp in groupby(t, 'buylater') do
 			ciid = t.ciid, coid = t.coid, pid = t.pid,
 			name = t.name, price = t.price,  old_price = t.old_price,
 			bname = t.bname, vids = {}, vnames = {}, imgid = t.imgid, imgs = {},
-			atime = t.atime,
+			atime_ago = tonumber(t.atime_ago),
 		}
 		table.insert(items, combi)
 		for i,t in groupby(ci, 'vid') do
