@@ -28,4 +28,4 @@ function google_login(success, fail) {
 	gapi.auth.signIn(params)
 }
 
-$.getScript('https://apis.google.com/js/client:platform.js')
+//$.getScript('https://apis.google.com/js/client:platform.js')
