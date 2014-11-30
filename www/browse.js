@@ -213,7 +213,8 @@ function change_prod_img(imgid) {
 
 	var large_img = '/img/p/'+imgid+'-thickbox.jpg'
 
-	$('#a_prod_img').trigger('zoom.destroy')
+	$('#a_prod_img')
+		.trigger('zoom.destroy')
 		.attr('href', large_img)
 		.css('display', 'inline-block')
 		.html('<img>')
