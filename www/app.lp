@@ -991,8 +991,40 @@ end
 			</td>
 			<td width=35%></td>
 		</tr>
+		<tr>
+			<td>
+				<div id=orders_section></div>
+			</td>
+			<td></td>
+		</tr>
 	</table>
 </script>
+
+<script type="text/x-mustache" id=orders_template>
+	<h3>
+		<t class=en>Past Order:</t>
+		<t class=ro>Istoric Comenzi:</t>
+	</h3>
+	<table width=100% style="border-spacing: 5px;">
+		{{#orders}}
+		<tr>
+			<td>
+				<h4>Comanda din: {{atime}}</h4>
+				<table width=100%>
+					{{#items}}
+					<tr>
+						<td>
+							{{coid}}
+						</td>
+					</tr>
+					{{/items}}
+				</table>
+			</td>
+		</tr>
+		{{/orders}}
+	</table>
+</script>
+
 
 <div id=fb-root class=hidden></div>
 </body>

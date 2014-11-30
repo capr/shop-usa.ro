@@ -114,14 +114,25 @@ local function delete_user(uid)
 	query('delete from usr where uid = ?', uid)
 end
 
-local function transfer_cart(old_uid, new_uid)
-	--move old items into "buy later" bin
-	query('update cartitem set buylater = 1 where uid = ?', new_uid)
-	if anonymous_uid(old_uid) then
-		--move items to user's cart
-		query('update cartitem set uid = ? where uid = ?', new_uid, old_uid)
+local function transfer_cart(cur_uid, new_uid)
+	--if the current cart contains buy-now items, we assume that the user
+	--wants to buy those items instead of the items in its account cart,
+	--and so we move those last-session items into the "buy later" bin.
+	if query1([[
+		select count(1) from cartitem where
+			buylater = 0 and uid = ?
+		]], cur_uid) > 1
+	then
+		query('update cartitem set buylater = 1 where uid = ?', new_uid)
+	end
+	if anonymous_uid(cur_uid) then
+		--move the items in the throw-away account into the user's account.
+		query('update cartitem set uid = ? where uid = ?', new_uid, cur_uid)
 	else
-		--copy items to user's cart
+		--we don't know if the items in the current cart belong to the user
+		--that is logging in now, or to the current user that is logging out.
+		--so we copy the items from the current acount to the new account,
+		--so that both users have them.
 		query([[
 			insert into cartitem
 				(uid, pid, coid, qty, pos, buylater, atime, mtime)
@@ -129,7 +140,7 @@ local function transfer_cart(old_uid, new_uid)
 				?, pid, coid, qty, pos, buylater, atime, now()
 			from cartitem where
 				uid = ?
-		]], new_uid, old_uid)
+		]], new_uid, cur_uid)
 	end
 end
 

@@ -85,9 +85,9 @@ function select_sidebar_cat(catid) {
 }
 
 function init_cat() {
-	$(document).bind('app_usr', function(e, usr) {
-		if (g_catid)
-			cat_make_editable(g_catid)
+	listen('usr.editmode', function() {
+		if (!g_catid) return
+		cat_make_editable(g_catid)
 	})
 }
 

@@ -278,7 +278,6 @@ function account(acc) {
 	}
 
 	login(null, logged_in)
-	//load_content(acc.section, '/login.json', logged_in)
 
 	return acc
 }
@@ -286,9 +285,16 @@ function account(acc) {
 action.account = function() {
 	hide_nav()
 	render('account', null, '#main')
+
+	function load_orders() {
+		load_content('#orders_section', '/orders.json', function(orders) {
+			render('orders', orders, '#orders_section')
+		})
+	}
+
 	var acc = account({
 		on_update: function(usr) {
-			//
+			load_orders()
 		},
 	})
 }

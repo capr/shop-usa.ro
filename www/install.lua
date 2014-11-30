@@ -140,6 +140,7 @@ $table ordr (
 	note        text,
 	shiptype    $name not null,
 	shipcost    $money not null,
+	status      $name,
 	atime       $atime,
 	mtime       $mtime
 );
@@ -152,10 +153,24 @@ $table ordritem (
 	coid        $id not null, $fk(ordritem, coid, ps_product_attribute, id_product_attribute),
 	qty         $id not null default 1,
 	price       $money not null,
+	note        text,
+	status      $name,
 	atime       $atime,
 	mtime       $mtime
 );
 ]]
+
+pq[[
+$table ordrlog (
+	oid         $id not null, $fk(ordrlog, oid, ordr),
+	uid         $id not null, $fk(ordrlog, uid, usr),
+	old_status  $name,
+	new_status  $name,
+	note        text,
+	atime       $atime,
+);
+]]
+
 
 pq[[
 $table convrate (

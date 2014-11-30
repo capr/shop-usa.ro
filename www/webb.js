@@ -126,9 +126,27 @@ var update_timeago
 	setInterval(update_timeago, 60 * 1000)
 })()
 
+// pub/sub -------------------------------------------------------------------
+
+var g_events = $({})
+
+function listen(topic, func) {
+	g_events.on(topic, function(e, data) {
+		func(data)
+	})
+}
+
+function unlisten(topic) {
+	g_events.off(topic)
+}
+
+function broadcast(topic, data) {
+	g_events.triggerHandler(topic, data)
+}
 
 // UI patterns ---------------------------------------------------------------
 
+// TODO: not working on OSX
 function follow_scroll(element_id, margin) {
 	var el = $(element_id)
 	var ey = el.position().top + 46 // TODO: account for margins of parents!
@@ -192,8 +210,20 @@ $(function() {
 	})
 })
 
-function exec(url) {
-	History.pushState(null, null, url)
+function full_url(url, params) {
+	// encode params and add lang param to url if needed.
+	var lang_ = lang()
+	var explicit_lang = lang_ != C('default_lang', 'en')
+	if (params || explicit_lang) {
+		if (explicit_lang)
+			params = $.extend({}, params, {lang: lang_})
+		url = url + '?' + $.param(params)
+	}
+	return url
+}
+
+function exec(url, params) {
+	History.pushState(null, null, full_url(url, params))
 }
 
 var action = {} // {action: handler}
@@ -210,12 +240,13 @@ function url_changed() {
 	handler.apply(null, args)
 }
 
-function setlink(a, url, hook) {
-	$(a).attr('href', url).click(function(event) {
-		event.preventDefault()
-		if (hook) hook()
-		exec(url)
-	})
+function setlink(a, url, params, hook) {
+	$(a).attr('href', full_url(url, params))
+		.click(function(event) {
+			event.preventDefault()
+			if (hook) hook()
+			exec(url, params)
+		})
 }
 
 // persistence ---------------------------------------------------------------

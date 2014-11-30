@@ -20,7 +20,7 @@ function hide_nav() {
 
 function login(auth, success, error, opt, arg) {
 	function logged_in(usr) {
-		$(document).trigger('app_usr', usr)
+		broadcast('usr', usr)
 		if (success)
 			success(usr)
 	}
@@ -45,7 +45,7 @@ function editmode() {
 }
 
 function init_admin() {
-	$(document).bind('app_usr', function(e, usr) {
+	listen('usr.admin', function(usr) {
 		g_admin = usr.admin
 	})
 }

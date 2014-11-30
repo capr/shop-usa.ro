@@ -1,25 +1,36 @@
 
-query([[
-select
-from orders
+local orders = {}
 
-query([[
-	insert into ordritem
-		(oid, coid, qty, price)
+for i,o in groupby(query([[
 	select
-		?, ci.coid, ci.qty,
-		$ronprice(pa.price, ?) as price
+		o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
+		o.note, o.shiptype, o.shipcost, o.atime, o.mtime,
+		i.oiid, i.coid, i.qty, i.price, i.atime as iatime, i.mtime as imtime
 	from
-		cartitem ci
-		inner join ps_product_attribute pa
-			on pa.id_product_attribute = ci.coid
+		ordr o
+		inner join ordritem i
+			on i.oid = o.oid
 	where
-		ci.buylater = 0
-		and ci.uid = ?
-]], oid, usd_rate(), uid())
+		o.uid = ?
+	order by
+		o.mtime desc
+	]], uid()), 'oid') do
 
---clear the cart.
-query('delete from cartitem where buylater = 0 and uid = ?', uid())
+	local t = o[1]
+	local order = {
+		oid = t.oid, email = t.email, name = t.name, phone = t.phone,
+		addr = t.addr, city = t.city, county = t.county, country = t.country,
+		note = t.note, shiptype = t.shiptype, shipcost = t.shipcost,
+		atime = t.atime, mtime = t.mtime,
+		items = {},
+	}
+	table.insert(orders, order)
+	for i,t in ipairs(o) do
+		order.items[i] = {
+			oiid = t.oiid, coid = t.coid, qty = t.qty, price = t.price,
+			atime = t.iatime, mtime = t.imtime,
+		}
+	end
+end
 
-out(json{ok = true})
-
+out(json({orders = orders}))

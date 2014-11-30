@@ -93,7 +93,7 @@ function add_to_cart(pid, coid) {
 }
 
 function init_cart() {
-	$(document).bind('app_usr', function(e, usr) {
+	listen('usr.cart', function(usr) {
 		set_cart_icon(usr.buynow_count)
 	})
 }

@@ -160,7 +160,7 @@ end
 
 --result structuring ---------------------------------------------------------
 
-function groupby(items, col, cb)
+function groupby(items, col)
 	local t = {}
 	local v
 	local st

@@ -1,32 +1,46 @@
 FRAMEWORK
 ---------
-- language filter: lang() -> GET.lang / setlink() adds ?lang= param
 - language filter: short forms
 	- <anytag:en> ... </anytag>
 	- attr:en=val attr:ro=val ...
 
+
 BIG BUGS
 --------
-- IE9 and history.js
+- implement _escaped_fragment_
+- IE9 and history.js (very few IE9 users, but a lot of IE8 users)
+- move to/from cart: first item doesn't move
 
 
-USABILITY BUGS
---------------
-- scroll changes on back-button from prod page back to browsing page
+USABILITY BUGS (CONFUSIONS)
+---------------------------
+- transfer cart only if there's anything to transfer,
+	otherwise don't clear the dest. cart
+- login screen: better separation between left and right side
+- brand page shows category tree but people expect to see products
+- scroll doesn't follow if screen is to small. solutions:
+	- get antiscroll
+	- make font smaller
+	- leave it as it is
+	- put less items on the page on small screens
 - no error message on create account failure
 - no error message on login failure
 
-- "not ?" <- no name
-- "not ?" should log off the user to avoid confusion
-- "save info" button
+
+UI BUGS
+-------
+- category div sometimes dissapears when going back to browsing
+- scroll changes on back-button from prod page back to browsing page
 
 
 FUNCTIONALITY
 -------------
-- cart: edit quantity
 - account: list of past orders
 - checkout: list of addresses from past orders
--
+- place order: receive email
+- search
+- filters
+- sorting
 
 
 DESIGN
