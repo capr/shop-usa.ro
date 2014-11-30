@@ -10,7 +10,6 @@ end
 	<title>SHOP USA</title>
 	<meta name="fragment" content="!">
 	<link rel="stylesheet" type="text/css" href="/main.css">
-	<link rel="stylesheet" type="text/css" href="/jquery.jqzoom.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.toasty.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.powertip.css">
 	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
