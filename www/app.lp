@@ -830,12 +830,18 @@ end
 		<h1>Thank you for ordering from us!</h1>
 
 		Your order will be processed shortly and we will call you for confirmation.
+		<br>
+		<br>
+		Follow the status of the order <a class=a_account>in your account</a>.
 	</t>
 	<t class=ro>
 		<h1>Iti multumim ca ai comandat de la noi!</h1>
 
 		In cel mai scurt timp, comanda ta va fi preluata de unul dintre
 		operatorii nostrii si vei primi un telefon pentru confirmare.
+		<br>
+		<br>
+		Urmareste starea comenzii <a class=a_account>in contul tau</a>.
 	</t>
 	<br>
 	<br>
@@ -998,12 +1004,32 @@ end
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
-				<h4>Comanda din {{atime}}</h4>
+				<h4>Comanda {{{oid}}} din {{atime}}</h4>
 				<table width=100%>
 					{{#items}}
 					<tr>
 						<td>
-							{{coid}}
+							<div oiid={{{oiid}}} pid={{{pid}}} coid={{{coid}}}>
+								<table width=100%>
+									<tr>
+										<td width=15%>
+											<a><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
+										</td>
+										<td>
+											<a><b>{{{bname}}}</b> {{{name}}}</a>
+											<br>
+											<span class=price>
+												<t class=en>${{{price}}}</t>
+												<t class=ro>{{{price}}} Lei</t>
+											</span>
+											{{#vnames}}{{.}} {{/vnames}}
+											<br>
+											<br>
+										</td>
+										<td align=right></td>
+									</tr>
+								</table>
+							</div>
 						</td>
 					</tr>
 					{{/items}}
@@ -1014,8 +1040,8 @@ end
 	{{/orders}}
 	{{^orders}}
 	<span class=gray>
-		<t lang=en>There are no past orders.</t>
-		<t lang=ro>Nu ai facut inca nici o comanda.</t>
+		<t class=en>There are no past orders.</t>
+		<t class=ro>Nu ai facut inca nici o comanda.</t>
 	</span>
 	{{/orders}}
 </script>

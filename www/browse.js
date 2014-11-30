@@ -220,7 +220,7 @@ function change_prod_img(imgid) {
 		.addClass('zoom_in')
 		.attr('href', large_img)
 		.on('click', function(e) { e.preventDefault(); })
-		.html('<img>')
+		.html('<img id=prod_img>')
 	$('#a_prod_img img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
 		$('#a_prod_img').zoom({
 			url: large_img, on: 'click',

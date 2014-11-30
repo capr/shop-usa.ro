@@ -162,15 +162,15 @@ $table ordritem (
 
 pq[[
 $table ordrlog (
+	ologid      $pk,
 	oid         $id not null, $fk(ordrlog, oid, ordr),
 	uid         $id not null, $fk(ordrlog, uid, usr),
 	old_status  $name,
 	new_status  $name,
 	note        text,
-	atime       $atime,
+	atime       $atime
 );
 ]]
-
 
 pq[[
 $table convrate (

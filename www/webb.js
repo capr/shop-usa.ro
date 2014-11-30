@@ -272,6 +272,15 @@ function setlink(a, url, params, hook) {
 		})
 }
 
+function setlinks() {
+	$('a').each(function() {
+		var href = $(this).attr('href')
+		if (href) {
+
+		}
+	})
+}
+
 // persistence ---------------------------------------------------------------
 
 function store(key, value) {
