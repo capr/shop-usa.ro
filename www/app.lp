@@ -578,10 +578,12 @@ end
 					<table width=100%>
 						<tr>
 							<td nowrap>
+								{{#firstname}}
 								<a id=relogin class=gray>
 									<t class=en>Not {{firstname}}?</t>
 									<t class=ro>Nu esti {{firstname}}?</t>
 								</a>
+								{{/firstname}}
 							</td>
 							{{#show_operations}}
 							<td align=right nowrap>
@@ -995,11 +997,11 @@ end
 		<t class=en>Past Order:</t>
 		<t class=ro>Istoric Comenzi:</t>
 	</h3>
+	{{#orders}}
 	<table width=100% style="border-spacing: 5px;">
-		{{#orders}}
 		<tr>
 			<td>
-				<h4>Comanda din: {{atime}}</h4>
+				<h4>Comanda din {{atime}}</h4>
 				<table width=100%>
 					{{#items}}
 					<tr>
@@ -1011,8 +1013,14 @@ end
 				</table>
 			</td>
 		</tr>
-		{{/orders}}
 	</table>
+	{{/orders}}
+	{{^orders}}
+	<span class=gray>
+		<t lang=en>There are no past orders.</t>
+		<t lang=ro>Nu ai facut inca nici o comanda.</t>
+	</span>
+	{{/orders}}
 </script>
 
 

@@ -177,7 +177,6 @@ function account(acc) {
 	function create_user_section(usr) {
 
 		usr.show_operations = !acc.allow_anonymous
-		usr.firstname = firstname(usr.name, usr.email)
 		render('account_info', usr, acc.section)
 
 		$('#relogin').click(function() {
@@ -288,6 +287,10 @@ action.account = function() {
 
 	function load_orders() {
 		load_content('#orders_section', '/orders.json', function(orders) {
+			$.each(orders.orders, function(i,o) {
+				o.atime = shortdate(o.atime)
+			})
+
 			render('orders', orders, '#orders_section')
 		})
 	}

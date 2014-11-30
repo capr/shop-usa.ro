@@ -46,8 +46,11 @@ query([[
 		cartitem ci
 		inner join ps_product_attribute pa
 			on pa.id_product_attribute = ci.coid
+	inner join ps_product p
+		on p.id_product = ci.pid
 	where
 		ci.buylater = 0
+		and p.active = 1
 		and ci.uid = ?
 ]], oid, usd_rate(), uid())
 

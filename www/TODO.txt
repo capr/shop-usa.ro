@@ -33,6 +33,7 @@ USABILITY BUGS (CONFUSIONS)
 - textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
 - scrisul cu "salut X!" mai mare/subliniat/colorat/vizibil -- put (?) and help
 - bulina cu pastrate pt. mai tarziu
+- google fucking analytics keeps the spinning wheel turning as usual...
 
 
 UI BUGS

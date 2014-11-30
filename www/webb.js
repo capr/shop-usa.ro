@@ -84,10 +84,12 @@ function firstname(name, email) {
 		name = name.trim()
 		var a = name.split(' ', 1)
 		return a.length > 0 ? a[0] : name
-	} else {
+	} else if (email) {
 		email = email.trim()
 		var a = email.split('@', 1)
 		return a.length > 0 ? a[0] : email
+	} else {
+		return ''
 	}
 }
 
@@ -105,6 +107,27 @@ function timeago(time) {
 		return S('minutes_ago', '{0} minutes ago').format((s / 60).toFixed(0))
 	else
 		return S('one_minute_ago', '1 minute ago')
+}
+
+var short_months =
+	['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+var months =
+	['January','February','Mars','April','May','June','July','August','September','October','November','December']
+
+function shortdate(date) {
+	var d = new Date(date + ' UTC')
+	var now = new Date()
+	if (
+		d.getDate() == now.getDate() &&
+		d.getMonth() == now.getMonth() &&
+		d.getFullYear() == now.getFullYear()
+	) {
+		return S('today', 'Today') + ', ' + d.getHours() + ':' + d.getMinutes()
+	} else {
+		return d.getDate() + ' ' +
+			S(months[now.getMonth()].toLowerCase(), months[now.getMonth()]) +
+			(d.getFullYear() != now.getFullYear() ? ' ' + d.getFullYear() : '')
+	}
 }
 
 var update_timeago
