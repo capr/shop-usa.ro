@@ -225,6 +225,7 @@ function change_prod_img(imgid) {
 			},
 			onZoomOut: function() {
 				$('#a_prod_img').removeClass('zoomed')
+					.preventDefault()
 			},
 		})
 	})
