@@ -298,9 +298,7 @@ end
 
 <script type="text/x-mustache" id=product_gallery_template>
 	<div style="position: relative; z-index: 100;" id=fly_img_div></div>
-	<a id=zoom style="display:inline-block">
-		<img id=prod_img>
-	</a>
+	<a id=zoom></a>
 	<div style="width: 500px; overflow: auto; white-space: nowrap">
 		<table>
 			<tr>
