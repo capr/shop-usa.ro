@@ -212,18 +212,16 @@ function change_prod_img(imgid) {
 		.removeClass('inactive')
 
 	$('#zoom').trigger('zoom.destroy')
-	$('#zoom').css('display', 'inline-block')
-	$('#zoom').html('<img>')
+		.css('display', 'inline-block')
+		.html('<img>')
 	$('#zoom img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
-		$('#zoom').zoom({url: '/img/p/'+imgid+'-thickbox.jpg', on: 'click'})
+		$('#zoom').zoom({
+			url: '/img/p/'+imgid+'-thickbox.jpg', on: 'click',
+			onZoomOut: function() {
+				$('#zoom').removeClass('zoomed')
+			},
+		})
 	})
-	/*
-	$('#zoom').removeData('jqzoom')
-	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
-		$('#zoom').attr('href', '/img/p/'+imgid+'-thickbox.jpg')
-		$('#zoom').jqzoom({zoomType: 'innerzoom', title: false, lens: false, alwaysOn: false})
-	})
-	*/
 }
 
 var g_prod, g_combi

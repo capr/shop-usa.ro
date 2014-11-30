@@ -265,3 +265,11 @@ input .inside-right { padding-right: 28px; }
 .fa-question-circle {
 	color: #339;
 }
+
+.zoom {
+	cursor: zoom-in;
+}
+
+.zoomed {
+	cursor: zoom-out;
+}
