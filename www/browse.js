@@ -211,6 +211,7 @@ function change_prod_img(imgid) {
 	$('#gallery a[imgid="'+imgid+'"] > img').addClass('active')
 		.removeClass('inactive')
 
+	$('#zoom').trigger('zoom.destroy')
 	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
 		$('#zoom').zoom({url: '/img/p/'+imgid+'-thickbox.jpg', on: 'click'})
 	})
