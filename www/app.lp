@@ -525,19 +525,9 @@ end
 					<label for=usr_email>Email:</label>
 				</td>
 				<td>
-					{{#facebookid}}
-						{{email}}
-						<input type=hidden id=usr_email value="{{email}}">
-					{{/facebookid}}
-					{{#googleid}}
-						{{email}}
-						<input type=hidden id=usr_email value="{{email}}">
-					{{/googleid}}
-					{{^facebookid}}{{^googleid}}
-						<div class=errdiv1><div for=usr_email class="error errdiv2"></div></div>
-						<input id=usr_email name=usr_email class=email type=text
-							value="{{email}}" placeholder="name@domain.com" required>
-					{{/googleid}}{{/facebookid}}
+					<div class=errdiv1><div for=usr_email class="error errdiv2"></div></div>
+					<input id=usr_email name=usr_email class=email type=text
+						value="{{email}}" placeholder="name@domain.com" required>
 				</td>
 				<td rowspan=4 align=right valign=top>
 					{{#facebookid}}
@@ -554,18 +544,8 @@ end
 					<t class=ro>Nume:</t>
 				</td>
 				<td>
-					{{#facebookid}}
-						{{name}}
-						<input type=hidden id=usr_name value="{{name}}">
-					{{/facebookid}}
-					{{#googleid}}
-						{{name}}
-						<input type=hidden id=usr_name value="{{name}}">
-					{{/googleid}}
-					{{^facebookid}}{{^googleid}}
-						<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
-						<input id=usr_name name=usr_name type=text value="{{name}}" placeholder="Nume Complet" required></t>
-					{{/googleid}}{{/facebookid}}
+					<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
+					<input id=usr_name name=usr_name type=text value="{{name}}" placeholder="Nume Complet" required></t>
 				</td>
 			</tr>
 			<tr>

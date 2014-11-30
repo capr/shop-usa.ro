@@ -28,13 +28,18 @@ USABILITY BUGS (CONFUSIONS)
 - back to top button
 - zoom on click not hoover
 - refresh cart icon constantly
-
+- brand list ordering (vert-horiz instead of horiz-vert)
+- informatii despre pret (contine sau nu TVA sau transport) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
+- textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
+- scrisul cu "salut X!" mai mare/subliniat/colorat/vizibil -- put (?) and help
+- bulina cu pastrate pt. mai tarziu
 
 
 UI BUGS
 -------
 - category div sometimes dissapears when going back to browsing
 - scroll changes on back-button from prod page back to browsing page
+- autocomplete of county sometimes doesn't work
 
 
 FUNCTIONALITY
@@ -46,6 +51,7 @@ FUNCTIONALITY
 - filters
 - sorting
 - home page (promotii, bannere, informatii generale)
+- afisare ultimele produse vizualizate
 
 
 DESIGN
@@ -53,38 +59,4 @@ DESIGN
 - use fa icons for grid/list
 - top bar follow scroll
 
-- scrisul cu "salut X!" mai mare/subliniat/colorat/vizibil
-- atentie la cat de late sau inalte sunt casutzele aferente fiecarui produs (sa incapa atat denumirea ok cat si poza ok...vezi faza cu pantalonii din exemplu)
-- atentie la fonturi in cadrul CSS-ului...poate e bine sa le mai diferentiezi intre ele, ca marime, bold sau normal etc.: pt categorii, subcategorii si produse etc.
-
-- nu e asa vizibil unde tre sa intri ca sa iti faci contul (nu e suficient de intuitiv doar sa apesi pe Salut) si trebe anuntat mai clar  -  sau "Salut!"ul sa fie mai mare si sa fie mai evident ca e buton (vezi aici si textul ala pe care ti-l dadusem ieri care iti explica ce avantaje ai daca te inregistrezi - vezi ca e scris aici, mai sus)
-
-PASTREAZA PT MAI TARZIU
-- e derutant ca nu are si categoria asta iconita, si ca practic nu esti anuntat despre ea; o iconita care sa te anunte cand te relogezi pe contul tau ; Simona a venit cu ideea sa facem o bulina cum e bulina de la numarul de produse (eventual portocalie) care sa fie pe langa cos pe acolo si daca ai produse puse deoparte sa iti apara bulina, daca nu ai, nu iti apare; Respectiva bulina o regasim si la titlul si explicatia "Pastreaza pt mai tarziu" si asa userul face legatura
-- textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
-
-- informatii despre pret (contine sau nu TVA sau transport) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
-
-- daca se poate sa nu face un tracking pe preturi la modul urmator: e iarna si eu pun deoparte o pereche de sandale care e cam scumpa si vreau sa verific daca pana la vara se mai ieftineste, pt ca vreau sa o prind la reduceri...si vreau sa vad acolo in lista de pastrate pt mai tarziu in cazul in care se ietfineste semnul ala de promotie si pretul vechi taiat
-- subtilitate: cand ti-ai bagat Bucurestiul la oras poate sa sa ia automat tot Bucurestiul si la judet :D
-- cand iti faci user nou nu tre sa primesti o notificare pe mail ca ti-ai facut cont? sau doar dupa ce ai cumparat? (simona a folosit pt contul nou acelasi mail ca ala de la contul de fbk si se intreba daca din cauza asta nu a primit nimic pe mail => userul s-a obisnuit sa primeasca pe mail kkturi)
-
-
-
-
-Chestii generale:
-- SERACH
-- filtre de toate felurile (marime, culoare tip de produs etc) (ca la 6mp)
-- afisare ultimele produse vizualizate
-- meniul vertical mai face figuri cateodata : dispare jumatatea de sus cand esti pe o pagina de brand, dupa care apare la refresh
-
-- MENIUL VERTICAL - apar categoriile dublate cand intri pe branduri (de ex. ai imbracaminte (25) si mai jos femei / imbracaminte (25) ...which is basically the same link)
-- de verificat traducerile la texte si de completat unde nu e tradus (vezi "nediponibil" si meniul vertical care nu e tradus) si MARIMILE (sau macar pusa o legenda ceva)
-- prima pagina: promotii?, chilipiruri?, ultimele adaugate? - sa ai o idee ce e cu produsele alea, de ce sunt alea pe prima pagina...ceva mai chatchy
-- buton de go to top of the page pe paginile de produse
-
-- !!!!!!!!!!!!!! filtru de pret pt branduri -  fiind atat de multe branduri si pe multe nu le stii ar fi chiar indicat (asta daca nu o sa fie oricum bagat in filtrele pe care le faci, alea ca la 6pm de pe laterala)
-- listele de BRANDURI nu sunt in ordine alfabetica si sunt greu de urmarit
-- BRANDURILE -  paginile sa arate la fel, fie ca le accesezi de la litera de sus, fie din meniul vertical, pt ca e confusing altfel; si tre sa fie ca pagina accesata de la litera (adica sa aiba meniul lateral cu categoriile) si logo-ul dar sa aiba si produsele de la home pe pagina de brand (practic prima pagina de brand sa contina toate info: categorii / logo / produse)
-- o chestie un pic mai ciudata: nu este foarte clar ce ofera site-ul...ca ai senzatia ca are doar haine + incaltaminte + accesorii (ce scrie si sus in header) dar te trezesti ca poti sa cumperi si tigai sau butelii...sau mai stiu e ce produse...deci ar trebui anuntate undeva in loc vizibil (banner or smth) toate produsele pe care le poti gasi pe site
 
