@@ -295,6 +295,9 @@ function auth.facebook(auth)
 		or create_user()
 
 	--deanonimize user and update its info
+
+	ngx.log(ngx.ERR, pp.format(t, '  '))
+
 	query([[
 		update usr set
 			anonymous = 0,

@@ -27,6 +27,8 @@ USABILITY BUGS (CONFUSIONS)
 - no error message on login failure
 - back to top button
 - zoom on click not hoover
+- refresh cart icon constantly
+
 
 
 UI BUGS
@@ -51,28 +53,18 @@ DESIGN
 - use fa icons for grid/list
 - top bar follow scroll
 
-
 - scrisul cu "salut X!" mai mare/subliniat/colorat/vizibil
 - atentie la cat de late sau inalte sunt casutzele aferente fiecarui produs (sa incapa atat denumirea ok cat si poza ok...vezi faza cu pantalonii din exemplu)
 - atentie la fonturi in cadrul CSS-ului...poate e bine sa le mai diferentiezi intre ele, ca marime, bold sau normal etc.: pt categorii, subcategorii si produse etc.
 
-
-Account:
-- loginul cu g+ nu o ia din prima...tre sa dai cateodata de 2-3 ori click
-- la check-out nu ar fi bine sa primesti si mail de confirarea a comenzii? astepti numai telefon?
-
-
 - nu e asa vizibil unde tre sa intri ca sa iti faci contul (nu e suficient de intuitiv doar sa apesi pe Salut) si trebe anuntat mai clar  -  sau "Salut!"ul sa fie mai mare si sa fie mai evident ca e buton (vezi aici si textul ala pe care ti-l dadusem ieri care iti explica ce avantaje ai daca te inregistrezi - vezi ca e scris aici, mai sus)
-- la log-in cu g+ si fbk au aparut ferstrele de dialog (termeni si conditii) pt ca ea nu era logata nici pe fbk nici pe gmail cand a testat; la mine, cand m-am logat, pt ca era deschise (acu cateva zile de cand am tot testat noi) nu m-a mai pus sa trec prin partea  de termeni si conditii...m-a logat direct; intrebarea e: ai mai lucrat tu la asta intre timp sau asa tre sa fie: daca esti deja logat in brwser nu te mai trece prin termeni si conditii?
-- la loginul cu fbk, cand apare pop-inul cu termenii si conditiile scrisul ala mic si gri care anunta ca aplicatia nu va posta pe fbk (treaba esential pt fbk!!!) tre sa fie mai mare ca simona l-a ratat in prima faza)
-- in timpul browsingului, daca deschizi produse in new tab si le adaugi in cos, nu se updateaza numarul de la cos in real time, ci abia dupa refresh
 
 PASTREAZA PT MAI TARZIU
 - e derutant ca nu are si categoria asta iconita, si ca practic nu esti anuntat despre ea; o iconita care sa te anunte cand te relogezi pe contul tau ; Simona a venit cu ideea sa facem o bulina cum e bulina de la numarul de produse (eventual portocalie) care sa fie pe langa cos pe acolo si daca ai produse puse deoparte sa iti apara bulina, daca nu ai, nu iti apare; Respectiva bulina o regasim si la titlul si explicatia "Pastreaza pt mai tarziu" si asa userul face legatura
 - textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
 
 - informatii despre pret (contine sau nu TVA sau transport) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
-- un pret total la sfarsit la comanada: atata produsul+ atat trasnsportul= atat
+
 - daca se poate sa nu face un tracking pe preturi la modul urmator: e iarna si eu pun deoparte o pereche de sandale care e cam scumpa si vreau sa verific daca pana la vara se mai ieftineste, pt ca vreau sa o prind la reduceri...si vreau sa vad acolo in lista de pastrate pt mai tarziu in cazul in care se ietfineste semnul ala de promotie si pretul vechi taiat
 - subtilitate: cand ti-ai bagat Bucurestiul la oras poate sa sa ia automat tot Bucurestiul si la judet :D
 - cand iti faci user nou nu tre sa primesti o notificare pe mail ca ti-ai facut cont? sau doar dupa ce ai cumparat? (simona a folosit pt contul nou acelasi mail ca ala de la contul de fbk si se intreba daca din cauza asta nu a primit nimic pe mail => userul s-a obisnuit sa primeasca pe mail kkturi)
