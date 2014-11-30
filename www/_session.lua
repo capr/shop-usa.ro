@@ -118,10 +118,10 @@ local function transfer_cart(cur_uid, new_uid)
 	--if the current cart contains buy-now items, we assume that the user
 	--wants to buy those items instead of the items in its account cart,
 	--and so we move those last-session items into the "buy later" bin.
-	if query1([[
+	if tonumber(query1([[
 		select count(1) from cartitem where
 			buylater = 0 and uid = ?
-		]], cur_uid) > 1
+		]], cur_uid)) > 1
 	then
 		query('update cartitem set buylater = 1 where uid = ?', new_uid)
 	end

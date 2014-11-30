@@ -281,7 +281,10 @@ end
 		<tr>
 			<td colspan=2>
 				<br>
+				<br>
 				<div class=description>{{{descr}}}</div>
+				<br>
+				<br>
 			</td>
 		</tr>
 	</table>
@@ -432,10 +435,17 @@ end
 </script>
 
 <script type="text/x-mustache" id=account_login_template>
-	<h3>
-		<t class=en>Enter account:</t>
-		<t class=ro>Intra in cont:</t>
-	</h3>
+	<t class=en>
+		<h3>Enter account:</h3>
+	</t>
+	<t class=ro>
+		<h3>Intra in cont:</h3>
+		<span class=help>
+			De ce sa te inregistrezi? Pentru ca asa iti poti pastra produsele
+			care ti-au placut intr-o lista de preferinte, pe care o vei gasi si
+			data viitoare cand ne vizitezi!
+		</span>
+	</t>
 	<form id=login_form>
 		<table width=100%>
 			<tr>

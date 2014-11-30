@@ -39,8 +39,8 @@ local function try_call(func, ...)
 	local function pass(ok, ...)
 		if ok then return ... end
 		local err = ...
+		ngx.log(ngx.ERR, err)
 		if config('hide_errors', false) then
-			ngx.log(ngx.ERR, err)
 			err = 'Internal error'
 		end
 		ngx.status = 500
