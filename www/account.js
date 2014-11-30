@@ -18,7 +18,7 @@ function account(acc) {
 
 	function error_placement(error, element) {
 		var div = $('.error[for="'+$(element).attr('id')+'"]')
-		div.css('left', $(element).width() + 20)
+		div.css('left', $(element).width() + 20 + 80)
 		div.append(error)
 		return false
 	}
