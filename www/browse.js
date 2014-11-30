@@ -224,10 +224,10 @@ function change_prod_img(imgid) {
 		$('#a_prod_img').zoom({
 			url: large_img, on: 'click',
 			onZoomIn: function() {
-				$('#a_prod_img').css('cursor', 'zoom-in')
+				$('#a_prod_img').css('cursor', 'zoom-out')
 			},
 			onZoomOut: function() {
-				$('#a_prod_img').css('cursor', 'zoom-out')
+				$('#a_prod_img').css('cursor', 'zoom-in')
 			},
 		})
 	})
