@@ -211,12 +211,15 @@ function change_prod_img(imgid) {
 	$('#gallery a[imgid="'+imgid+'"] > img').addClass('active')
 		.removeClass('inactive')
 
+	var large_img = '/img/p/'+imgid+'-thickbox.jpg'
+
 	$('#zoom').trigger('zoom.destroy')
+		.attr('href', large_img)
 		.css('display', 'inline-block')
 		.html('<img>')
 	$('#zoom img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
 		$('#zoom').zoom({
-			url: '/img/p/'+imgid+'-thickbox.jpg', on: 'click',
+			url: large_img, on: 'click',
 			onZoomOut: function() {
 				$('#zoom').removeClass('zoomed')
 			},
