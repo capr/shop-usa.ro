@@ -526,7 +526,7 @@ end
 					<input id=usr_email name=usr_email class=email type=text
 						value="{{email}}" placeholder="name@domain.com" required>
 				</td>
-				<td rowspan=4 align=right valign=top>
+				<td rowspan=4 align=right valign=top width=60>
 					{{#facebookid}}
 						<img src="//graph.facebook.com/{{facebookid}}/picture">
 					{{/facebookid}}
