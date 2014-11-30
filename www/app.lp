@@ -18,7 +18,7 @@ end
 	<script src="/jquery.history.js"></script>
 	<script src="/jquery.cookie.js"></script>
 	<script src="/jquery.quicksearch.js"></script>
-	<script src="/jquery.jqzoom.js"></script>
+	<script src="/jquery.zoom.js"></script>
 	<script src="/jquery.easing.js"></script>
 	<script src="/jquery.sortable.js"></script>
 	<script src="/jquery.validate.js"></script>

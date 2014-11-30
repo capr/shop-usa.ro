@@ -213,11 +213,16 @@ function change_prod_img(imgid) {
 
 	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {})
 
+	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
+		$(this).zoom({url: '/img/p/'+imgid+'-thickbox.jpg', on: 'click'})
+	})
+	/*
 	$('#zoom').removeData('jqzoom')
 	$('#prod_img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
 		$('#zoom').attr('href', '/img/p/'+imgid+'-thickbox.jpg')
-		$('#zoom').jqzoom({zoomType: 'innerzoom', title: false, lens: false})
+		$('#zoom').jqzoom({zoomType: 'innerzoom', title: false, lens: false, alwaysOn: false})
 	})
+	*/
 }
 
 var g_prod, g_combi
