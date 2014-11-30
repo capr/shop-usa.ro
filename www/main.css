@@ -267,9 +267,9 @@ input .inside-right { padding-right: 28px; }
 }
 
 .zoom_in {
-	cursor: zoom-out !important;
+	cursor: zoom-in !important;
 }
 
 .zoom_out {
-	cursor: zoom-in !important;
+	cursor: zoom-out !important;
 }

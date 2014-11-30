@@ -216,10 +216,8 @@ function change_prod_img(imgid) {
 	$('#a_prod_img')
 		.trigger('zoom.destroy')
 		.css('display', 'inline-block')
+		.removeClass('zoom_ou')
 		.addClass('zoom_in')
-		//.css('cursor', 'zoom-in')
-		//.css('cursor', 'zoom-out')
-		//.css('cursor', 'zoom-in')
 		.attr('href', large_img)
 		.on('click', function(e) { e.preventDefault(); })
 		.html('<img>')
@@ -227,10 +225,10 @@ function change_prod_img(imgid) {
 		$('#a_prod_img').zoom({
 			url: large_img, on: 'click',
 			onZoomIn: function() {
-				$('#a_prod_img').addClass('zoom_in').removeClass('zoom_out')
+				$('#a_prod_img').removeClass('zoom_in').addClass('zoom_out')
 			},
 			onZoomOut: function() {
-				$('#a_prod_img').addClass('zoom_out').removeClass('zoom_in')
+				$('#a_prod_img').removeClass('zoom_out').addClass('zoom_in')
 			},
 		})
 	})
