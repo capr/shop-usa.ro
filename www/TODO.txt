@@ -26,7 +26,6 @@ USABILITY BUGS (CONFUSIONS)
 - no error message on create account failure
 - no error message on login failure
 - back to top button
-- zoom on click not hoover
 - refresh cart icon constantly
 - brand list ordering (vert-horiz instead of horiz-vert)
 - informatii despre pret (contine sau nu TVA sau transport) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
@@ -34,6 +33,7 @@ USABILITY BUGS (CONFUSIONS)
 - scrisul cu "salut X!" mai mare/subliniat/colorat/vizibil -- put (?) and help
 - bulina cu pastrate pt. mai tarziu
 - google fucking analytics keeps the spinning wheel turning as usual...
+- preserve div height when browsing gallery images to prevent flicker
 
 
 UI BUGS
