@@ -1051,14 +1051,53 @@ end
 </script>
 
 <script type="text/x-mustache" id=order_list_template>
-	{{#orders}}
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
-			<td>{{{oid}}}</td>
-			<td>{{from_atime}}</td>
+			<th align=left>order id</th>
+			<th align=left>date</th>
+			<th align=left>assigned</th>
+			<th align=left>op note</th>
+			<th align=left>status</th>
 		</tr>
+		{{#orders}}
+		<tr oid={{{oid}}}>
+			<td><a>{{{oid}}}</a></td>
+			<td><a>{{from_atime}}</a></td>
+			<td>{{uname}}</td>
+			<td>{{opnote}}</td>
+			<td>{{status}}</td>
+		</tr>
+		{{/orders}}
 	</table>
-	{{/orders}}
+</script>
+
+<script type="text/x-mustache" id=order_template>
+	<table width=100% style="border-spacing: 5px;">
+		<tr>
+			<th align=left>pid</th>
+			<th align=left>date</th>
+			<th align=left>name</th>
+			<th align=left>assigned</th>
+			<th align=left>op note</th>
+			<th align=left>status</th>
+		</tr>
+		{{#items}}
+		<tr oiid={{{oiid}}}>
+			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
+			<td><a>{{from_atime}}</a></td>
+			<td>{{name}}</td>
+			<td>{{opname}}</td>
+			<td>{{opnote}}</td>
+			<td>
+				<select id=status>
+					{{#statuses}}
+						<option value="{{value}}" {{{selected}}}>{{value}}</option>
+					{{/statuses}}
+				</select>
+			</td>
+		</tr>
+		{{/items}}
+	</table>
 </script>
 
 <div id=fb-root class=hidden></div>

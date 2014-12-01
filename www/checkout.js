@@ -176,7 +176,7 @@ function place_order() {
 	if (!validate_addr())
 		return
 
-	post('/order.json', {
+	post('/place_order.json', {
 		email    : $('#usr_email').val(),
 		name     : $('#usr_name').val(),
 		phone    : $('#usr_phone').val(),

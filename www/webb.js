@@ -404,7 +404,7 @@ function load_content(dst, url, success, error, opt) {
 					.click(function() {
 						dst.html('')
 						dst.addClass('loading')
-						load_content(dst, url, on_success, on_error)
+						load_content(dst, url, success, error)
 					})
 				if (error)
 					error(xhr)
@@ -446,3 +446,12 @@ function render(template_name, data, dst) {
 		return s
 }
 
+function select_map(a, v) {
+	var t = []
+	$.each(a, function(i, v) {
+		var o = {value: v}
+		if (v) o.selected = 'selected'
+		t.push(o)
+	})
+	return t
+}

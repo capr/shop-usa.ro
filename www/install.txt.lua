@@ -142,6 +142,7 @@ $table ordr (
 	shiptype    $name not null,
 	shipcost    $money not null,
 	status      $name,
+	opuid       $id, $fk(ordr, opuid, usr, uid),
 	opnote      text,
 	atime       $atime,
 	mtime       $mtime
