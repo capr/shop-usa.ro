@@ -115,7 +115,7 @@ var months =
 	['January','February','Mars','April','May','June','July','August','September','October','November','December']
 
 function shortdate(date) {
-	var d = new Date(date + ' UTC')
+	var d = new Date(date)
 	var now = new Date()
 	if (
 		d.getDate() == now.getDate() &&
@@ -276,7 +276,7 @@ function setlinks() {
 	$('a').each(function() {
 		var href = $(this).attr('href')
 		if (href) {
-
+			//
 		}
 	})
 }

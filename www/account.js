@@ -176,6 +176,7 @@ function account(acc) {
 
 	function create_user_section(usr) {
 
+		usr.firstname = firstname(usr.name, usr.email)
 		usr.show_operations = !acc.allow_anonymous
 		render('account_info', usr, acc.section)
 
