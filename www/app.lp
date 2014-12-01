@@ -1065,7 +1065,13 @@ end
 			<td><a>{{from_atime}}</a></td>
 			<td>{{uname}}</td>
 			<td>{{opnote}}</td>
-			<td>{{status}}</td>
+			<td>
+				<select id=status>
+					{{#statuses}}
+						<option value="{{value}}" {{{selected}}}>{{value}}</option>
+					{{/statuses}}
+				</select>
+			</td>
 		</tr>
 		{{/orders}}
 	</table>
@@ -1077,6 +1083,7 @@ end
 			<th align=left>pid</th>
 			<th align=left>date</th>
 			<th align=left>name</th>
+			<th align=left>combi</th>
 			<th align=left>assigned</th>
 			<th align=left>op note</th>
 			<th align=left>status</th>
@@ -1086,6 +1093,7 @@ end
 			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
 			<td><a>{{from_atime}}</a></td>
 			<td>{{name}}</td>
+			<td>{{vnames}}</td>
 			<td>{{opname}}</td>
 			<td>{{opnote}}</td>
 			<td>

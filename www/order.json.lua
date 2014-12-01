@@ -9,7 +9,7 @@ local items = check(query([[
 		i.note, i.status, i.atime, i.mtime,
 		p.id_product as pid,
 		pl.name,
-		al.name as vname,
+		group_concat(distinct al.name separator ', ') as vnames,
 		m.name as bname,
 		im.id_image as imgid
 	from

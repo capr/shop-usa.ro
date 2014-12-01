@@ -446,11 +446,12 @@ function render(template_name, data, dst) {
 		return s
 }
 
-function select_map(a, v) {
+function select_map(a, selv) {
 	var t = []
 	$.each(a, function(i, v) {
 		var o = {value: v}
-		if (v) o.selected = 'selected'
+		if (selv == v)
+			o.selected = 'selected'
 		t.push(o)
 	})
 	return t

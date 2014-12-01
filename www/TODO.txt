@@ -14,6 +14,7 @@ BIG BUGS
 
 USABILITY BUGS (CONFUSIONS)
 ---------------------------
+- make admin if logging in with facebook too
 - transfer cart only if there's anything to transfer,
 	otherwise don't clear the dest. cart
 - login screen: better separation between left and right side
