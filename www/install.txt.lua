@@ -142,6 +142,7 @@ $table ordr (
 	shiptype    $name not null,
 	shipcost    $money not null,
 	status      $name,
+	opnote      text,
 	atime       $atime,
 	mtime       $mtime
 );
