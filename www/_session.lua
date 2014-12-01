@@ -183,7 +183,7 @@ function set_pass(pass)
 	local usr = userinfo(allow(session_uid()))
 	allow(usr.uid)
 	allow(usr.haspass)
-	query('update usr set pass = ? where uid = ?', pass_hash(pass), uid)
+	query('update usr set pass = ? where uid = ?', pass_hash(pass), usr.uid)
 end
 
 --update info (not really auth, but related) ---------------------------------
