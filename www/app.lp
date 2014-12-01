@@ -399,7 +399,7 @@ end
 		<li ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
 			<table width=100%>
 				<tr>
-					<td width=300 height=100>
+					<td width=200 height=100>
 						<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 					</td>
 					<td>
