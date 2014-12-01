@@ -56,7 +56,7 @@ local userinfo = once(function(uid)
 	if not t then return {} end
 	t.anonymous = t.anonymous == 1
 	t.emailvalid = t.emailvalid == 1
-	t.haspass = t.haspass == 1
+	t.haspass = tonumber(t.haspass) == 1
 	t.admin = t.admin == 1
 	return t
 end)
@@ -181,7 +181,6 @@ end
 
 function set_pass(pass)
 	local usr = userinfo(allow(session_uid()))
-	pp(usr)
 	allow(usr.uid)
 	allow(usr.haspass)
 	query('update usr set pass = ? where uid = ?', pass_hash(pass), uid)
