@@ -23,10 +23,6 @@ table, tr, td {
    border-collapse: separate;
 }
 
-h1, h2, h3 {
-	margin-left: 0px;
-}
-
 input, select, textarea {
 	box-sizing: border-box;
 	border: 1px solid #ccc;
