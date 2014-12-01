@@ -196,7 +196,6 @@ end
 		<div style="min-width: 170px; min-height: 210px">
 			<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 		</div>
-		<br>
 		<a><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
 		<span class=price>
