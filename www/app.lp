@@ -77,13 +77,13 @@ end
 			<table width=100%>
 				<tr>
 					<td width=100%>
-						<a id=greeting_anonymous class=hidden>
-							<t class=en>Hi</t><t class=ro>Salut</t>!
+						<a id=greeting_anonymous class="link hidden">
+							<b><t class=en>Hi</t><t class=ro>Salut</t>!</b>
 						</a>
 						<span id=greeting_logged_in class=hidden>
 							<t class=en>Hi</t>
 							<t class=ro>Salut</t>
-							<a id=greeting_name></a>!
+							<a id=greeting_name class=link></a>!
 						</span>
 					</td>
 					<td align=left>
@@ -836,7 +836,7 @@ end
 		Your order will be processed shortly and we will call you for confirmation.
 		<br>
 		<br>
-		Follow the status of the order <a class=a_account>in your account</a>.
+		Follow the status of the order <a class="a_account link">in your account</a>.
 	</t>
 	<t class=ro>
 		<h1>Iti multumim ca ai comandat de la noi!</h1>
@@ -845,7 +845,7 @@ end
 		operatorii nostrii si vei primi un telefon pentru confirmare.
 		<br>
 		<br>
-		Urmareste starea comenzii <a class=a_account>in contul tau</a>.
+		Urmareste starea comenzii <a class="a_account link">in contul tau</a>.
 	</t>
 	<br>
 	<br>
@@ -936,11 +936,11 @@ end
 			</tr>
 			<tr>
 				<td colspan=3 valign=top>
-					<t class=en><a class=a_account>Back to account</a></t>
-					<t class=ro><a class=a_account>Inapoi la cont</a></t>
+					<t class=en><a class="a_account link">Back to account</a></t>
+					<t class=ro><a class="a_account link">Inapoi la cont</a></t>
 					<br>
-					<t class=en><a class=a_home>Back to shopping</a></t>
-					<t class=ro><a class=a_home>Inapoi la cumparaturi</a></t>
+					<t class=en><a class="a_home link">Back to shopping</a></t>
+					<t class=ro><a class="a_home link">Inapoi la cumparaturi</a></t>
 				</td>
 			</tr>
 		</table>
@@ -973,11 +973,11 @@ end
 	<t class=ro>Parola a fost schimbata.</t>
 	<br>
 	<br>
-	<t class=en><a class=a_account>Back to account</a></t>
-	<t class=ro><a class=a_account>Inapoi la cont</a></t>
+	<t class=en><a class="a_account link">Back to account</a></t>
+	<t class=ro><a class="a_account link">Inapoi la cont</a></t>
 	<br>
-	<t class=en><a class=a_home>Back to shopping</a></t>
-	<t class=ro><a class=a_home>Inapoi la cumparaturi</a></t>
+	<t class=en><a class="a_home link">Back to shopping</a></t>
+	<t class=ro><a class="a_home link">Inapoi la cumparaturi</a></t>
 </script>
 
 <script type="text/x-mustache" id=account_template>
