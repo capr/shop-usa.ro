@@ -500,10 +500,7 @@ end
 						</tr>
 						<tr>
 							<td colspan=2 align=right nowrap>
-								<a class=gray id=btn_forgot_pass>
-									<t class=en>Forgot password?</t>
-									<t class=ro>Ai uitat parola?</t>
-								</a>
+								<a class="gray link" id=btn_forgot_pass><t class=en>Forgot password?</t><t class=ro>Ai uitat parola?</t></a>
 							</td>
 						</tr>
 					</table>
@@ -1074,11 +1071,11 @@ end
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
-		o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
-		o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
-		o.note, o.uid,
-		o.opnote,
-		coalesce(u.name, u.email) as opname
+				o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
+				o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
+				o.note, o.uid,
+				o.opnote,
+				coalesce(u.name, u.email) as opname
 				<>
 			</td>
 		</tr>
