@@ -181,6 +181,7 @@ end
 
 function set_pass(pass)
 	local usr = userinfo(allow(session_uid()))
+	pp(usr)
 	allow(usr.uid)
 	allow(usr.haspass)
 	query('update usr set pass = ? where uid = ?', pass_hash(pass), uid)
