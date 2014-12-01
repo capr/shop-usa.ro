@@ -1074,6 +1074,11 @@ end
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
+		o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
+		o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
+		o.note, o.uid,
+		o.opnote,
+		coalesce(u.name, u.email) as opname
 				<>
 			</td>
 		</tr>
