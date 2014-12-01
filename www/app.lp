@@ -411,6 +411,7 @@ end
 						</span>
 						{{#vnames}}{{.}} {{/vnames}}
 						<br>
+						<br>
 						<a action=remove class=link><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
 						<span class="gray small">&nbsp;|&nbsp;</span>
 						{{#buylater}}
