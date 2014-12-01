@@ -193,7 +193,7 @@ end
 
 <script type="text/x-mustache" id=prod_grid_element_template>
 	<div pid={{{pid}}} class=drop style="margin: 5px">
-		<div style="min-width: 170px; min-height: 250px">
+		<div style="min-width: 170px; min-height: 210px">
 			<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 		</div>
 		<br>
@@ -1072,6 +1072,13 @@ end
 </script>
 
 <script type="text/x-mustache" id=order_template>
+	<table width=100% style="border-spacing: 5px;">
+		<tr>
+			<td>
+
+			</td>
+		</tr>
+	</table>
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<th align=left>pid</th>
