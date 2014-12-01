@@ -159,7 +159,7 @@ end
 	<table width=100%>
 		{{#.}}
 		<tr pid={{{pid}}}>
-			<td width=300 height=200>
+			<td width=200 height=200>
 				<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 			</td>
 			<td>
@@ -1074,7 +1074,7 @@ end
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
-
+				<>
 			</td>
 		</tr>
 	</table>
