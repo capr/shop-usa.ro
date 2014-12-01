@@ -580,7 +580,7 @@ end
 						<tr>
 							<td nowrap>
 								{{#firstname}}
-								<a id=relogin class=gray>
+								<a id=relogin class="gray link">
 									<t class=en>Not {{firstname}}?</t>
 									<t class=ro>Nu esti {{firstname}}?</t>
 								</a>
@@ -589,15 +589,9 @@ end
 							{{#show_operations}}
 							<td align=right nowrap>
 								{{#haspass}}
-									<a id=reset_pass class=gray>
-										<t class=en>Change password</t>
-										<t class=ro>Schimba parola</t>
-									</a> |
+									<a id=reset_pass class="gray link"><t class=en>Change password</t><t class=ro>Schimba parola</t></a> |
 								{{/haspass}}
-								<a id=logout class=gray>
-									<t class=en>Log out</t>
-									<t class=ro>Iesi din cont</t>
-								</a>
+								<a id=logout class="gray link"><t class=en>Log out</t><t class=ro>Iesi din cont</t></a>
 							</td>
 							{{/show_operations}}
 						</tr>
