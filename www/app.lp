@@ -37,6 +37,7 @@ end
 	<script src="/checkout.js"></script>
 	<script src="/resetpass.js"></script>
 	<script src="/browse.js"></script>
+	<script src="/orders.js"></script>
 	<script src="/app.js"></script>
 </head>
 <body>
@@ -75,7 +76,7 @@ end
 			</table>
 			<table width=100%>
 				<tr>
-					<td>
+					<td width=100%>
 						<a id=greeting_anonymous class=hidden>
 							<t class=en>Hi</t><t class=ro>Salut</t>!
 						</a>
@@ -84,6 +85,9 @@ end
 							<t class=ro>Salut</t>
 							<a id=greeting_name></a>!
 						</span>
+					</td>
+					<td align=left>
+						<a id=orders_icon class="fa fa-cutlery hidden" title=orders></a>
 					</td>
 					<td align=right nowrap>
 						<div id=cart_icon_div style="position: relative; width: 50px; height: 50px">
@@ -1046,6 +1050,16 @@ end
 	{{/orders}}
 </script>
 
+<script type="text/x-mustache" id=order_list_template>
+	{{#orders}}
+	<table width=100% style="border-spacing: 5px;">
+		<tr>
+			<td>{{{oid}}}</td>
+			<td>{{from_atime}}</td>
+		</tr>
+	</table>
+	{{/orders}}
+</script>
 
 <div id=fb-root class=hidden></div>
 </body>

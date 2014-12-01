@@ -46,7 +46,8 @@ local userinfo = once(function(uid)
 			emailvalid,
 			if(pass is not null, 1, 0) as haspass,
 			googleid,
-			facebookid
+			facebookid,
+			admin
 		from
 			usr
 		where
@@ -56,6 +57,7 @@ local userinfo = once(function(uid)
 	t.anonymous = t.anonymous == 1
 	t.emailvalid = t.emailvalid == 1
 	t.haspass = t.haspass == 1
+	t.admin = t.admin == 1
 	return t
 end)
 
@@ -154,15 +156,25 @@ function auth.pass(auth)
 		assert(#pass >= 1)
 		allow(not pass_email_uid(email), 'email_taken')
 		local uid = anonymous_uid(session_uid()) or create_user()
+		--first non-anonymous user is admin
+		local admin = tonumber(query1([[
+			select count(1) from usr where anonymous = 0
+			]])) == 0
+		--users that admin creates are also admins
+		if not admin and session_uid() then
+			local usr = userinfo(session_uid())
+			admin = usr.admin
+		end
 		query([[
 			update usr set
 				anonymous = 0,
 				emailvalid = 0,
 				email = ?,
-				pass = ?
+				pass = ?,
+				admin = ?
 			where
 				uid = ?
-			]], email, pass_hash(pass), uid)
+			]], email, pass_hash(pass), admin, uid)
 		return uid
 	end
 end
@@ -385,12 +397,9 @@ function logout()
 	return authenticate()
 end
 
-admin = once(function() --TODO: same here
-	return query1([[
-		select 1 from usr u where
-			u.admin = 1 and u.active = 1 and u.uid = ?
-		]], uid()) ~= nil
-end)
+function admin() --TODO: same here
+	return userinfo(uid()).admin
+end
 
 function editmode()
 	return admin()

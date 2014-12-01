@@ -11,6 +11,12 @@ function init_status() {
 			$('#greeting_anonymous').show()
 			setlink('#greeting_anonymous', '/account')
 		}
+
+		setlink('#orders_icon', '/orders')
+		if (usr.admin)
+			$('#orders_icon').show()
+		else
+			$('#orders_icon').hide()
 	})
 }
 

@@ -74,6 +74,7 @@ qsubst'money   decimal(20,6)'
 
 --drop everything
 droptable'convrate'
+droptable'ordrlog'
 droptable'ordritem'
 droptable'ordr'
 droptable'cartitem'

@@ -22,8 +22,7 @@ local prod = check(query1([[
 		left join ps_manufacturer m on
 			m.id_manufacturer = p.id_manufacturer
 	where
-		p.active = 1
-		and p.id_product = ?
+		p.id_product = ?
 ]], pid))
 
 --combis ---------------------------------------------------------------------

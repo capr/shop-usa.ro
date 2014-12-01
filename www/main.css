@@ -273,3 +273,8 @@ input .inside-right { padding-right: 28px; }
 .zoom_out {
 	cursor: zoom-out !important;
 }
+
+#orders_icon {
+	font-size: 24px;
+	width: 34px;
+}
