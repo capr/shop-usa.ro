@@ -411,13 +411,13 @@ end
 						</span>
 						{{#vnames}}{{.}} {{/vnames}}
 						<br>
-						<a action="remove link"><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
+						<a action=remove class=link><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
 						<span class="gray small">&nbsp;|&nbsp;</span>
 						{{#buylater}}
-							<a action="move_to_cart link"><t class=en>Move to cart</t><t class=ro>Muta in cos</t></a>
+							<a action=move_to_cart class=link><t class=en>Move to cart</t><t class=ro>Muta in cos</t></a>
 						{{/buylater}}
 						{{^buylater}}
-							<a action="buy_later link"><t class=en>Save for later</t><t class=ro>Pastreaza pentru mai tarziu</t></a>
+							<a action=buy_later class=link><t class=en>Save for later</t><t class=ro>Pastreaza pentru mai tarziu</t></a>
 						{{/buylater}}
 					</td>
 					<td align=right valign=top>
