@@ -1004,7 +1004,7 @@ end
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
-				<h4>Comanda {{{oid}}} din {{atime}}</h4>
+				<h4>Comanda {{{oid}}} {{from_atime}}</h4>
 				<table width=100%>
 					{{#items}}
 					<tr>

@@ -289,7 +289,7 @@ action.account = function() {
 	function load_orders() {
 		load_content('#orders_section', '/orders.json', function(orders) {
 			$.each(orders.orders, function(i,o) {
-				o.atime = shortdate(o.atime)
+				o.from_atime = from_shortdate(o.atime)
 			})
 
 			render('orders', orders, '#orders_section')

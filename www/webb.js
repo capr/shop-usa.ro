@@ -114,6 +114,10 @@ var short_months =
 var months =
 	['January','February','Mars','April','May','June','July','August','September','October','November','December']
 
+function zeroes(n, d) {
+	return Array(Math.max(d - String(n).length + 1, 0)).join(0) + n
+}
+
 function shortdate(date) {
 	var d = new Date(date)
 	var now = new Date()
@@ -122,12 +126,17 @@ function shortdate(date) {
 		d.getMonth() == now.getMonth() &&
 		d.getFullYear() == now.getFullYear()
 	) {
-		return S('today', 'Today') + ', ' + d.getHours() + ':' + d.getMinutes()
+		return S('today', 'Today') + ', ' + zeroes(d.getHours(), 2) + ':' + zeroes(d.getMinutes(), 2)
 	} else {
 		return d.getDate() + ' ' +
 			S(months[now.getMonth()].toLowerCase(), months[now.getMonth()]) +
 			(d.getFullYear() != now.getFullYear() ? ' ' + d.getFullYear() : '')
 	}
+}
+
+function from_shortdate(date) {
+	var d = shortdate(date)
+	return (d.match(/Azi/) ? 'de' : S('from', 'from')) + ' ' + d
 }
 
 var update_timeago
