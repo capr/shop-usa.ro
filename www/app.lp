@@ -159,7 +159,7 @@ end
 	<table width=100%>
 		{{#.}}
 		<tr pid={{{pid}}}>
-			<td width=200 height=200>
+			<td width=210 height=200>
 				<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 			</td>
 			<td>
