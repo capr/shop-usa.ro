@@ -66,7 +66,7 @@ end
 					for i,letter in ipairs(letters) do
 						local search = letter == '#' and 'other' or letter
 						?>
-						<td align=center width=<?=w?>>
+						<td align=right width=<?=w?>>
 							<a search=<?=search?>><?=letter?></a>
 						</td>
 						<?
@@ -147,7 +147,7 @@ end
 	<table style="float: right;">
 		<tr>
 		{{#items}}
-			<td valign=middle style="padding-left: 30px; padding-right: 30px;">
+			<td valign=middle style="padding-left: 20px; padding-right: 0px;">
 				<a catid={{{catid}}}>{{{catname}}}</a>
 			</td>
 		{{/items}}
