@@ -104,7 +104,7 @@ for i,grp in groupby(t, 'buylater') do
 			atime_ago = tonumber(t.atime_ago),
 		}
 		table.insert(items, combi)
-		for i,t in groupby(ci, 'coid') do
+		for i,t in groupby(ci, 'vid') do
 			table.insert(combi.vids, t[1].vid)
 			table.insert(combi.vnames, t[1].vname)
 			for i,e in ipairs(t) do

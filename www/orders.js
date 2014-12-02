@@ -1,13 +1,15 @@
 (function() {
 
-function update_orders(orders) {
+var order_statuses = ['new', 'processing', 'secured', 'shipped',
+	'canceled', 'returned']
 
-	var statuses = ['new', 'processing', 'secured', 'shipped',
-		'canceled', 'returned']
+var order_item_statuses = ['new', 'not_available', 'secured', 'shipped',
+	'canceled', 'returned', 'refunded']
+
+function update_orders(orders) {
 
 	$.each(orders.orders, function(i,o) {
 		o.from_atime = shortdate(o.atime)
-		o.statuses = select_map(statuses, o.status)
 	})
 
 	render('order_list', orders, '#main')
@@ -29,13 +31,14 @@ action.orders = function() {
 
 function update_order(order) {
 
-	var statuses = ['new', 'not_available', 'secured', 'shipped',
-		'canceled', 'returned', 'refunded']
-
 	$.each(order.items, function(i,oi) {
 		oi.from_atime = from_shortdate(oi.atime)
-		oi.statuses = select_map(statuses, oi.status)
+		oi.statuses = select_map(order_item_statuses, oi.status)
 	})
+
+	order.statuses = select_map(order_statuses, order.status)
+	order.address = order.shiptype == 'home'
+	order.atime = shortdate(order.atime)
 
 	render('order', order, '#main')
 

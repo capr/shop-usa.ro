@@ -1056,13 +1056,7 @@ end
 			<td><a>{{from_atime}}</a></td>
 			<td>{{uname}}</td>
 			<td>{{opnote}}</td>
-			<td>
-				<select id=status>
-					{{#statuses}}
-						<option value="{{value}}" {{{selected}}}>{{value}}</option>
-					{{/statuses}}
-				</select>
-			</td>
+			<td>{{status}}</td>
 		</tr>
 		{{/orders}}
 	</table>
@@ -1072,15 +1066,70 @@ end
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
-				o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
-				o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
-				o.note, o.uid,
-				o.opnote,
-				coalesce(u.name, u.email) as opname
-				<>
+				<h3>Order #<b>{{oid}}</b> from <b>{{atime}}</b></h3>
+			</td>
+			<td align=right width=200 class=nowrap>
+				status: <select id=status>
+					{{#statuses}}
+						<option value="{{value}}" {{{selected}}}>{{value}}</option>
+					{{/statuses}}
+				</select>
 			</td>
 		</tr>
 	</table>
+
+	<table width=100% style="border-spacing: 5px;">
+		<tr>
+			<td valign=top>
+				<h3>Contact:</h3>
+				<table width=100% style="border-spacing: 5px;">
+					<tr>
+						<td>Email:</td>
+						<td>{{email}}</td>
+					</tr>
+					<tr>
+						<td>Name:</td>
+						<td>{{name}}</td>
+					</tr>
+					<tr>
+						<td>Phone:</td>
+						<td>{{phone}}</td>
+					</tr>
+				</table>
+			</td>
+			<td valign=top>
+				<h3>Shipping: {{shiptype}}, {{shipcost}} RON</h3>
+				{{#address}}
+				<table width=100% style="border-spacing: 5px;">
+					<tr>
+						<td>Address:</td>
+						<td>{{addr}}</td>
+					</tr>
+					<tr>
+						<td>City:</td>
+						<td>{{city}}</td>
+					</tr>
+					<tr>
+						<td>County:</td>
+						<td>{{county}}</td>
+					</tr>
+				</table>
+				{{/address}}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3>Customer Note:</h3>
+				<textarea rows=4>{{note}}</textarea>
+			</tD>
+			<td>
+				<h3>Operator Note ({{opname}}):</h3>
+				<textarea rows=4>{{opnote}}</textarea>
+			</tD>
+		</tr>
+	</table>
+
+	<h3>Items:</h3>
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<th align=left>pid</th>
