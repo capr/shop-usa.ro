@@ -1063,19 +1063,51 @@ end
 </script>
 
 <script type="text/x-mustache" id=order_template>
+
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
 				<h3>Order #<b>{{oid}}</b> from <b>{{atime}}</b></h3>
 			</td>
-			<td align=right width=200 class=nowrap>
-				status: <select id=status>
+			<td align=right width=1><b>status: </b></td>
+			<td align=right width=100 class=nowrap>
+				<select id=status>
 					{{#statuses}}
 						<option value="{{value}}" {{{selected}}}>{{value}}</option>
 					{{/statuses}}
 				</select>
 			</td>
 		</tr>
+	</table>
+
+	<h3>Items:</h3>
+	<table width=100% class=datagrid>
+		<tr>
+			<th align=left>pid</th>
+			<th align=left>date</th>
+			<th align=left>name</th>
+			<th align=left>combi</th>
+			<th align=left>assigned</th>
+			<th align=left>op note</th>
+			<th align=left>status</th>
+		</tr>
+		{{#items}}
+		<tr oiid={{{oiid}}}>
+			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
+			<td><a>{{from_atime}}</a></td>
+			<td>{{name}}</td>
+			<td>{{vnames}}</td>
+			<td>{{opname}}</td>
+			<td>{{opnote}}</td>
+			<td>
+				<select id=status>
+					{{#statuses}}
+						<option value="{{value}}" {{{selected}}}>{{value}}</option>
+					{{/statuses}}
+				</select>
+			</td>
+		</tr>
+		{{/items}}
 	</table>
 
 	<table width=100% style="border-spacing: 5px;">
@@ -1129,35 +1161,14 @@ end
 		</tr>
 	</table>
 
-	<h3>Items:</h3>
-	<table width=100% style="border-spacing: 5px;">
-		<tr>
-			<th align=left>pid</th>
-			<th align=left>date</th>
-			<th align=left>name</th>
-			<th align=left>combi</th>
-			<th align=left>assigned</th>
-			<th align=left>op note</th>
-			<th align=left>status</th>
-		</tr>
-		{{#items}}
-		<tr oiid={{{oiid}}}>
-			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
-			<td><a>{{from_atime}}</a></td>
-			<td>{{name}}</td>
-			<td>{{vnames}}</td>
-			<td>{{opname}}</td>
-			<td>{{opnote}}</td>
-			<td>
-				<select id=status>
-					{{#statuses}}
-						<option value="{{value}}" {{{selected}}}>{{value}}</option>
-					{{/statuses}}
-				</select>
-			</td>
-		</tr>
-		{{/items}}
-	</table>
+	<br>
+	<br>
+	<div style="float:right"><button type=button class=orange>Save Changes</button></div>
+	<br>
+	<br>
+	<br>
+	<br>
+
 </script>
 
 <div id=fb-root class=hidden></div>

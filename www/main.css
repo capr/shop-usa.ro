@@ -23,6 +23,10 @@ table, tr, td {
    border-collapse: separate;
 }
 
+tbody, tr, th, td {
+	border: inherit;
+}
+
 input, select, textarea {
 	box-sizing: border-box;
 	border: 1px solid #ccc;
@@ -279,3 +283,16 @@ input .inside-right { padding-right: 28px; }
 	font-size: 24px;
 	width: 34px;
 }
+
+.datagrid {
+	border-spacing: 5px;
+	border-collapse: collapse;
+	border: 1px solid #ccc;
+	border-left: 0;
+	border-right: 0;
+}
+
+.datagrid th {
+	background-color: #eee;
+}
+
