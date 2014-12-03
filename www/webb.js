@@ -142,7 +142,6 @@ function format_date(date, months, showtime) {
 	} else {
 		var now = new Date()
 		var day = d.getDate()
-		console.log(months[d.getMonth()].toLowerCase())
 		var month = S(months[d.getMonth()].toLowerCase(), months[d.getMonth()])
 		var year = (d.getFullYear() != now.getFullYear() ? d.getFullYear() : '')
 		return S('date_format', '{year} {month} {day} {time}').format({
