@@ -1048,7 +1048,7 @@ end
 		<tr>
 			<td class=nowrap><b>Search Order:&nbsp;</b></td>
 			<td width=100%><input id=search placeholder="name, email, phone, pid, product name"></td>
-			<td style="padding-left: 5px"><button type=button class=nowrap><i class="fa fa-search"></i> Search</button></td>
+			<td style="padding-left: 5px"><button type=button class="lean nowrap"><i class="fa fa-search"></i> Search</button></td>
 		</tr>
 	</table>
 	<table width=100% style="border-spacing: 5px;">
