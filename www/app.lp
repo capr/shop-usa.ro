@@ -1107,7 +1107,7 @@ end
 			<th align=left>name</th>
 			<th align=left>combi</th>
 			<th align=right>price</th>
-			<th align=left>last op</th>
+			<th align=left class=nowrap>last op</th>
 			<th align=left>note</th>
 			<th align=left>status</th>
 		</tr>
