@@ -106,6 +106,16 @@ function update_cart_page() {
 	var total = 0
 	$.each(g_cart.buynow, function(i,e) { total += e.price; })
 
+	function set_sname(i,e) {
+		var snames = []
+		for(var i = 0; i < e.vnames.length; i++)
+			snames.push(e.dnames[i] + ': <b>' + e.vnames[i] + '</b>')
+		e.sname = snames.join(', ')
+	}
+
+	$.each(g_cart.buynow, set_sname)
+	$.each(g_cart.buylater, set_sname)
+
 	render('cart_page', {
 		buynow:         render('cart_list', g_cart.buynow),
 		buylater:       render('cart_list', g_cart.buylater),

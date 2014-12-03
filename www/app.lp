@@ -282,8 +282,10 @@ end
 		</tr>
 		<tr>
 			<td colspan=2>
-				<br>
-				<br>
+				<h3>
+					<t class=en>Product Information</t>
+					<t class=ro>Informatii Produs</t>
+				</h3>
 				<div class=description>{{{descr}}}</div>
 				<br>
 				<br>
@@ -408,8 +410,7 @@ end
 						<span class=price>
 							<t class=en>${{{price}}}</t>
 							<t class=ro>{{{price}}} Lei</t>
-						</span>
-						{{#vnames}}{{.}} {{/vnames}}
+						</span> {{{sname}}}
 						<br>
 						<br>
 						<a action=remove class=link><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
@@ -1105,7 +1106,7 @@ end
 		<tr>
 			<th align=left>pid</th>
 			<th align=left>name</th>
-			<th align=left>combi</th>
+			<th align=left>combination</th>
 			<th align=right>price</th>
 			<th align=left>last op</th>
 			<th align=left>note</th>

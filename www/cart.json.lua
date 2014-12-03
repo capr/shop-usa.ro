@@ -51,6 +51,7 @@ local t = query([[
 		p.id_product as pid,
 		a.id_attribute as vid,
 		al.name as vname,
+		agl.name as dname,
 		pl.name,
 		$ronprice(pa.price, ?) as price,
 		$ronprice(pa.old_price, ?) as old_price,
@@ -74,6 +75,10 @@ local t = query([[
 		on a.id_attribute = pac.id_attribute
 	left join ps_attribute_lang al
 		on al.id_attribute = a.id_attribute
+	left join ps_attribute_group ag
+		on ag.id_attribute_group = a.id_attribute_group
+	left join ps_attribute_group_lang agl
+		on agl.id_attribute_group = ag.id_attribute_group
 	left join ps_product_attribute_image pai
 		on pai.id_product_attribute = pa.id_product_attribute
 	left join ps_image i
@@ -81,8 +86,6 @@ local t = query([[
 	where
 		ci.uid = ?
 		and p.active = 1
-	group by
-		ci.ciid
 	order by
 		ci.buylater,
 		ci.pos, ci.atime desc,
@@ -100,13 +103,16 @@ for i,grp in groupby(t, 'buylater') do
 			buylater = t.buylater == 1,
 			ciid = t.ciid, coid = t.coid, pid = t.pid,
 			name = t.name, price = t.price,  old_price = t.old_price,
-			bname = t.bname, vids = {}, vnames = {}, imgid = t.imgid, imgs = {},
+			bname = t.bname,
+			vids = {}, vnames = {}, dnames = {},
+			imgid = t.imgid, imgs = {},
 			atime_ago = tonumber(t.atime_ago),
 		}
 		table.insert(items, combi)
 		for i,t in groupby(ci, 'vid') do
 			table.insert(combi.vids, t[1].vid)
 			table.insert(combi.vnames, t[1].vname)
+			table.insert(combi.dnames, t[1].dname)
 			for i,e in ipairs(t) do
 				table.insert(combi.imgs, tonumber(e.imgid))
 			end

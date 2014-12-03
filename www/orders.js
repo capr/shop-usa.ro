@@ -1,10 +1,10 @@
 (function() {
 
-var order_statuses = ['new', 'processing', 'secured', 'shipped',
+var order_statuses = ['new', 'open', 'secured', 'shipped',
 	'canceled', 'returned']
 
-var order_item_statuses = ['new', 'not_available', 'secured', 'shipped',
-	'canceled', 'returned', 'refunded']
+var order_item_statuses = ['new', 'secured', 'shipped',
+	'canceled', 'returned', 'refunded', 'not_available']
 
 function update_orders(orders) {
 
