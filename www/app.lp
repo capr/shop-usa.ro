@@ -1115,10 +1115,10 @@ end
 		<tr oiid={{{oiid}}}>
 			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
 			<td width=1>
-				<div class=ellipsis style="width: 260px" title="{{name}}">{{name}}</div>
+				<div class=ellipsis style="width: 260px" title="{{{name}}}">{{{name}}}</div>
 			</td>
 			<td width=1>
-				<div class=ellipsis style="width: 180px" title="{{vnames}}">{{vnames}}</div>
+				<div class=ellipsis style="width: 180px" title="{{{vnames}}}">{{{vnames}}}</div>
 			</td>
 			<td class=price align=right>{{price}} RON</td>
 			<td>{{opname}}</td>
