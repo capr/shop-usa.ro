@@ -33,10 +33,6 @@ input, select, textarea {
 	width: 100%;
 }
 
-input, select {
-	height: 22px;
-}
-
 button {
 	height: 26px;
 }
