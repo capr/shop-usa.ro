@@ -76,7 +76,7 @@ function update_order(o) {
 		$(this).click(function() {
 			window.open('http://6pm.com/'+pid, '_blank')
 		}).hover(function() {
-			$('#main').append('<img id=popup_img style="position: absolute;" src="/img/p/{0}-cart.jpg">'.format(imgid))
+			$('#main').append('<img id=popup_img style="position: absolute;" src="/img/p/{0}-home.jpg">'.format(imgid))
 		}, function() {
 			$('#popup_img').remove()
 		}).mousemove(function(e) {
