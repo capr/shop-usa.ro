@@ -303,10 +303,10 @@ input .inside-right { padding-right: 28px; }
 	background-color: #eee;
 }
 
-.datagrid td {
+.datagrid td, th {
 	padding-right: 10px;
 }
 
-.datagrid td:last-child {
+.datagrid td:last-child, th:last-child {
 	padding-right: 0px;
 }

@@ -1042,6 +1042,7 @@ end
 </script>
 
 <script type="text/x-mustache" id=order_page_template>
+	<br>
 	<table width=100%>
 		<tr>
 			<td class=nowrap><b>Search Order:&nbsp;</b></td>
@@ -1072,12 +1073,13 @@ end
 </script>
 
 <script type="text/x-mustache" id=order_template>
+	<br>
 	<table width=100%>
 		<tr>
-			<td>
-				<h3>Order #<b>{{oid}}</b> from <b>{{atime}}</b></h3>
+			<td valign=top>
+				<h3 style="margin-top: 0">Order #{{oid}} from {{atime}}</h3>
 			</td>
-			<td align=right>
+			<td align=right valign=top>
 				<table width=200>
 					<tr>
 						<td><b>status:</b></td>
@@ -1104,7 +1106,7 @@ end
 			<th align=left>pid</th>
 			<th align=left>name</th>
 			<th align=left>combi</th>
-			<th align=left>price</th>
+			<th align=right>price</th>
 			<th align=left>last op</th>
 			<th align=left>note</th>
 			<th align=left>status</th>
