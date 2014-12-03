@@ -79,7 +79,7 @@ function update_order(o) {
 		var imgid = $(this).attr('imgid')
 		$(this).mouseenter(function() {
 			console.log('enter')
-			$('#main').append('<img id=popup_img style="position: absolute;" src="/img/p/{0}-home.jpg">'.format(imgid))
+			$('#main').append('<img id=popup_img style="position: absolute; pointer-events: none;" src="/img/p/{0}-home.jpg">'.format(imgid))
 		}).mouseleave(function() {
 			console.log('leave')
 			$('#popup_img').remove()
