@@ -34,7 +34,7 @@ input, select, textarea {
 }
 
 input, select {
-	height: 22px;
+	height: 23px;
 }
 
 button {
@@ -42,7 +42,7 @@ button {
 }
 
 button.lean {
-	height: 22px;
+	height: 23px;
 }
 
 input[type=radio] {
