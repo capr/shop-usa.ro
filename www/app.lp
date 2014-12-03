@@ -1047,8 +1047,10 @@ end
 	<table width=100%>
 		<tr>
 			<td class=nowrap><b>Search Order:&nbsp;</b></td>
-			<td width=100%><input id=search placeholder="name, email, phone, pid, product name"></td>
-			<td style="padding-left: 5px"><button type=button class="lean nowrap"><i class="fa fa-search"></i> Search</button></td>
+			<td width=100%><input id=search placeholder="name, email, phone, pid, product name" value="{{q}}"></td>
+			<td style="padding-left: 5px">
+				<button type=button id=btn_search class="lean nowrap"><i class="fa fa-search"></i> Search</button>
+			</td>
 		</tr>
 	</table>
 	<table width=100% style="border-spacing: 5px;">

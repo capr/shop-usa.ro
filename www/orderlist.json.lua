@@ -1,4 +1,6 @@
 
+local q = '%'..(... or '')..'%'
+
 allow(admin())
 
 local orders = query([[
@@ -13,10 +15,28 @@ local orders = query([[
 	from
 		ordr o
 		left join usr u on u.uid = o.opuid
+	where
+		o.name like ?
+		or o.email like ?
+		or o.phone like ?
+		or exists (
+			select 1
+			from
+				ordritem oi
+			inner join ps_product_attribute pa
+				on pa.id_product_attribute = oi.coid
+			inner join ps_product_lang pl
+				on pl.id_product = pa.id_product
+			where
+				oi.oid = o.oid and (
+					pa.id_product like ?
+					or pl.name like ?
+				)
+			)
 	order by
 		open,
 		o.mtime desc
-	]])
+	]], q, q, q, q, q)
 
 for i,o in ipairs(orders) do
 	o.open = tonumber(o.open) == 1

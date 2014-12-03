@@ -23,11 +23,26 @@ function update_orders(orders) {
 		var pid = $(this).attr('pid')
 		window.open('http://6pm.com/'+pid, '_blank')
 	})
+
+	$('#btn_search').click(function() {
+		var q = $('#search').val()
+		exec('/orders/'+q)
+	})
+
+	$('#search').on('input', function() {
+		$('#btn_search').click()
+	})
+
+	$('#search').focus()
+
 }
 
-action.orders = function() {
+action.orders = function(q) {
 	hide_nav()
-	load_main('/orderlist.json', update_orders)
+	load_main('/orderlist.json'+(q ? '/'+q : ''), function(data) {
+		data.q = q
+		update_orders(data)
+	})
 }
 
 function update_order(o) {

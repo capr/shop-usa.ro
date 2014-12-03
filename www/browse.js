@@ -243,12 +243,15 @@ function dimsel_changed() {
 	$('#dimsel select[did] option:selected').each(function() {
 		dvals.push(parseInt($(this).val()))
 	})
-	dvals.sort(function(a, b) { return a > b })
+	dvals.sort(function(a, b) { return a == b ? 0 : (a > b ? 1 : -1) })
 	dvals = dvals.join(' ')
 
 	//find the combi for those dvals
 	g_combi = g_prod.combis[dvals]
 	var combi = g_combi || {}
+
+	console.log(JSON.stringify(dvals))
+	console.log(JSON.stringify(g_prod.combis))
 
 	// prepare and apply the combi templates
 	var co = {}
