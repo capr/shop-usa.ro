@@ -118,30 +118,51 @@ function zeroes(n, d) {
 	return Array(Math.max(d - String(n).length + 1, 0)).join(0) + n
 }
 
-function parsedate(s) {
+function parse_date(s) {
 	var a = s.split(/[^0-9]/)
 	return new Date (a[0], a[1]-1, a[2], a[3], a[4], a[5])
 }
 
+function format_time(d) {
+	return zeroes(d.getHours(), 2) + ':' + zeroes(d.getMinutes(), 2)
+}
 
-function shortdate(date) {
-	var d = parsedate(date)
+function is_today(d) {
 	var now = new Date()
-	if (
+	return
 		d.getDate() == now.getDate() &&
 		d.getMonth() == now.getMonth() &&
 		d.getFullYear() == now.getFullYear()
-	) {
-		return S('today', 'Today') + ', ' + zeroes(d.getHours(), 2) + ':' + zeroes(d.getMinutes(), 2)
+}
+
+function format_date(date, months, showtime) {
+	var d = parse_date(date)
+	if (is_today(d)) {
+		return S('today', 'Today') + (showtime ? format_time(d) : '')
 	} else {
-		return d.getDate() + ' ' +
-			S(months[now.getMonth()].toLowerCase(), months[now.getMonth()]) +
-			(d.getFullYear() != now.getFullYear() ? ' ' + d.getFullYear() : '')
+		var now = new Date()
+		var day = d.getDate()
+		console.log(months[d.getMonth()].toLowerCase())
+		var month = S(months[d.getMonth()].toLowerCase(), months[d.getMonth()])
+		var year = (d.getFullYear() != now.getFullYear() ? d.getFullYear() : '')
+		return S('date_format', '{year} {month} {day} {time}').format({
+			day: day,
+			month: month,
+			year: year,
+			time: (showtime == 'always' ? format_time(d) : '')
+		})
 	}
 }
 
-function from_shortdate(date) {
-	var d = shortdate(date)
+function shortdate(date, showtime) {
+	return format_date(date, short_months, showtime)
+}
+
+function longdate(date, showtime) {
+	return format_date(date, months, showtime)
+}
+
+function from_date(d) {
 	return (d.match(/Azi/) ? 'de' : S('from', 'from')) + ' ' + d
 }
 

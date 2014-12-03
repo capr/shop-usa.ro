@@ -9,7 +9,7 @@ var order_item_statuses = ['new', 'secured', 'shipped',
 function update_orders(orders) {
 
 	$.each(orders.orders, function(i,o) {
-		o.from_atime = shortdate(o.atime)
+		o.atime = shortdate(o.atime, 'always')
 		o.opname = firstname(o.opname, o.opemail)
 	})
 
@@ -63,7 +63,7 @@ function update_order(o) {
 
 	o.statuses = select_map(order_statuses, o.status)
 	o.address = o.shiptype == 'home'
-	o.atime = shortdate(o.atime)
+	o.atime = longdate(o.atime, 'always')
 	o.opname = firstname(o.opname, o.opemail)
 
 	render('order', o, '#main')
