@@ -1042,7 +1042,7 @@ end
 	{{/orders}}
 </script>
 
-<script type="text/x-mustache" id=order_page_template>
+<script type="text/x-mustache" id=orderlist_page_template>
 	<br>
 	<table width=100%>
 		<tr>
@@ -1053,6 +1053,10 @@ end
 			</td>
 		</tr>
 	</table>
+	<div id=orders></div>
+</script>
+
+<script type="text/x-mustache" id=orderlist_template>
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<th align=left>order id</th>

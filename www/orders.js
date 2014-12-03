@@ -13,7 +13,7 @@ function update_orders(orders) {
 		o.opname = firstname(o.opname, o.opemail)
 	})
 
-	render('order_page', orders, '#main')
+	render('orderlist', orders, '#orders')
 
 	$('#main [oid] a').each(function() {
 		setlink(this, '/order/'+upid(this, 'oid'))
@@ -23,26 +23,37 @@ function update_orders(orders) {
 		var pid = $(this).attr('pid')
 		window.open('http://6pm.com/'+pid, '_blank')
 	})
+}
 
-	$('#btn_search').click(function() {
-		var q = $('#search').val()
-		exec('/orders/'+q)
+function load_orders(q) {
+	load_content('#orders', '/orderlist.json'+(q ? '/'+q : ''), function(data) {
+		data.q = q
+		update_orders(data)
 	})
-
-	$('#search').on('input', function() {
-		$('#btn_search').click()
-	})
-
-	$('#search').focus()
-
 }
 
 action.orders = function(q) {
 	hide_nav()
-	load_main('/orderlist.json'+(q ? '/'+q : ''), function(data) {
-		data.q = q
-		update_orders(data)
+
+	render('orderlist_page', {q: q}, '#main')
+
+	$('#btn_search').click(function() {
+		var q = $('#search').val()
+		load_orders(q)
 	})
+
+	var timeout
+	$('#search').on('input', function() {
+		if (timeout)
+			clearTimeout(timeout)
+		timeout = setTimeout(function() {
+			$('#btn_search').click()
+		}, 200)
+	})
+
+	$('#search').focus().select()
+
+	load_orders(q)
 }
 
 function update_order(o) {
