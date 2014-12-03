@@ -1107,22 +1107,22 @@ end
 			<th align=left>name</th>
 			<th align=left>combi</th>
 			<th align=right>price</th>
-			<th align=left class=nowrap>last op</th>
+			<th align=left>last op</th>
 			<th align=left>note</th>
 			<th align=left>status</th>
 		</tr>
 		{{#items}}
 		<tr oiid={{{oiid}}}>
 			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
-			<td class=nowrap width=1>
+			<td width=1>
 				<div class=ellipsis style="width: 260px" title="{{name}}">{{name}}</div>
 			</td>
-			<td class=nowrap width=1>
+			<td width=1>
 				<div class=ellipsis style="width: 180px" title="{{vnames}}">{{vnames}}</div>
 			</td>
-			<td class="nowrap price" align=right>{{price}} RON</td>
-			<td class=nowrap>{{opname}}</td>
-			<td class=nowrap><input value="{{itemnote}}"></td>
+			<td class=price align=right>{{price}} RON</td>
+			<td>{{opname}}</td>
+			<td><input value="{{itemnote}}"></td>
 			<td width=100>
 				<select id=status>
 					{{#statuses}}
@@ -1136,7 +1136,7 @@ end
 			<td></td>
 			<td></td>
 			<td><b>Total: </b></td>
-			<td class="nowrap price" align=right>{{{total}}} RON</span>
+			<td class=price align=right>{{{total}}} RON</span>
 			</td>
 			<td colspan=3></td>
 		</td>
