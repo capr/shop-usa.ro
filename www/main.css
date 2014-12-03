@@ -41,8 +41,11 @@ button {
 	height: 27px;
 }
 
-button.lean {
+button.slim {
 	height: 23px;
+	margin: 0;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 input[type=radio] {
@@ -318,4 +321,9 @@ input .inside-right { padding-right: 28px; }
 
 .datagrid td:last-child, th:last-child {
 	padding-right: 0px;
+}
+
+.canceled {
+	color: #999;
+	text-decoration: line-through;
 }

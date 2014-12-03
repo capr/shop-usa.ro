@@ -1048,9 +1048,6 @@ end
 		<tr>
 			<td class=nowrap><b>Search Order:&nbsp;</b></td>
 			<td width=100%><input id=search placeholder="name, email, phone, pid, product name" value="{{q}}"></td>
-			<td style="padding-left: 5px">
-				<button type=button id=btn_search class="lean nowrap"><i class="fa fa-search"></i> Search</button>
-			</td>
 		</tr>
 	</table>
 	<div id=orders></div>
@@ -1119,10 +1116,10 @@ end
 			<th align=left>status</th>
 		</tr>
 		{{#items}}
-		<tr oiid={{{oiid}}}>
+		<tr oiid={{{oiid}}} class="{{{canceled}}}">
 			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
 			<td width=1>
-				<div class=ellipsis style="width: 260px" title="{{{name}}}">{{{name}}}</div>
+				<div class="ellipsis" style="width: 260px" title="{{{name}}}">{{{name}}}</div>
 			</td>
 			<td width=1>
 				<div class=ellipsis style="width: 180px" title="{{{vnames}}}">{{{vnames}}}</div>
@@ -1139,6 +1136,11 @@ end
 			</td>
 		</tr>
 		{{/items}}
+		<tr>
+			<td width=76><input id=new_pid></td>
+			<td colspan=5></td>
+			<td><button type=button id=add_pid class="orange slim" style="width: 100%">Add</button></td>
+		</td>
 		<tr>
 			<td></td>
 			<td></td>

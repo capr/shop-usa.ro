@@ -47,7 +47,7 @@ order.items = check(query([[
 		left join ps_product_attribute_image pai
 			on pai.id_product_attribute = pa.id_product_attribute
 		left join ps_image im
-			on im.id_image = pai.id_image
+			on im.id_image = pai.id_image and im.cover = 1
 	where
 		i.oid = ?
 	group by

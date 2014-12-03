@@ -118,8 +118,14 @@ function zeroes(n, d) {
 	return Array(Math.max(d - String(n).length + 1, 0)).join(0) + n
 }
 
+function parsedate(s) {
+	var a = s.split(/[^0-9]/)
+	return new Date (a[0], a[1]-1, a[2], a[3], a[4], a[5])
+}
+
+
 function shortdate(date) {
-	var d = new Date(date)
+	var d = parsedate(date)
 	var now = new Date()
 	if (
 		d.getDate() == now.getDate() &&

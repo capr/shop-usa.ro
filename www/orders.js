@@ -37,17 +37,13 @@ action.orders = function(q) {
 
 	render('orderlist_page', {q: q}, '#main')
 
-	$('#btn_search').click(function() {
-		var q = $('#search').val()
-		load_orders(q)
-	})
-
 	var timeout
 	$('#search').on('input', function() {
 		if (timeout)
 			clearTimeout(timeout)
 		timeout = setTimeout(function() {
-			$('#btn_search').click()
+			var q = $('#search').val()
+			load_orders(q)
 		}, 200)
 	})
 
@@ -61,6 +57,7 @@ function update_order(o) {
 	o.total = 0
 	$.each(o.items, function(i,oi) {
 		oi.statuses = select_map(order_item_statuses, oi.status)
+		oi.canceled = oi.status == 'cancel' ? 'canceled' : null
 		o.total += oi.price
 	})
 
