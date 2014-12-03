@@ -1081,7 +1081,10 @@ end
 	<table width=100%>
 		<tr>
 			<td valign=top>
-				<h3 style="margin-top: 0">Order #{{oid}} from {{atime}}</h3>
+				<h3 style="margin-top: 0">
+					<t class=en>Order #{{oid}} from {{atime}} by {{name}}</t>
+					<t class=ro>Comanda nr. {{oid}} din {{atime}} de la {{name}}</t>
+				</h3>
 			</td>
 			<td align=right valign=top>
 				<table width=200>
@@ -1096,7 +1099,7 @@ end
 						</td>
 					</tr>
 					<tr>
-						<td><b>last op:</b></td>
+						<td><b><t class=en>last op</t><t class=ro>operator</t>:</b></td>
 						<td><b>{{opname}}</b></td>
 					</tr>
 				</table>
@@ -1104,15 +1107,18 @@ end
 		</tr>
 	</table>
 
-	<h3>Items:</h3>
+	<h3>
+		<t class=en>Items:</t>
+		<t class=ro>Produse:</t>
+	</h3>
 	<table width=100% class=datagrid style="border-spacing: 5px">
 		<tr>
 			<th align=left>pid</th>
-			<th align=left>name</th>
-			<th align=left>combination</th>
-			<th align=right>price</th>
-			<th align=left>last op</th>
-			<th align=left>note</th>
+			<th align=left><t class=en>product</t><t class=ro>produs</t></th>
+			<th align=left><t class=en>combination</t><t class=ro>combinatie</t></th>
+			<th align=right><t class=en>price</t><t class=ro>pret</t></th>
+			<th align=left><t class=en>last op</t><t class=ro>operator</t></th>
+			<th align=left><t class=en>note</t><t class=ro>nota</t></th>
 			<th align=left>status</th>
 		</tr>
 		{{#items}}
@@ -1139,7 +1145,10 @@ end
 		<tr>
 			<td width=76><input id=new_pid></td>
 			<td colspan=5></td>
-			<td><button type=button id=add_pid class="orange slim" style="width: 100%">Add</button></td>
+			<td><button type=button id=add_pid class="orange slim" style="width: 100%">
+				<t class=en>Add</t>
+				<t class=ro>Adauga</t>
+			</button></td>
 		</td>
 		<tr>
 			<td></td>
@@ -1154,36 +1163,36 @@ end
 	<table width=100%>
 		<tr>
 			<td valign=top width=50%>
-				<h3>Contact:</h3>
+				<h3>Client:</h3>
 				<table width=100% style="border-spacing: 5px;">
 					<tr>
 						<td>Email:</td>
 						<td><input id=email value="{{email}}"></td>
 					</tr>
 					<tr>
-						<td>Name:</td>
+						<td><t class=en>Name:</t><t class=ro>Nume:</t></td>
 						<td><input id=name value="{{name}}"></td>
 					</tr>
 					<tr>
-						<td>Phone:</td>
+						<td><t class=en>Phone:</t><t class=ro>Telefon:</t></td>
 						<td><input id=phone value="{{phone}}"></td>
 					</tr>
 				</table>
 			</td>
 			<td valign=top width=50%>
-				<h3>Shipping: {{shiptype}}, {{shipcost}} RON</h3>
+				<h3><t class=en>Shipping:</t><t class=ro>Livrare:</t> {{shiptype}}, {{shipcost}} RON</h3>
 				{{#address}}
 				<table width=100% style="border-spacing: 5px;">
 					<tr>
-						<td>Address:</td>
+						<td><t class=en>Address:</t><t class=ro>Adresa:</t></td>
 						<td><input id=addr value="{{addr}}"></td>
 					</tr>
 					<tr>
-						<td>City:</td>
+						<td><t class=en>City:</t><t class=ro>Oras:</t></td>
 						<td><input id=city value="{{city}}"></td>
 					</tr>
 					<tr>
-						<td>County:</td>
+						<td><t class=en>County:</t><t class=ro>Judet:</t></td>
 						<td><input id=county value="{{county}}"></td>
 					</tr>
 				</table>
@@ -1192,11 +1201,17 @@ end
 		</tr>
 		<tr>
 			<td>
-				<h3>Customer Note:</h3>
+				<h3>
+					<t class=en>Customer Note:</t>
+					<t class=ro>Nota Client:</t>
+				</h3>
 				<textarea rows=4>{{note}}</textarea>
 			</tD>
 			<td>
-				<h3>Operator Note:</h3>
+				<h3>
+					<t class=en>Operator Note:</t>
+					<t class=ro>Nota Operator:</t>
+				</h3>
 				<textarea rows=4>{{opnote}}</textarea>
 			</tD>
 		</tr>
@@ -1204,7 +1219,12 @@ end
 
 	<br>
 	<br>
-	<div style="float:right"><button type=button class=orange>Save Changes</button></div>
+	<div style="float:right">
+		<button type=button class=orange>
+			<t class=en>Save Changes</t>
+			<t class=ro>Salveaza</t>
+		</button>
+	</div>
 	<br>
 	<br>
 	<br>

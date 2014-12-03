@@ -63,6 +63,7 @@ function update_order(o) {
 
 	o.statuses = select_map(order_statuses, o.status)
 	o.address = o.shiptype == 'home'
+	o.shiptype = S(o.shiptype)
 	o.atime = longdate(o.atime, 'always')
 	o.opname = firstname(o.opname, o.opemail)
 
