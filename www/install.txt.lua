@@ -158,6 +158,7 @@ $table ordritem (
 	price       $money not null,
 	note        text,
 	status      $name,
+	opuid       $id, $fk(ordr, opuid, usr, uid),
 	atime       $atime,
 	mtime       $mtime
 );

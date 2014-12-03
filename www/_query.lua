@@ -164,14 +164,18 @@ function groupby(items, col)
 	local t = {}
 	local v
 	local st
+	local group_func = col
+	if type(col) == 'string' then
+		group_func = function(e) return e[col] end
+	end
 	for i,e in ipairs(items) do
-		if not st or v ~= e[col] then
+		local v1 = group_func(e)
+		if not st or v ~= v1 then
 			st = {}
 			t[#t+1] = st
 		end
 		st[#st+1] = e
-		v = e[col]
+		v = v1
 	end
 	return ipairs(t)
 end
-

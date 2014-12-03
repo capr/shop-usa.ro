@@ -10,9 +10,10 @@ function update_orders(orders) {
 
 	$.each(orders.orders, function(i,o) {
 		o.from_atime = shortdate(o.atime)
+		o.opname = firstname(o.opname, o.opemail)
 	})
 
-	render('order_list', orders, '#main')
+	render('order_page', orders, '#main')
 
 	$('#main [oid] a').each(function() {
 		setlink(this, '/order/'+upid(this, 'oid'))
@@ -29,18 +30,20 @@ action.orders = function() {
 	load_main('/orderlist.json', update_orders)
 }
 
-function update_order(order) {
+function update_order(o) {
 
-	$.each(order.items, function(i,oi) {
-		oi.from_atime = from_shortdate(oi.atime)
+	o.total = 0
+	$.each(o.items, function(i,oi) {
 		oi.statuses = select_map(order_item_statuses, oi.status)
+		o.total += oi.price
 	})
 
-	order.statuses = select_map(order_statuses, order.status)
-	order.address = order.shiptype == 'home'
-	order.atime = shortdate(order.atime)
+	o.statuses = select_map(order_statuses, o.status)
+	o.address = o.shiptype == 'home'
+	o.atime = shortdate(o.atime)
+	o.opname = firstname(o.opname, o.opemail)
 
-	render('order', order, '#main')
+	render('order', o, '#main')
 
 	$('#main a[pid]').click(function() {
 		var pid = $(this).attr('pid')

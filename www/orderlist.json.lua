@@ -7,12 +7,19 @@ local orders = query([[
 		o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
 		o.note, o.uid,
 		o.opnote,
-		coalesce(u.name, u.email) as opname
+		u.name as opname,
+		u.email as opemail,
+		if(field(o.status, 'shipped', 'canceled', 'returned') = 0, 1, 0) as open
 	from
 		ordr o
 		left join usr u on u.uid = o.opuid
 	order by
+		open,
 		o.mtime desc
 	]])
 
-out(json({orders = orders}))
+for i,o in ipairs(orders) do
+	o.open = tonumber(o.open) == 1
+end
+
+out(json{orders = orders})

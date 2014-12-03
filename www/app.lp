@@ -78,7 +78,7 @@ end
 				<tr>
 					<td width=100%>
 						<a id=greeting_anonymous class="link hidden">
-							<b><t class=en>Hi</t><t class=ro>Salut</t>!</b>
+							<t class=en>Login</t><t class=ro>Logheaza-te</t>!
 						</a>
 						<span id=greeting_logged_in class=hidden>
 							<t class=en>Hi</t>
@@ -1041,7 +1041,14 @@ end
 	{{/orders}}
 </script>
 
-<script type="text/x-mustache" id=order_list_template>
+<script type="text/x-mustache" id=order_page_template>
+	<table width=100%>
+		<tr>
+			<td class=nowrap><b>Search Order:&nbsp;</b></td>
+			<td width=100%><input id=search placeholder="name, email, phone, pid, product name"></td>
+			<td style="padding-left: 5px"><button type=button class=nowrap><i class="fa fa-search"></i> Search</button></td>
+		</tr>
+	</table>
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<th align=left>order id</th>
@@ -1055,7 +1062,9 @@ end
 			<td><a>{{{oid}}}</a></td>
 			<td><a>{{from_atime}}</a></td>
 			<td>{{uname}}</td>
-			<td>{{opnote}}</td>
+			<td class=nowrap width=1>
+				<div class=ellipsis style="width: 400px">{{opnote}}</div>
+			</td>
 			<td>{{status}}</td>
 		</tr>
 		{{/orders}}
@@ -1063,87 +1072,108 @@ end
 </script>
 
 <script type="text/x-mustache" id=order_template>
-
-	<table width=100% style="border-spacing: 5px;">
+	<table width=100%>
 		<tr>
 			<td>
 				<h3>Order #<b>{{oid}}</b> from <b>{{atime}}</b></h3>
 			</td>
-			<td align=right width=1><b>status: </b></td>
-			<td align=right width=100 class=nowrap>
-				<select id=status>
-					{{#statuses}}
-						<option value="{{value}}" {{{selected}}}>{{value}}</option>
-					{{/statuses}}
-				</select>
+			<td align=right>
+				<table width=200>
+					<tr>
+						<td><b>status:</b></td>
+						<td>
+							<select id=status>
+								{{#statuses}}
+									<option value="{{value}}" {{{selected}}}>{{value}}</option>
+								{{/statuses}}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td><b>last op:</b></td>
+						<td><b>{{opname}}</b></td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 	</table>
 
 	<h3>Items:</h3>
-	<table width=100% class=datagrid>
+	<table width=100% class=datagrid style="border-spacing: 5px">
 		<tr>
 			<th align=left>pid</th>
-			<th align=left>date</th>
 			<th align=left>name</th>
 			<th align=left>combi</th>
-			<th align=left>assigned</th>
-			<th align=left>op note</th>
+			<th align=left>price</th>
+			<th align=left>last op</th>
+			<th align=left>note</th>
 			<th align=left>status</th>
 		</tr>
 		{{#items}}
 		<tr oiid={{{oiid}}}>
 			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
-			<td><a>{{from_atime}}</a></td>
-			<td>{{name}}</td>
-			<td>{{vnames}}</td>
-			<td>{{opname}}</td>
-			<td>{{opnote}}</td>
-			<td>
+			<td class=nowrap width=1>
+				<div class=ellipsis style="width: 260px" title="{{name}}">{{name}}</div>
+			</td>
+			<td class=nowrap width=1>
+				<div class=ellipsis style="width: 180px" title="{{vnames}}">{{vnames}}</div>
+			</td>
+			<td class="nowrap price" align=right>{{price}} RON</td>
+			<td class=nowrap>{{opname}}</td>
+			<td class=nowrap><input value="{{itemnote}}"></td>
+			<td width=100>
 				<select id=status>
 					{{#statuses}}
-						<option value="{{value}}" {{{selected}}}>{{value}}</option>
+						<option value="{{{value}}}" {{{selected}}}>{{{value}}}</option>
 					{{/statuses}}
 				</select>
 			</td>
 		</tr>
 		{{/items}}
+		<tr>
+			<td></td>
+			<td></td>
+			<td><b>Total: </b></td>
+			<td class="nowrap price" align=right>{{{total}}} RON</span>
+			</td>
+			<td colspan=3></td>
+		</td>
 	</table>
 
-	<table width=100% style="border-spacing: 5px;">
+	<table width=100%>
 		<tr>
-			<td valign=top>
+			<td valign=top width=50%>
 				<h3>Contact:</h3>
 				<table width=100% style="border-spacing: 5px;">
 					<tr>
 						<td>Email:</td>
-						<td>{{email}}</td>
+						<td><input id=email value="{{email}}"></td>
 					</tr>
 					<tr>
 						<td>Name:</td>
-						<td>{{name}}</td>
+						<td><input id=name value="{{name}}"></td>
 					</tr>
 					<tr>
 						<td>Phone:</td>
-						<td>{{phone}}</td>
+						<td><input id=phone value="{{phone}}"></td>
 					</tr>
 				</table>
 			</td>
-			<td valign=top>
+			<td valign=top width=50%>
 				<h3>Shipping: {{shiptype}}, {{shipcost}} RON</h3>
 				{{#address}}
 				<table width=100% style="border-spacing: 5px;">
 					<tr>
 						<td>Address:</td>
-						<td>{{addr}}</td>
+						<td><input id=addr value="{{addr}}"></td>
 					</tr>
 					<tr>
 						<td>City:</td>
-						<td>{{city}}</td>
+						<td><input id=city value="{{city}}"></td>
 					</tr>
 					<tr>
 						<td>County:</td>
-						<td>{{county}}</td>
+						<td><input id=county value="{{county}}"></td>
 					</tr>
 				</table>
 				{{/address}}
@@ -1155,7 +1185,7 @@ end
 				<textarea rows=4>{{note}}</textarea>
 			</tD>
 			<td>
-				<h3>Operator Note ({{opname}}):</h3>
+				<h3>Operator Note:</h3>
 				<textarea rows=4>{{opnote}}</textarea>
 			</tD>
 		</tr>

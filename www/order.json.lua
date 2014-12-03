@@ -9,7 +9,8 @@ local order = query1([[
 		o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
 		o.note, o.uid,
 		o.opnote,
-		coalesce(u.name, u.email) as opname
+		u.name as opname,
+		u.email as opemail
 	from
 		ordr o
 		left join usr u on u.uid = o.opuid
@@ -21,7 +22,7 @@ local order = query1([[
 order.items = check(query([[
 	select
 		i.oiid, i.coid, i.qty, i.price,
-		i.note, i.status, i.atime, i.mtime,
+		i.note as itemnote, i.status,
 		p.id_product as pid,
 		pl.name,
 		group_concat(distinct al.name separator ', ') as vnames,

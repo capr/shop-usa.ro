@@ -33,8 +33,11 @@ input, select, textarea {
 	width: 100%;
 }
 
+input, select, button {
+	height: 24px;
+}
+
 input[type=radio] {
-	box-sizing: border-box;
 	border: 0;
 	width: auto;
 }
@@ -106,6 +109,10 @@ button:hover:disabled {
 .error { color: #f00; }
 .gray { color: #999; }
 .small { font-size: 13px; }
+.ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
 a.link {
 	color: #cc8800;
@@ -114,7 +121,7 @@ a.link {
 
 /* shop vocabulary */
 
-.price { color: #ff3300; font-weight: bold; }
+.price { color: #cc3300; font-weight: bold; }
 .discount { color: #000; font-weight: bold; }
 .orange { background: #ff8800; }
 .orange:hover { color: #fff; }
@@ -296,3 +303,10 @@ input .inside-right { padding-right: 28px; }
 	background-color: #eee;
 }
 
+.datagrid td {
+	padding-right: 10px;
+}
+
+.datagrid td:last-child {
+	padding-right: 0px;
+}
