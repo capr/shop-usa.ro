@@ -72,10 +72,11 @@ function update_order(o) {
 
 	$('#main a[pid]').each(function() {
 		var pid = $(this).attr('pid')
+		var imgid = $(this).attr('imgid')
 		$(this).click(function() {
 			window.open('http://6pm.com/'+pid, '_blank')
 		}).hover(function() {
-			$('#main').append('<img id=popup_img style="position: absolute;" src="/img/p/{0}-cart.jpg">'.format(pid))
+			$('#main').append('<img id=popup_img style="position: absolute;" src="/img/p/{0}-cart.jpg">'.format(imgid))
 		}, function() {
 			$('#popup_img').remove()
 		}).mousemove(function(e) {
