@@ -1129,7 +1129,7 @@ end
 		<tr oiid={{{oiid}}} class="{{{canceled}}}">
 			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
 			<td width=1>
-				<a imgid={{{imgid}}}><div class="ellipsis" style="width: 260px" title="{{{name}}}">{{{name}}}</div></a>
+				<div class="ellipsis" style="width: 260px" title="{{{name}}}">{{{name}}}</div>
 			</td>
 			<td width=1>
 				<div class=ellipsis style="width: 180px" title="{{{vnames}}}">{{{vnames}}}</div>
