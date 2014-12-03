@@ -65,13 +65,22 @@ function update_order(o) {
 	o.address = o.shiptype == 'home'
 	o.shiptype = S(o.shiptype)
 	o.atime = longdate(o.atime, 'always')
+	o.uname = firstname(o.uname, o.uemail)
 	o.opname = firstname(o.opname, o.opemail)
 
 	render('order', o, '#main')
 
-	$('#main a[pid]').click(function() {
+	$('#main a[pid]').each(function() {
 		var pid = $(this).attr('pid')
-		window.open('http://6pm.com/'+pid, '_blank')
+		$(this).click(function() {
+			window.open('http://6pm.com/'+pid, '_blank')
+		}).hover(function() {
+			//
+		}, function() {
+			//
+		}).mouseover(function() {
+			//
+		})
 	})
 }
 

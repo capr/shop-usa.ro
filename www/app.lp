@@ -1081,10 +1081,14 @@ end
 	<table width=100%>
 		<tr>
 			<td valign=top>
-				<h3 style="margin-top: 0">
-					<t class=en>Order #{{oid}} from {{atime}} by {{name}}</t>
-					<t class=ro>Comanda nr. {{oid}} din {{atime}} de la {{name}}</t>
+				<h3 style="margin: 0">
+					<t class=en>Order #{{oid}} from {{atime}}</t>
+					<t class=ro>Comanda nr. {{oid}} din {{atime}}</t>
 				</h3>
+				<h4 style="margin: 0">
+				<t class=en>From {{uname}}, {{uphone}}</t>
+				<t class=ro>De la {{uname}}, {{uphone}}</t>
+				</h4>
 			</td>
 			<td align=right valign=top>
 				<table width=200>
@@ -1180,7 +1184,10 @@ end
 				</table>
 			</td>
 			<td valign=top width=50%>
-				<h3><t class=en>Shipping:</t><t class=ro>Livrare:</t> {{shiptype}}, {{shipcost}} RON</h3>
+				<h3>
+					<t class=en>Shipping:</t>
+					<t class=ro>Livrare:</t> {{shiptype}}, {{shipcost}} RON
+				</h3>
 				{{#address}}
 				<table width=100% style="border-spacing: 5px;">
 					<tr>
@@ -1200,14 +1207,14 @@ end
 			</td>
 		</tr>
 		<tr>
-			<td>
+			<td valign=top>
 				<h3>
 					<t class=en>Customer Note:</t>
 					<t class=ro>Nota Client:</t>
 				</h3>
 				<textarea rows=4>{{note}}</textarea>
 			</tD>
-			<td>
+			<td valign=top>
 				<h3>
 					<t class=en>Operator Note:</t>
 					<t class=ro>Nota Operator:</t>

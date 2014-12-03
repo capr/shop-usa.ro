@@ -9,11 +9,15 @@ local order = query1([[
 		o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
 		o.note, o.uid,
 		o.opnote,
-		u.name as opname,
-		u.email as opemail
+		u.name as uname,
+		u.email as uemail,
+		u.phone as uphone,
+		opu.name as opname,
+		opu.email as opemail
 	from
 		ordr o
-		left join usr u on u.uid = o.opuid
+		inner join usr u on u.uid = o.uid
+		left join usr opu on opu.uid = o.opuid
 	where
 		o.oid = ?
 	]], oid)
