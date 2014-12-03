@@ -65,7 +65,7 @@ function update_order(o) {
 	o.address = o.shiptype == 'home'
 	o.shiptype = S(o.shiptype)
 	o.atime = longdate(o.atime, 'always')
-	o.uname = o.uname || o.uemail
+	o.uname = '{0} ({0})'.format(o.uname, o.uemail)
 	o.opname = firstname(o.opname, o.opemail)
 
 	render('order', o, '#main')
