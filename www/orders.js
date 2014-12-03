@@ -75,6 +75,7 @@ function update_order(o) {
 		window.open('http://6pm.com/'+pid, '_blank')
 	})
 
+	/*
 	$('#main a[imgid]').each(function() {
 		var imgid = $(this).attr('imgid')
 		$(this).mouseenter(function() {
@@ -87,6 +88,7 @@ function update_order(o) {
 			$("#popup_img").css({left: e.pageX, top:e.pageY})
 		})
 	})
+	*/
 }
 
 action.order = function(oid) {
