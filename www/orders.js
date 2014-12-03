@@ -70,12 +70,14 @@ function update_order(o) {
 
 	render('order', o, '#main')
 
-	$('#main a[pid]').each(function() {
+	$('#main a[pid]').click(function() {
 		var pid = $(this).attr('pid')
+		window.open('http://6pm.com/'+pid, '_blank')
+	})
+
+	$('#main a[imgid]').each(function() {
 		var imgid = $(this).attr('imgid')
-		$(this).parent().click(function() {
-			window.open('http://6pm.com/'+pid, '_blank')
-		}).mouseenter(function() {
+		$(this).parent().mouseenter(function() {
 			console.log('enter')
 			$('#main').append('<img id=popup_img style="position: absolute;" src="/img/p/{0}-home.jpg">'.format(imgid))
 		}).mouseleave(function() {
