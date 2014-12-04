@@ -1,5 +1,7 @@
 
-local q = '%'..(... or '')..'%'
+local filter, q = ...
+local q = q or ''
+local q = '%'..q..'%'
 
 allow(admin())
 
@@ -16,6 +18,9 @@ local orders = query([[
 		ordr o
 		left join usr u on u.uid = o.opuid
 	where
+	]] .. (filter == 'open' and [[
+		field(o.status, 'open') <> 0
+	]] or [[
 		o.name like ?
 		or o.email like ?
 		or o.phone like ?
@@ -36,7 +41,7 @@ local orders = query([[
 	order by
 		open,
 		o.mtime desc
-	]], q, q, q, q, q)
+	]]), q, q, q, q, q)
 
 for i,o in ipairs(orders) do
 	o.open = tonumber(o.open) == 1

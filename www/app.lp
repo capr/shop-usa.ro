@@ -1162,6 +1162,7 @@ end
 			</td>
 		</tr>
 		{{/items}}
+		<!--
 		<tr>
 			<td width=76><input id=add_pid></td>
 			<td colspan=5></td>
@@ -1170,6 +1171,7 @@ end
 				<t class=ro>Adauga</t>
 			</button></td>
 		</td>
+		-->
 		<tr>
 			<td></td>
 			<td></td>

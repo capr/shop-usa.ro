@@ -1,8 +1,34 @@
-FRAMEWORK
----------
-- language filter: short forms
-	- <anytag:en> ... </anytag>
-	- attr:en=val attr:ro=val ...
+HOT FUNCTIONALITY
+-----------------
+- orderlist.json/open
+
+- over 300 RON = free shipping
+- scos optiunea ridicare de la sediu
+- email on place order & bcc to shop-usa
+
+- header banners: Transport Gratuit, Telefon, Facebook Like, Adresa, Newsletter
+- top navbar: search, logheaza-te, cart
+- contact page: Atena 4, 0745 577 786, program L-V: 10-17
+- homepage banner slider
+- homepage custom bands
+- footer
+	- brand marquee
+	- cum comand
+	- despre noi
+	- intrebari frecvente
+	- confidentialitate
+	- politica de returnare
+	- termeni si conditii
+	- ANPC
+	- telefonul consumatorului
+
+
+HOT BUGS
+--------
+- move to/from cart: first item doesn't move
+- category div sometimes dissapears when going back to browsing
+- scroll changes on back-button from prod page back to browsing page
+
 
 
 BIG BUGS
@@ -14,10 +40,9 @@ BIG BUGS
 
 USABILITY BUGS (CONFUSIONS)
 ---------------------------
+- forgot pass link -> trigger usr event
 - add breadcrumbs to product page
 - make admin if logging in with facebook too
-- transfer cart only if there's anything to transfer,
-	otherwise don't clear the dest. cart
 - login screen: better separation between left and right side
 - brand page shows category tree but people expect to see products
 - scroll doesn't follow if screen is to small. solutions:
@@ -40,22 +65,20 @@ USABILITY BUGS (CONFUSIONS)
 
 UI BUGS
 -------
-- move to/from cart: first item doesn't move
-- category div sometimes dissapears when going back to browsing
-- scroll changes on back-button from prod page back to browsing page
 - autocomplete of county sometimes doesn't work
 
 
 FUNCTIONALITY
 -------------
+- user list: export xls
 - account: list of past orders
 - checkout: list of addresses from past orders
-- place order: receive email
 - search
 - filters
 - sorting
 - home page (promotii, bannere, informatii generale)
 - afisare ultimele produse vizualizate
+- promo codes (apply % discount)
 
 
 DESIGN
@@ -64,3 +87,8 @@ DESIGN
 - top bar follow scroll
 
 
+FRAMEWORK
+---------
+- language filter: short forms
+	- <anytag:en> ... </anytag>
+	- attr:en=val attr:ro=val ...

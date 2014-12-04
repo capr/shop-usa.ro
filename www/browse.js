@@ -293,6 +293,27 @@ function dimsel_changed() {
 
 }
 
+function create_add_to_order_buttons() {
+
+	if (!admin(create_add_to_order_buttons)) {
+		$('#add_to_order').html('')
+		return
+	}
+
+	load_content('#add_to_order', '/orderlist.json/open', function(data) {
+
+		render('add_to_order', data, '#add_to_order')
+
+		$('#add_to_order button').click(function() {
+			var oid = $(this).attr('oid')
+			post('/order.json/'+oid+'/add', {
+				pid: g_prod.pid,
+				coid: g_combi.coid,
+			})
+		})
+	})
+}
+
 function update_product_page(prod) {
 	g_prod = prod
 	render('product_page', prod, '#main')
@@ -318,19 +339,7 @@ function update_product_page(prod) {
 	})
 
 	// if admin then create "add to order" buttons
-	if (admin()) {
-		function update_add_to_order(data) {
-			render('add_to_order', data, '#add_to_order')
-			$('#add_to_order button').click(function() {
-				var oid = $(this).attr('oid')
-				post('/order.json/'+oid+'/add', {
-					pid: g_prod.pid,
-					coid: g_combi.coid,
-				})
-			})
-		}
-		load_content('#add_to_order', '/orderlist.json', update_add_to_order)
-	}
+	create_add_to_order_buttons()
 }
 
 action.p = function(pid) {

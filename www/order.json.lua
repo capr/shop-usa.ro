@@ -20,7 +20,7 @@ if POST then
 			where
 				pa.id_product = ?
 				and pa.id_product_attribute = ?
-			]], oid, pid, coid, price, uid(), pid, coid)
+			]], oid, pid, coid, uid(), pid, coid)
 	else
 		error'invalid action'
 	end

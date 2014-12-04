@@ -36,7 +36,9 @@ function logout(success, error, opt) {
 }
 
 var g_admin = false
-function admin() {
+function admin(on_change) {
+	if (on_change)
+		listen('usr.admin', on_change)
 	return g_admin
 }
 

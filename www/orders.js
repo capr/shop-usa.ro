@@ -25,8 +25,9 @@ function update_orders(data) {
 	})
 }
 
-function load_orders(q) {
-	load_content('#orders', '/orderlist.json'+(q ? '/'+q : ''), function(data) {
+function load_orders(filter, q) {
+	var url = '/orderlist.json/' + (filter || 'all') + '/' + (q || '')
+	load_content('#orders', url, function(data) {
 		data.q = q
 		update_orders(data)
 	})

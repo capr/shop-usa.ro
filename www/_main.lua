@@ -281,6 +281,10 @@ local function filter_lang(buf)
 	return buf
 end
 
+local function filter_comments(buf)
+	return buf:gsub('<!%-%-.-%-%->', '')
+end
+
 local function main()
 	check_img()
 	parse_request()
@@ -290,6 +294,7 @@ local function main()
 		action(act, unpack(args))
 		local buf = pop_outbuf()
 		buf = filter_lang(buf)
+		buf = filter_comments(buf)
 		out(buf)
 	else
 		action(act, unpack(args))

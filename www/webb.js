@@ -198,8 +198,37 @@ function unlisten(topic) {
 	g_events.off(topic)
 }
 
-function broadcast(topic, data) {
+// broadcast a message to local listeners
+function broadcast_local(topic, data) {
 	g_events.triggerHandler(topic, data)
+}
+
+window.addEventListener('storage', function(e) {
+	// decode the message
+	if (e.key != 'broadcast') return
+	var args = e.newValue
+	if (!args) return
+	args = JSON.parse(args)
+	// broadcast it
+	broadcast_local(args.topic, args.data)
+})
+
+// broadcast a message to other windows
+function broadcast_external(topic, data) {
+	if (typeof(Storage) == 'undefined') return
+	localStorage.setItem('broadcast', '')
+	localStorage.setItem('broadcast',
+		JSON.stringify({
+			topic: topic,
+			data: data
+		})
+	)
+	localStorage.setItem('broadcast', '')
+}
+
+function broadcast(topic, data) {
+	broadcast_local(topic, data)
+	broadcast_external(topic, data)
 }
 
 // UI patterns ---------------------------------------------------------------
