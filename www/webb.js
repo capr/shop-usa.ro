@@ -199,7 +199,7 @@ function unlisten(topic) {
 }
 
 function unlisten_all_page() {
-	//g_events.off('.page')
+	g_events.off('.page')
 }
 
 // broadcast a message to local listeners
@@ -331,7 +331,6 @@ function url_changed() {
 
 	unlisten_all_page()
 	unbind_keydown_all()
-	abort_all()
 
 	analytics_pageview() // note: title is not available at this time
 
