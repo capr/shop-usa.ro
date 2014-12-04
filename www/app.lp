@@ -80,7 +80,8 @@ end
 				<tr>
 					<td width=100%>
 						<a id=greeting_anonymous class="link hidden">
-							<t class=en>Login</t><t class=ro>Logheaza-te</t>!
+							<t class=en>Login</t>
+							<t class=ro>Logheaza-te</t>!
 						</a>
 						<span id=greeting_logged_in class=hidden>
 							<t class=en>Hi</t>
@@ -174,8 +175,8 @@ end
 				{{#discount}}
 					<br>
 					<span class=discount>
-						<t class=ro>({{{discount}}}%{{#msrp}} <s>{{{msrp}}} Lei</s>{{/msrp}})</t>
 						<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
+						<t class=ro>({{{discount}}}%{{#msrp}} <s>{{{msrp}}} Lei</s>{{/msrp}})</t>
 					</span>
 				{{/discount}}
 				<!--
@@ -304,7 +305,7 @@ end
 		{{#open}}
 		<button type=button oid={{{oid}}} style="margin-bottom: 5px;">
 			<t class=en>add to order #{{{oid}}}</t>
-			<t class=ro>adauga la comanda {{{oid}}}</a>
+			<t class=ro>adauga la comanda {{{oid}}}</t></a>
 		</button>
 		{{/open}}
 	{{/orders}}
@@ -344,8 +345,10 @@ end
 
 <script type="text/x-mustache" id=cart_page_template>
 
-	<t class=en><h1>Shopping cart</h1></t>
-	<t class=ro><h1>Cosul de cumparaturi</h1></t>
+	<h1>
+		<t class=en>Shopping cart</t>
+		<t class=ro>Cosul de cumparaturi</t>
+	</h1>
 
 	<h2>
 		<t class=en>Shopping Bag

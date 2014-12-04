@@ -124,6 +124,8 @@ function update_cart_page() {
 		total:          total,
 	}, '#main')
 
+	console.log($('#main').html())
+
 	update_timeago()
 
 	$('#main [pid] a:not([action])').each(function() {

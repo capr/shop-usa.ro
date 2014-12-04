@@ -272,6 +272,7 @@ end
 local function filter_lang(buf)
 	local lang0 = lang()
 	buf = buf:gsub('<t class=([^>]+)>(.-)</t>', function(lang, html)
+		assert(not html:find('<t class=', 1, true), html)
 		if lang ~= lang0 then
 			return ''
 		else
