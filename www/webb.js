@@ -198,6 +198,10 @@ function unlisten(topic) {
 	g_events.off(topic)
 }
 
+function unlisten_all_page() {
+	g_events.off('.page')
+}
+
 // broadcast a message to local listeners
 function broadcast_local(topic, data) {
 	g_events.triggerHandler(topic, data)
@@ -270,6 +274,10 @@ function bind_keydown(id, func) {
 	keydown_events[id] = func
 }
 
+function unbind_keydown_all() {
+	keydown_events = {}
+}
+
 $(function() {
 	$(document).keydown(function(event) {
 		$.each(keydown_events, function(id, func) {
@@ -316,14 +324,27 @@ function exec(url, params) {
 var action = {} // {action: handler}
 var default_action = 'cat'
 
+var g_action
+var g_args
+
 function url_changed() {
+
+	unlisten_all_page()
+	unbind_keydown_all()
+	abort_all()
+
 	analytics_pageview() // note: title is not available at this time
+
 	var args = location.pathname.split('/')
 	args.shift() // remove /
 	var act = args[0] || default_action
 	args.shift() // remove action/
 	var handler = action[act]
 	check(handler)
+
+	g_action = action
+	g_args = args
+
 	handler.apply(null, args)
 }
 
@@ -369,6 +390,13 @@ function abort(id) {
 	if (!(id in g_xhrs)) return
 	g_xhrs[id].abort()
 	delete g_xhrs[id]
+}
+
+function abort_all() {
+	$.each(g_xhrs, function(id, xhr) {
+		xhr.abort()
+	})
+	g_xhrs = {}
 }
 
 function ajax(url, opt) {

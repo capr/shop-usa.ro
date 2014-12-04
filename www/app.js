@@ -38,7 +38,7 @@ function logout(success, error, opt) {
 var g_admin = false
 function admin(on_change) {
 	if (on_change)
-		listen('usr.admin', on_change)
+		listen('usr.admin.page', on_change)
 	return g_admin
 }
 
@@ -47,7 +47,7 @@ function editmode() {
 }
 
 function init_admin() {
-	listen('usr.admin', function(usr) {
+	listen('usr.admin.page', function(usr) {
 		g_admin = usr.admin
 	})
 }
