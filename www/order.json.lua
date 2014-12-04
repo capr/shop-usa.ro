@@ -1,7 +1,30 @@
 
 allow(admin())
 
-local oid = assert((...))
+local oid, action = ...
+assert(oid)
+
+if POST then
+	if action == 'add' then
+		local d = json(POST.data)
+		local pid = assert(d.pid)
+		local coid = assert(d.coid)
+		local price = assert(d.price)
+		query([[
+			insert into ordritem
+				(oid, pid, coid, qty, price, status, opuid)
+			select
+				?, ?, ?, 1, ?, 'new', ?
+			from
+				ps_product_attribute pa
+			where
+				pa.id_product = ?
+				and pa.id_product_attribute = ?
+			]], oid, pid, coid, price, uid(), pid, coid)
+	else
+		error'invalid action'
+	end
+end
 
 local order = query1([[
 	select

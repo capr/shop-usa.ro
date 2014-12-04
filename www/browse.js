@@ -250,9 +250,6 @@ function dimsel_changed() {
 	g_combi = g_prod.combis[dvals]
 	var combi = g_combi || {}
 
-	console.log(JSON.stringify(dvals))
-	console.log(JSON.stringify(g_prod.combis))
-
 	// prepare and apply the combi templates
 	var co = {}
 	co.price = combi.price &&
@@ -306,8 +303,7 @@ function update_product_page(prod) {
 	setlink('.brandlink', '/brand/' + prod.bid)
 
 	$('#add_to_cart').click(function() {
-		var pid = parseInt($(this).attr('pid'))
-		add_to_cart(pid, g_combi.coid)
+		add_to_cart(g_prod.pid, g_combi.coid)
 	})
 
 	// keyboard image navigation
@@ -321,6 +317,20 @@ function update_product_page(prod) {
 		}
 	})
 
+	// if admin then create "add to order" buttons
+	if (admin()) {
+		function update_add_to_order(data) {
+			render('add_to_order', data, '#add_to_order')
+			$('#add_to_order button').click(function() {
+				var oid = $(this).attr('oid')
+				post('/order.json/'+oid+'/add', {
+					pid: g_prod.pid,
+					coid: g_combi.coid,
+				})
+			})
+		}
+		load_content('#add_to_order', '/orderlist.json', update_add_to_order)
+	}
 }
 
 action.p = function(pid) {

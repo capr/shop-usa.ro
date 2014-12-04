@@ -6,14 +6,14 @@ var order_statuses = ['new', 'open', 'secured', 'shipped',
 var order_item_statuses = ['new', 'secured', 'shipped',
 	'canceled', 'returned', 'refunded', 'not_available']
 
-function update_orders(orders) {
+function update_orders(data) {
 
-	$.each(orders.orders, function(i,o) {
+	$.each(data.orders, function(i,o) {
 		o.atime = shortdate(o.atime, 'always')
 		o.opname = firstname(o.opname, o.opemail)
 	})
 
-	render('orderlist', orders, '#orders')
+	render('orderlist', data, '#orders')
 
 	$('#main [oid] a').each(function() {
 		setlink(this, '/order/'+upid(this, 'oid'))
@@ -75,20 +75,15 @@ function update_order(o) {
 		window.open('http://6pm.com/'+pid, '_blank')
 	})
 
-	/*
-	$('#main a[imgid]').each(function() {
-		var imgid = $(this).attr('imgid')
-		$(this).mouseenter(function() {
-			console.log('enter')
-			$('#main').append('<img id=popup_img style="position: absolute; pointer-events: none;" src="/img/p/{0}-home.jpg">'.format(imgid))
-		}).mouseleave(function() {
-			console.log('leave')
-			$('#popup_img').remove()
-		}).mousemove(function(e) {
-			$("#popup_img").css({left: e.pageX, top:e.pageY})
-		})
+	$('#btn_add').click(function() {
+		var pid = $('#add_pid').val()
+		//
 	})
-	*/
+
+	$('#btn_save').click(function() {
+
+	})
+
 }
 
 action.order = function(oid) {

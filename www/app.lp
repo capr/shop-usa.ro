@@ -12,6 +12,7 @@ end
 	<link rel="stylesheet" type="text/css" href="/main.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.toasty.css">
 	<link rel="stylesheet" type="text/css" href="/jquery.powertip.css">
+	<link rel="stylesheet" type="text/css" href="/jquery.dropdown.css">
 	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
 	<script src="/jquery.js"></script>
 	<script src="/jquery.history.js"></script>
@@ -24,6 +25,7 @@ end
 	<script src="/jquery.autocomplete.js"></script>
 	<script src="/jquery.toasty.js"></script>
 	<script src="/jquery.powertip.js"></script>
+	<script src="/jquery.dropdown.js"></script>
 	<script src="/mustache.js"></script>
 	<script src="/webb.js"></script>
 	<script src="/config.js"></script>
@@ -274,10 +276,12 @@ end
 				</table>
 				<br>
 				<br>
-				<button type=button id=add_to_cart class=orange pid={{{pid}}}>
+				<button type=button id=add_to_cart class=orange>
 					<t class=en>add to bag</t>
 					<t class=ro>adauga in cos</t>
 				</button>
+				<br>
+				<div id=add_to_order></div>
 			</td>
 		</tr>
 		<tr>
@@ -292,6 +296,18 @@ end
 			</td>
 		</tr>
 	</table>
+</script>
+
+<script type="text/x-mustache" id=add_to_order_template>
+	<br>
+	{{#orders}}
+		{{#open}}
+		<button type=button oid={{{oid}}} style="margin-bottom: 5px;">
+			<t class=en>add to order #{{{oid}}}</t>
+			<t class=ro>adauga la comanda {{{oid}}}</a>
+		</button>
+		{{/open}}
+	{{/orders}}
 </script>
 
 <script type="text/x-mustache" id=product_combi_template>
@@ -1147,9 +1163,9 @@ end
 		</tr>
 		{{/items}}
 		<tr>
-			<td width=76><input id=new_pid></td>
+			<td width=76><input id=add_pid></td>
 			<td colspan=5></td>
-			<td><button type=button id=add_pid class="orange slim" style="width: 100%">
+			<td><button type=button id=btn_add class="orange slim" style="width: 100%">
 				<t class=en>Add</t>
 				<t class=ro>Adauga</t>
 			</button></td>
@@ -1227,7 +1243,7 @@ end
 	<br>
 	<br>
 	<div style="float:right">
-		<button type=button class=orange>
+		<button id=btn_save type=button class=orange>
 			<t class=en>Save Changes</t>
 			<t class=ro>Salveaza</t>
 		</button>
