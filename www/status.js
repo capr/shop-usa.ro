@@ -1,6 +1,6 @@
 
 function init_status() {
-	listen('usr', function(usr) {
+	listen('usr.status', function(usr) {
 		if (usr.name || usr.email) {
 			$('#greeting_anonymous').hide()
 			$('#greeting_logged_in').show()

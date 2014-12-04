@@ -47,7 +47,7 @@ function editmode() {
 }
 
 function init_admin() {
-	listen('usr.admin.page', function(usr) {
+	listen('usr.admin', function(usr) {
 		g_admin = usr.admin
 	})
 }
