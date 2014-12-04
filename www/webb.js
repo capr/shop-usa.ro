@@ -199,7 +199,7 @@ function unlisten(topic) {
 }
 
 function unlisten_all_page() {
-	g_events.off('.page')
+	//g_events.off('.page')
 }
 
 // broadcast a message to local listeners
