@@ -1,6 +1,6 @@
 HOT FUNCTIONALITY
 -----------------
-- orderlist.json/open
+- add to order button
 
 - over 300 RON = free shipping
 - scos optiunea ridicare de la sediu

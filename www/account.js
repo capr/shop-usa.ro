@@ -19,14 +19,12 @@ function logout(success, error, opt) {
 }
 
 var g_admin = false
-function admin(on_change) {
-	if (on_change)
-		listen('usr.admin.current_action', on_change)
+function admin() {
 	return g_admin
 }
 
-function editmode(on_change) {
-	return admin(on_change)
+function editmode() {
+	return admin()
 }
 
 function init_admin() {

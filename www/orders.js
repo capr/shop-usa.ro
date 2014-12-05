@@ -1,4 +1,20 @@
-(function() {
+var orders = (function() {
+
+// order actions -------------------------------------------------------------
+
+function set_order(ordr) {
+	broadcast('ordr', ordr)
+}
+
+function add_to_order(oid, coid) {
+	post('/order.json/'+oid+'/add', {coid: coid}, set_order)
+}
+
+function load_order(oid) {
+	load_main('/order.json/'+oid, set_order)
+}
+
+// order list page -----------------------------------------------------------
 
 var order_statuses = ['new', 'open', 'secured', 'shipped',
 	'canceled', 'returned']
@@ -53,6 +69,8 @@ action.orders = function(q) {
 	load_orders(q)
 }
 
+// order page ----------------------------------------------------------------
+
 function update_order(o) {
 
 	o.total = 0
@@ -89,7 +107,17 @@ function update_order(o) {
 
 action.order = function(oid) {
 	hide_nav()
-	load_main('/order.json/'+oid, update_order)
+	listen('ordr.order_page.current_action', function(o) {
+		if (o.oid != oid) return // not our order
+		update_order(o)
+	})
+	load_order(oid)
+}
+
+// order module --------------------------------------------------------------
+
+return {
+	add: add_to_order,
 }
 
 })()

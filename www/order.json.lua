@@ -7,20 +7,18 @@ assert(oid)
 if POST then
 	if action == 'add' then
 		local d = json(POST.data)
-		local pid = assert(d.pid)
 		local coid = assert(d.coid)
-		local price = assert(d.price)
 		query([[
 			insert into ordritem
-				(oid, pid, coid, qty, price, status, opuid)
+				(qty, status, coid, oid, price)
 			select
-				?, ?, ?, 1, ?, 'new', ?
+				 1, 'new', pa.id_product_attribute, ?, $ronprice(pa.price, ?)
 			from
 				ps_product_attribute pa
 			where
-				pa.id_product = ?
-				and pa.id_product_attribute = ?
-			]], oid, pid, coid, uid(), pid, coid)
+				pa.id_product_attribute = ?
+			]], oid, usd_rate(), coid)
+		query('update ordr set opuid = ? where oid = ?', uid(), oid)
 	else
 		error'invalid action'
 	end

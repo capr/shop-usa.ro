@@ -294,7 +294,7 @@ function dimsel_changed() {
 
 function create_add_to_order_buttons() {
 
-	if (!admin(create_add_to_order_buttons)) {
+	if (!admin()) {
 		$('#add_to_order').html('')
 		return
 	}
@@ -305,10 +305,7 @@ function create_add_to_order_buttons() {
 
 		$('#add_to_order button').click(function() {
 			var oid = $(this).attr('oid')
-			post('/order.json/'+oid+'/add', {
-				pid: g_prod.pid,
-				coid: g_combi.coid,
-			})
+			orders.add(oid, g_combi.coid)
 		})
 	})
 }
@@ -337,8 +334,9 @@ function update_product_page(prod) {
 		}
 	})
 
-	// if admin then create "add to order" buttons
+	// create "add to order" buttons now and whenever the user changes
 	create_add_to_order_buttons()
+	listen('usr.product_page.current_action', create_add_to_order_buttons)
 }
 
 action.p = function(pid) {
