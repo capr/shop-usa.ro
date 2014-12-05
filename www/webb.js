@@ -198,8 +198,8 @@ function unlisten(topic) {
 	g_events.off(topic)
 }
 
-function unlisten_all_page() {
-	g_events.off('.page')
+function unlisten_all() {
+	g_events.off('.current_action')
 }
 
 // broadcast a message to local listeners
@@ -329,7 +329,7 @@ var g_args
 
 function url_changed() {
 
-	unlisten_all_page()
+	unlisten_all()
 	unbind_keydown_all()
 
 	analytics_pageview() // note: title is not available at this time

@@ -1,13 +1,49 @@
 
-// account({options...}) -> account
-// account.load() ^on_update(usr)
+// session vocabulary --------------------------------------------------------
+
+function login(auth, success, error, opt, arg) {
+	function logged_in(usr) {
+		broadcast('usr', usr)
+		if (success)
+			success(usr)
+	}
+	return ajax('/login.json' + (arg || ''), $.extend({
+			success: logged_in,
+			error: error,
+			data: auth,
+		}, opt))
+}
+
+function logout(success, error, opt) {
+	return login(null, success, error, opt, '/logout')
+}
+
+var g_admin = false
+function admin(on_change) {
+	if (on_change)
+		listen('usr.admin.current_action', on_change)
+	return g_admin
+}
+
+function editmode(on_change) {
+	return admin(on_change)
+}
+
+function init_admin() {
+	listen('usr.admin', function(usr) {
+		g_admin = usr.admin
+	})
+}
+
+// account widget ------------------------------------------------------------
+
+// account_widget({options...}) -> account
 // account.validate() -> true|nothing
-function account(acc) {
+function account_widget(acc) {
 
 	acc = $.extend({
 		section: '#account_section',
 		allow_anonymous: false,
-		on_update: function(usr) {},
 	}, acc)
 
 	var want_anonymous = false
@@ -63,14 +99,6 @@ function account(acc) {
 		}
 	}
 
-	function logged_in(usr) {
-		acc.on_update(usr)
-		if (usr.anonymous && !want_anonymous)
-			create_login_section()
-		else
-			create_user_section(usr)
-	}
-
 	var validate_login
 
 	function create_login_section() {
@@ -83,16 +111,16 @@ function account(acc) {
 		})
 
 		$('#btn_facebook').click(function() {
-			facebook_login(logged_in, login_failed)
+			facebook_login(null, login_failed)
 		})
 
 		$('#btn_google').click(function() {
-			google_login(logged_in, login_failed)
+			google_login(null, login_failed)
 		})
 
 		$('#btn_no_account').click(function() {
 			want_anonymous = true
-			login({type: 'anonymous'}, logged_in)
+			login({type: 'anonymous'})
 		})
 
 		if (!acc.allow_anonymous)
@@ -158,14 +186,14 @@ function account(acc) {
 		$('#btn_login').click(function() {
 			if (validate_login()) {
 				$(this).prop('disabled', true)
-				login(pass_auth('login'), logged_in, login_failed)
+				login(pass_auth('login'), null, login_failed)
 			}
 		})
 
 		$('#btn_create_account').click(function() {
 			if (validate_login()) {
 				$(this).prop('disabled', true)
-				login(pass_auth('create'), logged_in, login_failed)
+				login(pass_auth('create'), null, login_failed)
 			}
 		})
 	}
@@ -188,7 +216,7 @@ function account(acc) {
 
 		$('#logout').click(function() {
 			$('#logout').prop('disabled', true)
-			logout(logged_in)
+			logout()
 		})
 
 		validator = $('#usr_form').validate({
@@ -248,12 +276,11 @@ function account(acc) {
 				phone: $('#usr_phone').val(),
 			}, function(usr) {
 				notify(S('changes_saved', 'Changes saved'))
-				logged_in(usr)
 			}, login_failed)
 		})
 
 		$('#btn_cancel').click(function() {
-			login(null, logged_in)
+			login()
 			return true
 		})
 
@@ -277,16 +304,23 @@ function account(acc) {
 		return true
 	}
 
-	login(null, logged_in)
+	listen('usr.account_widget.current_action', function(usr) {
+		if (usr.anonymous && !want_anonymous)
+			create_login_section()
+		else
+			create_user_section(usr)
+	})
+
+	login()
 
 	return acc
 }
 
-action.account = function() {
-	hide_nav()
-	render('account', null, '#main')
+// account page --------------------------------------------------------------
 
-	function load_orders() {
+action.account = function() {
+
+	listen('usr.account_page.current_action', function() {
 		load_content('#orders_section', '/orders.json', function(orders) {
 
 			$.each(orders.orders, function(i,o) {
@@ -300,12 +334,10 @@ action.account = function() {
 			})
 
 		})
-	}
-
-	var acc = account({
-		on_update: function(usr) {
-			load_orders()
-		},
 	})
+
+	hide_nav()
+	render('account', null, '#main')
+	account_widget()
 }
 

@@ -195,12 +195,9 @@ action.checkout = function() {
 	hide_nav()
 	render('checkout', null, '#main')
 
-	acc = account({
-		allow_anonymous: true,
-		on_update: function(usr) {
-			load_cart()
-		},
-	})
+	listen('usr.checkout_page.current_action', load_cart)
+
+	acc = account_widget({ allow_anonymous: true })
 
 	update_shipping_section()
 

@@ -23,7 +23,7 @@ function update_prods(prods) {
 	})
 
 	$('#main .add_to_cart').click(function() {
-		add_to_cart(upid(this, 'pid'))
+		cart.add(upid(this, 'pid'))
 	})
 
 	g_prods = prods
@@ -323,7 +323,7 @@ function update_product_page(prod) {
 	setlink('.brandlink', '/brand/' + prod.bid)
 
 	$('#add_to_cart').click(function() {
-		add_to_cart(g_prod.pid, g_combi.coid)
+		cart.add(g_prod.pid, g_combi.coid)
 	})
 
 	// keyboard image navigation

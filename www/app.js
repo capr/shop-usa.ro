@@ -16,42 +16,6 @@ function hide_nav() {
 	$('#sidebar').hide()
 }
 
-// session vocabulary --------------------------------------------------------
-
-function login(auth, success, error, opt, arg) {
-	function logged_in(usr) {
-		broadcast('usr', usr)
-		if (success)
-			success(usr)
-	}
-	return ajax('/login.json' + (arg || ''), $.extend({
-			success: logged_in,
-			error: error,
-			data: auth,
-		}, opt))
-}
-
-function logout(success, error, opt) {
-	return login(null, success, error, opt, '/logout')
-}
-
-var g_admin = false
-function admin(on_change) {
-	if (on_change)
-		listen('usr.admin.page', on_change)
-	return g_admin
-}
-
-function editmode(on_change) {
-	return admin(on_change)
-}
-
-function init_admin() {
-	listen('usr.admin', function(usr) {
-		g_admin = usr.admin
-	})
-}
-
 // init ----------------------------------------------------------------------
 
 $(function() {
@@ -61,7 +25,6 @@ $(function() {
 
 	init_admin()
 	init_status()
-	init_cart()
 	login()
 
 	url_changed()

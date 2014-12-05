@@ -1,50 +1,41 @@
+var cart = (function() {
 
-// cart/actions --------------------------------------------------------------
+listen('usr.cart_icon', function(usr) {
+	set_cart_icon(usr.buynow_count)
+})
 
-var g_cart
+listen('cart.cart_icon', function(cart) {
+	set_cart_icon(cart.buynow ? cart.buynow.length : cart.buynow_count)
+})
+
+// cart actions --------------------------------------------------------------
+
 function set_cart(cart) {
-	g_cart = cart
-	broadcast('cart.buynow_count', cart.buynow ? cart.buynow.length : cart.buynow_count)
+	broadcast('cart', cart)
 }
 
-function add_prod_to_cart(pid, coid, finish) {
-	var args = {pid: pid, coid: coid}
-	post('/cart.json/add', args, function(cart) {
-		set_cart(cart)
-		finish()
-	})
+function load_cart() {
+	load_main('/cart.json', set_cart)
 }
 
-function remove_from_cart(ciid, finish) {
-	var args = {ciid: ciid}
-	post('/cart.json/remove', args, function(cart) {
-		set_cart(cart)
-		finish()
-	})
+function add_prod_to_cart(pid, coid) {
+	post('/cart.json/add', {pid: pid, coid: coid}, set_cart)
 }
 
-function move_to_cart(ciid, finish) {
-	var args = {ciid: ciid}
-	post('/cart.json/move_to_cart', args, function(cart) {
-		set_cart(cart)
-		finish()
-	})
+function remove_from_cart(ciid) {
+	post('/cart.json/remove', {ciid: ciid}, set_cart)
 }
 
-function buy_later(ciid, finish) {
-	var args = {ciid: ciid}
-	post('/cart.json/buy_later', args, function(cart) {
-		set_cart(cart)
-		finish()
-	})
+function move_to_cart(ciid) {
+	post('/cart.json/move_to_cart', {ciid: ciid}, set_cart)
 }
 
-function cart_reorder(ciids, buylater, finish) {
-	var args = {ciids: ciids, buylater: buylater}
-	post('/cart.json/reorder', args, function(cart) {
-		set_cart(cart)
-		finish()
-	})
+function buy_later(ciid) {
+	post('/cart.json/buy_later', {ciid: ciid}, set_cart)
+}
+
+function reorder_cart(ciids, buylater) {
+	post('/cart.json/reorder', {ciids: ciids, buylater: buylater}, set_cart)
 }
 
 // cart icon -----------------------------------------------------------------
@@ -69,15 +60,16 @@ function drag_prod_img_to_cart(finish) {
 }
 
 function set_cart_icon(n) {
-	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
+	$('#cart_icon')
+		.attr('src', n > 0 && '/bag_full.png' || '/bag.png')
+		.click(function() {
+			exec('/cart')
+		})
 	$('#cart_icon_item_count').html((n < 10 ? '0' : '') + n)
-	$('#cart_icon').click(function() {
-		exec('/cart')
-	})
 }
 
 var g_ci_top
-function update_cart_icon() {
+function animate_cart_icon() {
 	var ci = $('#cart_icon_div')
 	g_ci_top = g_ci_top || ci.position().top - ci.offset().top
 	ci.animate({top: g_ci_top - 20}, 100, 'easeOutExpo', function() {
@@ -88,26 +80,21 @@ function update_cart_icon() {
 }
 
 function add_to_cart(pid, coid) {
-	drag_prod_img_to_cart(function() {
-		add_prod_to_cart(pid, coid, update_cart_icon)
-	})
-}
-
-function init_cart() {
-	listen('usr.cart', function(usr) {
-		set_cart_icon(usr.buynow_count)
-	})
-	listen('cart.buynow_count', function(buynow_count) {
-		set_cart_icon(buynow_count)
-	})
+	if ($('#prod_img').length)
+		drag_prod_img_to_cart(function() {
+			add_prod_to_cart(pid, coid)
+			animate_cart_icon()
+		})
+	else
+		add_prod_to_cart(pid, coid)
 }
 
 // cart page -----------------------------------------------------------------
 
-function update_cart_page() {
+function update_cart_page(cart) {
 
 	var total = 0
-	$.each(g_cart.buynow, function(i,e) { total += e.price; })
+	$.each(cart.buynow, function(i,e) { total += e.price; })
 
 	function set_sname(i,e) {
 		var snames = []
@@ -116,14 +103,14 @@ function update_cart_page() {
 		e.sname = snames.join(', ')
 	}
 
-	$.each(g_cart.buynow, set_sname)
-	$.each(g_cart.buylater, set_sname)
+	$.each(cart.buynow, set_sname)
+	$.each(cart.buylater, set_sname)
 
 	render('cart_page', {
-		buynow:         render('cart_list', g_cart.buynow),
-		buylater:       render('cart_list', g_cart.buylater),
-		buylater_count: g_cart.buylater.length,
-		buynow_count:   g_cart.buynow.length,
+		buynow:         render('cart_list', cart.buynow),
+		buylater:       render('cart_list', cart.buylater),
+		buylater_count: cart.buylater.length,
+		buynow_count:   cart.buynow.length,
 		total:          total,
 	}, '#main')
 
@@ -166,7 +153,7 @@ function cart_make_draggable() {
 			ciids.push(parseInt($(this).attr('ciid')))
 			buylater.push($(this).closest('#cart_buylater').length > 0)
 		})
-		cart_reorder(ciids, buylater, update_cart_page)
+		reorder_cart(ciids, buylater, update_cart_page)
 	}
 
 	$('.cart_list').sortable({
@@ -183,9 +170,13 @@ function cart_make_draggable() {
 
 action.cart = function() {
 	hide_nav()
-	load_main('/cart.json', function(cart) {
-		set_cart(cart)
-		update_cart_page()
-	})
+	listen('cart.cart_page.current_action', update_cart_page)
+	listen('usr.cart_page.current_action', load_cart) // reload if user changes
+	load_cart()
 }
 
+return {
+	add: add_to_cart,
+}
+
+})()
