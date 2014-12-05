@@ -42,8 +42,8 @@ function admin(on_change) {
 	return g_admin
 }
 
-function editmode() {
-	return admin()
+function editmode(on_change) {
+	return admin(on_change)
 }
 
 function init_admin() {

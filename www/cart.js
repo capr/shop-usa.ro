@@ -2,11 +2,15 @@
 // cart/actions --------------------------------------------------------------
 
 var g_cart
+function set_cart(cart) {
+	g_cart = cart
+	broadcast('cart.buynow_count', cart.buynow ? cart.buynow.length : cart.buynow_count)
+}
 
 function add_prod_to_cart(pid, coid, finish) {
 	var args = {pid: pid, coid: coid}
 	post('/cart.json/add', args, function(cart) {
-		g_cart = cart // returns cart summary
+		set_cart(cart)
 		finish()
 	})
 }
@@ -14,7 +18,7 @@ function add_prod_to_cart(pid, coid, finish) {
 function remove_from_cart(ciid, finish) {
 	var args = {ciid: ciid}
 	post('/cart.json/remove', args, function(cart) {
-		g_cart = cart // returns full cart
+		set_cart(cart)
 		finish()
 	})
 }
@@ -22,7 +26,7 @@ function remove_from_cart(ciid, finish) {
 function move_to_cart(ciid, finish) {
 	var args = {ciid: ciid}
 	post('/cart.json/move_to_cart', args, function(cart) {
-		g_cart = cart // returns full cart
+		set_cart(cart)
 		finish()
 	})
 }
@@ -30,7 +34,7 @@ function move_to_cart(ciid, finish) {
 function buy_later(ciid, finish) {
 	var args = {ciid: ciid}
 	post('/cart.json/buy_later', args, function(cart) {
-		g_cart = cart // returns full cart
+		set_cart(cart)
 		finish()
 	})
 }
@@ -38,7 +42,7 @@ function buy_later(ciid, finish) {
 function cart_reorder(ciids, buylater, finish) {
 	var args = {ciids: ciids, buylater: buylater}
 	post('/cart.json/reorder', args, function(cart) {
-		g_cart = cart // returns full cart
+		set_cart(cart)
 		finish()
 	})
 }
@@ -65,8 +69,6 @@ function drag_prod_img_to_cart(finish) {
 }
 
 function set_cart_icon(n) {
-	if (typeof n != 'number')
-		n = g_cart.buynow ? g_cart.buynow.length : g_cart.buynow_count
 	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
 	$('#cart_icon_item_count').html((n < 10 ? '0' : '') + n)
 	$('#cart_icon').click(function() {
@@ -79,7 +81,6 @@ function update_cart_icon() {
 	var ci = $('#cart_icon_div')
 	g_ci_top = g_ci_top || ci.position().top - ci.offset().top
 	ci.animate({top: g_ci_top - 20}, 100, 'easeOutExpo', function() {
-		set_cart_icon()
 		ci.animate({top: g_ci_top}, 500, 'easeOutBounce', function() {
 			ci.css('top', '')
 		})
@@ -96,12 +97,14 @@ function init_cart() {
 	listen('usr.cart', function(usr) {
 		set_cart_icon(usr.buynow_count)
 	})
+	listen('cart.buynow_count', function(buynow_count) {
+		set_cart_icon(buynow_count)
+	})
 }
 
 // cart page -----------------------------------------------------------------
 
 function update_cart_page() {
-	set_cart_icon()
 
 	var total = 0
 	$.each(g_cart.buynow, function(i,e) { total += e.price; })
@@ -181,7 +184,7 @@ function cart_make_draggable() {
 action.cart = function() {
 	hide_nav()
 	load_main('/cart.json', function(cart) {
-		g_cart = cart
+		set_cart(cart)
 		update_cart_page()
 	})
 }
