@@ -337,6 +337,7 @@ function update_product_page(prod) {
 	// create "add to order" buttons now and whenever the user changes
 	create_add_to_order_buttons()
 	listen('usr.product_page.current_action', create_add_to_order_buttons)
+	listen('open_orders.product_page.current_action', create_add_to_order_buttons)
 }
 
 action.p = function(pid) {

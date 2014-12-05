@@ -1065,7 +1065,7 @@ end
 	<br>
 	<table width=100%>
 		<tr>
-			<td class=nowrap><b>Search Order:&nbsp;</b></td>
+			<td class=nowrap><b><t class=en>Search:</t><t class=ro>Cauta:</t>&nbsp;</b></td>
 			<td width=100%><input id=search placeholder="name, email, phone, pid, product name" value="{{q}}"></td>
 		</tr>
 	</table>
@@ -1075,11 +1075,11 @@ end
 <script type="text/x-mustache" id=orderlist_template>
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
-			<th align=left>order id</th>
-			<th align=left>date</th>
-			<th align=left>assigned</th>
-			<th align=left>op note</th>
-			<th align=left>status</th>
+			<th align=left><t class=en>order</t><t class=ro>comanda</t></th>
+			<th align=left><t class=en>date</t><t class=ro>data</t></th>
+			<th align=left>operator</th>
+			<th align=left><t class=en>operator note</t><t class=ro>nota operator</t></th>
+			<th align=left><t class=en>status</t><t class=ro>stare</t></th>
 		</tr>
 		{{#orders}}
 		<tr oid={{{oid}}}>
@@ -1112,7 +1112,7 @@ end
 			<td align=right valign=top>
 				<table width=200>
 					<tr>
-						<td><b>status:</b></td>
+						<td><b><t class=en>status:</t><t class=ro>stare</t></b></td>
 						<td>
 							<select id=status>
 								{{#statuses}}
@@ -1142,7 +1142,7 @@ end
 			<th align=right><t class=en>price</t><t class=ro>pret</t></th>
 			<th align=left><t class=en>last op</t><t class=ro>operator</t></th>
 			<th align=left><t class=en>note</t><t class=ro>nota</t></th>
-			<th align=left>status</th>
+			<th align=left><t class=en>status</t><t class=ro>stare</t></th>
 		</tr>
 		{{#items}}
 		<tr oiid={{{oiid}}} class="{{{canceled}}}">

@@ -1,9 +1,15 @@
 var orders = (function() {
 
+var order_statuses = ['new', 'open', 'secured', 'shipped',
+	'canceled', 'returned']
+
+var order_item_statuses = ['new', 'secured', 'shipped',
+	'canceled', 'returned', 'refunded', 'not_available']
+
 // order actions -------------------------------------------------------------
 
-function set_order(ordr) {
-	broadcast('ordr', ordr)
+function set_order(o) {
+	broadcast('order', o)
 }
 
 function add_to_order(oid, coid) {
@@ -14,13 +20,14 @@ function load_order(oid) {
 	load_main('/order.json/'+oid, set_order)
 }
 
+function update_order(oid, data) {
+	post('/order.json/'+oid+'/update', data, function(o) {
+		set_order(o)
+		broadcast('open_orders')
+	})
+}
+
 // order list page -----------------------------------------------------------
-
-var order_statuses = ['new', 'open', 'secured', 'shipped',
-	'canceled', 'returned']
-
-var order_item_statuses = ['new', 'secured', 'shipped',
-	'canceled', 'returned', 'refunded', 'not_available']
 
 function update_orders(data) {
 
@@ -107,7 +114,7 @@ function update_order(o) {
 
 action.order = function(oid) {
 	hide_nav()
-	listen('ordr.order_page.current_action', function(o) {
+	listen('order.order_page.current_action', function(o) {
 		if (o.oid != oid) return // not our order
 		update_order(o)
 	})
