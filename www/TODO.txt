@@ -61,6 +61,7 @@ USABILITY BUGS (CONFUSIONS)
 - bulina cu pastrate pt. mai tarziu
 - google fucking analytics keeps the spinning wheel turning as usual...
 - preserve div height when browsing gallery images to prevent flicker
+- make admin from admin doesn't work
 
 
 UI BUGS
