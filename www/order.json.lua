@@ -19,6 +19,41 @@ if POST then
 				pa.id_product_attribute = ?
 			]], oid, usd_rate(), coid)
 		query('update ordr set opuid = ? where oid = ?', uid(), oid)
+	elseif action == 'update' then
+		local o = json(POST.data)
+		query([[
+			update ordr set
+				email = ?,
+				name = ?,
+				phone = ?,
+				addr = ?,
+				city = ?,
+				county = ?,
+				country = ?,
+				note = ?,
+				shiptype = ?,
+				shipcost = ?,
+				status = ?,
+				opuid = ?,
+				opnote = ?,
+				mtime = now()
+			where
+				oid = ?
+			]],
+				str_arg(o.email), str_arg(o.name), str_arg(o.phone),
+				str_arg(o.addr), str_arg(o.city), str_arg(o.county),
+				str_arg(o.country), str_arg(o.note), str_arg(o.shiptype),
+				str_arg(o.shipcost), str_arg(o.status), uid(), str_arg(o.opnote),
+				oid)
+			for i,oi in ipairs(o.items) do
+				query([[
+					update ordritem set
+						note = ?,
+						status = ?
+					where
+						oiid = ?
+				]], oi.note, oi.status, oi.oiid)
+			end
 	else
 		error'invalid action'
 	end

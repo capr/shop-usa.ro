@@ -1,10 +1,12 @@
 var orders = (function() {
 
-var order_statuses = ['new', 'open', 'secured', 'shipped',
+var statuses = ['new', 'open', 'secured', 'shipped',
 	'canceled', 'returned']
 
-var order_item_statuses = ['new', 'secured', 'shipped',
+var item_statuses = ['new', 'secured', 'shipped',
 	'canceled', 'returned', 'refunded', 'not_available']
+
+var shiptypes = ['home', 'store']
 
 // order actions -------------------------------------------------------------
 
@@ -24,6 +26,7 @@ function update_order(oid, data) {
 	post('/order.json/'+oid+'/update', data, function(o) {
 		set_order(o)
 		broadcast('open_orders')
+		notify(S('changes_saved', 'Changes saved'))
 	})
 }
 
@@ -78,17 +81,17 @@ action.orders = function(q) {
 
 // order page ----------------------------------------------------------------
 
-function update_order(o) {
+function update_order_page(o) {
 
 	o.total = 0
 	$.each(o.items, function(i,oi) {
-		oi.statuses = select_map(order_item_statuses, oi.status)
+		oi.statuses = select_map(item_statuses, oi.status)
 		oi.canceled = oi.status == 'cancel' ? 'canceled' : null
 		o.total += oi.price
 	})
 
-	o.statuses = select_map(order_statuses, o.status)
-	o.address = o.shiptype == 'home'
+	o.statuses = select_map(statuses, o.status)
+	o.shiptypes = select_map(shiptypes, o.shiptype)
 	o.shiptype = S(o.shiptype)
 	o.atime = longdate(o.atime, 'always')
 	o.uname = '{0} ({1})'.format(o.uname, o.uemail)
@@ -101,13 +104,37 @@ function update_order(o) {
 		window.open('http://6pm.com/'+pid, '_blank')
 	})
 
-	$('#btn_add').click(function() {
-		var pid = $('#add_pid').val()
-		//
+	$('#shiptype').change(function() {
+		$('#address_section :input').prop('disabled', $(this).val() == 'store')
 	})
+	$('#shiptype').trigger('change')
 
 	$('#btn_save').click(function() {
 
+		var items = []
+		$('#main [oiid]').each(function(i, oi) {
+			items.push({
+				oiid:     $(this).attr('oiid'),
+				note:     $(this).find('[field=itemnote]').val(),
+				status:   $(this).find('[field=status]').val(),
+			})
+		})
+
+		update_order(o.oid, {
+			status:   $('#status').val(),
+			items:    items,
+			email:    $('#email').val(),
+			name:     $('#name').val(),
+			phone:    $('#phone').val(),
+			shiptype: $('#shiptype').val(),
+			shipcost: $('#shipcost').val(),
+			addr:     $('#addr').val(),
+			city:     $('#city').val(),
+			county:   $('#county').val(),
+			note:     $('#note').val(),
+			opnote:   $('#opnote').val(),
+			country:  'Romania',
+		})
 	})
 
 }
@@ -116,7 +143,7 @@ action.order = function(oid) {
 	hide_nav()
 	listen('order.order_page.current_action', function(o) {
 		if (o.oid != oid) return // not our order
-		update_order(o)
+		update_order_page(o)
 	})
 	load_order(oid)
 }

@@ -1066,7 +1066,7 @@ end
 	<table width=100%>
 		<tr>
 			<td class=nowrap><b><t class=en>Search:</t><t class=ro>Cauta:</t>&nbsp;</b></td>
-			<td width=100%><input id=search placeholder="name, email, phone, pid, product name" value="{{q}}"></td>
+			<td width=100%><input type=text id=search placeholder="name, email, phone, pid, product name" value="{{q}}"></td>
 		</tr>
 	</table>
 	<div id=orders></div>
@@ -1155,9 +1155,9 @@ end
 			</td>
 			<td class=price align=right>{{price}} RON</td>
 			<td>{{opname}}</td>
-			<td><input value="{{itemnote}}"></td>
+			<td><input type=text field=itemnote value="{{itemnote}}"></td>
 			<td width=100>
-				<select id=status>
+				<select field=status>
 					{{#statuses}}
 						<option value="{{{value}}}" {{{selected}}}>{{{value}}}</option>
 					{{/statuses}}
@@ -1192,39 +1192,54 @@ end
 				<table width=100% style="border-spacing: 5px;">
 					<tr>
 						<td>Email:</td>
-						<td><input id=email value="{{email}}"></td>
+						<td><input type=text id=email value="{{email}}"></td>
 					</tr>
 					<tr>
 						<td><t class=en>Name:</t><t class=ro>Nume:</t></td>
-						<td><input id=name value="{{name}}"></td>
+						<td><input type=text id=name value="{{name}}"></td>
 					</tr>
 					<tr>
 						<td><t class=en>Phone:</t><t class=ro>Telefon:</t></td>
-						<td><input id=phone value="{{phone}}"></td>
+						<td><input type=text id=phone value="{{phone}}"></td>
 					</tr>
 				</table>
 			</td>
 			<td valign=top width=50%>
-				<h3>
-					<t class=en>Shipping:</t>
-					<t class=ro>Livrare:</t> {{shiptype}}, {{shipcost}} RON
-				</h3>
-				{{#address}}
-				<table width=100% style="border-spacing: 5px;">
+				<table width=100%>
 					<tr>
-						<td><t class=en>Address:</t><t class=ro>Adresa:</t></td>
-						<td><input id=addr value="{{addr}}"></td>
-					</tr>
-					<tr>
-						<td><t class=en>City:</t><t class=ro>Oras:</t></td>
-						<td><input id=city value="{{city}}"></td>
-					</tr>
-					<tr>
-						<td><t class=en>County:</t><t class=ro>Judet:</t></td>
-						<td><input id=county value="{{county}}"></td>
+						<td>
+							<h3>
+								<t class=en>Shipping:</t>
+								<t class=ro>Livrare:</t>
+							</h3>
+						</td>
+						<td align=right>
+							<select id=shiptype style="width: 100px">
+							{{#shiptypes}}
+								<option value="{{{value}}}" {{{selected}}}>{{{value}}}</option>
+							{{/shiptypes}}
+							</select>,
+							<input type=text id=shipcost value="{{{shipcost}}}" style="width: 50px; text-align: right" class=price>
+							<span class=price>RON</span>
+						</td>
 					</tr>
 				</table>
-				{{/address}}
+				<div id=address_section>
+					<table width=100% style="border-spacing: 5px;">
+						<tr>
+							<td><t class=en>Address:</t><t class=ro>Adresa:</t></td>
+							<td><input type=text id=addr value="{{addr}}"></td>
+						</tr>
+						<tr>
+							<td><t class=en>City:</t><t class=ro>Oras:</t></td>
+							<td><input type=text id=city value="{{city}}"></td>
+						</tr>
+						<tr>
+							<td><t class=en>County:</t><t class=ro>Judet:</t></td>
+							<td><input type=text id=county value="{{county}}"></td>
+						</tr>
+					</table>
+				</div>
 			</td>
 		</tr>
 		<tr>
@@ -1233,14 +1248,14 @@ end
 					<t class=en>Customer Note:</t>
 					<t class=ro>Nota Client:</t>
 				</h3>
-				<textarea rows=4>{{note}}</textarea>
+				<textarea id=note rows=4>{{note}}</textarea>
 			</tD>
 			<td valign=top>
 				<h3>
 					<t class=en>Operator Note:</t>
 					<t class=ro>Nota Operator:</t>
 				</h3>
-				<textarea rows=4>{{opnote}}</textarea>
+				<textarea id=opnote rows=4>{{opnote}}</textarea>
 			</tD>
 		</tr>
 	</table>
