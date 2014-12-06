@@ -88,7 +88,7 @@ function update_order_page(o) {
 	o.total = 0
 	$.each(o.items, function(i,oi) {
 		oi.statuses = select_map(item_statuses, oi.status)
-		oi.canceled = oi.status == 'cancel' ? 'canceled' : null
+		oi.canceled = oi.status == 'canceled' ? 'canceled' : null
 		oi.item_opname = firstname(oi.opname, oi.opemail)
 		o.total += oi.price
 	})
