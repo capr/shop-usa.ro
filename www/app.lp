@@ -1070,11 +1070,12 @@ end
 			<td width=100%><input type=text id=search placeholder="name, email, phone, pid, product name" value="{{q}}"></td>
 		</tr>
 	</table>
+	<br>
 	<div id=orders></div>
 </script>
 
 <script type="text/x-mustache" id=orderlist_template>
-	<table width=100%>
+	<table width=100% class=datagrid>
 		<tr>
 			<th align=left><t class=en>order</t><t class=ro>comanda</t></th>
 			<th align=left><t class=en>date</t><t class=ro>data</t></th>
@@ -1137,7 +1138,7 @@ end
 		<t class=en>Items:</t>
 		<t class=ro>Produse:</t>
 	</h3>
-	<table width=100% class=datagrid style="border-spacing: 5px">
+	<table width=100% class=datagrid>
 		<tr>
 			<th align=left>pid</th>
 			<th align=left><t class=en>product</t><t class=ro>produs</t></th>
