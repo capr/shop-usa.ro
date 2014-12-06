@@ -44,6 +44,7 @@ function update_orders(data) {
 	$.each(data.orders, function(i,o) {
 		o.atime = shortdate(o.atime, 'always')
 		o.opname = firstname(o.opname, o.opemail)
+		o.canceled = o.status == 'canceled' ? 'canceled' : null
 	})
 
 	render('orderlist', data, '#orders')
