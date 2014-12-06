@@ -109,9 +109,9 @@ function update_order_page(o) {
 		window.open('http://6pm.com/'+pid, '_blank')
 	})
 
-	$('#main a[pid2][pid]').click(function() {
+	$('#main a[pid2][pid]').each(function() {
 		var pid = $(this).attr('pid')
-		exec('/p/'+pid)
+		setlink(this, '/p/'+pid)
 	})
 
 	$('#shiptype').change(function() {
