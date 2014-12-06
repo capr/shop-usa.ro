@@ -6,8 +6,10 @@ assert(oid)
 
 if POST then
 	if action == 'add' then
+
 		local d = json(POST.data)
 		local coid = assert(d.coid)
+
 		query([[
 			insert into ordritem
 				(qty, status, coid, mtime, oid, price)
@@ -18,9 +20,13 @@ if POST then
 			where
 				pa.id_product_attribute = ?
 			]], oid, usd_rate(), coid)
+
 		query('update ordr set opuid = ? where oid = ?', uid(), oid)
+
 	elseif action == 'update' then
+
 		local o = json(POST.data)
+
 		query([[
 			update ordr set
 				email = ?,
@@ -46,25 +52,29 @@ if POST then
 				str_arg(o.shipcost), str_arg(o.status), uid(), str_arg(o.opnote),
 				oid)
 
-			for i,oi in ipairs(o.items) do
-				if changed(query([[
+		for i,oi in ipairs(o.items) do
+
+			if changed(query([[
+				update ordritem set
+					price = ?,
+					note = ?,
+					status = ?
+				where
+					oiid = ?
+			]], str_arg(oi.price), str_arg(oi.note), str_arg(oi.status),
+				oi.oiid))
+			then
+
+				query([[
 					update ordritem set
-						price = ?,
-						note = ?,
-						status = ?
+						mtime = now(),
+						opuid = ?
 					where
 						oiid = ?
-				]], str_arg(oi.price), str_arg(oi.note), str_arg(oi.status),
-					oi.oiid))
-				then
-					query([[
-						update ordritem set
-							mtime = now(), opuid = ?
-						where
-							oiid = ?
-						]], uid(), oiid)
-				end
+					]], uid(), oiid)
 			end
+		end
+
 	else
 		error'invalid action'
 	end
