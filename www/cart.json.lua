@@ -18,9 +18,9 @@ if POST then
 	if action == 'add' then
 		query([[
 			insert into cartitem
-				(uid, pid, coid, pos, buylater)
+				(uid, pid, coid, pos, buylater, mtime)
 			values
-				(?, ?, ?, ?, ?)
+				(?, ?, ?, ?, ?, now())
 		]], uid(), data.pid, data.coid, data.pos or 0, data.buylater or 0)
 		out_summary()
 		return

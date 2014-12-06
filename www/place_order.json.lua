@@ -29,19 +29,19 @@ ngx.sleep(0.8)
 local oid = iquery([[
 	insert into ordr
 		(uid, email, name, phone, addr, city, county, country, note,
-			shiptype, shipcost, status)
+			shiptype, shipcost, status, mtime)
 	values
-		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new')
+		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', now())
 ]], uid(), email, name, phone, addr, city, county, country, note,
 	shiptype, shipcost)
 
 --add the cart items at current price.
 query([[
 	insert into ordritem
-		(oid, coid, qty, price, status)
+		(oid, coid, qty, price, status, mtime)
 	select
 		?, ci.coid, ci.qty,
-		$ronprice(pa.price, ?) as price, 'new'
+		$ronprice(pa.price, ?) as price, 'new', now()
 	from
 		cartitem ci
 		inner join ps_product_attribute pa
@@ -57,7 +57,7 @@ query([[
 --clear the cart.
 query('delete from cartitem where buylater = 0 and uid = ?', uid())
 
---update user info
+--update user info, but only the fields that were missing.
 query([[
 	update usr set
 		name = coalesce(name, ?),

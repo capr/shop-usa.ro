@@ -258,11 +258,12 @@ function upid(e, attr) {
 	return parseInt($(e).closest('['+attr+']').attr(attr))
 }
 
-function notify(msg) {
+function notify(msg, cls) {
 	$().toasty({
 		message: msg,
 		position: 'tc',
 		autoHide: 1 / (100 * 5 / 60) * 1000 * msg.length, // assume 100 WPM
+		messageClass: cls,
 	})
 }
 

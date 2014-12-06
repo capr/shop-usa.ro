@@ -56,6 +56,7 @@ end
 			</div>
 		</td>
 		<td valign=top width=900>
+			<div id=toasty_div style="position: absolute; width: 900px; text-align: center;"></div>
 			<div id=topbar style="height: 30px"></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
@@ -856,7 +857,7 @@ end
 		operatorii nostrii si vei primi un telefon pentru confirmare.
 		<br>
 		<br>
-		Urmareste starea comenzii <a class="a_account link">in contul tau</a>.
+		Urmareste starea comenzii <a id=a_account class=link>in contul tau</a>.
 	</t>
 	<br>
 	<br>
@@ -1122,7 +1123,7 @@ end
 						</td>
 					</tr>
 					<tr>
-						<td><b><t class=en>last op</t><t class=ro>operator</t>:</b></td>
+						<td><b><t class=en>operator</t><t class=ro>operator</t>:</b></td>
 						<td><b>{{opname}}</b></td>
 					</tr>
 				</table>
@@ -1140,22 +1141,22 @@ end
 			<th align=left><t class=en>product</t><t class=ro>produs</t></th>
 			<th align=left><t class=en>combination</t><t class=ro>combinatie</t></th>
 			<th align=right><t class=en>price</t><t class=ro>pret</t></th>
-			<th align=left><t class=en>last op</t><t class=ro>operator</t></th>
+			<th align=left><t class=en>operator</t><t class=ro>operator</t></th>
 			<th align=left><t class=en>note</t><t class=ro>nota</t></th>
 			<th align=left><t class=en>status</t><t class=ro>stare</t></th>
 		</tr>
 		{{#items}}
 		<tr oiid={{{oiid}}} class="{{{canceled}}}">
-			<td><a pid={{{pid}}}>{{{pid}}}</a></td>
+			<td><a pid1 pid={{{pid}}}>{{{pid}}}</a></td>
 			<td width=1>
-				<div class="ellipsis" style="width: 260px" title="{{{bname}}} {{{name}}}">{{{bname}}} {{{name}}}</div>
+				<a pid2 pid={{{pid}}}><div class=ellipsis style="width: 260px" title="{{{bname}}} {{{name}}}">{{{bname}}} {{{name}}}</div></a>
 			</td>
 			<td width=1>
 				<div class=ellipsis style="width: 180px" title="{{{vnames}}}">{{{vnames}}}</div>
 			</td>
 			<td class=price align=right>{{price}} RON</td>
-			<td>{{opname}}</td>
-			<td><input type=text field=itemnote value="{{itemnote}}"></td>
+			<td>{{item_opname}}</td>
+			<td><input type=text field=note value="{{item_note}}"></td>
 			<td width=100>
 				<select field=status>
 					{{#statuses}}

@@ -107,8 +107,13 @@ end
 
 --query execution ------------------------------------------------------------
 
+print_queries = false
+
 local function run_query(sql)
 	sql = preprocess(sql)
+	if print_queries then
+		print(sql)
+	end
 	assert_db(db:send_query(sql))
 	local t, err = assert_db(db:read_result())
 	local n = count_cols(t)

@@ -73,7 +73,8 @@ end
 
 local function create_user()
 	ngx.sleep(0.2) --make filling it up a bit harder
-	return iquery('insert into usr (clientip) values (?)', ngx.var.remote_addr)
+	return iquery('insert into usr (clientip, mtime) values (?, now())',
+		ngx.var.remote_addr)
 end
 
 function auth.session()

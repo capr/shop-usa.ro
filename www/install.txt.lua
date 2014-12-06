@@ -1,7 +1,11 @@
 
+local function pass(...)
+	print_queries = false
+	return ...
+end
 local function pq(sql, ...)
-	print(sql, ...)
-	return query(sql, ...)
+	print_queries = true
+	return pass(query(sql, ...))
 end
 
 --ddl vocabulary -------------------------------------------------------------
@@ -158,7 +162,7 @@ $table ordritem (
 	price       $money not null,
 	note        text,
 	status      $name,
-	opuid       $id, $fk(ordr, opuid, usr, uid),
+	opuid       $id, $fk(ordritem, opuid, usr, uid),
 	atime       $atime,
 	mtime       $mtime
 );

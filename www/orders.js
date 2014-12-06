@@ -14,12 +14,16 @@ function set_order(o) {
 	broadcast('order', o)
 }
 
+function update_failed(xhr) {
+	notify(S('update_failed', 'Update failed'), 'error')
+}
+
 function add_to_order(oid, coid) {
-	post('/order.json/'+oid+'/add', {coid: coid}, set_order)
+	post('/order.json/'+oid+'/add', {coid: coid}, set_order, update_failed)
 }
 
 function load_order(oid) {
-	load_main('/order.json/'+oid, set_order)
+	load_main('/order.json/'+oid, set_order, update_failed)
 }
 
 function update_order(oid, data) {
@@ -27,7 +31,7 @@ function update_order(oid, data) {
 		set_order(o)
 		broadcast('open_orders')
 		notify(S('changes_saved', 'Changes saved'))
-	})
+	}, update_failed)
 }
 
 // order list page -----------------------------------------------------------
@@ -43,11 +47,6 @@ function update_orders(data) {
 
 	$('#main [oid] a').each(function() {
 		setlink(this, '/order/'+upid(this, 'oid'))
-	})
-
-	$('#main a[pid]').click(function() {
-		var pid = $(this).attr('pid')
-		window.open('http://6pm.com/'+pid, '_blank')
 	})
 }
 
@@ -87,6 +86,7 @@ function update_order_page(o) {
 	$.each(o.items, function(i,oi) {
 		oi.statuses = select_map(item_statuses, oi.status)
 		oi.canceled = oi.status == 'cancel' ? 'canceled' : null
+		oi.item_opname = firstname(oi.opname, oi.opemail)
 		o.total += oi.price
 	})
 
@@ -99,9 +99,14 @@ function update_order_page(o) {
 
 	render('order', o, '#main')
 
-	$('#main a[pid]').click(function() {
+	$('#main a[pid1][pid]').click(function() {
 		var pid = $(this).attr('pid')
 		window.open('http://6pm.com/'+pid, '_blank')
+	})
+
+	$('#main a[pid2][pid]').click(function() {
+		var pid = $(this).attr('pid')
+		exec('/p/'+pid)
 	})
 
 	$('#shiptype').change(function() {
@@ -114,9 +119,9 @@ function update_order_page(o) {
 		var items = []
 		$('#main [oiid]').each(function(i, oi) {
 			items.push({
-				oiid:     $(this).attr('oiid'),
-				note:     $(this).find('[field=itemnote]').val(),
-				status:   $(this).find('[field=status]').val(),
+				oiid:   $(this).attr('oiid'),
+				note:   $(this).find('[field=note]').val(),
+				status: $(this).find('[field=status]').val(),
 			})
 		})
 

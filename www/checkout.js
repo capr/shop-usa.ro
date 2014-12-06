@@ -212,6 +212,7 @@ action.checkout = function() {
 action.order_placed = function() {
 	hide_nav()
 	render('order_placed', null, '#main')
+	setlink('#a_account', '/account')
 }
 
 })()

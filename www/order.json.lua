@@ -10,9 +10,9 @@ if POST then
 		local coid = assert(d.coid)
 		query([[
 			insert into ordritem
-				(qty, status, coid, oid, price)
+				(qty, status, coid, mtime, oid, price)
 			select
-				 1, 'new', pa.id_product_attribute, ?, $ronprice(pa.price, ?)
+				 1, 'new', pa.id_product_attribute, now(), ?, $ronprice(pa.price, ?)
 			from
 				ps_product_attribute pa
 			where
@@ -45,14 +45,23 @@ if POST then
 				str_arg(o.country), str_arg(o.note), str_arg(o.shiptype),
 				str_arg(o.shipcost), str_arg(o.status), uid(), str_arg(o.opnote),
 				oid)
+
 			for i,oi in ipairs(o.items) do
+				local note = str_arg(oi.note)
+				local status = str_arg(oi.status)
 				query([[
 					update ordritem set
+						opuid = if(note <=> ? and status <=> ?, opuid, ?),
+						mtime = if(note <=> ? and status <=> ?, mtime, now()),
 						note = ?,
 						status = ?
 					where
 						oiid = ?
-				]], oi.note, oi.status, oi.oiid)
+				]],
+					note, status, uid(),
+					note, status,
+					note, status,
+					oi.oiid)
 			end
 	else
 		error'invalid action'
@@ -82,7 +91,10 @@ local order = query1([[
 order.items = check(query([[
 	select
 		i.oiid, i.coid, i.qty, i.price,
-		i.note as itemnote, i.status,
+		i.note as item_note,
+		i.status as status,
+		opu.name as opname,
+		opu.email as opemail,
 		p.id_product as pid,
 		pl.name,
 		group_concat(distinct al.name separator ', ') as vnames,
@@ -90,6 +102,8 @@ order.items = check(query([[
 		im.id_image as imgid
 	from
 		ordritem i
+		left join usr opu
+			on opu.uid = i.opuid
 		inner join ps_product_attribute pa
 			on pa.id_product_attribute = i.coid
 		inner join ps_product p
@@ -113,25 +127,5 @@ order.items = check(query([[
 	group by
 		i.oiid
 ]], oid))
-
---[[
-for i,ci in groupby(order, 'ciid') do
-	local t = ci[1]
-	local combi = {
-		ciid = t.ciid, coid = t.coid, pid = t.pid,
-		name = t.name, price = t.price,  old_price = t.old_price,
-		bname = t.bname, vids = {}, vnames = {}, imgid = t.imgid, imgs = {},
-		atime_ago = tonumber(t.atime_ago),
-	}
-	table.insert(items, combi)
-	for i,t in groupby(ci, 'vid') do
-		table.insert(combi.vids, t[1].vid)
-		table.insert(combi.vnames, t[1].vname)
-		for i,e in ipairs(t) do
-			table.insert(combi.imgs, tonumber(e.imgid))
-		end
-	end
-end
-]]
 
 out(json(order))

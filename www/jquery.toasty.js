@@ -21,7 +21,8 @@ Contact: clifordshelton@gmail.com
         showSpeed: 300,
         hideAnim: "slide fade",
         hideAnimEasing: null,
-        hideSpeed: 200
+        hideSpeed: 200,
+		  messageClass: "",
     },
     handles = {},
     msgIndex = 0,
@@ -99,7 +100,7 @@ Contact: clifordshelton@gmail.com
             item.msgID = msgIndex;
 
             toast = $("<div></div>", {
-                "class": 'toasty_toastMsg'
+                "class": 'toasty_toastMsg ' + item.messageClass
             });
             if (item.closeable || item.title != "" || item.autoHide) {
                 toastHead = $("<div></div>",{

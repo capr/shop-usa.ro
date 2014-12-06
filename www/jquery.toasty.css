@@ -68,3 +68,8 @@
     position: absolute;
     width: 100%;
 }
+
+.toasty_toastMsg.error {
+	background-color: #c00;
+	color: #fff;
+}
