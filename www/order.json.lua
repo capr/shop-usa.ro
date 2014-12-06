@@ -65,14 +65,13 @@ if POST then
 				oi.oiid))
 			then
 
-				print'updating opuid'
 				query([[
 					update ordritem set
 						mtime = now(),
 						opuid = ?
 					where
 						oiid = ?
-					]], uid(), oiid)
+					]], uid(), oi.oiid)
 			end
 		end
 
