@@ -1102,8 +1102,10 @@ end
 		<tr>
 			<td valign=top>
 				<h3 style="margin: 0">
-					<t class=en>Order #{{oid}} from {{atime}}</t>
-					<t class=ro>Comanda nr. {{oid}} din {{atime}}</t>
+					<a id=a_orders><t class=en>Orders</t><t class=ro>Comenzi</t></a>
+					>
+					<t class=en>Order {{oid}} from {{atime}}</t>
+					<t class=ro>Comanda {{oid}} din {{atime}}</t>
 				</h3>
 				<h4 style="margin: 0">
 				<t class=en>From {{uname}}, {{uphone}}</t>
