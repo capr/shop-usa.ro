@@ -1086,7 +1086,7 @@ end
 		<tr oid={{{oid}}}>
 			<td><a>{{{oid}}}</a></td>
 			<td><a>{{atime}}</a></td>
-			<td>{{uname}}</td>
+			<td>{{opname}}</td>
 			<td class=nowrap width=1>
 				<div class=ellipsis style="width: 400px">{{opnote}}</div>
 			</td>
