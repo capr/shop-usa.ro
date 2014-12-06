@@ -92,7 +92,7 @@ function update_order_page(o) {
 		oi.statuses = select_map(item_statuses, oi.status)
 		oi.canceled = oi.status == 'canceled' ? 'canceled' : null
 		oi.item_opname = firstname(oi.opname, oi.opemail)
-		o.total += oi.price
+		o.total += oi.canceled ? 0 : oi.price
 	})
 
 	o.statuses = select_map(statuses, o.status)
