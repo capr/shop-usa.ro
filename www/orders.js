@@ -19,7 +19,10 @@ function update_failed(xhr) {
 }
 
 function add_to_order(oid, coid) {
-	post('/order.json/'+oid+'/add', {coid: coid}, set_order, update_failed)
+	post('/order.json/'+oid+'/add', {coid: coid}, function(o) {
+		set_order(o)
+		notify(S('added_to_order', 'Item added to order'))
+	}, update_failed)
 }
 
 function load_order(oid) {

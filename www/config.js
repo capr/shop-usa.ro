@@ -72,6 +72,9 @@ S('city_required_error', 'Nu uita sa completezi orasul')
 S('county_required_error', 'Nu uita sa completezi judetul')
 S('order_error', 'Nu am reusit sa plasam comanda.\nTe rugam sa incerci din nou sau sa ne contactezi direct.')
 S('email_taken', 'Email deja inregistrat')
+
 S('changes_saved', 'Modificarile au fost salvate')
 S('update_failed', 'S-a produs o eroare.<br>Modificarile NU au fost salvate')
+S('added_to_order', 'Produsul a fost adaugat la comanda')
+
 }
