@@ -327,3 +327,9 @@ input .inside-right { padding-right: 28px; }
 	color: #999;
 	text-decoration: line-through;
 }
+
+input.price {
+	width: 50px;
+	text-align: right;
+}
+

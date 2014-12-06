@@ -156,6 +156,10 @@ function iquery(sql, ...) --insert query: return autoincremented id
 	return query_(sql, ...).insert_id
 end
 
+function changed(res)
+	return tonumber(res.message:match'Changed: (%d+)') > 0
+end
+
 function atomic(func)
 	query'start transaction'
 	local ok, err = glue.pcall(func)

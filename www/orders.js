@@ -123,6 +123,7 @@ function update_order_page(o) {
 		$('#main [oiid]').each(function(i, oi) {
 			items.push({
 				oiid:   $(this).attr('oiid'),
+				price:  $(this).find('[field=price]').val(),
 				note:   $(this).find('[field=note]').val(),
 				status: $(this).find('[field=status]').val(),
 			})

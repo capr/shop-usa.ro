@@ -47,21 +47,23 @@ if POST then
 				oid)
 
 			for i,oi in ipairs(o.items) do
-				local note = str_arg(oi.note)
-				local status = str_arg(oi.status)
-				query([[
+				if changed(query([[
 					update ordritem set
-						opuid = if(note <=> ? and status <=> ?, opuid, ?),
-						mtime = if(note <=> ? and status <=> ?, mtime, now()),
+						price = ?,
 						note = ?,
 						status = ?
 					where
 						oiid = ?
-				]],
-					note, status, uid(),
-					note, status,
-					note, status,
-					oi.oiid)
+				]], str_arg(oi.price), str_arg(oi.note), str_arg(oi.status),
+					oi.oiid))
+				then
+					query([[
+						update ordritem set
+							mtime = now(), opuid = ?
+						where
+							oiid = ?
+						]], uid(), oiid)
+				end
 			end
 	else
 		error'invalid action'

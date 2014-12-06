@@ -1154,7 +1154,9 @@ end
 			<td width=1>
 				<div class=ellipsis style="width: 180px" title="{{{vnames}}}">{{{vnames}}}</div>
 			</td>
-			<td class=price align=right>{{price}} RON</td>
+			<td class=price align=right>
+				<input type=text field=price class=price value="{{{price}}}"><span class=price>RON</span>
+			</td>
 			<td>{{item_opname}}</td>
 			<td><input type=text field=note value="{{item_note}}"></td>
 			<td width=100>
@@ -1220,7 +1222,7 @@ end
 								<option value="{{{value}}}" {{{selected}}}>{{{value}}}</option>
 							{{/shiptypes}}
 							</select>,
-							<input type=text id=shipcost value="{{{shipcost}}}" style="width: 50px; text-align: right" class=price>
+							<input type=text id=shipcost value="{{{shipcost}}}" class=price>
 							<span class=price>RON</span>
 						</td>
 					</tr>
