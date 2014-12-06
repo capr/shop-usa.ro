@@ -1083,7 +1083,7 @@ end
 			<th align=left><t class=en>status</t><t class=ro>stare</t></th>
 		</tr>
 		{{#orders}}
-		<tr oid={{{oid}}} class="{{{canceled}}}">
+		<tr oid={{{oid}}} class="{{{canceled}}} {{{open}}}">
 			<td><a>{{{oid}}}</a></td>
 			<td><a>{{atime}}</a></td>
 			<td><a>{{opname}}</a></td>

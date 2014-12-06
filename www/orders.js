@@ -45,6 +45,7 @@ function update_orders(data) {
 		o.atime = shortdate(o.atime, 'always')
 		o.opname = firstname(o.opname, o.opemail)
 		o.canceled = o.status == 'canceled' ? 'canceled' : null
+		o.open = o.open ? 'open' : null
 	})
 
 	render('orderlist', data, '#orders')

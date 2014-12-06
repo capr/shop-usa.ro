@@ -328,6 +328,10 @@ input .inside-right { padding-right: 28px; }
 	text-decoration: line-through;
 }
 
+.open {
+	background-color: #dfd;
+}
+
 input.price {
 	width: 50px;
 	text-align: right;
