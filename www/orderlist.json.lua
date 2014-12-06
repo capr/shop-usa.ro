@@ -49,7 +49,7 @@ else
 					)
 				)
 		order by
-			open,
+			open desc,
 			o.atime desc
 		]], q, q, q, q, q)
 end
