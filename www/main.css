@@ -328,12 +328,12 @@ input .inside-right { padding-right: 28px; }
 	text-decoration: line-through;
 }
 
-.open {
+.datagrid .open {
 	color: #fff;
 	background-color: #090;
 }
-.open a { color: #fff; }
-.open a:visited { color: #fff; }
+.datagrid .open a { color: #fff; }
+.datagrid .open a:visited { color: #fff; }
 
 input.price {
 	width: 50px;
