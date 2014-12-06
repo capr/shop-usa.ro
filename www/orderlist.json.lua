@@ -25,6 +25,8 @@ if filter == 'open' then
 		where
 			field(o.status, 'open') <> 0
 			and o.opuid = ?
+		order by
+			o.mtime desc
 		]], uid())
 else
 	orders = query(sel .. [[
@@ -48,7 +50,7 @@ else
 				)
 		order by
 			open,
-			o.mtime desc
+			o.atime desc
 		]], q, q, q, q, q)
 end
 
