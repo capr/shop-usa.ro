@@ -329,8 +329,11 @@ input .inside-right { padding-right: 28px; }
 }
 
 .open {
-	background-color: #dfd;
+	color: #fff;
+	background-color: #090;
 }
+.open a { color: #fff; }
+.open a:visited { color: #fff; }
 
 input.price {
 	width: 50px;
