@@ -1086,11 +1086,11 @@ end
 		<tr oid={{{oid}}}>
 			<td><a>{{{oid}}}</a></td>
 			<td><a>{{atime}}</a></td>
-			<td>{{opname}}</td>
+			<td><a>{{opname}}</a></td>
 			<td class=nowrap width=1>
-				<div class=ellipsis style="width: 400px">{{opnote}}</div>
+				<div class=ellipsis style="width: 400px"><a>{{opnote}}</a></div>
 			</td>
-			<td>{{status}}</td>
+			<td><a>{{status}}</a></td>
 		</tr>
 		{{/orders}}
 	</table>
