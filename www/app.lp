@@ -1074,7 +1074,7 @@ end
 </script>
 
 <script type="text/x-mustache" id=orderlist_template>
-	<table width=100% style="border-spacing: 5px;">
+	<table width=100%>
 		<tr>
 			<th align=left><t class=en>order</t><t class=ro>comanda</t></th>
 			<th align=left><t class=en>date</t><t class=ro>data</t></th>
