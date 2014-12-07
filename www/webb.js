@@ -358,7 +358,7 @@ function url_changed() {
 	var state = History.getState()
 	var top = state.data && state.data.scrollTop || 0
 	console.log('get back top', top)
-	scrollTop(top)
+	$(window).scrollTop(top)
 }
 
 function setlink(a, url, params, hook) {
