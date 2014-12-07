@@ -8,7 +8,7 @@ for i,oi in groupby(query([[
 		i.oiid, i.coid, i.qty, i.price, i.status, i.atime as iatime, i.mtime as imtime,
 		p.id_product as pid,
 		pl.name,
-		al.name as vname,
+		group_concat(distinct al.name separator ', ') as vnames,
 		m.name as bname,
 		im.id_image as imgid
 	from
@@ -58,7 +58,7 @@ for i,oi in groupby(query([[
 			status = t.status, atime = t.iatime, mtime = t.imtime,
 			pid = t.pid,
 			name = t.name,
-			vname = t.vname,
+			vnames = t.vnames,
 			bname = t.bname,
 			imgid = t.imgid,
 		}

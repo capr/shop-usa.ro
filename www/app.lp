@@ -1038,7 +1038,7 @@ end
 												<t class=en>${{{price}}}</t>
 												<t class=ro>{{{price}}} Lei</t>
 											</span>
-											{{#vnames}}{{.}} {{/vnames}}
+											{{{vnames}}}
 											<br>
 											<br>
 										</td>
