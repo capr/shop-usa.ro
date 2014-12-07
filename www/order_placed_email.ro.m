@@ -38,7 +38,7 @@ a fost inregistrata cu succes.</b>
 	{{#items}}
 	<tr>
 		<td>{{pid}} - {{{name}}} {{{vnames}}}</td>
-		<td>{{{price}}} Lei</td>
+		<td><b>{{{price}}}</b> Lei</td>
 	</tr>
 	{{/items}}
 </table>
@@ -48,25 +48,25 @@ a fost inregistrata cu succes.</b>
 <table>
 	<tr>
 		<td>Subtotal:</td>
-		<td><b>{{subtotal}}</b> Lei</td>
+		<td align=right><b>{{subtotal}}</b> Lei</td>
 	</tr>
 	<tr>
 		<td>Cost transport:</td>
-		<td><b>{{shipcost}}</b> Lei</td>
+		<td align=right><b>{{shipcost}}</b> Lei</td>
 	</tr>
 	<tr>
-		<td>Total:</td>
-		<td><b>{{total}}</b> Lei</td>
+		<td><b>Total:</b></td>
+		<td align=right><b>{{total}}</b> Lei</td>
 	</tr>
 </table>
 
-<p>
+<br>
+<br>
 Pentru informatii despre starea comenzii, intra in
 <a href="https://shop-usa.ro/cont">contul tau</a>
 SHOP-USA.
-</p>
+<br>
+<br>
 
-<p>
 O zi excelenta!<br>
 Echipa SHOP-USA
-</p>
