@@ -1,8 +1,8 @@
-<h1>Multumim pentru comanda {{name}},</h1>
+<h2>Multumim pentru comanda {{name}},</h2>
 
-Comanda ta cu numarul
-<b><a href="https://shop-usa.ro/comanda/{{{oid}}}">{{{oid}}}</a></b>
-a fost inregistrata cu succes.
+<b>Comanda ta cu numarul
+<a href="https://shop-usa.ro/comanda/{{{oid}}}">{{{oid}}}</a>
+a fost inregistrata cu succes.</b>
 
 <h3>Livrare:</h3>
 
@@ -23,6 +23,7 @@ a fost inregistrata cu succes.
 <table>
 	<tr>
 		<td>Nume:    </td><td><b>{{name}}</b></td>
+	</tr><tr>
 		<td>Telefon: </td><td><b>{{phone}}</b></td>
 	</tr>
 </table>
@@ -31,26 +32,41 @@ a fost inregistrata cu succes.
 
 <table>
 	<tr>
-		<th align=left>produs</th><th align=right>pret</th>
+		<th align=left>produs</th>
+		<th align=right>pret</th>
 	</tr>
 	{{#items}}
 	<tr>
-		<td>{{pid}} - {{{name}}} {{{combi}}}</td><td>{{{price}}} Lei</td>
+		<td>{{pid}} - {{{name}}} {{{vnames}}}</td>
+		<td>{{{price}}} Lei</td>
 	</tr>
 	{{/items}}
 </table>
 
+<h3>Total de plata:</h3>
+
 <table>
 	<tr>
-		<td>Subtotal:       </td><td><b>{{subtotal}}</b> Lei</td>
-		<td>Cost transport: </td><td><b>{{shipcost}}</b> Lei</td>
-		<td>Total:          </td><td><b>{{total}}</b> Lei</td>
+		<td>Subtotal:</td>
+		<td><b>{{subtotal}}</b> Lei</td>
+	</tr>
+	<tr>
+		<td>Cost transport:</td>
+		<td><b>{{shipcost}}</b> Lei</td>
+	</tr>
+	<tr>
+		<td>Total:</td>
+		<td><b>{{total}}</b> Lei</td>
 	</tr>
 </table>
 
+<p>
 Pentru informatii despre starea comenzii, intra in
 <a href="https://shop-usa.ro/cont">contul tau</a>
 SHOP-USA.
+</p>
 
-O zi excelenta!
+<p>
+O zi excelenta!<br>
 Echipa SHOP-USA
+</p>
