@@ -1087,13 +1087,13 @@ end
 		</tr>
 		{{#orders}}
 		<tr oid={{{oid}}} class="{{{canceled}}} {{{open}}}">
-			<td><a>{{{oid}}}</a></td>
-			<td><a>{{atime}}</a></td>
-			<td><a>{{opname}}</a></td>
+			<td>{{{oid}}}</td>
+			<td>{{atime}}</td>
+			<td>{{opname}}</td>
 			<td class=nowrap width=1>
-				<div class=ellipsis style="width: 400px"><a>{{opnote}}</a></div>
+				<div class=ellipsis style="width: 400px">{{opnote}}</div>
 			</td>
-			<td><a>{{status}}</a></td>
+			<td>{{status}}</td>
 		</tr>
 		{{/orders}}
 	</table>

@@ -57,17 +57,17 @@ input[type=text],[type=password] {
 	padding: 3px;
 }
 
-a {
+a, [href] {
 	cursor: pointer;
 	color: #000;
 	text-decoration: none;
 }
 
-a:visited {
+a:visited, [href]:visited {
 	color: #777;
 }
 
-a:hover {
+a:hover, [href]:hover {
 	color: #cc8800;
 }
 
@@ -332,8 +332,7 @@ input .inside-right { padding-right: 28px; }
 	color: #fff;
 	background-color: #090;
 }
-.datagrid .open a { color: #fff; }
-.datagrid .open a:visited { color: #fff; }
+.datagrid .open:hover { color: #ccdd66; }
 
 input.price {
 	width: 50px;

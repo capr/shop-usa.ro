@@ -50,7 +50,7 @@ function update_orders(data) {
 
 	render('orderlist', data, '#orders')
 
-	$('#main [oid] a').each(function() {
+	$('#main [oid]').each(function() {
 		setlink(this, '/order/'+upid(this, 'oid'))
 	})
 }
