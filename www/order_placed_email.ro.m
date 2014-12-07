@@ -47,11 +47,11 @@ a fost inregistrata cu succes.</b>
 
 <table>
 	<tr>
-		<td>Subtotal:</td>
+		<td><b>Subtotal:</b></td>
 		<td align=right><b>{{subtotal}}</b> Lei</td>
 	</tr>
 	<tr>
-		<td>Cost transport:</td>
+		<td><b>Cost transport:</b></td>
 		<td align=right><b>{{shipcost}}</b> Lei</td>
 	</tr>
 	<tr>
