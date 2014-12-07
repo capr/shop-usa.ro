@@ -64,6 +64,7 @@ USABILITY BUGS (CONFUSIONS)
 - preserve div height when browsing gallery images to prevent flicker
 - make admin from admin doesn't work
 - order history: show order status and per-item status, especially "canceled"
+- order: warn if shipping cost is not standard when saving
 
 
 UI BUGS
