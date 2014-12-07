@@ -70,6 +70,7 @@ USABILITY BUGS (CONFUSIONS)
 UI BUGS
 -------
 - autocomplete of county sometimes doesn't work
+- notify is not centered on site, but on screen
 
 
 FUNCTIONALITY

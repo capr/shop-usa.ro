@@ -56,7 +56,6 @@ end
 			</div>
 		</td>
 		<td valign=top width=900>
-			<div id=toasty_div style="position: absolute; width: 900px; text-align: center;"></div>
 			<div id=topbar style="height: 30px"></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
