@@ -321,7 +321,7 @@ function full_url(url, params) {
 function exec(url, params) {
 	// replace current state so we can store scrollTop
 	var state = History.getState()
-	var top = $(window).scrollTop()
+	var top = $('html, body').scrollTop()
 	console.log('store top', top)
 	state.data = { scrollTop: top }
 	History.replaceState(state.data, state.title, state.url)
@@ -358,7 +358,7 @@ function url_changed() {
 	var state = History.getState()
 	var top = state.data && state.data.scrollTop || 0
 	console.log('get back top', top)
-	$(window).scrollTop(top)
+	$('html, body').scrollTop(top)
 }
 
 function setlink(a, url, params, hook) {
