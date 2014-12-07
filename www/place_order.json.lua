@@ -1,5 +1,6 @@
 
 local shiptypes = {home = true, store = true}
+local shiptype_strings = {home = 'Home', store = 'Store'}
 
 --grab the order
 local o = assert(json(POST.data))
@@ -17,10 +18,6 @@ local county   = assert(str_arg(o.county))
 local country  = 'Romania'
 local note     = str_arg(o.note)
 local shiptype = assert(enum_arg(o.shiptype, 'home', 'store'))
-local shipcost = shiptype == 'home' and 25 or 0
-
---TODO: check the total number of items and prices
---and fail to place the order if any of them is different.
 
 --slow down DoS bots. also, give the impression of doing hard work.
 ngx.sleep(0.8)
@@ -31,9 +28,8 @@ local oid = iquery([[
 		(uid, email, name, phone, addr, city, county, country, note,
 			shiptype, shipcost, status, mtime)
 	values
-		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', now())
-]], uid(), email, name, phone, addr, city, county, country, note,
-	shiptype, shipcost)
+		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'new', now())
+]], uid(), email, name, phone, addr, city, county, country, note, shiptype)
 
 --add the cart items at current price.
 query([[
@@ -54,6 +50,12 @@ query([[
 		and ci.uid = ?
 ]], oid, usd_rate(), uid())
 
+--compute shipping cost and set it
+local subtotal =
+	tonumber(query1('select sum(price) from ordritem where oid = ?', oid))
+local shipcost = shiptype == 'store' and 0 or (subtotal < 300 and 25 or 0)
+query('update ordr set shipcost = ? where oid = ?', shipcost, oid)
+
 --clear the cart.
 query('delete from cartitem where buylater = 0 and uid = ?', uid())
 
@@ -66,4 +68,21 @@ query([[
 		uid = ?
 ]], name, phone, uid())
 
+--send order email to client
+local from = config'sales_email' or home_email(S('sales', 'sales'))
+
+local subj = S('order_placed_subject', 'Order %s at %s')
+local subj = string.format(subj, tostring(oid), config'shop_name' or home_domain())
+
+local order = require'order'.get(oid)
+order.shiptype = S('shiptype_'..shiptype, shiptype_strings[shiptype])
+order.hasaddress = shiptype =='home'
+order.subtotal = subtotal
+order.total = subtotal + shipcost
+
+local msg = render('order_placed_email', order)
+
+sendmail(from, email, subj, msg, 'html')
+
+--return petty json
 out(json{ok = true})

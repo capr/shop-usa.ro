@@ -713,6 +713,7 @@ end
 						</td>
 					</tr>
 					<tr>
+						<!--
 						<td>
 							<input type=radio id=shipping_store name=shipping_method value=store>
 						</td>
@@ -722,6 +723,7 @@ end
 								<t class=ro>Le ridic personal de la sediul shop-usa.ro, cu plata cash.</t>
 							</label>
 						</td>
+						-->
 					</tr>
 				</table>
 			</td>

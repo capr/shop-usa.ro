@@ -254,7 +254,7 @@ function send_auth_token(email)
 	local msg = render('reset_pass_email', {
 		url = home_url('/login/'..token),
 	})
-	local from = config'noreply_email' or home_email()
+	local from = config'noreply_email' or home_email'no-reply'
 	sendmail(from, email, subj, msg)
 end
 

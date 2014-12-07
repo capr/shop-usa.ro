@@ -339,3 +339,10 @@ action.account = function() {
 	account_widget()
 }
 
+action.cont = function() {
+	exec('/account')
+}
+
+action.comanda = function() {
+	exec('/account')
+}

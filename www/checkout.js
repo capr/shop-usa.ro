@@ -104,7 +104,7 @@ function update_shipping_section() {
 
 	$('input[name="shipping_method"]').click(function() {
 		var home = $(this).val() == 'home'
-		g_shipping_cost = home ? 25 : 0
+		g_shipping_cost = home ? (g_subtotal < 300 ? 25 : 0) : 0
 		update_totals()
 		if (home)
 			$('#address_section').show()

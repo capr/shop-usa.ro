@@ -1,11 +1,12 @@
+- rethink events so that they can be rebound and canceled all at once
+	- ajax
+	- listen
+	- setTimeout, setInterval
+	- keydown
+
+
 HOT FUNCTIONALITY
 -----------------
-- add to order button
-
-- over 300 RON = free shipping
-- scos optiunea ridicare de la sediu
-- email on place order & bcc to shop-usa
-
 - header banners: Transport Gratuit, Telefon, Facebook Like, Adresa, Newsletter
 - top navbar: search, logheaza-te, cart
 - contact page: Atena 4, 0745 577 786, program L-V: 10-17
@@ -62,6 +63,7 @@ USABILITY BUGS (CONFUSIONS)
 - google fucking analytics keeps the spinning wheel turning as usual...
 - preserve div height when browsing gallery images to prevent flicker
 - make admin from admin doesn't work
+- order history: show order status and per-item status, especially "canceled"
 
 
 UI BUGS

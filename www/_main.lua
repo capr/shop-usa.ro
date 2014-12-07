@@ -51,8 +51,12 @@ function home_url(path)
 	return (config'base_url' or ngx.var.scheme..'://'..ngx.var.host) .. path
 end
 
+function home_domain()
+	return ngx.var.host
+end
+
 function home_email(user)
-	return string.format('%s@%s', user or 'no-reply', ngx.var.host)
+	return string.format('%s@%s', user or 'no-reply', home_domain())
 end
 
 function clamp(x, min, max)
@@ -60,7 +64,9 @@ function clamp(x, min, max)
 end
 
 function uint_arg(s)
-	return s and tonumber(s:match'(%d+)$')
+	local n = s and tonumber(s:match'(%d+)$')
+	assert(n >= 0)
+	return n
 end
 
 function str_arg(s)
