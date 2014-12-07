@@ -34,7 +34,6 @@ HOT BUGS
 
 BIG BUGS
 --------
-- get -cart.jpg images for other colors
 - implement _escaped_fragment_
 - IE9 and history.js (very few IE9 users, but a lot of IE8 users)
 

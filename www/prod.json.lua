@@ -1,5 +1,7 @@
 
-pid = assert(uint_arg((...)))
+local pid, coid = ...
+pid = assert(uint_arg(pid))
+acoid = uint_arg(coid)
 
 --product --------------------------------------------------------------------
 
@@ -82,7 +84,7 @@ for i,t in ipairs(query([[
 		table.insert(cot, co)
 	end
 	table.insert(co, t.dvid) --dvids come sorted (we need that)
-	if t.default_on == 1 then
+	if (acoid and t.coid == acoid) or (not acoid and t.default_on == 1) then
 		init_dvids[t.did] = t.dvid
 	end
 end

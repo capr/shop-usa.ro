@@ -65,7 +65,7 @@ end
 
 function uint_arg(s)
 	local n = s and tonumber(s:match'(%d+)$')
-	assert(n >= 0)
+	assert(not n or n >= 0)
 	return n
 end
 

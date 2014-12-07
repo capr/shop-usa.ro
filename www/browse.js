@@ -340,9 +340,9 @@ function update_product_page(prod) {
 	listen('open_orders.product_page.current_action', create_add_to_order_buttons)
 }
 
-action.p = function(pid) {
+action.p = function(pid, coid) {
 	hide_nav()
-	load_main('/prod.json/'+pid, update_product_page)
+	load_main('/prod.json/'+pid+'/'+coid, update_product_page)
 }
 
 // brand page ----------------------------------------------------------------
