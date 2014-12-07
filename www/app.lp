@@ -420,7 +420,7 @@ end
 		<li ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
 			<table width=100%>
 				<tr>
-					<td width=200 height=100>
+					<td width=100 height=100>
 						<a><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 					</td>
 					<td>
