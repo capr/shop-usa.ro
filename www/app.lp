@@ -420,7 +420,7 @@ end
 		<li ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
 			<table width=100%>
 				<tr>
-					<td width=200 height=80>
+					<td width=200 height=100>
 						<a><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 					</td>
 					<td>
@@ -430,7 +430,6 @@ end
 							<t class=en>${{{price}}}</t>
 							<t class=ro>{{{price}}} Lei</t>
 						</span> {{{sname}}}
-						<br>
 						<br>
 						<a action=remove class=link><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
 						<span class="gray small">&nbsp;|&nbsp;</span>
