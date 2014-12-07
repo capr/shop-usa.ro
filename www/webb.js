@@ -319,6 +319,11 @@ function full_url(url, params) {
 }
 
 function exec(url, params) {
+	// replace current state so we can store scrollTop
+	var state = History.getState()
+	state.data = { scrollTop: $(window).scrollTop() }
+	History.replaceState(state.data, state.title, state.url)
+	// push new state without data
 	History.pushState(null, null, full_url(url, params))
 }
 
@@ -346,6 +351,10 @@ function url_changed() {
 	g_args = args
 
 	handler.apply(null, args)
+
+	// get state and set scroll back to where it was
+	var state = History.getState()
+	scrollTop(state.data && state.data.scrollTop || 0)
 }
 
 function setlink(a, url, params, hook) {
