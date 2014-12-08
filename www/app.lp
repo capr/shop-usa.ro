@@ -355,7 +355,7 @@ end
 
 <script type="text/x-mustache" id=product_gallery_template>
 	<div style="position: relative; z-index: 100;" id=fly_img_div></div>
-	<div style="min-height: 720px">
+	<div style="min-height: 360px">
 		<a id=a_prod_img></a>
 	</div>
 	<div style="width: 500px; overflow: auto; white-space: nowrap">
