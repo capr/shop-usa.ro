@@ -60,6 +60,8 @@ local prods = query([[
 	where
 		p.active = 1
 ]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
+	group by
+		p.id_product
 	order by
 		p.date_upd
 	limit
