@@ -350,7 +350,7 @@ function url_changed() {
 		console.log('top restored', g_top)
 	}
 
-	$(window).on('beforeunload', function() {
+	window.onbeforeunload = function() {
 		g_top = $(window).scrollTop()
 		console.log('top saved', g_top)
 	})
