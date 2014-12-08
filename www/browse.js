@@ -213,6 +213,10 @@ function change_prod_img(imgid) {
 
 	var large_img = '/img/p/'+imgid+'-thickbox.jpg'
 
+	var img = $('#a_prod_img img')
+	var minh = img.length && img[0].clientHeight || 0
+	console.log(minh)
+
 	$('#a_prod_img')
 		.trigger('zoom.destroy')
 		.css('display', 'inline-block')
@@ -220,7 +224,7 @@ function change_prod_img(imgid) {
 		.addClass('zoom_in')
 		.attr('href', large_img)
 		.on('click', function(e) { e.preventDefault(); })
-		.html('<img id=prod_img>')
+		.html('<img id=prod_img style="min-height: '+minh+'px">')
 	$('#a_prod_img img').attr('src', '/img/p/'+imgid+'-large.jpg').load(function() {
 		$('#a_prod_img').zoom({
 			url: large_img, on: 'click',
