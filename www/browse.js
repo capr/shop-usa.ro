@@ -97,7 +97,7 @@ var g_scroll_to_top
 function scroll_to_top() {
 	if (!g_scroll_to_top) return
 	g_scroll_to_top = false
-	$('html, body').animate({ scrollTop: 0}, 1000, 'easeOutQuint')
+	$(window).animate({ scrollTop: 0}, 1000, 'easeOutQuint')
 }
 function set_scroll_to_top() {
 	g_scroll_to_top = true
