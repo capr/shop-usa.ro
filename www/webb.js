@@ -324,7 +324,7 @@ function exec(url, params) {
 	var top = $(window).scrollTop()
 	console.log('store top', top)
 	state.data = { scrollTop: top }
-	//History.replaceState(state.data, state.title, state.url)
+	History.replaceState(state.data, state.title, state.url)
 	// push new state without data
 	History.pushState(null, null, full_url(url, params))
 }
