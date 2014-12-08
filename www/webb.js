@@ -541,8 +541,6 @@ function render(template_name, data, dst) {
 		var id = $(dst).attr('id')
 		abort(id)
 		$(dst).html(s)
-		if (id == '#main') // TODO: move this logic to app.js
-			setscroll()
 	} else
 		return s
 }
