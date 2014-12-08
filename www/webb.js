@@ -339,7 +339,7 @@ $(function() {
 	$(window).scroll(function() {
 		console.log('scroll event', $(window).scrollTop())
 	})
-}
+})
 
 function url_changed() {
 	console.log('url_changed')
