@@ -213,6 +213,8 @@ function change_prod_img(imgid) {
 
 	var large_img = '/img/p/'+imgid+'-thickbox.jpg'
 
+	// set min-height of the new image to that of the last image, if any,
+	// to prevent flickering (can't prevent flickering on the first image).
 	var img = $('#a_prod_img img')
 	var minh = img.length && img[0].clientHeight || 0
 
