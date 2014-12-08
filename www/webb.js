@@ -359,7 +359,9 @@ function url_changed() {
 	g_action = action
 	g_args = args
 
+	console.log('before handler.apply')
 	handler.apply(null, args)
+	console.log('after handler.apply')
 }
 
 function setscroll() {
