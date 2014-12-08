@@ -335,14 +335,21 @@ var default_action = 'cat'
 var g_action
 var g_args
 
+var g_top
 $(function() {
 	$(window).scroll(function() {
 		console.log('scroll event', $(window).scrollTop())
+	})
+	$(window).on('beforeunload', function() {
+		g_top = $(window).scrollTop()
 	})
 })
 
 function url_changed() {
 	console.log('url_changed')
+
+	if (g_top)
+		$(window).scrollTop(g_top)
 
 	unlisten_all()
 	unbind_keydown_all()
