@@ -3,7 +3,12 @@
 
 // ajax request on the main pane: redirect to homepage on 404.
 function load_main(url, success, error, opt) {
-	load_content('#main', url, success,
+	load_content('#main', url,
+		function(data) {
+			if (success)
+				success(data)
+			setscroll()
+		},
 		function(xhr) {
 			check(xhr.status != 404)
 			if (error)

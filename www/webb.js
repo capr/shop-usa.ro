@@ -353,7 +353,9 @@ function url_changed() {
 	g_args = args
 
 	handler.apply(null, args)
+}
 
+function setscroll() {
 	// get state and set scroll back to where it was
 	var state = History.getState()
 	var top = state.data && state.data.scrollTop || 0
@@ -536,8 +538,11 @@ function render_multi_column(template_name, items, col_count) {
 function render(template_name, data, dst) {
 	var s = render_func(template_name)(data)
 	if (dst) {
-		abort($(dst).attr('id'))
+		var id = $(dst).attr('id')
+		abort(id)
 		$(dst).html(s)
+		if (id == '#main') // TODO: move this logic to app.js
+			setscroll()
 	} else
 		return s
 }

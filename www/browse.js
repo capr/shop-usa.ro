@@ -17,6 +17,7 @@ function update_prods(prods) {
 	prods = prods || g_prods
 
 	$('#main').html(format_prods(prods))
+	setscroll()
 
 	$('#main [pid] a').each(function() {
 		setlink(this, '/p/'+upid(this, 'pid'))
@@ -179,6 +180,7 @@ function select_brand_letter(search) {
 function update_brands_page(brands) {
 	var s = render_multi_column('brands', brands, 4)
 	$('#main').html('<br><br>'+s)
+	setscroll()
 
 	$('#main a[bid]').each(function() {
 		var bid = $(this).attr('bid')
