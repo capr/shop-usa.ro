@@ -215,7 +215,6 @@ function change_prod_img(imgid) {
 
 	var img = $('#a_prod_img img')
 	var minh = img.length && img[0].clientHeight || 0
-	console.log(minh)
 
 	$('#a_prod_img')
 		.trigger('zoom.destroy')
