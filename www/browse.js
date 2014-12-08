@@ -17,7 +17,7 @@ function update_prods(prods) {
 	prods = prods || g_prods
 
 	$('#prods').html(format_prods(prods))
-	//setscroll()
+	setscroll()
 
 	$('#prods [pid] a').each(function() {
 		setlink(this, '/p/'+upid(this, 'pid'))
