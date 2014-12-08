@@ -340,6 +340,11 @@ $(function() {
 	$(window).scroll(function() {
 		console.log('scroll event', $(window).scrollTop())
 	})
+
+	window.onbeforeunload = function() {
+		g_top = $(window).scrollTop()
+		console.log('top saved', g_top)
+	}
 })
 
 function url_changed() {
@@ -348,11 +353,6 @@ function url_changed() {
 	if (g_top) {
 		$(window).scrollTop(g_top)
 		console.log('top restored', g_top)
-	}
-
-	window.onbeforeunload = function() {
-		g_top = $(window).scrollTop()
-		console.log('top saved', g_top)
 	}
 
 	unlisten_all()
