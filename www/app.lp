@@ -127,12 +127,12 @@ end
 						<hr>
 						<table width=100%>
 							<tr>
-								<td valign=top>
+								<td align=left valign=top>
 									<a class=link>Cum comand</a><br>
 									<a class=link>Despre noi</a><br>
 									<a class=link>Intrebari frecvente</a><br>
 								</td>
-								<td valign=top>
+								<td align=left valign=top>
 									<a class=link>Confidentialitate</a><br>
 									<a class=link>Politica de returnare</a><br>
 									<a class=link>Termeni si conditii</a><br>
