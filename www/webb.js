@@ -324,7 +324,9 @@ function exec(url, params) {
 	var state = History.getState()
 	History.replaceState({top: top}, state.title, state.url)
 	// push new state without data
+	console.log('pushing')
 	History.pushState(null, null, full_url(url, params))
+	console.log('pushed')
 }
 
 var action = {} // {action: handler}
@@ -333,7 +335,14 @@ var default_action = 'cat'
 var g_action
 var g_args
 
+$(function() {
+	$(window).scroll(function() {
+		console.log('scroll event', $(window).scrollTop())
+	})
+}
+
 function url_changed() {
+	console.log('url_changed')
 
 	unlisten_all()
 	unbind_keydown_all()
