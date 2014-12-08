@@ -316,6 +316,7 @@ function create_add_to_order_buttons() {
 function update_product_page(prod) {
 	g_prod = prod
 	render('product_page', prod, '#main')
+	setscroll()
 
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()
