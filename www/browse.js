@@ -402,9 +402,5 @@ function select_topbar_cat(catid) {
 
 function init_sidebar() {
 	follow_scroll('#sidebar', 20)
-
-	$(window).scroll(function(a) {
-		console.log(a)
-	})
 }
 
