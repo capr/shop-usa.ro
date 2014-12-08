@@ -11,7 +11,7 @@ body {
 	font-family: Helvetica;
 	font-size: 14px;
 	line-height: 150%;
-	margin: 20px;
+	margin-left: 20px;
 }
 
 img {
@@ -118,7 +118,8 @@ button:hover:disabled {
 .nowrap { white-space: nowrap; }
 .hidden { display: none; }
 .error { color: #f00; }
-.gray { color: #999; }
+.gray, .gray a, .gray a:visited { color: #999; }
+.gray a { text-decoration: underline; }
 .small { font-size: 13px; }
 .ellipsis {
 	overflow: hidden;

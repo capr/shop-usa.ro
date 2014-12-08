@@ -7,6 +7,7 @@
 
 HOT FUNCTIONALITY
 -----------------
+- UA tracker
 - header banners: Transport Gratuit, Telefon, Facebook Like, Adresa, Newsletter
 - top navbar: search, logheaza-te, cart
 - contact page: Atena 4, 0745 577 786, program L-V: 10-17
@@ -14,22 +15,12 @@ HOT FUNCTIONALITY
 - homepage custom bands
 - footer
 	- brand marquee
-	- cum comand
-	- despre noi
-	- intrebari frecvente
-	- confidentialitate
-	- politica de returnare
-	- termeni si conditii
-	- ANPC
-	- telefonul consumatorului
 
 
 HOT BUGS
 --------
 - move to/from cart: first item doesn't move
 - category div sometimes dissapears when going back to browsing
-- scroll changes on back-button from prod page back to browsing page
-
 
 
 BIG BUGS
@@ -43,7 +34,6 @@ USABILITY BUGS (CONFUSIONS)
 - forgot pass link -> trigger usr event
 - add breadcrumbs to product page
 - make admin if logging in with facebook too
-- login screen: better separation between left and right side
 - brand page shows category tree but people expect to see products
 - scroll doesn't follow if screen is to small. solutions:
 	- get antiscroll
@@ -53,15 +43,12 @@ USABILITY BUGS (CONFUSIONS)
 - no error message on create account failure
 - no error message on login failure
 - back to top button
-- refresh cart icon constantly
 - brand list ordering (vert-horiz instead of horiz-vert)
 - informatii despre pret (contine sau nu TVA sau transport) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
 - textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
-- scrisul cu "salut X!" mai mare/subliniat/colorat/vizibil -- put (?) and help
 - bulina cu pastrate pt. mai tarziu
 - google fucking analytics keeps the spinning wheel turning as usual...
 - preserve div height when browsing gallery images to prevent flicker
-- make admin from admin doesn't work
 - order history: show order status and per-item status, especially "canceled"
 - order: warn if shipping cost is not standard when saving
 

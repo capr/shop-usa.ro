@@ -46,7 +46,7 @@ end
 <table>
 	<tr>
 		<td valign=top width=280>
-			<a href=/><img src="/logo.jpg"></a>
+			<a href=/><img src="/logo.jpg" style="margin-top: 26px"></a>
 			<br>
 			<br>
 			<div id=sidebar>
@@ -56,6 +56,20 @@ end
 			</div>
 		</td>
 		<td valign=top width=900>
+			<table width=100% height=50>
+				<tr>
+					<td width=100%>
+					</td>
+					<td class=nowrap align=left class=small style="line-height: 100%">
+						Newsletter<br>
+						<input type=text id=newsletter style="width: 100px; height: 16px; margin-right: 10px;">
+					</td>
+					<td width=150 class=nowrap align=right class=small style="line-height: 100%">
+						TRANSPORT GRATUIT<br>
+						la comenzi peste 300 Lei
+					</td>
+				</tr>
+			</table>
 			<div id=topbar style="height: 30px"></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
@@ -130,15 +144,33 @@ end
 			</table>
 			<table width=100%>
 				<tr height=140>
-					<td align=center>
-						<span class=gray>
-							Made with
-								<a href="http://luapower.com/" target=_blank>Lua Power</a>,
-								Love, Spice, and
-								<a href="http://openresty.org/" target=_blank>Everything Nice</a>,
-								<br>
-								by Cosmin Apreutesei
+					<td align=center valign=top>
+						<br>
+						<br>
+						<hr>
+						<table width=100%>
+							<tr>
+								<td valign=top>
+									<a class=link>Cum comand</a><br>
+									<a class=link>Despre noi</a><br>
+									<a class=link>Intrebari frecvente</a><br>
+								</td>
+								<td valign=top>
+									<a class=link>Confidentialitate</a><br>
+									<a class=link>Politica de returnare</a><br>
+									<a class=link>Termeni si conditii</a><br>
+								</td>
+								<td valign=top>
+								</td>
+							</tr>
+						</table>
+						<br>
+						<br>
+						<span class="gray small">
+							SHOP-USA SRL str. Atena nr. 4, Tel: 0745 577 786 | Programming by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
 						</span>
+						<br>
+						<br>
 					</td>
 				</tr>
 			</table>
@@ -1278,6 +1310,10 @@ end
 	<br>
 	<br>
 	<br>
+
+</script>
+
+<script type="text/x-mustache" id=contact_template>
 
 </script>
 
