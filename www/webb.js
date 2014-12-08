@@ -353,7 +353,7 @@ function url_changed() {
 	window.onbeforeunload = function() {
 		g_top = $(window).scrollTop()
 		console.log('top saved', g_top)
-	})
+	}
 
 	unlisten_all()
 	unbind_keydown_all()
