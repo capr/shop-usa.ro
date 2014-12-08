@@ -368,7 +368,9 @@ function setscroll() {
 	// set scroll back to where it was
 	var state = History.getState()
 	var top = state.data && state.data.top || 0
+	console.log('before set scrollTop')
 	$(window).scrollTop(top)
+	console.log('after set scrollTop')
 }
 
 function setlink(a, url, params, hook) {
