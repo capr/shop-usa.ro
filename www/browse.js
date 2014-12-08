@@ -17,7 +17,6 @@ function update_prods(prods) {
 	prods = prods || g_prods
 
 	$('#prods').html(format_prods(prods))
-	setscroll()
 
 	$('#prods [pid] a').each(function() {
 		setlink(this, '/p/'+upid(this, 'pid'))
@@ -181,7 +180,6 @@ function select_brand_letter(search) {
 function update_brands_page(brands) {
 	var s = render_multi_column('brands', brands, 4)
 	$('#main').html('<br><br>'+s)
-	setscroll()
 
 	$('#main a[bid]').each(function() {
 		var bid = $(this).attr('bid')
@@ -316,7 +314,6 @@ function create_add_to_order_buttons() {
 function update_product_page(prod) {
 	g_prod = prod
 	render('product_page', prod, '#main')
-	setscroll()
 
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()

@@ -7,7 +7,7 @@ function load_main(url, success, error, opt) {
 		function(data) {
 			if (success)
 				success(data)
-			//setscroll()
+			setscroll()
 		},
 		function(xhr) {
 			check(xhr.status != 404)

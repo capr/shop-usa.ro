@@ -31,6 +31,7 @@ BIG BUGS
 
 USABILITY BUGS (CONFUSIONS)
 ---------------------------
+- shift click doesn't work to open in new tab!
 - forgot pass link -> trigger usr event
 - add breadcrumbs to product page
 - make admin if logging in with facebook too
