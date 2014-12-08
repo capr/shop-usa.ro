@@ -118,30 +118,7 @@ end
 					</td>
 				</tr>
 			</table>
-			<table width=100% id=top_navbar class="navbar hidden">
-				<tr>
-					<td valign=middle>
-						<table>
-							<tr>
-								<td><a viewstyle=grid><img src="/grid.png"></a></td>
-								<td width=4></td>
-								<td><a viewstyle=list><img src="/list.png"></a></td>
-							</tr>
-						</table>
-					</td>
-					<td vlign=middle align=right>
-						<div class="pagenav small"></div>
-					</td>
-				</tr>
-			</table>
 			<div id=main></div>
-			<table width=100% id=bottom_navbar class="navbar hidden">
-				<tr>
-					<td align=right>
-						<div class=pagenav></div>
-					</td>
-				</tr>
-			</table>
 			<table width=100%>
 				<tr height=140>
 					<td align=center valign=top>
@@ -167,7 +144,7 @@ end
 						<br>
 						<br>
 						<span class="gray small">
-							SHOP-USA SRL str. Atena nr. 4, Tel: 0745 577 786 | Programming by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
+							SHOP-USA | str. Atena nr. 4, Tel: 0745 577 786 | Made by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
 						</span>
 						<br>
 						<br>
@@ -177,6 +154,33 @@ end
 		</td>
 	</tr>
 </table>
+
+<script type="text/x-mustache" id=browse_template>
+	<table width=100% id=top_navbar class=navbar>
+		<tr>
+			<td valign=middle>
+				<table>
+					<tr>
+						<td><a viewstyle=grid><img src="/grid.png"></a></td>
+						<td width=4></td>
+						<td><a viewstyle=list><img src="/list.png"></a></td>
+					</tr>
+				</table>
+			</td>
+			<td vlign=middle align=right>
+				<div class="pagenav small"></div>
+			</td>
+		</tr>
+	</table>
+	<div id=prods></div>
+	<table width=100% id=bottom_navbar class=navbar>
+		<tr>
+			<td align=right>
+				<div class=pagenav></div>
+			</td>
+		</tr>
+	</table>
+</script>
 
 <script type="text/x-mustache" id=topbar_template>
 	<table style="float: right;">

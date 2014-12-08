@@ -16,14 +16,14 @@ function update_prods(prods) {
 
 	prods = prods || g_prods
 
-	$('#main').html(format_prods(prods))
+	$('#prods').html(format_prods(prods))
 	setscroll()
 
-	$('#main [pid] a').each(function() {
+	$('#prods [pid] a').each(function() {
 		setlink(this, '/p/'+upid(this, 'pid'))
 	})
 
-	$('#main .add_to_cart').click(function() {
+	$('#prods .add_to_cart').click(function() {
 		cart.add(upid(this, 'pid'))
 	})
 
@@ -33,6 +33,8 @@ function update_prods(prods) {
 function load_prods(catid, pagenum, bid) {
 	load_main('/prods.json/'+catid+'/'+pagenum+'/'+(bid||'-')+'/'+g_pagesize,
 		function(response) {
+			if (!$('#prods').length)
+				render('browse', null, '#main')
 			update_pagenav(response.prod_count, pagenum, bid)
 			update_prods(response.prods)
 			select_brand(bid)
@@ -119,7 +121,6 @@ function update_pagenav(prod_count, cur_page, bid) {
 		setlink(this, cat_url(g_catid, pagenum, bid), null,
 			bottom && set_scroll_to_top)
 	})
-	$('.navbar').show()
 
 	// keyboard page navigation
 	bind_keydown('page', function(event) {
