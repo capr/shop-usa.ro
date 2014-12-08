@@ -322,7 +322,7 @@ function exec(url, params) {
 	// store current scroll top in current state first
 	var top = $(window).scrollTop()
 	var state = History.getState()
-	History.replaceState({top: top}, state.title, state.url)
+	//History.replaceState({top: top}, state.title, state.url)
 	// push new state without data
 	History.pushState(null, null, full_url(url, params))
 }
