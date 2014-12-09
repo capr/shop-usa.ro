@@ -326,8 +326,6 @@ local function filter_lang(buf)
 		return html
 	end)
 
-	--replace <tag:lang ...></tag:lang>
-
 	--replace attr:lang="val" and attr:lang=val
 	local function repl_attr(attr, lang, val)
 		if lang ~= lang0 then return '' end

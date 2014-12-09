@@ -324,33 +324,55 @@ function exec(url, params) {
 	var state = History.getState()
 	History.replaceState({top: top}, state.title, state.url)
 	// push new state without data
+	g_execed = true
 	History.pushState(null, null, full_url(url, params))
 }
 
 var action = {} // {action: handler}
 var default_action = 'cat'
 
-var g_action
-var g_args
+function parse_url(url) {
+	var args = url.split('/')
+	if (args[0]) return // not an action url
+	args.shift() // remove ""
+	var act = args[0] || default_action
+	args.shift() // remove the action
+	return {
+		action: action,
+		handler: action[act],
+		args: args,
+	}
+}
 
 function url_changed() {
 	unlisten_all()
 	unbind_keydown_all()
-
 	analytics_pageview() // note: title is not available at this time
-
-	var args = location.pathname.split('/')
-	args.shift() // remove /
-	var act = args[0] || default_action
-	args.shift() // remove action/
-	var handler = action[act]
-	check(handler)
-
-	g_action = action
-	g_args = args
-
-	handler.apply(null, args)
+	var t = parse_url(location.pathname)
+	check(t.handler)
+	t.handler.apply(null, t.args)
 }
+
+function setlink(a, url, params, hook) {
+	$(a).attr('href', full_url(url, params))
+		.click(function(event) {
+			event.preventDefault()
+			if (hook) hook()
+			exec(url, params)
+		})
+}
+
+function setlinks(dst) {
+	dst = dst || 'body'
+	$(dst).find('a[href]').each(function() {
+		var url = $(this).attr('href')
+		var t = parse_url(url)
+		if (!t || !t.handler) return
+		setlink(this, url)
+	})
+}
+
+// scrolling -----------------------------------------------------------------
 
 /*
 $(function() {
@@ -371,24 +393,6 @@ function scroll_top() {
 	var state = History.getState()
 	History.replaceState({top: 0}, state.title, state.url)
 	$(window).scrollTop(0)
-}
-
-function setlink(a, url, params, hook) {
-	$(a).attr('href', full_url(url, params))
-		.click(function(event) {
-			event.preventDefault()
-			if (hook) hook()
-			exec(url, params)
-		})
-}
-
-function setlinks() {
-	$('a').each(function() {
-		var href = $(this).attr('href')
-		if (href) {
-			//
-		}
-	})
 }
 
 // persistence ---------------------------------------------------------------
@@ -548,9 +552,11 @@ function render_multi_column(template_name, items, col_count) {
 function render(template_name, data, dst) {
 	var s = render_func(template_name)(data)
 	if (dst) {
-		var id = $(dst).attr('id')
+		dst = $(dst)
+		var id = dst.attr('id')
 		abort(id)
-		$(dst).html(s)
+		dst.html(s)
+		setlinks(dst)
 	} else
 		return s
 }

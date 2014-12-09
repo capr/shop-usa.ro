@@ -60,11 +60,7 @@ function drag_prod_img_to_cart(finish) {
 }
 
 function set_cart_icon(n) {
-	$('#cart_icon')
-		.attr('src', n > 0 && '/bag_full.png' || '/bag.png')
-		.click(function() {
-			exec('/cart')
-		})
+	$('#cart_icon').attr('src', n > 0 && '/bag_full.png' || '/bag.png')
 	$('#cart_icon_item_count').html((n < 10 ? '0' : '') + n)
 }
 

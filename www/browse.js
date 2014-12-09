@@ -180,11 +180,7 @@ function select_brand_letter(search) {
 function update_brands_page(brands) {
 	var s = render_multi_column('brands', brands, 4)
 	$('#main').html('<br><br>'+s)
-
-	$('#main a[bid]').each(function() {
-		var bid = $(this).attr('bid')
-		setlink(this, '/brand/'+bid)
-	})
+	setlinks('#main')
 }
 
 action.brands = function(search) {
@@ -192,13 +188,6 @@ action.brands = function(search) {
 	load_main('/brands.json/'+search, function(data) {
 		update_brands_page(data.brands)
 		select_brand_letter(search)
-	})
-}
-
-function init_letters() {
-	$('#letters a').each(function() {
-		var search = $(this).attr('search')
-		setlink(this, '/brands/'+search)
 	})
 }
 
@@ -323,7 +312,7 @@ function update_product_page(prod) {
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()
 
-	setlink('.brandlink', '/brand/' + prod.bid)
+	//setlink('.brandlink', '/brand/' + prod.bid)
 
 	$('#add_to_cart').click(function() {
 		cart.add(g_prod.pid, g_combi.coid)

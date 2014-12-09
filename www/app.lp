@@ -16,7 +16,7 @@ end
 <table>
 	<tr>
 		<td valign=top width=280>
-			<a href=/><img src="/logo.jpg" style="margin-top: 26px"></a>
+			<a href="/"><img src="/logo.jpg" style="margin-top: 26px"></a>
 			<br>
 			<br>
 			<div id=sidebar>
@@ -35,7 +35,7 @@ end
 						style="line-height: 100%; border-right: 1px solid #ccc;">
 						<form id=nl_form>
 							<label class=small for=nl_email>
-								<t class=en>Subscribe to our newsletter</t>
+								<t class=en>Stay up-to-date with our latest offers</t>
 								<t class=ro>Aboneaza-te la newsletter</t>
 							</label>
 							<br>
@@ -49,13 +49,24 @@ end
 							<div class=errdiv1><div for=nl_email class="error errdiv2 small"></div></div>
 						</form>
 					</td>
+					<td width=200 valign=bottom align=right class=nowrap style="line-height: 100%; border-right: 1px solid #ccc">
+						<div style="margin-right: 20px;">
+							<b>
+								<a href="/contact">CONTACT</a><br>
+								<a href="/faq">
+									<t class=en>F.A.Q.</t>
+									<t class=ro>INTREBARI</t>
+								</a>
+							</b>
+						</div>
+					</td>
 					<td width=206 valign=bottom align=right class=nowrap style="border-right: 1px solid #ccc">
 						<div style="position: relative; top: 4px; margin-right: 20px;">
 							<i class="fa fa-phone" style="font-size: 22px"></i>
 							<span style="font-size: 24px; line-height: 100%">0745 577 786</span>
 						</div>
 					</td>
-					<td width=200 valign=bottom class=nowrap align=right class=small style="line-height: 100%">
+					<td width=200 valign=bottom align=right class=nowrap style="line-height: 100%">
 						<t class=en>
 							<b>FREE SHIPPING</b><br>
 							on all orders over 300 RON
@@ -81,7 +92,7 @@ end
 						local search = letter == '#' and 'other' or letter
 						?>
 						<td align=right width=<?=w?>>
-							<a search=<?=search?>><?=letter?></a>
+							<a href="/brands/<?=search?>"><?=letter?></a>
 						</td>
 						<?
 					end
@@ -91,22 +102,22 @@ end
 			<table width=100%>
 				<tr>
 					<td width=100%>
-						<a id=greeting_anonymous class="link hidden">
+						<a id=greeting_anonymous href="/account" class="link hidden">
 							<t class=en>Login</t>
-							<t class=ro>Logheaza-te</t>!
+							<t class=ro>Logheaza-te</t>
 						</a>
 						<span id=greeting_logged_in class=hidden>
 							<t class=en>Hi</t>
 							<t class=ro>Salut</t>
-							<a id=greeting_name class=link></a>!
+							<a id=greeting_name href="/account" class=link></a>!
 						</span>
 					</td>
 					<td align=left>
-						<a id=orders_icon class="fa fa-cutlery hidden" title:en=orders title:ro=comenzi></a>
+						<a id=orders_icon href="/orders" class="fa fa-cutlery hidden" title:en=orders title:ro=comenzi></a>
 					</td>
 					<td align=right nowrap>
 						<div id=cart_icon_div style="position: relative; width: 50px; height: 50px">
-							<a id=cart_icon_link>
+							<a href="/cart">
 								<img style="position: absolute" id=cart_icon>
 								<div style="position: absolute; top: 11px; left: 28px">
 									<span id=cart_icon_item_count></span>
@@ -128,12 +139,12 @@ end
 		<td valign=top width=280></td>
 		<td align=left valign=top width=900>
 			<hr>
-			<a class=gray>Despre noi</a><br>
-			<a class=gray>Cum comand</a><br>
-			<a class=gray>Politica de returnare</a><br>
-			<a class=gray>Intrebari frecvente</a><br>
-			<a class=gray>Termeni si conditii</a><br>
-			<a class=gray>Confidentialitate</a><br>
+			<a class=gray href="/despre_noi.html">Despre noi</a><br>
+			<a class=gray href="/cum_comand.html">Cum comand</a><br>
+			<a class=gray href="/returnare.html">Politica de returnare</a><br>
+			<a class=gray href="/intrebari.html">Intrebari frecvente</a><br>
+			<a class=gray href="/termeni_si_conditii.html">Termeni si conditii</a><br>
+			<a class=gray href="/confidentialitate.html">Confidentialitate</a><br>
 			<a class=gray href="http://www.anpc.gov.ro/" target=_blank>ANPC</a>
 			<br>
 			<br>
@@ -270,7 +281,7 @@ end
 </script>
 
 <script type="text/x-mustache" id=brands_template>
-	<span class=small><a bid={{{bid}}}>{{{bname}}}</a>
+	<span class=small><a href="/brand/{{{bid}}}">{{{bname}}}</a>
 		<span class=gray>({{pcount}})</span>
 	</span>
 </script>
@@ -285,7 +296,7 @@ end
 			</td>
 			<td valign=top width=300>
 				<div style="min-height: 100px">
-					<a class=brandlink><img src="/img/m/{{{bid}}}.jpg"></a>
+					<a href="/brand/{{{bid}}}"><img src="/img/m/{{{bid}}}.jpg"></a>
 				</div>
 				<a class=brandlink><b>{{{bname}}}</b></a> {{{name}}}
 				<br>
