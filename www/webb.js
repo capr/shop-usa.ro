@@ -301,9 +301,7 @@ function allow(truth) {
 
 $(function() {
 	var History = window.History
-	History.Adapter.bind(window, 'statechange', function() {
-		url_changed()
-	})
+	History.Adapter.bind(window, 'statechange', url_changed)
 })
 
 function full_url(url, params) {
@@ -318,16 +316,18 @@ function full_url(url, params) {
 	return url
 }
 
+function set_state_top(top) {
+	var state = History.getState()
+	g_ignore_url_changed = true
+	History.replaceState({top: top}, state.title, state.url)
+	g_ignore_url_changed = false
+}
+
 function exec(url, params) {
 	// store current scroll top in current state first
-	var top = $(window).scrollTop()
-	var state = History.getState()
-	console.log('replacing')
-	History.replaceState({top: top}, state.title, state.url)
-	console.log('replaced. pushing')
+	set_state_top($(window).scrollTop())
 	// push new state without data
 	History.pushState(null, null, full_url(url, params))
-	console.log('pushed')
 }
 
 var action = {} // {action: handler}
@@ -346,8 +346,10 @@ function parse_url(url) {
 	}
 }
 
+var g_ignore_url_changed
+
 function url_changed() {
-	console.log('url_changed', location.pathname)
+	if (g_ignore_url_changed) return
 	unlisten_all()
 	unbind_keydown_all()
 	analytics_pageview() // note: title is not available at this time
@@ -393,10 +395,7 @@ function setscroll() {
 }
 
 function scroll_top() {
-	var state = History.getState()
-	console.log('before replaceState')
-	History.replaceState({top: 0}, state.title, state.url)
-	console.log('after replaceState')
+	set_state_top(0)
 	$(window).scrollTop(0)
 }
 
