@@ -362,6 +362,7 @@ function setscroll() {
 	var state = History.getState()
 	var top = state.data && state.data.top || 0
 	$(window).scrollTop(top)
+	console.log('after setscroll', top)
 }
 
 function setlink(a, url, params, hook) {
