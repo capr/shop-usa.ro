@@ -158,10 +158,6 @@ end
 		</td>
 	</tr>
 </table>
-<br>
-<br>
-<br>
-<br>
 
 <script type="text/x-mustache" id=browse_template>
 	<table width=100% id=top_navbar class=navbar>
