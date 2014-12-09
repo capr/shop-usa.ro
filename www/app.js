@@ -31,6 +31,7 @@ $(function() {
 	init_status()
 	login()
 
+	set_state_top(0) // forget scroll top on page refresh
 	url_changed()
 })
 

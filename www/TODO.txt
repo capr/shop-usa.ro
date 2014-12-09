@@ -31,6 +31,8 @@ BIG BUGS
 
 USABILITY BUGS (CONFUSIONS)
 ---------------------------
+- browser scrolls immediately after url_changed but content not yet loaded
+	- the scroll position is adjusted afterwards, but the jerkiness is annoying
 - shift click doesn't work to open in new tab!
 - forgot pass link -> trigger usr event
 - add breadcrumbs to product page

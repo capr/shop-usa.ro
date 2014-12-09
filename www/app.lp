@@ -56,7 +56,7 @@ end
 			</div>
 		</td>
 		<td valign=top width=900>
-			<table width=100% height=50>
+			<table width=100% height=105>
 				<tr>
 					<td width=100%>
 					</td>
