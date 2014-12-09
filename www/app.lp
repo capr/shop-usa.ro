@@ -1383,9 +1383,6 @@ end
 <script type="text/x-mustache" id=contact_template>
 	<table width=100%>
 		<tr>
-			<td valign=top>
-				<iframe width="400" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8"></iframe>
-			</td>
 			<td valign=top width=50%>
 				<h3>
 					<t class=en>Address:</t>
@@ -1418,6 +1415,9 @@ end
 				</h3>
 				<t class=en>Monday to Friday, between 10-17</t>
 				<t class=ro>Luni-Vineri, intre orele 10-17</t>
+			</td>
+			<td valign=top>
+				<iframe width="400" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8"></iframe>
 			</td>
 		</tr>
 	</table>
