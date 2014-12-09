@@ -130,7 +130,7 @@ end
 				<tr>
 					<td align=center class="gray small">
 						SHOP-USA |
-						str. Atena nr. 4, Tel: 0745 577 786 |
+						str. Atena nr. 4, Bucuresti, Sector 1, Tel: 0745 577 786 |
 						Website by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
 					</td>
 				</tr>
@@ -1381,9 +1381,46 @@ end
 </script>
 
 <script type="text/x-mustache" id=contact_template>
+	<table width=100%>
+		<tr>
+			<td valign=top>
+				<iframe width="400" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8"></iframe>
+			</td>
+			<td valign=top width=50%>
+				<h3>
+					<t class=en>Address:</t>
+					<t class=ro>Adresa:</t>
+				</h3>
+				<t class=en>
+					Atena street, no. 4<br>
+					Bucharest, Sector 1
+				</t>
+				<t class=ro>
+					str. Atena nr. 4<br>
+					Bucuresti, Sector 1
+				</t>
 
-- contact page: Atena 4, 0745 577 786, program L-V: 10-17
+				<h3>
+					<t class=en>Email:</t>
+					<t class=ro>Email:</t>
+				</h3>
+				<a href="mailto:comenzi@shop-usa.ro">comenzi@shop-usa.ro</a>
 
+				<h3>
+					<t class=en>Phone:</t>
+					<t class=ro>Telefon:</t>
+				</h3>
+				0745 577 786
+
+				<h3>
+					<t class=en>Opening hours:</t>
+					<t class=ro>Program:</t>
+				</h3>
+				<t class=en>Monday to Friday, between 10-17</t>
+				<t class=ro>Luni-Vineri, intre orele 10-17</t>
+			</td>
+		</tr>
+	</table>
 </script>
 
 <div id=fb-root class=hidden></div>
