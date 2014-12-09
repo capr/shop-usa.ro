@@ -151,7 +151,7 @@ end
 					<td align=center class="gray small">
 						SHOP-USA |
 						str. Atena nr. 4, Tel: 0745 577 786 |
-						Made by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
+						Website by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
 					</td>
 				</tr>
 			</table>
