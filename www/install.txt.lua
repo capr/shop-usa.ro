@@ -10,7 +10,7 @@ end
 
 --ddl vocabulary -------------------------------------------------------------
 
-local nodrop --= true
+local nodrop = true
 
 local function constable(name)
 	return query1([[
@@ -77,6 +77,7 @@ qsubst'mtime   timestamp' --on update current_timestamp
 qsubst'money   decimal(20,6)'
 
 --drop everything
+droptable'nlemail'
 droptable'convrate'
 droptable'ordrlog'
 droptable'ordritem'
@@ -169,14 +170,10 @@ $table ordritem (
 ]]
 
 pq[[
-$table ordrlog (
-	ologid      $pk,
-	oid         $id not null, $fk(ordrlog, oid, ordr),
-	uid         $id not null, $fk(ordrlog, uid, usr),
-	old_status  $name,
-	new_status  $name,
-	note        text,
-	atime       $atime
+$table nlemail (
+	email       $email primary key,
+	clientip    $name,
+	mtime       timestamp
 );
 ]]
 
@@ -188,4 +185,3 @@ $table convrate (
 	primary key (ron, usd, date)
 )
 ]]
-

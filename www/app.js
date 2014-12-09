@@ -28,6 +28,7 @@ $(function() {
 	init_viewstyle()
 	init_letters()
 	init_sidebar()
+	init_newsletter()
 
 	init_admin()
 	init_status()

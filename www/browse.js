@@ -408,3 +408,56 @@ function init_sidebar() {
 	follow_scroll('#sidebar', 20)
 }
 
+// newsletter ----------------------------------------------------------------
+
+function init_newsletter() {
+
+	function error_placement(error, element) {
+		var div = $('.error[for="'+$(element).attr('id')+'"]')
+		div.append(error)
+		return false
+	}
+
+	var validator = $('#nl_form').validate({
+		messages: {
+			email: {
+				required: S('email_required_error',
+					'We need your email to contact you'),
+				email: S('email_format_error',
+					'Your email must be valid'),
+			},
+		},
+		errorPlacement: error_placement,
+	})
+
+	function validate() {
+		if (!$('#nl_form').valid()) {
+			validator.focusInvalid()
+			//notify()
+			return false
+		}
+		return true
+	}
+
+	$('#email').keypress(function(e) {
+		if(e.keyCode == 13)
+			$('#nl_subscribe').click()
+	})
+
+	$('#nl_subscribe').click(function() {
+
+		if (!validate()) return
+
+		var email = $('#nl_email').val()
+
+		post('/newsletter.json', {action: 'subscribe', email: email},
+			function() {
+				notify(S('subscribe_ok', 'Thank you!'))
+			},
+			function() {
+				notify(S('subscribe_error',
+					'There was an error and we could not subscribe you.<br>Please try again later.'), 'error')
+			})
+	})
+}
+

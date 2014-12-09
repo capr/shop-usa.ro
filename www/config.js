@@ -77,4 +77,7 @@ S('changes_saved', 'Modificarile au fost salvate')
 S('update_failed', 'S-a produs o eroare.<br>Modificarile NU au fost salvate')
 S('added_to_order', 'Produsul a fost adaugat la comanda')
 
+S('subscribe_ok', 'Iti multumim!<br>Te vom tine la curent cu ofertele noastre.')
+S('subscribe_error', 'S-a produs o eroare.<br>Te rugam sa incerci din nou.')
+
 }

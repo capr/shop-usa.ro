@@ -56,18 +56,26 @@ end
 			</div>
 		</td>
 		<td valign=top align=right width=900>
-			<table height=50>
+			<br>
+			<table>
 				<tr>
 					<td valign=bottom>
 					</td>
-					<td valign=bottom class=nowrap align=left style="line-height: 100%">
-						<span class=small>Aboneaza-te la newsletter</span><br>
-						<input type=text id=newsletter placeholder="email-ul tau aici"
-							style="width: 200px; margin: 0px;">
-						<button class=slim style="width: 36px; padding: 0">OK</button>
+					<td valign=bottom class=nowrap align=left
+						style="line-height: 100%; border-right: 1px solid #ccc;">
+						<form id=nl_form>
+							<label class=small for=nl_email>Aboneaza-te la newsletter</label>
+							<br>
+							<input placeholder="email-ul tau aici"
+								style="width: 200px; margin: 0px;"
+								id=nl_email name=email type=text class=email required>
+							<button type=button id=nl_subscribe class=slim
+								style="width: 36px; padding: 0; margin-right: 20px;">OK</button>
+							<div class=errdiv1><div for=nl_email class="error errdiv2 small"></div></div>
+						</form>
 					</td>
-					<td width=200 valign=bottom align=right class=nowrap>
-						<div style="position: relative; top: 4px">
+					<td width=206 valign=bottom align=right class=nowrap style="border-right: 1px solid #ccc">
+						<div style="position: relative; top: 4px; margin-right: 20px;">
 							<i class="fa fa-phone" style="font-size: 22px"></i>
 							<span style="font-size: 24px; line-height: 100%">0745 577 786</span>
 						</div>

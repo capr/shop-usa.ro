@@ -59,6 +59,10 @@ function home_email(user)
 	return string.format('%s@%s', user or 'no-reply', home_domain())
 end
 
+function clientip()
+	return ngx.var.remote_addr
+end
+
 function clamp(x, min, max)
 	return math.min(math.max(x, min), max)
 end
