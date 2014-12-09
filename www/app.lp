@@ -53,8 +53,14 @@ end
 						</div>
 					</td>
 					<td width=200 valign=bottom class=nowrap align=right class=small style="line-height: 100%">
-						<b>TRANSPORT GRATUIT</b><br>
-						la comenzi de peste 300 Lei
+						<t class=en>
+							<b>FREE SHIPPING</b><br>
+							on all orders over 300 RON
+						</t>
+						<t class=ro>
+							<b>TRANSPORT GRATUIT</b><br>
+							la comenzi de peste 300 Lei
+						</t>
 					</td>
 				</tr>
 			</table>
@@ -189,13 +195,13 @@ end
 				<a><b>{{{bname}}}</b> {{{name}}}</a>
 				<br>
 				<span class=price>
-					<t class=en>${{{price}}}</t>
+					<t class=en>{{{price}}} RON</t>
 					<t class=ro>{{{price}}} Lei</t>
 				</span>
 				{{#discount}}
 					<br>
 					<span class=discount>
-						<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
+						<t class=en>({{{discount}}}% off{{#msrp}} {{{msrp}}} MSRP{{/msrp}})</t>
 						<t class=ro>({{{discount}}}%{{#msrp}} <s>{{{msrp}}} Lei</s>{{/msrp}})</t>
 					</span>
 				{{/discount}}
@@ -222,14 +228,14 @@ end
 		<a><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
 		<span class=price>
-			<t class=en>${{{price}}}</t>
+			<t class=en>{{{price}}} RON</t>
 			<t class=ro>{{{price}}} Lei</t>
 		</span>
 		{{#discount}}
 			<br>
 			<span class=discount>
 				<t class=ro>({{{discount}}}%{{#msrp}} <s>{{{msrp}}} Lei</s>{{/msrp}})</t>
-				<t class=en>({{{discount}}}% off{{#msrp}} ${{{msrp}}} MSRP{{/msrp}})</t>
+				<t class=en>({{{discount}}}% off{{#msrp}} {{{msrp}}} MSRP{{/msrp}})</t>
 			</span>
 		{{/discount}}
 		<!--
@@ -392,7 +398,7 @@ end
 	<div id=cart_buynow>{{{buynow}}}</div>
 	<div class=cart_total><b>Total:</b>
 		<span class=price>
-			<t class=en>${{{total}}}</t>
+			<t class=en>{{{total}}} RON</t>
 			<t class=ro>{{{total}}} Lei</t>
 		</span>
 		<br>
@@ -449,7 +455,7 @@ end
 						<a><b>{{{bname}}}</b> {{{name}}}</a>
 						<br>
 						<span class=price>
-							<t class=en>${{{price}}}</t>
+							<t class=en>{{{price}}} RON</t>
 							<t class=ro>{{{price}}} Lei</t>
 						</span> {{{sname}}}
 						<br>
@@ -676,7 +682,7 @@ end
 								<a><b>{{{bname}}}</b> {{{name}}}</a>
 								<br>
 								<span class=price>
-									<t class=en>${{{price}}}</t>
+									<t class=en>{{{price}}} RON</t>
 									<t class=ro>{{{price}}} Lei</t>
 								</span>
 								{{#vnames}}{{.}} {{/vnames}}
@@ -699,7 +705,7 @@ end
 					<t class=en>Subtotal:</t>
 					<t class=ro>Subtotal:</t>
 					<span class=price>
-						<t class=en>${{{total}}}</t>
+						<t class=en>{{{total}}} RON</t>
 						<t class=ro>{{{total}}} Lei</t>
 					</span>
 				</span>
@@ -781,7 +787,7 @@ end
 					<t class=en>Shipping cost:</t>
 					<t class=ro>Cost livrare:</t>
 					<span class=price>
-						<t class=en>$<span class=shipping_cost></span></t>
+						<t class=en><span class=shipping_cost></span> RON</t>
 						<t class=ro><span class=shipping_cost></span> Lei</t>
 					</span>
 				</span>
@@ -869,7 +875,7 @@ end
 				<br>
 				<span class=subtotal>Total:
 					<span class=price>
-						<t class=en>$<span class=grand_total></span></t>
+						<t class=en><span class=grand_total></span> RON</t>
 						<t class=ro><span class=grand_total></span> Lei</t>
 					</span>
 				</span>
@@ -1085,7 +1091,7 @@ end
 											<a><b>{{{bname}}}</b> {{{name}}}</a>
 											<br>
 											<span class=price>
-												<t class=en>${{{price}}}</t>
+												<t class=en>{{{price}}} RON</t>
 												<t class=ro>{{{price}}} Lei</t>
 											</span>
 											{{{vnames}}}
