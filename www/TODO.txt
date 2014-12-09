@@ -5,6 +5,7 @@
 	- keydown
 
 
+
 HOT FUNCTIONALITY
 -----------------
 - UA tracker
@@ -13,8 +14,7 @@ HOT FUNCTIONALITY
 - contact page: Atena 4, 0745 577 786, program L-V: 10-17
 - homepage banner slider
 - homepage custom bands
-- footer
-	- brand marquee
+- footer brand marquee
 
 
 HOT BUGS
@@ -84,6 +84,15 @@ DESIGN
 
 FRAMEWORK
 ---------
+- concatenate filters together
+	- lua -> t -> json
+
+	.json.t.lua
+	.js.cat.lua
+
+
 - language filter: short forms
 	- <anytag:en> ... </anytag>
 	- attr:en=val attr:ro=val ...
+- cat filter
+	- for js and css

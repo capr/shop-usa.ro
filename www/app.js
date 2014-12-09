@@ -20,6 +20,12 @@ function hide_nav() {
 	$('#sidebar').hide()
 }
 
+// static pages --------------------------------------------------------------
+
+action.contact = function() {
+	render('contact', null, main)
+}
+
 // init ----------------------------------------------------------------------
 
 $(function() {

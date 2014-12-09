@@ -214,6 +214,12 @@ local chunks = {} --{action = chunk}
 
 local lp = require'lp'
 
+local function out_catlist(listfile, sep)
+	for f in glue.readfile(listfile):gmatch'([^%s]+)' do
+		out(glue.readfile(check(filepath(f))))
+		out(sep)
+	end
+end
 
 local mime_types = {
 	html = 'text/html',
@@ -225,17 +231,28 @@ function action(action, ...)
 	--find the action.
 	local chunk = chunks[action]
 	if not chunk then
-		local luapath = filepath(action..'.lua')
-		local lppath = not luapath and filepath(action..'.lp')
-		if not luapath and not lppath then
+		local path =
+			filepath(action..'.cat')
+			or filepath(action..'.lua')
+			or filepath(action..'.lp')
+		if not path then
 			ngx.redirect'/'
 		end
-		if lppath then
+		local ext = path:match'%.([^%.]+)$'
+		if ext == 'cat' then
+			local fext = action:match'%.([^%.]+)$'
+			push_outbuf()
+			out_catlist(path, fext == 'js' and ';' or '\n')
+			local s = pop_outbuf()
+			chunk = function()
+				out(s)
+			end
+		elseif ext == 'lp' then
 			lp.setoutfunc'out'
-			local template = glue.readfile(lppath)
+			local template = glue.readfile(path)
 			chunk = lp.compile(template, action, _G)
 		else
-			chunk = assert(loadfile(luapath))
+			chunk = assert(loadfile(path))
 		end
 		setfenv(chunk, getfenv(1))
 		chunks[action] = chunk
