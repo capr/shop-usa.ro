@@ -9,8 +9,38 @@ end
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
 	<meta name="fragment" content="!">
-	<link rel="stylesheet" type="text/css" href="/all.css">
-	<script src="/all.js"></script>
+	<link rel="stylesheet" type="text/css" href="/main.css">
+	<link rel="stylesheet" type="text/css" href="/jquery.toasty.css">
+	<link rel="stylesheet" type="text/css" href="/jquery.powertip.css">
+	<link rel="stylesheet" type="text/css" href="/jquery.dropdown.css">
+	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
+	<script src="/jquery.js"></script>
+	<script src="/jquery.history.js"></script>
+	<script src="/jquery.cookie.js"></script>
+	<script src="/jquery.quicksearch.js"></script>
+	<script src="/jquery.zoom.js"></script>
+	<script src="/jquery.easing.js"></script>
+	<script src="/jquery.sortable.js"></script>
+	<script src="/jquery.validate.js"></script>
+	<script src="/jquery.autocomplete.js"></script>
+	<script src="/jquery.toasty.js"></script>
+	<script src="/jquery.powertip.js"></script>
+	<script src="/jquery.dropdown.js"></script>
+	<script src="/mustache.js"></script>
+	<script src="/webb.js"></script>
+	<script src="/config.js"></script>
+	<script src="/analytics.js"></script>
+	<script src="/facebook.js" async defer></script>
+	<script src="/google.js" async defer></script>
+	<script src="/cat.js"></script>
+	<script src="/cart.js"></script>
+	<script src="/status.js"></script>
+	<script src="/account.js"></script>
+	<script src="/checkout.js"></script>
+	<script src="/resetpass.js"></script>
+	<script src="/browse.js"></script>
+	<script src="/orders.js"></script>
+	<script src="/app.js"></script>
 </head>
 <body>
 <table>
