@@ -23,6 +23,8 @@ function hide_nav() {
 // init ----------------------------------------------------------------------
 
 $(function() {
+	scroll_top()
+
 	init_viewstyle()
 	init_letters()
 	init_sidebar()

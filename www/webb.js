@@ -359,6 +359,12 @@ function setscroll() {
 	$(window).scrollTop(top)
 }
 
+function scroll_top() {
+	var state = History.getState()
+	History.replaceState({top: 0}, state.title, state.url)
+	$(window).scrollTop(0)
+}
+
 function setlink(a, url, params, hook) {
 	$(a).attr('href', full_url(url, params))
 		.click(function(event) {
