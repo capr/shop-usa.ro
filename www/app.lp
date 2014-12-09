@@ -1429,6 +1429,8 @@ end
 			</td>
 		</tr>
 	</table>
+	<br>
+	<br>
 </script>
 
 <div id=fb-root class=hidden></div>
