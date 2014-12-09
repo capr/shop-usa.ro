@@ -118,6 +118,8 @@ end
 	</tr>
 </table>
 
+<br>
+<br>
 <table>
 	<tr>
 		<td valign=top width=280></td>
@@ -1429,8 +1431,6 @@ end
 			</td>
 		</tr>
 	</table>
-	<br>
-	<br>
 </script>
 
 <div id=fb-root class=hidden></div>
