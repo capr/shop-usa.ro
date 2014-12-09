@@ -298,7 +298,7 @@ end
 				<div style="min-height: 100px">
 					<a href="/brand/{{{bid}}}"><img src="/img/m/{{{bid}}}.jpg"></a>
 				</div>
-				<a class=brandlink><b>{{{bname}}}</b></a> {{{name}}}
+				<a href="/brand/{{{bid}}}"><b>{{{bname}}}</b></a> {{{name}}}
 				<br>
 				<br>
 				<div id=combi style="min-height: 60px"></div>
@@ -382,7 +382,7 @@ end
 	<br>
 	<br>
 	<div style="min-height: 100px;">
-		<a bid={{{bid}}}><img src="/img/m/{{{bid}}}.jpg"></a>
+		<img src="/img/m/{{{bid}}}.jpg">
 	</div>
 	<div id=bcat class=menu></div>
 </script>
@@ -574,7 +574,7 @@ end
 						</tr>
 						<tr>
 							<td colspan=2 align=right nowrap>
-								<a class="gray link" id=btn_forgot_pass>
+								<a class="gray link" href="/forgot_password">
 									<t class=en>Forgot password?</t>
 									<t class=ro>Ai uitat parola?</t>
 								</a>
@@ -666,7 +666,7 @@ end
 							{{#show_operations}}
 							<td align=right nowrap>
 								{{#haspass}}
-									<a id=reset_pass class="gray link"><t class=en>Change password</t><t class=ro>Schimba parola</t></a> |
+									<a id=reset_pass href="/reset_password" class="gray link"><t class=en>Change password</t><t class=ro>Schimba parola</t></a> |
 								{{/haspass}}
 								<a id=logout class="gray link">
 									<t class=en>Log out</t>

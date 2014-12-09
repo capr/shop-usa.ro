@@ -312,8 +312,6 @@ function update_product_page(prod) {
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()
 
-	//setlink('.brandlink', '/brand/' + prod.bid)
-
 	$('#add_to_cart').click(function() {
 		cart.add(g_prod.pid, g_combi.coid)
 	})

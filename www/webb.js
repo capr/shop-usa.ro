@@ -322,10 +322,12 @@ function exec(url, params) {
 	// store current scroll top in current state first
 	var top = $(window).scrollTop()
 	var state = History.getState()
+	console.log('replacing')
 	History.replaceState({top: top}, state.title, state.url)
+	console.log('replaced. pushing')
 	// push new state without data
-	g_execed = true
 	History.pushState(null, null, full_url(url, params))
+	console.log('pushed')
 }
 
 var action = {} // {action: handler}
@@ -345,6 +347,7 @@ function parse_url(url) {
 }
 
 function url_changed() {
+	console.log('url_changed', location.pathname)
 	unlisten_all()
 	unbind_keydown_all()
 	analytics_pageview() // note: title is not available at this time
@@ -391,7 +394,9 @@ function setscroll() {
 
 function scroll_top() {
 	var state = History.getState()
+	console.log('before replaceState')
 	History.replaceState({top: 0}, state.title, state.url)
+	console.log('after replaceState')
 	$(window).scrollTop(0)
 }
 

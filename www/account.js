@@ -101,7 +101,7 @@ function account_widget(acc) {
 
 	function create_login_section() {
 
-		render('account_login', {}, acc.section)
+		render('account_login', null, acc.section)
 
 		$('.fa-eye').click(function() {
 			$('#pass').attr('type',
@@ -123,8 +123,6 @@ function account_widget(acc) {
 
 		if (!acc.allow_anonymous)
 			$('#btn_no_account').hide()
-
-		setlink('#btn_forgot_pass', '/forgot_password')
 
 		$('#email').keypress(function(e) {
 			if(e.keyCode == 13)
@@ -209,8 +207,6 @@ function account_widget(acc) {
 		$('#relogin').click(function() {
 			create_login_section()
 		})
-
-		setlink('#reset_pass', '/reset_password')
 
 		$('#logout').click(function() {
 			$('#logout').prop('disabled', true)
