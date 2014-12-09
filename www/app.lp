@@ -1381,6 +1381,8 @@ end
 </script>
 
 <script type="text/x-mustache" id=contact_template>
+	<br>
+	<br>
 	<table width=100%>
 		<tr>
 			<td valign=top width=50%>
