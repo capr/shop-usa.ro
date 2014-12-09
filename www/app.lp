@@ -55,21 +55,28 @@ end
 				<div id=brands class=menu></div>
 			</div>
 		</td>
-		<td valign=top width=900>
-			<table width=100% height=75>
+		<td valign=top align=right width=900>
+			<table height=50>
 				<tr>
-					<td width=100%>
+					<td valign=bottom>
 					</td>
-					<td class=nowrap align=left class=small style="line-height: 100%">
-						Newsletter<br>
-						<input type=text id=newsletter style="width: 100px; height: 16px; margin-right: 10px;">
+					<td valign=bottom class=nowrap align=left style="line-height: 100%">
+						<span class=small>Aboneaza-te la newsletter</span><br>
+						<input type=text id=newsletter placeholder="email-ul tau aici"
+							style="width: 200px; margin: 0px;">
+						<button class=slim style="width: 30px; padding-left: 0; padding-right: 0">OK</button>
 					</td>
-					<td width=150 class=nowrap align=right class=small style="line-height: 100%">
-						TRANSPORT GRATUIT<br>
-						la comenzi peste 300 Lei
+					<td width=200 valign=bottom align=right class=nowrap>
+						<i class="fa fa-phone" style="font-size: 22px"></i>
+						<span style="font-size: 24px">0745 577 786</span>
+					</td>
+					<td width=200 valign=bottom class=nowrap align=right class=small style="line-height: 100%">
+						<b>TRANSPORT GRATUIT</b><br>
+						la comenzi de peste 300 Lei
 					</td>
 				</tr>
 			</table>
+			<br>
 			<div id=topbar style="height: 30px"></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
@@ -119,41 +126,46 @@ end
 				</tr>
 			</table>
 			<div id=main></div>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td valign=top width=280></td>
+		<td align=left valign=top width=900>
+			<hr>
+			<a class=link>Despre noi</a>
+			<br>
+			<a class=link>Cum comand</a>
+			<br>
+			<a class=link>Politica de returnare</a>
+			<br>
+			<a class=link>Intrebari frecvente</a>
+			<br>
+			<a class=link>Termeni si conditii</a>
+			<br>
+			<a class=link>Confidentialitate</a>
+			<br>
+			<a class=link href="http://www.anpc.gov.ro/" target=_blank>ANPC</a>
+			<br>
+			<br>
 			<table width=100%>
-				<tr height=140>
-					<td align=center valign=top>
-						<br>
-						<br>
-						<hr>
-						<table width=100%>
-							<tr>
-								<td align=left valign=top>
-									<a class=link>Cum comand</a><br>
-									<a class=link>Despre noi</a><br>
-									<a class=link>Intrebari frecvente</a><br>
-								</td>
-								<td align=left valign=top>
-									<a class=link>Confidentialitate</a><br>
-									<a class=link>Politica de returnare</a><br>
-									<a class=link>Termeni si conditii</a><br>
-								</td>
-								<td valign=top>
-								</td>
-							</tr>
-						</table>
-						<br>
-						<br>
-						<span class="gray small">
-							SHOP-USA | str. Atena nr. 4, Tel: 0745 577 786 | Made by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
-						</span>
-						<br>
-						<br>
+				<tr>
+					<td align=center class="gray small">
+						SHOP-USA |
+						str. Atena nr. 4, Tel: 0745 577 786 |
+						Made by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
 					</td>
 				</tr>
 			</table>
 		</td>
 	</tr>
 </table>
+<br>
+<br>
+<br>
+<br>
 
 <script type="text/x-mustache" id=browse_template>
 	<table width=100% id=top_navbar class=navbar>

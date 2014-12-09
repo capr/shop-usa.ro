@@ -8,7 +8,7 @@
 HOT FUNCTIONALITY
 -----------------
 - UA tracker
-- header banners: Transport Gratuit, Telefon, Facebook Like, Adresa, Newsletter
+- header banners: Telefon, Facebook Like, Adresa,
 - top navbar: search, logheaza-te, cart
 - contact page: Atena 4, 0745 577 786, program L-V: 10-17
 - homepage banner slider
@@ -60,6 +60,7 @@ UI BUGS
 -------
 - autocomplete of county sometimes doesn't work
 - notify is not centered on site, but on screen
+- scroll is jerky (resets to top when scrolling) while loading #main
 
 
 FUNCTIONALITY
