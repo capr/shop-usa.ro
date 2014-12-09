@@ -135,19 +135,13 @@ end
 		<td valign=top width=280></td>
 		<td align=left valign=top width=900>
 			<hr>
-			<a class=link>Despre noi</a>
-			<br>
-			<a class=link>Cum comand</a>
-			<br>
-			<a class=link>Politica de returnare</a>
-			<br>
-			<a class=link>Intrebari frecvente</a>
-			<br>
-			<a class=link>Termeni si conditii</a>
-			<br>
-			<a class=link>Confidentialitate</a>
-			<br>
-			<a class=link href="http://www.anpc.gov.ro/" target=_blank>ANPC</a>
+			<a class=gray>Despre noi</a><br>
+			<a class=gray>Cum comand</a><br>
+			<a class=gray>Politica de returnare</a><br>
+			<a class=gray>Intrebari frecvente</a><br>
+			<a class=gray>Termeni si conditii</a><br>
+			<a class=gray>Confidentialitate</a><br>
+			<a class=gray href="http://www.anpc.gov.ro/" target=_blank>ANPC</a>
 			<br>
 			<br>
 			<table width=100%>
