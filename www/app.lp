@@ -9,38 +9,8 @@ end
 	<meta charset="UTF-8">
 	<title>SHOP USA</title>
 	<meta name="fragment" content="!">
-	<link rel="stylesheet" type="text/css" href="/main.css">
-	<link rel="stylesheet" type="text/css" href="/jquery.toasty.css">
-	<link rel="stylesheet" type="text/css" href="/jquery.powertip.css">
-	<link rel="stylesheet" type="text/css" href="/jquery.dropdown.css">
-	<link rel="stylesheet" type="text/css" href="/font-awesome.css">
-	<script src="/jquery.js"></script>
-	<script src="/jquery.history.js"></script>
-	<script src="/jquery.cookie.js"></script>
-	<script src="/jquery.quicksearch.js"></script>
-	<script src="/jquery.zoom.js"></script>
-	<script src="/jquery.easing.js"></script>
-	<script src="/jquery.sortable.js"></script>
-	<script src="/jquery.validate.js"></script>
-	<script src="/jquery.autocomplete.js"></script>
-	<script src="/jquery.toasty.js"></script>
-	<script src="/jquery.powertip.js"></script>
-	<script src="/jquery.dropdown.js"></script>
-	<script src="/mustache.js"></script>
-	<script src="/webb.js"></script>
-	<script src="/config.js"></script>
-	<script src="/analytics.js"></script>
-	<script src="/facebook.js" async defer></script>
-	<script src="/google.js" async defer></script>
-	<script src="/cat.js"></script>
-	<script src="/cart.js"></script>
-	<script src="/status.js"></script>
-	<script src="/account.js"></script>
-	<script src="/checkout.js"></script>
-	<script src="/resetpass.js"></script>
-	<script src="/browse.js"></script>
-	<script src="/orders.js"></script>
-	<script src="/app.js"></script>
+	<link rel="stylesheet" type="text/css" href="/all.css">
+	<script src="/all.js"></script>
 </head>
 <body>
 <table>
@@ -55,9 +25,9 @@ end
 				<div id=brands class=menu></div>
 			</div>
 		</td>
-		<td valign=top align=right width=900>
+		<td valign=top width=900>
 			<br>
-			<table>
+			<table width=100%>
 				<tr>
 					<td valign=bottom>
 					</td>
@@ -66,7 +36,9 @@ end
 						<form id=nl_form>
 							<label class=small for=nl_email>Aboneaza-te la newsletter</label>
 							<br>
-							<input placeholder="email-ul tau aici"
+							<input
+								placeholder:en="your email here"
+								placeholder:ro="email-ul tau aici"
 								style="width: 200px; margin: 0px;"
 								id=nl_email name=email type=text class=email required>
 							<button type=button id=nl_subscribe class=slim
@@ -121,7 +93,7 @@ end
 						</span>
 					</td>
 					<td align=left>
-						<a id=orders_icon class="fa fa-cutlery hidden" title=orders></a>
+						<a id=orders_icon class="fa fa-cutlery hidden" title:en=orders title:ro=comenzi></a>
 					</td>
 					<td align=right nowrap>
 						<div id=cart_icon_div style="position: relative; width: 50px; height: 50px">
@@ -353,7 +325,7 @@ end
 		{{#open}}
 		<button type=button oid={{{oid}}} style="margin-bottom: 5px;">
 			<t class=en>add to order #{{{oid}}}</t>
-			<t class=ro>adauga la comanda {{{oid}}}</t></a>
+			<t class=ro>adauga la comanda {{{oid}}}</t>
 		</button>
 		{{/open}}
 	{{/orders}}
@@ -481,13 +453,19 @@ end
 							<t class=ro>{{{price}}} Lei</t>
 						</span> {{{sname}}}
 						<br>
-						<a action=remove class=link><t class=en>Remove</t><t class=ro>Sterge</t></span></a>
+						<a action=remove class=link><t class=en>Remove</t><t class=ro>Sterge</t></a>
 						<span class="gray small">&nbsp;|&nbsp;</span>
 						{{#buylater}}
-							<a action=move_to_cart class=link><t class=en>Move to cart</t><t class=ro>Muta in cos</t></a>
+							<a action=move_to_cart class=link>
+								<t class=en>Move to cart</t>
+								<t class=ro>Muta in cos</t>
+							</a>
 						{{/buylater}}
 						{{^buylater}}
-							<a action=buy_later class=link><t class=en>Save for later</t><t class=ro>Pastreaza pentru mai tarziu</t></a>
+							<a action=buy_later class=link>
+								<t class=en>Save for later</t>
+								<t class=ro>Pastreaza pentru mai tarziu</t>
+							</a>
 						{{/buylater}}
 					</td>
 					<td align=right valign=top>
@@ -505,35 +483,39 @@ end
 </script>
 
 <script type="text/x-mustache" id=account_login_template>
-	<t class=en>
-		<h3>Enter account:</h3>
-	</t>
-	<t class=ro>
-		<h3>Intra in cont:</h3>
-		<span class=help>
+	<h3>
+		<t class=en>Enter account:</t>
+		<t class=ro>Intra in cont:</t>
+	</h3>
+	<span class=help>
+		<t class=en>
+			Why register? Because this way you can keep the products you like
+			in a list which you will find the next time you visit us.
+		</t>
+		<t class=ro>
 			De ce sa te inregistrezi? Pentru ca asa iti poti pastra produsele
 			care ti-au placut intr-o lista de preferinte, pe care o vei gasi si
-			data viitoare cand ne vizitezi!
-		</span>
-	</t>
+			data viitoare cand ne vizitezi.
+		</t>
+	</span>
 	<form id=login_form>
 		<table width=100%>
 			<tr>
 				<td width=38% valign=top>
 					<a class=btn id=btn_facebook>
 						<i class="fa fa-facebook" style="width:16px; height:20px"></i>
-							<t class=en>Sign in with Facebook</t>
-							<t class=ro>Intra cu Facebook</t>
+						<t class=en>Sign in with Facebook</t>
+						<t class=ro>Intra cu Facebook</t>
 					</a>
 					<a class=btn id=btn_google>
 						<i class="fa fa-google-plus" style="width:16px; height:20px"></i>
-							<t class=en>Sign in with Google</t>
-							<t class=ro>Intra cu Google</t>
+						<t class=en>Sign in with Google</t>
+						<t class=ro>Intra cu Google</t>
 					</a>
 					<a class=btn id=btn_no_account>
 						<i class="fa fa-check-square-o" style="width:16px; height:18px"></i>
-							<t class=en>Order without sign in</t>
-							<t class=ro>Comanda fara cont</t>
+						<t class=en>Order without sign in</t>
+						<t class=ro>Comanda fara cont</t>
 					</a>
 				</td>
 				<td width=62% style="padding-left: 10px">
@@ -545,7 +527,8 @@ end
 							<td nowrap>
 								<div class=errdiv1><div for=email class="error errdiv2"></div></div>
 								<input id=email name=email type=text class=email
-									placeholder="name@domain.com" required>
+									placeholder:en="name@domain.com"
+									placeholder:ro="nume@domeniu.com" required>
 							</td>
 						</tr>
 						<tr>
@@ -558,8 +541,7 @@ end
 							<td nowrap>
 								<div class=errdiv1><div for=pass class="error errdiv2"></div></div>
 								<input id=pass name=pass type=password required>
-								<t class=ro><a title="Vezi parola" class="fa fa-eye inside-right"></a></t>
-								<t class=en><a title="See the password" class="fa fa-eye inside-right"></a></t>
+								<a title:en="See the password" title:ro="Vezi parola" class="fa fa-eye inside-right"></a>
 							</td>
 						</tr>
 						<tr>
@@ -570,7 +552,10 @@ end
 						</tr>
 						<tr>
 							<td colspan=2 align=right nowrap>
-								<a class="gray link" id=btn_forgot_pass><t class=en>Forgot password?</t><t class=ro>Ai uitat parola?</t></a>
+								<a class="gray link" id=btn_forgot_pass>
+									<t class=en>Forgot password?</t>
+									<t class=ro>Ai uitat parola?</t>
+								</a>
 							</td>
 						</tr>
 					</table>
@@ -594,7 +579,10 @@ end
 				<td>
 					<div class=errdiv1><div for=usr_email class="error errdiv2"></div></div>
 					<input id=usr_email name=usr_email class=email type=text
-						value="{{email}}" placeholder="name@domain.com" required>
+						value="{{email}}"
+						placeholder:en="name@domain.com"
+						placeholder:ro="nume@domeniu.com"
+						required>
 				</td>
 				<td rowspan=4 align=right valign=top width=60>
 					{{#facebookid}}
@@ -612,7 +600,8 @@ end
 				</td>
 				<td>
 					<div class=errdiv1><div for=usr_name class="error errdiv2"></div></div>
-					<input id=usr_name name=usr_name type=text value="{{name}}" placeholder="Nume Complet" required></t>
+					<input id=usr_name name=usr_name type=text value="{{name}}"
+						placeholder:en="Full Name" placeholder:ro="Nume Complet" required>
 				</td>
 			</tr>
 			<tr>
@@ -657,7 +646,10 @@ end
 								{{#haspass}}
 									<a id=reset_pass class="gray link"><t class=en>Change password</t><t class=ro>Schimba parola</t></a> |
 								{{/haspass}}
-								<a id=logout class="gray link"><t class=en>Log out</t><t class=ro>Iesi din cont</t></a>
+								<a id=logout class="gray link">
+									<t class=en>Log out</t>
+									<t class=ro>Iesi din cont</t>
+								</a>
 							</td>
 							{{/show_operations}}
 						</tr>
@@ -719,8 +711,10 @@ end
 
 <script type="text/x-mustache" id=checkout_template>
 
-	<t class=en><h1>Checkout</h1></t>
-	<t class=ro><h1>Comanda</h1></t>
+	<h1>
+		<t class=en>Checkout</t>
+		<t class=ro>Comanda</t>
+	</h1>
 
 	<table width=80% style="border-spacing: 10px;">
 
@@ -826,7 +820,7 @@ end
 							</td>
 							<td>
 								<div class=errdiv1><div for=addr_city class="error errdiv2"></div></div>
-								<input id=addr_city name=addr_city type=text placeholder="" required>
+								<input id=addr_city name=addr_city type=text required>
 							</td>
 						</tr>
 						<tr>
@@ -838,7 +832,7 @@ end
 							</td>
 							<td>
 								<div class=errdiv1><div for=addr_county class="error errdiv2"></div></div>
-								<input id=addr_county name=addr_county type=text placeholder="" required>
+								<input id=addr_county name=addr_county type=text required>
 							</td>
 						</tr>
 					</table>
@@ -860,7 +854,9 @@ end
 		</tr>
 		<tr>
 			<td>
-				<textarea id=order_note rows=6 placeholder="Ora preferata, detalii adresa, etc."></textarea>
+				<textarea id=order_note rows=6
+					placeholder:en="Preferred hour, address details, etc."
+					placeholder:ro="Ora preferata, detalii adresa, etc."></textarea>
 			</td>
 			<td valign=top class=gray>
 				Ne poti lasa un mesaj sau poti contacta direct operatorii nostri.
@@ -898,7 +894,7 @@ end
 		Your order will be processed shortly and we will call you for confirmation.
 		<br>
 		<br>
-		Follow the status of the order <a class="a_account link">in your account</a>.
+		Follow the status of the order in <a id=a_account class=link>your account</a>.
 	</t>
 	<t class=ro>
 		<h1>Iti multumim ca ai comandat de la noi!</h1>
@@ -907,7 +903,7 @@ end
 		operatorii nostrii si vei primi un telefon pentru confirmare.
 		<br>
 		<br>
-		Urmareste starea comenzii <a id=a_account class=link>in contul tau</a>.
+		Urmareste starea comenzii in <a id=a_account class=link>contul tau</a>.
 	</t>
 	<br>
 	<br>
@@ -962,8 +958,10 @@ end
 </script>
 
 <script type="text/x-mustache" id=reset_pass_template>
-	<t class=en><h1>Change password</h1></t>
-	<t class=ro><h1>Schimba parola</h1></t>
+	<h1>
+		<t class=en>Change password</t>
+		<t class=ro>Schimba parola</t>
+	</h1>
 	<form id=reset_pass_form>
 		<table width=50% height=400 style="border-spacing: 5px">
 			<tr height=50>
@@ -1043,8 +1041,10 @@ end
 </script>
 
 <script type="text/x-mustache" id=account_template>
-	<t class=en><h1>Account</h1></t>
-	<t class=ro><h1>Contul meu</h1></t>
+	<h1>
+		<t class=en>Account</t>
+		<t class=ro>Contul meu</t>
+	</h1>
 	<table width=80% style="border-spacing: 10px;">
 		<tr>
 			<td width=75%>
@@ -1116,8 +1116,19 @@ end
 	<br>
 	<table width=100%>
 		<tr>
-			<td class=nowrap><b><t class=en>Search:</t><t class=ro>Cauta:</t>&nbsp;</b></td>
-			<td width=100%><input type=text id=search placeholder="name, email, phone, pid, product name" value="{{q}}"></td>
+			<td class=nowrap>
+				<b>
+					<t class=en>Search:</t>
+					<t class=ro>Cauta:</t>
+				</b>
+				&nbsp;
+			</td>
+			<td width=100%>
+				<input type=text id=search
+					placeholder:en="name, email, phone, product id, product name"
+					placeholder:ro="nume, email, telefon, id produs, nume produs"
+					value="{{q}}">
+			</td>
 		</tr>
 	</table>
 	<br>
@@ -1153,20 +1164,28 @@ end
 		<tr>
 			<td valign=top>
 				<h3 style="margin: 0">
-					<a id=a_orders><t class=en>Orders</t><t class=ro>Comenzi</t></a>
-					>
+					<a id=a_orders>
+						<t class=en>Orders</t>
+						<t class=ro>Comenzi</t>
+					</a>
+					&gt;
 					<t class=en>Order {{oid}} from {{atime}}</t>
 					<t class=ro>Comanda {{oid}} din {{atime}}</t>
 				</h3>
 				<h4 style="margin: 0">
-				<t class=en>From {{uname}}, {{uphone}}</t>
-				<t class=ro>De la {{uname}}, {{uphone}}</t>
+					<t class=en>From {{uname}}, {{uphone}}</t>
+					<t class=ro>De la {{uname}}, {{uphone}}</t>
 				</h4>
 			</td>
 			<td align=right valign=top>
 				<table width=200>
 					<tr>
-						<td><b><t class=en>status:</t><t class=ro>stare</t></b></td>
+						<td>
+							<b>
+								<t class=en>status:</t>
+								<t class=ro>stare</t>
+							</b>
+						</td>
 						<td>
 							<select id=status>
 								{{#statuses}}
@@ -1176,7 +1195,12 @@ end
 						</td>
 					</tr>
 					<tr>
-						<td><b><t class=en>operator</t><t class=ro>operator</t>:</b></td>
+						<td>
+							<b>
+								<t class=en>operator:</t>
+								<t class=ro>operator:</t>
+							</b>
+						</td>
 						<td><b>{{opname}}</b></td>
 					</tr>
 				</table>
@@ -1251,12 +1275,22 @@ end
 						<td><input type=text id=email value="{{email}}"></td>
 					</tr>
 					<tr>
-						<td><t class=en>Name:</t><t class=ro>Nume:</t></td>
-						<td><input type=text id=name value="{{name}}"></td>
+						<td>
+							<t class=en>Name:</t>
+							<t class=ro>Nume:</t>
+						</td>
+						<td>
+							<input type=text id=name value="{{name}}">
+						</td>
 					</tr>
 					<tr>
-						<td><t class=en>Phone:</t><t class=ro>Telefon:</t></td>
-						<td><input type=text id=phone value="{{phone}}"></td>
+						<td>
+							<t class=en>Phone:</t>
+							<t class=ro>Telefon:</t>
+						</td>
+						<td>
+							<input type=text id=phone value="{{phone}}">
+						</td>
 					</tr>
 				</table>
 			</td>
@@ -1283,16 +1317,31 @@ end
 				<div id=address_section>
 					<table width=100% style="border-spacing: 5px;">
 						<tr>
-							<td><t class=en>Address:</t><t class=ro>Adresa:</t></td>
-							<td><input type=text id=addr value="{{addr}}"></td>
+							<td>
+								<t class=en>Address:</t>
+								<t class=ro>Adresa:</t>
+							</td>
+							<td>
+								<input type=text id=addr value="{{addr}}">
+							</td>
 						</tr>
 						<tr>
-							<td><t class=en>City:</t><t class=ro>Oras:</t></td>
-							<td><input type=text id=city value="{{city}}"></td>
+							<td>
+								<t class=en>City:</t>
+								<t class=ro>Oras:</t>
+							</td>
+							<td>
+								<input type=text id=city value="{{city}}">
+							</td>
 						</tr>
 						<tr>
-							<td><t class=en>County:</t><t class=ro>Judet:</t></td>
-							<td><input type=text id=county value="{{county}}"></td>
+							<td>
+								<t class=en>County:</t>
+								<t class=ro>Judet:</t>
+							</td>
+							<td>
+								<input type=text id=county value="{{county}}">
+							</td>
 						</tr>
 					</table>
 				</div>
@@ -1305,7 +1354,7 @@ end
 					<t class=ro>Nota Client:</t>
 				</h3>
 				<textarea id=note rows=4>{{note}}</textarea>
-			</tD>
+			</td>
 			<td valign=top>
 				<h3>
 					<t class=en>Operator Note:</t>

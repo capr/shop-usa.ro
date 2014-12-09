@@ -84,15 +84,6 @@ DESIGN
 
 FRAMEWORK
 ---------
-- concatenate filters together
-	- lua -> t -> json
-
-	.json.t.lua
-	.js.cat.lua
-
-
 - language filter: short forms
 	- <anytag:en> ... </anytag>
-	- attr:en=val attr:ro=val ...
-- cat filter
-	- for js and css
+- caching, compressing and etagging dynamic content

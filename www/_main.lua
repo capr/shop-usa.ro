@@ -127,15 +127,10 @@ function out(s)
 	end
 end
 
-function setheader(header, val)
-	if outbuf then return end
-	ngx.header[header] = val
-end
-
 --print API ------------------------------------------------------------------
 
 function print(...)
-	setheader('Content-Type', 'text/plain')
+	ngx.header.content_type = 'text/plain'
 	local n = select('#', ...)
 	for i=1,n do
 		out(tostring((select(i, ...))))
@@ -166,11 +161,19 @@ end
 
 --template API ---------------------------------------------------------------
 
+function codepath(file)
+	return config('basepath') .. '/' .. file
+end
+
+function cachepath(file)
+	return config('basepath') .. '/.cache/' .. file
+end
+
 local hige = require'hige'
 
 function render(name, data)
 	local file = string.format('%s.%s.m', name, lang())
-	local template = assert(glue.readfile('../www/'..file))
+	local template = assert(glue.readfile(codepath(file)))
 	return hige.render(template, data)
 end
 
@@ -202,10 +205,9 @@ end
 local lfs = require'lfs'
 
 local function filepath(file) --file -> path (if exists)
-	local basedir = '../www'
 	if file:find('..', 1, true) then return end --trying to escape
 	if file:find'^_' then return end --private module
-	local path = basedir .. '/' .. file
+	local path = codepath(file)
 	if not lfs.attributes(path, 'mode') then return end
 	return path
 end
@@ -213,10 +215,28 @@ end
 local chunks = {} --{action = chunk}
 
 local lp = require'lp'
+local zlib = require'zlib'
 
 local function out_catlist(listfile, sep)
+	--gen etag
+	local t = {}
 	for f in glue.readfile(listfile):gmatch'([^%s]+)' do
-		out(glue.readfile(check(filepath(f))))
+		local path = check(filepath(f))
+		local mtime = lfs.attributes(path, 'modification')
+		t[#t+1] = tostring(mtime)
+	end
+	local etag = ngx.md5(table.concat(t, ' '))
+
+	--compare etag
+	local etag0 = ngx.var['if-none-match']
+	if etag0 and etag0 == etag then
+		ngx.exit(304)
+	end
+
+	--send content
+	ngx.header.ETag = etag
+	for f in glue.readfile(listfile):gmatch'([^%s]+)' do
+		out(glue.readfile(filepath(f)))
 		out(sep)
 	end
 end
@@ -262,7 +282,7 @@ function action(action, ...)
 	local ext = action:match'%.([^%.]+)$'
 	local mime = mime_types[ext]
 	if mime then
-		setheader('Content-Type', mime)
+		ngx.header.content_type = mime
 	end
 
 	--execute the action.
@@ -298,14 +318,24 @@ end
 
 local function filter_lang(buf)
 	local lang0 = lang()
+
+	--replace <t class=lang>
 	buf = buf:gsub('<t class=([^>]+)>(.-)</t>', function(lang, html)
 		assert(not html:find('<t class=', 1, true), html)
-		if lang ~= lang0 then
-			return ''
-		else
-			return html
-		end
+		if lang ~= lang0 then return '' end
+		return html
 	end)
+
+	--replace <tag:lang ...></tag:lang>
+
+	--replace attr:lang="val" and attr:lang=val
+	local function repl_attr(attr, lang, val)
+		if lang ~= lang0 then return '' end
+		return attr .. val
+	end
+	buf = buf:gsub('(%s[%w_%:%-]+)%:(%a?%a?)(=%b"")', repl_attr)
+	buf = buf:gsub('(%s[%w_%:%-]+)%:(%a?%a?)(=[^%s>]*)', repl_attr)
+
 	return buf
 end
 

@@ -1,5 +1,7 @@
 setfenv(1, require'g')
 
+config('basepath', '../www')
+
 if config('lang', 'en') == 'ro' then
 
 S('reset_pass_subject', 'Linkul pentru schimbarea parolei')
