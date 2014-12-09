@@ -324,9 +324,7 @@ function exec(url, params) {
 	var state = History.getState()
 	History.replaceState({top: top}, state.title, state.url)
 	// push new state without data
-	console.log('pushing')
 	History.pushState(null, null, full_url(url, params))
-	console.log('pushed')
 }
 
 var action = {} // {action: handler}
@@ -335,21 +333,8 @@ var default_action = 'cat'
 var g_action
 var g_args
 
-var g_top
-$(function() {
-	$(window).scroll(function() {
-		console.log('scroll event', $(window).scrollTop())
-	})
-})
-
 function url_changed() {
-	console.log('url_changed')
 	$(window).scrollTop($(window).scrollTop())
-
-	if (g_top) {
-		$(window).scrollTop(g_top)
-		console.log('top restored', g_top)
-	}
 
 	unlisten_all()
 	unbind_keydown_all()
@@ -366,18 +351,14 @@ function url_changed() {
 	g_action = action
 	g_args = args
 
-	console.log('before handler.apply')
 	handler.apply(null, args)
-	console.log('after handler.apply')
 }
 
 function setscroll() {
 	// set scroll back to where it was
 	var state = History.getState()
 	var top = state.data && state.data.top || 0
-	console.log('before set scrollTop')
 	$(window).scrollTop(top)
-	console.log('after set scrollTop')
 }
 
 function setlink(a, url, params, hook) {
