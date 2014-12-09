@@ -64,11 +64,13 @@ end
 						<span class=small>Aboneaza-te la newsletter</span><br>
 						<input type=text id=newsletter placeholder="email-ul tau aici"
 							style="width: 200px; margin: 0px;">
-						<button class=slim style="width: 30px; padding-left: 0; padding-right: 0">OK</button>
+						<button class=slim style="width: 36px; padding: 0">OK</button>
 					</td>
 					<td width=200 valign=bottom align=right class=nowrap>
-						<i class="fa fa-phone" style="font-size: 22px"></i>
-						<span style="font-size: 24px">0745 577 786</span>
+						<div style="position: relative; top: 4px">
+							<i class="fa fa-phone" style="font-size: 22px"></i>
+							<span style="font-size: 24px; line-height: 100%">0745 577 786</span>
+						</div>
 					</td>
 					<td width=200 valign=bottom class=nowrap align=right class=small style="line-height: 100%">
 						<b>TRANSPORT GRATUIT</b><br>

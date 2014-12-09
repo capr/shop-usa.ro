@@ -8,7 +8,7 @@
 HOT FUNCTIONALITY
 -----------------
 - UA tracker
-- header banners: Telefon, Facebook Like, Adresa,
+- header banners: Facebook Like
 - top navbar: search, logheaza-te, cart
 - contact page: Atena 4, 0745 577 786, program L-V: 10-17
 - homepage banner slider
