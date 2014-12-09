@@ -318,16 +318,11 @@ function full_url(url, params) {
 	return url
 }
 
-// set scroll top in current history state
-function set_state_top(top) {
-	var state = History.getState()
-	History.replaceState({top: top}, state.title, state.url)
-}
-
 function exec(url, params) {
 	// store current scroll top in current state first
 	var top = $(window).scrollTop()
-	set_state_top(top)
+	var state = History.getState()
+	History.replaceState({top: top}, state.title, state.url)
 	// push new state without data
 	History.pushState(null, null, full_url(url, params))
 }
@@ -362,7 +357,6 @@ function setscroll() {
 	var state = History.getState()
 	var top = state.data && state.data.top || 0
 	$(window).scrollTop(top)
-	console.log('after setscroll', top)
 }
 
 function setlink(a, url, params, hook) {
