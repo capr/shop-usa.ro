@@ -31,7 +31,6 @@ $(function() {
 	init_status()
 	login()
 
-	console.log('set_state_top', 0)
 	url_changed()
 })
 
