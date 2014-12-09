@@ -34,7 +34,10 @@ end
 					<td valign=bottom class=nowrap align=left
 						style="line-height: 100%; border-right: 1px solid #ccc;">
 						<form id=nl_form>
-							<label class=small for=nl_email>Aboneaza-te la newsletter</label>
+							<label class=small for=nl_email>
+								<t class=en>Subscribe to our newsletter</t>
+								<t class=ro>Aboneaza-te la newsletter</t>
+							</label>
 							<br>
 							<input
 								placeholder:en="your email here"
