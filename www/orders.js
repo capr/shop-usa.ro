@@ -113,7 +113,8 @@ function update_order_page(o) {
 
 	$('#main a[pid2][pid]').each(function() {
 		var pid = $(this).attr('pid')
-		setlink(this, '/p/'+pid)
+		var coid = $(this).attr('coid')
+		setlink(this, '/p/'+pid+'/'+coid)
 	})
 
 	$('#shiptype').change(function() {
