@@ -104,19 +104,6 @@ function update_order_page(o) {
 
 	render('order', o, '#main')
 
-	setlink('#a_orders', '/orders')
-
-	$('#main a[pid1][pid]').click(function() {
-		var pid = $(this).attr('pid')
-		window.open('http://6pm.com/'+pid, '_blank')
-	})
-
-	$('#main a[pid2][pid]').each(function() {
-		var pid = $(this).attr('pid')
-		var coid = $(this).attr('coid')
-		setlink(this, '/p/'+pid+'/'+coid)
-	})
-
 	$('#shiptype').change(function() {
 		$('#address_section :input').prop('disabled', $(this).val() == 'store')
 	})

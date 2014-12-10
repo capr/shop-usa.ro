@@ -322,11 +322,6 @@ action.account = function() {
 			})
 
 			render('orders', orders, '#orders_section')
-
-			$('#main [pid] a:not([action])').each(function() {
-				setlink(this, '/p/'+upid(this, 'pid')+'/'+upid(this, 'coid'))
-			})
-
 		})
 	})
 

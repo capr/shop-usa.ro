@@ -17,10 +17,7 @@ function update_prods(prods) {
 	prods = prods || g_prods
 
 	$('#prods').html(format_prods(prods))
-
-	$('#prods [pid] a').each(function() {
-		setlink(this, '/p/'+upid(this, 'pid'))
-	})
+	setlinks('#prods')
 
 	$('#prods .add_to_cart').click(function() {
 		cart.add(upid(this, 'pid'))
@@ -376,11 +373,7 @@ function init_topbar() {
 		t[i].catname = g_cats[t[i].catid].name
 	}
 	render('topbar', {items: t}, '#topbar')
-
-	$('#topbar a[catid]').each(function() {
-		var catid = $(this).attr('catid')
-		setlink(this, cat_url(catid))
-	})
+	setlinks('#topbar')
 }
 
 function select_topbar_cat(catid) {

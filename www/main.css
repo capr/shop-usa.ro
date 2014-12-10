@@ -137,6 +137,7 @@ a.link {
 .discount { color: #000; font-weight: bold; }
 .orange { background: #ff8800; }
 .orange:hover { color: #fff; }
+button.orange { border-color: #888; }
 
 .description {
 	font-family: Georgia;

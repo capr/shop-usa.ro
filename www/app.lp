@@ -193,7 +193,7 @@ end
 		<tr>
 		{{#items}}
 			<td valign=middle style="padding-left: 20px; padding-right: 0px;">
-				<a catid={{{catid}}}>{{{catname}}}</a>
+				<a href="/cat/{{{catid}}}">{{{catname}}}</a>
 			</td>
 		{{/items}}
 		</tr>
@@ -205,10 +205,10 @@ end
 		{{#.}}
 		<tr pid={{{pid}}}>
 			<td width=210 height=200>
-				<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+				<a href="/p/{{{pid}}}"><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 			</td>
 			<td>
-				<a><b>{{{bname}}}</b> {{{name}}}</a>
+				<a href="/p/{{{pid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 				<br>
 				<span class=price>
 					<t class=en>{{{price}}} RON</t>
@@ -239,9 +239,9 @@ end
 <script type="text/x-mustache" id=prod_grid_element_template>
 	<div pid={{{pid}}} class=drop style="margin: 5px">
 		<div style="min-width: 170px; min-height: 210px">
-			<a><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+			<a href="/p/{{{pid}}}"><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 		</div>
-		<a><b>{{{bname}}}</b> {{{name}}}</a>
+		<a href="/p/{{{pid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
 		<span class=price>
 			<t class=en>{{{price}}} RON</t>
@@ -461,14 +461,14 @@ end
 <script type="text/x-mustache" id=cart_list_template>
 	<ul class=cart_list style="min-height: 200px">
 	{{#.}}
-		<li ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
+		<li ciid={{{ciid}}}>
 			<table width=100%>
 				<tr>
 					<td width=100 height=100>
-						<a><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
+						<a href="/p/{{{pid}}}/{{{coid}}}"><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 					</td>
 					<td>
-						<a><b>{{{bname}}}</b> {{{name}}}</a>
+						<a href="/p/{{{pid}}}/{{{coid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 						<br>
 						<span class=price>
 							<t class=en>{{{price}}} RON</t>
@@ -666,7 +666,7 @@ end
 							{{#show_operations}}
 							<td align=right nowrap>
 								{{#haspass}}
-									<a id=reset_pass href="/reset_password" class="gray link"><t class=en>Change password</t><t class=ro>Schimba parola</t></a> |
+									<a href="/reset_password" class="gray link"><t class=en>Change password</t><t class=ro>Schimba parola</t></a> |
 								{{/haspass}}
 								<a id=logout class="gray link">
 									<t class=en>Log out</t>
@@ -688,14 +688,14 @@ end
 		{{^buylater}}
 		<tr>
 			<td>
-				<div ciid={{{ciid}}} pid={{{pid}}} coid={{{coid}}}>
+				<div ciid={{{ciid}}}>
 					<table width=100%>
 						<tr>
 							<td width=15%>
-								<a><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
+								<a href="/p/{{{pid}}}/{{{coid}}}"><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 							</td>
 							<td>
-								<a><b>{{{bname}}}</b> {{{name}}}</a>
+								<a href="/p/{{{pid}}}/{{{coid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 								<br>
 								<span class=price>
 									<t class=en>{{{price}}} RON</t>
@@ -916,7 +916,7 @@ end
 		Your order will be processed shortly and we will call you for confirmation.
 		<br>
 		<br>
-		Follow the status of the order in <a id=a_account class=link>your account</a>.
+		Follow the status of the order in <a href="/account" class=link>your account</a>.
 	</t>
 	<t class=ro>
 		<h1>Iti multumim ca ai comandat de la noi!</h1>
@@ -925,7 +925,7 @@ end
 		operatorii nostrii si vei primi un telefon pentru confirmare.
 		<br>
 		<br>
-		Urmareste starea comenzii in <a id=a_account class=link>contul tau</a>.
+		Urmareste starea comenzii in <a href="/account" class=link>contul tau</a>.
 	</t>
 	<br>
 	<br>
@@ -959,7 +959,7 @@ end
 					<input type=text id=email name=email class=email required>
 				</td>
 				<td width=1 valign=top class=nowrap>
-					<button class=orange id=btn_send_email>
+					<button class="slim orange" id=btn_send_email>
 						<t class=en>Send email</t>
 						<t class=ro>Trimite email</t>
 					</button>
@@ -1001,7 +1001,7 @@ end
 					<input type=password id=pass name=pass class=pass autocomplete=off required>
 				</td>
 				<td width=1 valign=top class=nowrap>
-					<button class=orange id=btn_reset_pass>
+					<button class="slim orange" id=btn_reset_pass>
 						<t class=en>Change password</t>
 						<t class=ro>Schimba parola</t>
 					</button>
@@ -1018,11 +1018,11 @@ end
 			</tr>
 			<tr>
 				<td colspan=3 valign=top>
-					<t class=en><a class="a_account link">Back to account</a></t>
-					<t class=ro><a class="a_account link">Inapoi la cont</a></t>
+					<t class=en><a class=link href="/account">Back to account</a></t>
+					<t class=ro><a class=link href="/account">Inapoi la cont</a></t>
 					<br>
-					<t class=en><a class="a_home link">Back to shopping</a></t>
-					<t class=ro><a class="a_home link">Inapoi la cumparaturi</a></t>
+					<t class=en><a class=link href="/">Back to shopping</a></t>
+					<t class=ro><a class=link href="/">Inapoi la cumparaturi</a></t>
 				</td>
 			</tr>
 		</table>
@@ -1055,11 +1055,11 @@ end
 	<t class=ro>Parola a fost schimbata.</t>
 	<br>
 	<br>
-	<t class=en><a class="a_account link">Back to account</a></t>
-	<t class=ro><a class="a_account link">Inapoi la cont</a></t>
+	<t class=en><a class=link href="/account">Back to account</a></t>
+	<t class=ro><a class=link href="/account">Inapoi la cont</a></t>
 	<br>
-	<t class=en><a class="a_home link">Back to shopping</a></t>
-	<t class=ro><a class="a_home link">Inapoi la cumparaturi</a></t>
+	<t class=en><a class=link href="/">Back to shopping</a></t>
+	<t class=ro><a class=link href="/">Inapoi la cumparaturi</a></t>
 </script>
 
 <script type="text/x-mustache" id=account_template>
@@ -1097,11 +1097,11 @@ end
 					{{#items}}
 					<tr>
 						<td>
-							<div oiid={{{oiid}}} pid={{{pid}}} coid={{{coid}}}>
+							<div oiid={{{oiid}}}>
 								<table width=100%>
 									<tr>
 										<td width=15%>
-											<a><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
+											<a href="/p/{{{pid}}}/{{{coid}}}"><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 										</td>
 										<td>
 											<a><b>{{{bname}}}</b> {{{name}}}</a>
@@ -1186,7 +1186,7 @@ end
 		<tr>
 			<td valign=top>
 				<h3 style="margin: 0">
-					<a id=a_orders>
+					<a href="/orders">
 						<t class=en>Orders</t>
 						<t class=ro>Comenzi</t>
 					</a>
@@ -1246,9 +1246,9 @@ end
 		</tr>
 		{{#items}}
 		<tr oiid={{{oiid}}} class="{{{canceled}}}">
-			<td><a pid1 pid={{{pid}}}>{{{pid}}}</a></td>
+			<td><a href="http://6pm.com/{{{pid}}}" target=_blank>{{{pid}}}</a></td>
 			<td width=1>
-				<a pid2 pid={{{pid}}} coid={{{coid}}}><div class=ellipsis style="width: 260px" title="{{{bname}}} {{{name}}}">{{{bname}}} {{{name}}}</div></a>
+				<a href="/p/{{{pid}}}/{{{coid}}}"><div class=ellipsis style="width: 260px" title="{{{bname}}} {{{name}}}">{{{bname}}} {{{name}}}</div></a>
 			</td>
 			<td width=1>
 				<div class=ellipsis style="width: 180px" title="{{{vnames}}}">{{{vnames}}}</div>

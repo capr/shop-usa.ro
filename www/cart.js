@@ -112,10 +112,6 @@ function update_cart_page(cart) {
 
 	update_timeago()
 
-	$('#main [pid] a:not([action])').each(function() {
-		setlink(this, '/p/'+upid(this, 'pid')+'/'+upid(this, 'coid'))
-	})
-
 	$('#main [pid] a[action="remove"]').click(function() {
 		var ciid = upid(this, 'ciid')
 		remove_from_cart(ciid, update_cart_page)

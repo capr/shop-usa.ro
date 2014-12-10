@@ -37,11 +37,6 @@ function update_cart(cart) {
 	}
 
 	render('checkout_cart_section', data, '#cart_section')
-
-	$('#main [pid] a:not([action])').each(function() {
-		setlink(this, '/p/'+upid(this, 'pid')+'/'+upid(this, 'coid'))
-	})
-
 }
 
 function load_cart() {
@@ -206,13 +201,11 @@ action.checkout = function() {
 	})
 
 	get('/cities.json', update_citites)
-
 }
 
 action.order_placed = function() {
 	hide_nav()
 	render('order_placed', null, '#main')
-	setlink('#a_account', '/account')
 }
 
 })()

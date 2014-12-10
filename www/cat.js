@@ -169,10 +169,11 @@ function cat_make_editable(catid) {
 	cat_a.addClass('editable').after(' \
 		<span>\
 		<a id=activate_cat class="fa fa-check-circle' +
-			(cat.active ? '' : '-o') + '"></a>\
-		<a id=add_cat      class="fa fa-plus-circle"></a>\
-		<a id=rename_cat   class="fa fa-edit"></a>\
-		<a id=remove_cat   class="fa fa-minus-circle"></a>\
+			(cat.active ? '' : '-o') + '" title="'+
+			(cat.active ? 'deactivate' : 'activate') + '"></a>\
+		<a id=add_cat      class="fa fa-plus-circle"  title="add new category"></a>\
+		<a id=rename_cat   class="fa fa-edit"         title="rename category"></a>\
+		<a id=remove_cat   class="fa fa-minus-circle" title="remove category"></a>\
 		</span>\
 	')
 
