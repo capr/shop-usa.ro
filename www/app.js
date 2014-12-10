@@ -26,12 +26,15 @@ action.contact = function() {
 	render('contact', null, main)
 }
 
+action.faq = function() {
+	render('faq', null, main)
+}
+
 // init ----------------------------------------------------------------------
 
 $(function() {
 	scroll_top()
 
-	init_viewstyle()
 	init_sidebar()
 	init_newsletter()
 

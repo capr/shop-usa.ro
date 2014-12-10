@@ -1,5 +1,5 @@
 
-local catid, page, bid, pagesize = ...
+local catid, page, bid, pagesize, gender = ...
 catid = assert(uint_arg(catid))
 page  = tonumber(page) or 1
 pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
@@ -60,6 +60,7 @@ local prods = query([[
 	where
 		p.active = 1
 ]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
+]] .. (gender and ('and p.gender = '..quote(gender)) or '') .. [[
 	group by
 		p.id_product
 	order by

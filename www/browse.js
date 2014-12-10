@@ -14,6 +14,12 @@ function format_prods(prods) {
 var g_prods
 function update_prods(prods) {
 
+	if (prods) {
+		$.each(prods, function(i, prod) {
+			prod.slug = slug(prod.pid, prod.bname + ' ' + prod.name)
+		})
+	}
+
 	prods = prods || g_prods
 
 	$('#prods').html(format_prods(prods))
@@ -26,11 +32,13 @@ function update_prods(prods) {
 	g_prods = prods
 }
 
-function load_prods(catid, pagenum, bid) {
-	load_main('/prods.json/'+catid+'/'+pagenum+'/'+(bid||'-')+'/'+g_pagesize,
+function load_prods(catid, pagenum, bid, gender) {
+	load_main('/prods.json/'+catid+'/'+pagenum+'/'+(bid||'-')+'/'+g_pagesize+optarg(gender),
 		function(response) {
-			if (!$('#prods').length)
+			if (!$('#prods').length) {
 				render('browse', null, '#main')
+				init_viewstyle()
+			}
 			update_pagenav(response.prod_count, pagenum, bid)
 			update_prods(response.prods)
 			select_brand(bid)
@@ -121,9 +129,9 @@ function update_pagenav(prod_count, cur_page, bid) {
 	// keyboard page navigation
 	bind_keydown('page', function(event) {
 		if (event.which == 39) {
-			exec_cat(g_catid, cur_page + 1, bid)
+			exec(cat_url(g_catid, cur_page + 1, bid))
 		} else if (event.which == 37) {
-			exec_cat(g_catid, cur_page - 1, bid)
+			exec(cat_url(g_catid, cur_page - 1, bid))
 		}
 	})
 }
@@ -183,6 +191,7 @@ function update_brands_page(brands) {
 action.brands = function(search) {
 	hide_nav()
 	load_main('/brands.json/'+search, function(data) {
+		$.each(data.brands, function(i, b) { b.slug = slug(b.bid, b.bname); })
 		update_brands_page(data.brands)
 		select_brand_letter(search)
 	})
@@ -332,7 +341,7 @@ function update_product_page(prod) {
 
 action.p = function(pid, coid) {
 	hide_nav()
-	load_main('/prod.json/'+pid+'/'+coid, update_product_page)
+	load_main('/prod.json/'+intarg(pid)+optarg(intarg(coid)), update_product_page)
 }
 
 // brand page ----------------------------------------------------------------
@@ -352,7 +361,7 @@ function update_brand_page(brand) {
 
 action.brand = function(bid) {
 	hide_nav()
-	load_main('/brand.json/'+bid, update_brand_page)
+	load_main('/brand.json/'+intarg(bid), update_brand_page)
 }
 
 // top bar -------------------------------------------------------------------

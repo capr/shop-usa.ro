@@ -111,32 +111,30 @@ function cat_make_clickable(catid) {
 
 var g_home_catid = 2
 
-action.cat = function(catid, pagenum, bid) {
+action.cat = function(catid, pagenum, bid, gender) {
 
-	catid = parseInt(catid) || g_home_catid
-	pagenum = parseInt(pagenum) || 1
-	bid = parseInt(bid) || ''
+	catid = intarg(catid) || g_home_catid
+	pagenum = intarg(pagenum) || 1
+	bid = intarg(bid) || ''
 
 	load_cats(function() {
 		select_cat(catid)
-		load_prods(catid, pagenum, bid)
+		load_prods(catid, pagenum, bid, gender)
 		load_brands(catid, bid)
 	})
 }
 
-function cat_url(catid, pagenum, bid) {
+function cat_url(catid, pagenum, bid, gender) {
 
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
 
 	return '/cat'+
-		((catid != g_home_catid || pagenum > 1 || bid) && '/'+catid || '')+
-		((pagenum > 1 || bid) ? '/'+pagenum : '')+
-		(bid && '/'+bid || '')
-}
-
-function exec_cat(catid, pagenum, bid) {
-	exec(cat_url(catid, pagenum, bid))
+		((catid != g_home_catid || pagenum > 1 || bid)
+			&& '/'+slug(catid, g_cats[catid].name) || '')+
+		((pagenum > 1 || bid) ? '/page-'+pagenum : '')+
+		optarg(bid)+
+		optarg(gender)
 }
 
 function invalidate_cats() {
@@ -192,7 +190,7 @@ function cat_make_editable(catid) {
 		var reload_cats_with_response = function(cats) {
 			g_cats_response = cats
 			invalidate_cats()
-			exec_cat(parent_catid)
+			exec(cat_url(parent_catid))
 		}
 
 		var reload_cats = function() {

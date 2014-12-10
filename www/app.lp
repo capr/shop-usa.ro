@@ -205,10 +205,10 @@ end
 		{{#.}}
 		<tr pid={{{pid}}}>
 			<td width=210 height=200>
-				<a href="/p/{{{pid}}}"><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+				<a href="/p/{{{slug}}}"><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 			</td>
 			<td>
-				<a href="/p/{{{pid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
+				<a href="/p/{{{slug}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 				<br>
 				<span class=price>
 					<t class=en>{{{price}}} RON</t>
@@ -239,9 +239,9 @@ end
 <script type="text/x-mustache" id=prod_grid_element_template>
 	<div pid={{{pid}}} class=drop style="margin: 5px">
 		<div style="min-width: 170px; min-height: 210px">
-			<a href="/p/{{{pid}}}"><img src="/img/p/{{{imgid}}}-home.jpg"></a>
+			<a href="/p/{{{slug}}}"><img src="/img/p/{{{imgid}}}-home.jpg"></a>
 		</div>
-		<a href="/p/{{{pid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
+		<a href="/p/{{{slug}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 		<br>
 		<span class=price>
 			<t class=en>{{{price}}} RON</t>
@@ -273,15 +273,17 @@ end
 	<div style="width: 220px; height: 200px; overflow: auto">
 		<ul id=brands_list>
 		{{#.}}
-			<li><a bid={{{bid}}}>{{{bname}}}</a>
-				<span class=gray>({{pcount}})</span></li>
+			<li>
+				<a bid={{{bid}}}>{{{bname}}}</a>
+				<span class=gray>({{pcount}})</span>
+			</li>
 		{{/.}}
 		</ul>
 	</div>
 </script>
 
 <script type="text/x-mustache" id=brands_template>
-	<span class=small><a href="/brand/{{{bid}}}">{{{bname}}}</a>
+	<span class=small><a href="/brand/{{{slug}}}">{{{bname}}}</a>
 		<span class=gray>({{pcount}})</span>
 	</span>
 </script>
@@ -1403,8 +1405,10 @@ end
 </script>
 
 <script type="text/x-mustache" id=contact_template>
-	<br>
-	<br>
+	<h1>
+		<t class=en>Contact Us</t>
+		<t class=ro>Contacteaza-ne</t>
+	</h1>
 	<table width=100%>
 		<tr>
 			<td valign=top width=50%>
@@ -1445,6 +1449,13 @@ end
 			</td>
 		</tr>
 	</table>
+</script>
+
+<script type="text/x-mustache" id=faq_template>
+	<h1>
+		<t class=en>F.A.Q.</t>
+		<t class=ro>Intrebari frecvente</t>
+	</h1>
 </script>
 
 <div id=fb-root class=hidden></div>

@@ -377,6 +377,22 @@ function setlinks(dst) {
 	})
 }
 
+function slug(id, s) {
+	return (s.toLowerCase()
+		.replace(/ /g,'-')
+		.replace(/[^\w-]+/g,'')
+	) + '-' + id
+}
+
+function intarg(s) {
+	s = s && s.match(/\d+$/)
+	return s && parseInt(s) || ''
+}
+
+function optarg(s) {
+	return s && ('/' + s) || ''
+}
+
 // scrolling -----------------------------------------------------------------
 
 /*
