@@ -139,12 +139,12 @@ end
 		<td valign=top width=280></td>
 		<td align=left valign=top width=900>
 			<hr>
-			<a class=gray href="/despre_noi.html">Despre noi</a><br>
-			<a class=gray href="/cum_comand.html">Cum comand</a><br>
-			<a class=gray href="/returnare.html">Politica de returnare</a><br>
-			<a class=gray href="/intrebari.html">Intrebari frecvente</a><br>
-			<a class=gray href="/termeni_si_conditii.html">Termeni si conditii</a><br>
-			<a class=gray href="/confidentialitate.html">Confidentialitate</a><br>
+			<a class=gray href="/despre_noi">Despre noi</a><br>
+			<a class=gray href="/cum_comand">Cum comand</a><br>
+			<a class=gray href="/returnare">Politica de returnare</a><br>
+			<a class=gray href="/faq">Intrebari frecvente</a><br>
+			<a class=gray href="/termeni_si_conditii">Termeni si conditii</a><br>
+			<a class=gray href="/confidentialitate">Confidentialitate</a><br>
 			<a class=gray href="http://www.anpc.gov.ro/" target=_blank>ANPC</a>
 			<br>
 			<br>
@@ -1445,7 +1445,7 @@ end
 				<t class=ro>Luni-Vineri, intre orele 10-17</t>
 			</td>
 			<td valign=top>
-				<iframe width="450" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8"></iframe>
+				<iframe width="450" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8&zoom=15"></iframe>
 			</td>
 		</tr>
 	</table>
