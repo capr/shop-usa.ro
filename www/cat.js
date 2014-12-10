@@ -31,6 +31,7 @@ function format_cats(home_cat) {
 
 function update_cats(cats) {
 	$('#cat').html(format_cats(cats))
+	console.log('#cat set', $('#cat').html().length)
 	setlinks('#cat')
 	init_topbar()
 }
