@@ -34,6 +34,7 @@ require'rates'
 --request API ----------------------------------------------------------------
 
 local function parse_request()
+	HEADERS = ngx.req.get_headers()
 	GET = ngx.req.get_uri_args()
 	local method = ngx.req.get_method()
 	if method == 'POST' then
@@ -177,6 +178,54 @@ function render(name, data)
 	return hige.render(template, data)
 end
 
+--gzip filter ----------------------------------------------------------------
+
+local zlib = require'zlib'
+
+local function accept_gzip()
+	local e = HEADERS.accept_encoding
+	return e and e:find'gzip' and true or false
+end
+
+local function gzip_filter(out_content, gen_etag)
+
+	local last_etag, last_buf
+
+	return function()
+
+		--send it chunked if the client doesn't do gzip
+		if not accept_gzip() then
+			out_content()
+			return
+		end
+
+		--generate etag
+		local etag = gen_etag()
+
+		--compare etag with client's
+		local etag0 = HEADERS.if_none_match
+		if etag0 and etag0 == etag then
+			ngx.status = 304
+			ngx.exit(0)
+		end
+
+		--compare etag with cached
+		if etag ~= last_etag then
+			--generate content
+			push_outbuf()
+			out_content()
+			last_buf = zlib.deflate(pop_outbuf(), '', nil, 'gzip')
+			last_etag = etag
+		end
+
+		--send it
+		ngx.header['Content-Encoding'] = 'gzip'
+		ngx.header['Content-Length'] = #last_buf
+		ngx.header.ETag = last_etag
+		out(last_buf)
+	end
+end
+
 --action API -----------------------------------------------------------------
 
 local function parse_path() --path -> action, args
@@ -215,30 +264,31 @@ end
 local chunks = {} --{action = chunk}
 
 local lp = require'lp'
-local zlib = require'zlib'
 
 local function out_catlist(listfile, sep)
-	--gen etag
-	local t = {}
-	for f in glue.readfile(listfile):gmatch'([^%s]+)' do
-		local path = check(filepath(f))
-		local mtime = lfs.attributes(path, 'modification')
-		t[#t+1] = tostring(mtime)
-	end
-	local etag = ngx.md5(table.concat(t, ' '))
-
-	--compare etag
-	local etag0 = ngx.var['if-none-match']
-	if etag0 and etag0 == etag then
-		ngx.exit(304)
-	end
-
-	--send content
-	ngx.header.ETag = etag
 	for f in glue.readfile(listfile):gmatch'([^%s]+)' do
 		out(glue.readfile(filepath(f)))
 		out(sep)
 	end
+end
+
+local function catlist(listfile, sep)
+
+	local function gen_etag()
+		local t = {}
+		for f in glue.readfile(listfile):gmatch'([^%s]+)' do
+			local path = check(filepath(f))
+			local mtime = lfs.attributes(path, 'modification')
+			t[#t+1] = tostring(mtime)
+		end
+		return ngx.md5(table.concat(t, ' '))
+	end
+
+	local function out_content()
+		out_catlist(listfile, sep)
+	end
+
+	return gzip_filter(out_content, gen_etag)
 end
 
 local mime_types = {
@@ -261,12 +311,7 @@ function action(action, ...)
 		local ext = path:match'%.([^%.]+)$'
 		if ext == 'cat' then
 			local fext = action:match'%.([^%.]+)$'
-			push_outbuf()
-			out_catlist(path, fext == 'js' and ';' or '\n')
-			local s = pop_outbuf()
-			chunk = function()
-				out(s)
-			end
+			chunk = catlist(path, fext == 'js' and ';' or '\n')
 		elseif ext == 'lp' then
 			lp.setoutfunc'out'
 			local template = glue.readfile(path)
