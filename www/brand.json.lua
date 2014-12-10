@@ -26,10 +26,12 @@ local cats = query([[
 	inner join
 		ps_category_lang cl on
 			cl.id_category = c.id_category
+			and cl.id_lang = 1
 	inner join ps_category_product cp on
 		cp.id_category = c.id_category
 	inner join ps_product p on
 		p.id_product = cp.id_product
+		and p.active = 1
 	inner join ps_manufacturer m on
 		m.id_manufacturer = p.id_manufacturer
 		and m.id_manufacturer = ?
