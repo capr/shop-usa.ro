@@ -5,13 +5,11 @@
 	- keydown
 
 
-
 HOT FUNCTIONALITY
 -----------------
 - UA tracker
 - header banners: Facebook Like
 - top navbar: search, logheaza-te, cart
-- contact page: Atena 4, 0745 577 786, program L-V: 10-17
 - homepage banner slider
 - homepage custom bands
 - footer brand marquee
@@ -31,8 +29,6 @@ BIG BUGS
 
 USABILITY BUGS (CONFUSIONS)
 ---------------------------
-- browser scrolls immediately after url_changed but content not yet loaded
-	- the scroll position is adjusted afterwards, but the jerkiness is annoying
 - shift click doesn't work to open in new tab!
 - forgot pass link -> trigger usr event
 - add breadcrumbs to product page
@@ -60,26 +56,32 @@ UI BUGS
 -------
 - autocomplete of county sometimes doesn't work
 - notify is not centered on site, but on screen
-- scroll is jerky (resets to top when scrolling) while loading #main
+- browser scrolls immediately after url_changed but content not yet loaded
+	- the scroll position is adjusted afterwards, but the jerkiness is annoying
 
 
 FUNCTIONALITY
 -------------
-- user list: export xls
-- account: list of past orders
+- user list: check/uncheck admin
 - checkout: list of addresses from past orders
 - search
 - filters
 - sorting
-- home page (promotii, bannere, informatii generale)
+
+
+NICE-TO-HAVES
+-------------
 - afisare ultimele produse vizualizate
 - promo codes (apply % discount)
+- db reporting tool:
+	- parametrized
+	- recursive master-detail
 
 
 DESIGN
 ------
 - use fa icons for grid/list
-- top bar follow scroll
+- make top bar follow scroll too (a slim version of it)
 
 
 FRAMEWORK

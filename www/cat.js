@@ -40,6 +40,7 @@ function update_cats(cats) {
 var g_cats_response
 function load_cats(on_success) {
 	$('#sidebar').show()
+	console.log('sidebar shown')
 	if (g_cats) {
 		on_success()
 		return
