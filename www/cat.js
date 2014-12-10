@@ -130,6 +130,7 @@ function cat_url(catid, pagenum, bid, gender) {
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
 
+	console.log(g_cats, catid, g_cats[catid], g_cats[catid].name)
 	return '/cat'+
 		((catid != g_home_catid || pagenum > 1 || bid)
 			&& '/'+slug(catid, g_cats[catid].name) || '')+
