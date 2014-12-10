@@ -18,7 +18,6 @@ function load_main(url, success, error, opt) {
 
 function hide_nav() {
 	$('#sidebar').hide()
-	console.log('sidebar hidden')
 }
 
 // static pages --------------------------------------------------------------

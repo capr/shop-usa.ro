@@ -31,8 +31,8 @@ function format_cats(home_cat) {
 
 function update_cats(cats) {
 	$('#cat').html(format_cats(cats))
-	console.log('#cat set', $('#cat').html().length)
 	setlinks('#cat')
+	console.log('#cat set', $('#cat').html().length)
 	init_topbar()
 }
 
@@ -41,7 +41,6 @@ function update_cats(cats) {
 var g_cats_response
 function load_cats(on_success) {
 	$('#sidebar').show()
-	console.log('sidebar shown')
 	if (g_cats) {
 		on_success()
 		return
@@ -63,6 +62,7 @@ function load_cats(on_success) {
 function cat_make_visible(catid) {
 	$('#cat ul').hide()
 	var ul = $('#cat ul[catid="'+catid+'"]')
+	console.log('make visible', catid, ul)
 	ul.parents('#cat ul[catid]').show()
 	ul.show()
 	ul.children('li').find('> ul').show()
