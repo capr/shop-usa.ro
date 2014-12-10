@@ -25,7 +25,7 @@ end
 				<div id=brands class=menu></div>
 			</div>
 		</td>
-		<td valign=top width=900>
+		<td valign=top width=900 height=700>
 			<br>
 			<table width=100%>
 				<tr>
