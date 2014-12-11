@@ -9,7 +9,7 @@ function format_cat(cat) {
 	var s = '<ul catid=' + cat.id + ' style="display: none;">' +
 		'<a>' +
 			(cat.active && cat.name ||
-				'<span class="gray canceled">' + cat.name + '</span>') +
+				'<span class=canceled>' + cat.name + '</span>') +
 		'</a>'
 
 	if (cat.count)
