@@ -385,7 +385,8 @@ function init_topbar() {
 	t.push({catid: 500000002}) // boys
 
 	for (var i = 0; i < t.length; i++) {
-		t[i].catname = g_cats[t[i].catid].name
+		var cat = g_cats[t[i].catid]
+		if (cat) t[i].catname = cat.name
 	}
 	render('topbar', {items: t}, '#topbar')
 	setlinks('#topbar')
