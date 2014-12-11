@@ -379,8 +379,8 @@ function init_topbar() {
 	t.push({catid:     27563}) // clothing
 	t.push({catid:     27496}) // bags
 	t.push({catid:     27495}) // acc.
-	t.push({catid: 100000002}) // men
 	t.push({catid: 200000002}) // women
+	t.push({catid: 100000002}) // men
 	t.push({catid: 400000002}) // girls
 	t.push({catid: 500000002}) // boys
 
