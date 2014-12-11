@@ -7,6 +7,7 @@
 
 HOT FUNCTIONALITY
 -----------------
+- show product id in product page and in image title in browsing
 - UA tracker
 - header banners: Facebook Like
 - top navbar: search, logheaza-te, cart
