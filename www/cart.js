@@ -112,17 +112,17 @@ function update_cart_page(cart) {
 
 	update_timeago()
 
-	$('#main [pid] a[action="remove"]').click(function() {
+	$('#main [ciid] a[action="remove"]').click(function() {
 		var ciid = upid(this, 'ciid')
 		remove_from_cart(ciid, update_cart_page)
 	})
 
-	$('#cart_buylater [pid] a[action="move_to_cart"]').click(function() {
+	$('#cart_buylater [ciid] a[action="move_to_cart"]').click(function() {
 		var ciid = upid(this, 'ciid')
 		move_to_cart(ciid, update_cart_page)
 	})
 
-	$('#cart_buynow [pid] a[action="buy_later"]').click(function() {
+	$('#cart_buynow [ciid] a[action="buy_later"]').click(function() {
 		var ciid = upid(this, 'ciid')
 		buy_later(ciid, update_cart_page)
 	})
