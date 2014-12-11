@@ -171,7 +171,7 @@ for i,t in ipairs(query([[
 		ps_category_product cp
 		inner join ps_category c
 			on c.id_category = cp.id_category
-			and c.id_category < 100000000
+			and c.id_category >= 100000000
 		inner join ps_category_lang cl
 			on cl.id_category = c.id_category
 			and cl.id_lang = 1
