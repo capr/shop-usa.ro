@@ -313,7 +313,13 @@ function create_add_to_order_buttons() {
 
 function update_product_page(prod) {
 	g_prod = prod
+
+	$.each(prod.path, function(i, p) {
+		p.slug = slug(p.catid, p.catname)
+	})
 	render('product_page', prod, '#main')
+
+	$('#a_back').click(back)
 
 	$('#dimsel select[did]').change(dimsel_changed)
 	dimsel_changed()

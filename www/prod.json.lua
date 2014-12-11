@@ -193,7 +193,7 @@ end
 
 prod.path = {}
 local function addcat(t)
-	table.insert(prod.path, {catid = t.catid, catname = t.catname})
+	table.insert(prod.path, {catid = t.catid, catname = t.catname, last = not t.cat or nil})
 	if t.cat then
 		addcat(t.cat)
 	end

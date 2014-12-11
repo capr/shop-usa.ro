@@ -393,6 +393,10 @@ function optarg(s) {
 	return s && ('/' + s) || ''
 }
 
+function back() {
+	History.back()
+}
+
 // scrolling -----------------------------------------------------------------
 
 /*
