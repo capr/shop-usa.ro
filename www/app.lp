@@ -289,6 +289,7 @@ end
 </script>
 
 <script type="text/x-mustache" id=product_page_template>
+	{{#path}}<a href="/cat/{{{catid}}}">{{{catname}}}</a> > {{/path}} <b>{{{bname}}}</b> {{{name}}}
 	<br>
 	<br>
 	<table width=100%>

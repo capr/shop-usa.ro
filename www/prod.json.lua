@@ -159,4 +159,45 @@ for i,t in ipairs(query([[
 	table.insert(combi.imgs, tonumber(t.imgid))
 end
 
+--category paths -------------------------------------------------------------
+
+local cats = {}
+for i,t in ipairs(query([[
+	select
+		c.id_category as catid,
+		c.id_parent as pcatid,
+		cl.name as catname
+	from
+		ps_category_product cp
+		inner join ps_category c
+			on c.id_category = cp.id_category
+			and c.id_category < 100000000
+		inner join ps_category_lang cl
+			on cl.id_category = c.id_category
+			and cl.id_lang = 1
+	where
+		cp.id_product = ?
+]], pid)) do
+	cats[t.catid] = t
+end
+
+local root
+for catid,t in pairs(cats) do
+	local pcat = cats[t.pcatid]
+	if pcat then
+		pcat.cat = t
+	else
+		root = t
+	end
+end
+
+prod.path = {}
+local function addcat(t)
+	table.insert(prod.path, {catid = t.catid, catname = t.catname})
+	if t.cat then
+		addcat(t.cat)
+	end
+end
+addcat(root)
+
 out(json(prod))
