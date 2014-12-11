@@ -289,6 +289,10 @@ $(function() {
 
 // address bar and links -----------------------------------------------------
 
+function hide_nav() {
+	$('#sidebar').hide()
+}
+
 function check(truth) {
 	if(!truth)
 		window.location = '/'
@@ -343,6 +347,7 @@ function parse_url(url) {
 	if (!handler) { // no handler, find a static template
 		var template = template_object(act).length ? act : 'not_found'
 		handler = function() {
+			hide_nav()
 			render(template, null, '#main')
 		}
 	}

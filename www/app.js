@@ -16,10 +16,6 @@ function load_main(url, success, error, opt) {
 		}, opt)
 }
 
-function hide_nav() {
-	$('#sidebar').hide()
-}
-
 // init ----------------------------------------------------------------------
 
 $(function() {
