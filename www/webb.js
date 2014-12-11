@@ -339,9 +339,16 @@ function parse_url(url) {
 	args.shift() // remove ""
 	var act = args[0] || default_action
 	args.shift() // remove the action
+	var handler = action[act] // find a handler
+	if (!handler) { // no handler, find a static template
+		var template = template_object(act).length ? act : 'not_found'
+		handler = function() {
+			render(template, null, '#main')
+		}
+	}
 	return {
 		action: action,
-		handler: action[act],
+		handler: handler,
 		args: args,
 	}
 }
@@ -354,7 +361,6 @@ function url_changed() {
 	unbind_keydown_all()
 	analytics_pageview() // note: title is not available at this time
 	var t = parse_url(location.pathname)
-	check(t.handler)
 	t.handler.apply(null, t.args)
 }
 
@@ -551,10 +557,14 @@ function load_content(dst, url, success, error, opt) {
 
 // templating ----------------------------------------------------------------
 
+function template_object(name) {
+	return $('#' + name + '_template')
+}
+
 var render_func = memoize(function(name) {
-	var template = $('#' + name + '_template').html()
+	var s = template_object(name).html()
 	return function(data) {
-		return Mustache.render(template, data || {})
+		return Mustache.render(s, data || {})
 	}
 })
 

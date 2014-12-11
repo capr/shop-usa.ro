@@ -8,13 +8,15 @@
 HOT FUNCTIONALITY
 -----------------
 - show product id in product page and in image title in browsing
+- show total in cart with shipping cost
+- show "trust" logos in checkout page
+- one-column order form? labels & inputs closer together; placeholders everywhere!
 - UA tracker
 - header banners: Facebook Like
 - top navbar: search, logheaza-te, cart
 - homepage banner slider
 - homepage custom bands
 - footer brand marquee
-
 
 HOT BUGS
 --------

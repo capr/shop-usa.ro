@@ -131,7 +131,6 @@ end
 		</td>
 	</tr>
 </table>
-
 <br>
 <br>
 <table>
@@ -139,12 +138,12 @@ end
 		<td valign=top width=280></td>
 		<td align=left valign=top width=900>
 			<hr>
-			<a class=gray href="/despre_noi">Despre noi</a><br>
-			<a class=gray href="/cum_comand">Cum comand</a><br>
-			<a class=gray href="/returnare">Politica de returnare</a><br>
+			<a class=gray href="/about">Despre noi</a><br>
+			<a class=gray href="/howto">Cum comand</a><br>
+			<a class=gray href="/refund">Politica de returnare</a><br>
 			<a class=gray href="/faq">Intrebari frecvente</a><br>
-			<a class=gray href="/termeni_si_conditii">Termeni si conditii</a><br>
-			<a class=gray href="/confidentialitate">Confidentialitate</a><br>
+			<a class=gray href="/tos">Termeni si conditii</a><br>
+			<a class=gray href="/confidentiality">Confidentialitate</a><br>
 			<a class=gray href="http://www.anpc.gov.ro/" target=_blank>ANPC</a>
 			<br>
 			<br>
@@ -1448,7 +1447,8 @@ end
 				<t class=ro>Luni-Vineri, intre orele 10-17</t>
 			</td>
 			<td valign=top>
-				<iframe width="450" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8&zoom=15"></iframe>
+				<iframe width="450" height="450" frameborder="0" style="border:0"
+					src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8&zoom=15"></iframe>
 			</td>
 		</tr>
 	</table>
@@ -1459,6 +1459,178 @@ end
 		<t class=en>F.A.Q.</t>
 		<t class=ro>Intrebari frecvente</t>
 	</h1>
+	<t class=ro>
+	<h3></h3>
+
+	</t>
+</script>
+
+<script type="text/x-mustache" id=about_template>
+	<h1>
+		<t class=en>About us</t>
+		<t class=ro>Despre Noi</t>
+	</h1>
+	<t class=en></t>
+	<t class=ro>
+	In fiecare zi inspiram clientii nostri sa gaseasca cel mai bun raspuns la
+	intrebarea: "Ce voi purta eu astazi?" sau cu alte cuvinte
+	"Cine voi fi eu astazi?". Reusim acest lucru in stilul SHOP-USA prin a
+	oferi o gama larga de peste <b>100 000 de produse</b>, de la mai mult de
+	<b>1000 de 	branduri</b> de piese vestimentare, incaltaminte si accesorii
+	pentru femei, barbati si copii, precum si o doza zilnica de inspiratie.
+	<br>
+	<br>
+	SHOP-USA este un magain online de haine, incaltaminte si accesorii pentru
+	toata familia.
+	</t>
+</script>
+
+<script type="text/x-mustache" id=howto_template>
+	<h1>
+		<t class=en>How to Order</t>
+		<t class=ro>Cum Comand</t>
+	</h1>
+	<t class=en></t>
+	<t class=ro>
+	Produsul pe care doresti sa il comanzi poate fi gasit fie prin utilizarea
+	meniului din partea de sus a paginii ce contine categoriile de produse,
+	prin folosirea campului de cautare, sau direct din pagina de promotii.
+	<br>
+	<br>
+	La apasarea butonului "ADAUGA IN COS", produsul va fi automat transferat
+	in cosul de cumparaturi.
+	<br>
+	<br>
+	Dupa adaugarea in cos a tuturor produselor pe care doresti sa le comanzi,
+	procesul de cumparare continua prin apasarea butonului "COMANDA".
+	<br>
+	<br>
+	In pagina de comanda va trebui sa completezi informatiile necesare
+	trimiterii coletului. Comanda se va finaliza prin apasarea butonului
+	"COMANDA" in urma careia vei primi un email de confirmare, iar comanda ta
+	va fi preluata in cel mai scurt timp de unul dintre operatorii nostri.
+	</t>
+</script>
+
+<script type="text/x-mustache" id=refund_template>
+	<h1>
+		<t class=en>Refund policy</t>
+		<t class=ro>Politica de returnare</t>
+	</h1>
+	<t class=en></t>
+	<t class=ro>
+		<h3>Cum procedez daca trebuie sa returnez un produs?</h3>
+		In situatia in care produsele comandate nu sunt conform cu
+		specificatiile de pe site sau produsele au fost livrate gresit, le
+		puteti returna intr-un interval de <b>14 zile lucratoare</b> si veti
+		primi integral valoarea produsului inapoi.
+		<br>
+		<br>
+		ATENTIE! Produsele trebuie sa fie noi, in conditiile in care le-ati
+		primit, in ambalajele/pachetele originale, fara urma de uzura sau
+		deteriorare.
+		<br>
+		<br>
+		Va rugam sa va asigurati ca produsele sunt in <b>ambalajele originale</b>
+		si in conditiile in care le-ati primit (cutia originala de pantofi, cu
+		<b>etichetele intacte</b> si impreuna cu toate <b>documentele</b> ce
+		v-au fost livrate). Sigilati produsele pe care doriti sa le returnati
+		intr-o punga sau o cutie.
+		Produsele care au lipite pe ambalajul original, etichete de la curier,
+		banda adeziva sau orice alt material ce va deteriora produsul (cutie,
+		ambalaj, etc.) nu vor fi acceptate ca retur.
+	</t>
+</script>
+
+<script type="text/x-mustache" id=tos_template>
+	<h1>
+		<t class=en>Terms of service</t>
+		<t class=ro>Termeni si conditii</t>
+	</h1>
+
+	<h3>
+		<t class=en>Delivery and payment</t>
+		<t class=ro>Conditii de livrare si plata</t>
+	</h3>
+	<t class=en></t>
+	<t class=ro>
+	Comenzile vor fi onorate in cel mai scurt timp posibil. Produsele se
+	livreaza <b>in limita stocului</b> disponibil. Situatia stocului de pe site nu
+	este actualizata in timp real, astfel incit in anumite situatii se poate
+	intimpla ca stocul la anumite produse din comanda sa se fi epuizat.
+	In astfel de cazuri vei fi notificat prin email sau telefon si ti se va
+	cere, fie sa renunti la acel produs, fie sa alegi un alt produs.
+	</t>
+
+	<h3>
+		<t class=en>Delivery</t>
+		<t class=ro>Transportul</t>
+	</h3>
+	<t class=en></t>
+	<t class=ro>
+	Coletele vor fi transportate si livrate de catre <b>Urgent Curier</b>.
+	Livrarea  se face <b>oriunde in tara</b> in <b>24-48 ore</b>, intre orele
+	<b>8-19:30 de luni pana vineri</b> si <b>sambata intre orele 9-14:00</b>
+	iar coletul ti se va inmana personal. In cazul in care nu esti disponibil(a)
+	in acest interval orar, te rugam sa specifici o alta adresa (de exemplu,
+	adresa de la serviciu).
+	In ziua in care coletul este expediat vei primi un sms pe telefonul
+	indicat de tine pentru a anunta livrarea.
+	<br>
+	<br>
+	Pentru comenzi de minim <b>300 RON (inclusiv)</b> transportul este <b>GRATUIT</b>.
+	</t>
+</script>
+
+<script type="text/x-mustache" id=confidentiality_template>
+	<h1>
+		<t class=en>Confidentiality</t>
+		<t class=ro>Confidentialitate</t>
+	</h1>
+	<t class=en></t>
+	<t class=ro>
+	Conform cerintelor Legii nr. 677/2001 pentru protectia persoanelor cu
+	privire la prelucrarea datelor cu caracter personal si libera circulatie
+	a acestor date, modificata si completata si ale Legii nr. 506/2004 privind
+	prelucrarea datelor cu caracter personal si protectia vietii private in
+	sectorul comunicatiilor electronice, SHOP-USA are obligatia de a administra
+	in conditii de siguranta si numai pentru scopurile specificate, datele
+	personale pe care ni le furnizati despre dumneavoastra, un membru al
+	familiei dumneavoastra ori o alta persoana.
+	<br>
+	<br>
+	Scopul colectarii si prelucrarii datelor este onorarea comenzilor
+	dumneavoastra. Aceste date <b>nu vor fi date spre publicare si nici unor
+	terte persoane</b>. Dumneavoastra <b>nu veti primi mesaje publicitare</b>
+	sau mesaje informative generale prin posta electronica decat dupa ce va
+	dati acceptul in acest sens. Exceptie fac mesajele prin care va notificam
+	asupra comenzilor dumneavoastra (confirmari s.a.).
+	<br>
+	<br>
+	Conform Legii nr. 677/2001, beneficiati de dreptul de acces, de interventie
+	asupra datelor, dreptul de a nu fi supus unei decizii individuale si
+	dreptul de a va adresa justitiei. Totodata, aveti dreptul sa va opuneti
+	prelucrarii datelor personale care va privesc si sa solicitati stergerea
+	datelor.
+	<br>
+	<br>
+	Daca unele din datele despre dumneavoastra sunt incorecte, va rugam sa ne
+	informati cat mai curand posibil si sa modificati aceste date in contul
+	dumneavoastra de utilizator de pe acest site.
+	</t>
+</script>
+
+<script type="text/x-mustache" id=not_found_template>
+	<h1>
+		<t class=en>Page not found</t>
+		<t class=ro>Pagina inexistenta</t>
+	</h1>
+	<t class=en>
+	We couldn't find the page you were looking for.
+	</t>
+	<t class=ro>
+	Nu am gasit pagina pe care o cauti.
+	</t>
 </script>
 
 <div id=fb-root class=hidden></div>
