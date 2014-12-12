@@ -23,6 +23,8 @@ end
 				<div id=cat class=menu></div>
 				<br>
 				<div id=brands class=menu></div>
+				<br>
+				<div id=filters class=menu></div>
 			</div>
 		</td>
 		<td valign=top width=900 height=700>
