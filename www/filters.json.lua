@@ -2,7 +2,7 @@
 local catid = ...
 catid = assert(uint_arg(catid))
 
-query([[
+local t = query([[
 	select
 		agl.id_attribute_group as did,
 		agl.name dname,
@@ -27,3 +27,5 @@ query([[
 		agl.id_attribute_group,
 		al.id_attribute
 ]], catid)
+
+out(json(t))
