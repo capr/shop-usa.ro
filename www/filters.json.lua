@@ -34,12 +34,10 @@ for i,t in groupby(query([[
 		al.id_attribute
 ]], catid), 'did') do
 	local did = t[1].did
-	local dim = {t[1].dname}
+	local dim = {dname = t[1].dname, values = {}}
 	table.insert(dims, dim)
 	for i,t in ipairs(t) do
-		table.insert(dim, t.dvid)
-		table.insert(dim, t.dvname)
-		table.insert(dim, tonumber(t.count))
+		table.insert(dim.values, {t.dvid, t.dvname, tonumber(t.count)})
 	end
 end
 
