@@ -8,6 +8,20 @@ listen('cart.cart_icon', function(cart) {
 	set_cart_icon(cart.buynow ? cart.buynow.length : cart.buynow_count)
 })
 
+// computing totals ----------------------------------------------------------
+
+function compute_totals(cart) {
+	var subtotal = 0
+	$.each(cart.buynow, function(i,e) { subtotal += e.price; })
+	return {
+		subtotal: subtotal,
+		shipping: {
+			home: subtotal < 300 ? 25 : 0,
+			store: 0,
+		}
+	}
+}
+
 // cart actions --------------------------------------------------------------
 
 function set_cart(cart) {
@@ -89,9 +103,6 @@ function add_to_cart(pid, coid) {
 
 function update_cart_page(cart) {
 
-	var total = 0
-	$.each(cart.buynow, function(i,e) { total += e.price; })
-
 	function set_sname(i,e) {
 		var snames = []
 		for(var i = 0; i < e.vnames.length; i++)
@@ -102,12 +113,16 @@ function update_cart_page(cart) {
 	$.each(cart.buynow, set_sname)
 	$.each(cart.buylater, set_sname)
 
+	var totals = compute_totals(cart)
+
 	render('cart_page', {
 		buynow:         render('cart_list', cart.buynow),
 		buylater:       render('cart_list', cart.buylater),
 		buylater_count: cart.buylater.length,
 		buynow_count:   cart.buynow.length,
-		total:          total,
+		subtotal:       totals.subtotal,
+		shipping:       totals.shipping.home,
+		total:          totals.subtotal + totals.shipping.home,
 	}, '#main')
 
 	update_timeago()
@@ -169,6 +184,7 @@ action.cart = function() {
 
 return {
 	add: add_to_cart,
+	totals: compute_totals,
 }
 
 })()

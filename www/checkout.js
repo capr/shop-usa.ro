@@ -9,31 +9,40 @@ function error_placement(error, element) {
 	return false
 }
 
-// totals --------------------------------------------------------------------
-
-var g_shipping_cost
-var g_subtotal
-
-function update_totals() {
-	var total = g_subtotal + g_shipping_cost
-	$('.shipping_cost').html(g_shipping_cost)
-	$('.grand_total').html(total)
-}
-
 // cart section --------------------------------------------------------------
 
-function update_cart(cart) {
+var g_cart
 
-	var total = 0
-	$.each(cart.buynow, function(i,e) { total += e.price; })
-	g_subtotal = total
-	update_totals()
+function compute_totals() {
+	if (!g_cart) return
+	var shipping_method = $('input[name="shipping_method"]').val()
+	var totals = cart.totals(g_cart)
+	var subtotal = totals.subtotal
+	var shipping = totals.shipping[shipping_method]
+	var total = subtotal + shipping
+	return {
+		subtotal: subtotal,
+		total: total,
+		shipping: shipping,
+	}
+}
+
+function update_totals(totals) {
+	if (!totals) return
+	$('.shipping_cost').html(totals.shipping)
+	$('.grand_total').html(totals.total)
+}
+
+function update_cart(cart) {
+	g_cart = cart
+	var totals = compute_totals()
+	update_totals(totals)
 
 	var data = {
 		items:          cart.buynow,
 		buylater_count: cart.buylater.length,
 		buynow_count:   cart.buynow.length,
-		total:          total,
+		subtotal:       totals.subtotal,
 	}
 
 	render('checkout_cart_section', data, '#cart_section')
@@ -98,10 +107,8 @@ var validate_addr
 function update_shipping_section() {
 
 	$('input[name="shipping_method"]').click(function() {
-		var home = $(this).val() == 'home'
-		g_shipping_cost = home ? (g_subtotal < 300 ? 25 : 0) : 0
-		update_totals()
-		if (home)
+		update_totals(compute_totals())
+		if ($(this).val() == 'home')
 			$('#address_section').show()
 		else
 			$('#address_section').hide()

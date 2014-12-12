@@ -288,7 +288,7 @@ end
 </script>
 
 <script type="text/x-mustache" id=product_page_template>
-	<a id=a_back>&laquo; <t class=en>Back</t><t class=ro>Inapoi</t>
+	<a id=a_back>&laquo; <t class=en>Back</t><t class=ro>Inapoi</t></a>
 	<span class="gray small">&nbsp; | &nbsp;</span>
 	{{#path}}<a href="/cat/{{{slug}}}">{{{catname}}}</a> {{^last}} &gt; {{/last}}{{/path}}
 	<br>
@@ -303,7 +303,7 @@ end
 					<a href="/brand/{{{bid}}}"><img src="/img/m/{{{bid}}}.jpg"></a>
 				</div>
 				<span style="font-size: 130%">
-				<a href="/brand/{{{bid}}}"><b>{{{bname}}}</b></a> {{{name}}}
+					<a href="/brand/{{{bid}}}"><b>{{{bname}}}</b></a> {{{name}}}
 				</span>
 				<br>
 				<br>
@@ -420,20 +420,56 @@ end
 	</span>
 	{{/buynow_count}}
 	<div id=cart_buynow>{{{buynow}}}</div>
-	<div class=cart_total><b>Total:</b>
-		<span class=price>
-			<t class=en>{{{total}}} RON</t>
-			<t class=ro>{{{total}}} Lei</t>
-		</span>
-		<br>
-		<br>
-		{{#buynow_count}}
-		<button id=btn_checkout class=orange>
-			<t class=en>Place Order</t>
-			<t class=ro>Comanda</t>
-		</button>
-		{{/buynow_count}}
-	</div>
+	<table width=100% class=cart_subtotal>
+		<tr>
+			<td align=right>
+				Subtotal:
+			</td>
+			<td width=15></td>
+			<td align=right class="price nowrap" width=1>
+				<t class=en>{{{subtotal}}} RON</t>
+				<t class=ro>{{{subtotal}}} Lei</t>
+			</td>
+		</tr>
+		<tr>
+			<td align=right>
+				<t class=en>Shipping:</t>
+				<t class=ro>Transport:</t>
+			</td>
+			<td></td>
+			<td align=right class=price>
+				{{#shipping}}
+					<t class=en>{{{shipping}}} RON</t>
+					<t class=ro>{{{shipping}}} Lei</t>
+				{{/shipping}}
+				{{^shipping}}
+					<t class=en>FREE SHIPPING</t>
+					<t class=ro>GRATUIT</t>
+				{{/shipping}}
+			</td>
+		</tr>
+		<tr>
+			<td align=right>
+				Total:
+			</td>
+			<td></td>
+			<td align=right class=price>
+				<t class=en>{{{total}}} RON</t>
+				<t class=ro>{{{total}}} Lei</t>
+			</td>
+		</tr>
+		<tr>
+			<td align=right colspan=3>
+				<br>
+				{{#buynow_count}}
+				<button id=btn_checkout class=orange>
+					<t class=en>Place Order</t>
+					<t class=ro>Comanda</t>
+				</button>
+				{{/buynow_count}}
+			</td>
+		</tr>
+	</table>
 	<h2>
 		<t class=en>Saved for later
 			{{#buylater_count}}({{{buylater_count}}} items){{/buylater_count}}
@@ -467,7 +503,7 @@ end
 </script>
 
 <script type="text/x-mustache" id=cart_list_template>
-	<ul class=cart_list style="min-height: 200px">
+	<ul class=cart_list style="min-height: 100px">
 	{{#.}}
 		<li ciid={{{ciid}}}>
 			<table width=100%>
@@ -729,8 +765,8 @@ end
 					<t class=en>Subtotal:</t>
 					<t class=ro>Subtotal:</t>
 					<span class=price>
-						<t class=en>{{{total}}} RON</t>
-						<t class=ro>{{{total}}} Lei</t>
+						<t class=en>{{{subtotal}}} RON</t>
+						<t class=ro>{{{subtotal}}} Lei</t>
 					</span>
 				</span>
 				<br>
@@ -809,7 +845,7 @@ end
 				<br>
 				<span class=subtotal>
 					<t class=en>Shipping cost:</t>
-					<t class=ro>Cost livrare:</t>
+					<t class=ro>Transport:</t>
 					<span class=price>
 						<t class=en><span class=shipping_cost></span> RON</t>
 						<t class=ro><span class=shipping_cost></span> Lei</t>

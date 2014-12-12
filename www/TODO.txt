@@ -7,8 +7,6 @@
 
 HOT FUNCTIONALITY
 -----------------
-- show product id in product page and in image title in browsing
-- show total in cart with shipping cost
 - show "trust" logos in checkout page
 - UA tracker
 - header banners: Facebook Like

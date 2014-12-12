@@ -8,7 +8,12 @@ function analytics_pageview() {} // stub
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','//www.google-analytics.com/analytics.js','analytics');
 
-	analytics('create', C('analytics_ua'), 'auto')
+	var ua = C('analytics_ua')
+	if (typeof ua == 'string')
+		ua = [ua]
+
+	for(var i=0; i < ua.length; i++)
+		analytics('create', ua[i], 'auto', {name : 'ga'+i})
 
 	analytics_pageview = function() {
 
@@ -18,10 +23,12 @@ function analytics_pageview() {} // stub
 			window.location.pathname +
 			window.location.search
 
-		analytics('send', 'pageview', {
-			useBeacon: true,
-			page: url,
-		})
+		for(var i=0; i < ua.length; i++) {
+			analytics('ga'+i+'.send', 'pageview', {
+				useBeacon: true,
+				page: url,
+			})
+		}
 	}
 })()
 
