@@ -420,6 +420,7 @@ end
 	</span>
 	{{/buynow_count}}
 	<div id=cart_buynow>{{{buynow}}}</div>
+	{{#buynow_count}}
 	<table width=100% class=cart_subtotal>
 		<tr>
 			<td align=right>
@@ -461,14 +462,13 @@ end
 		<tr>
 			<td align=right colspan=3>
 				<br>
-				{{#buynow_count}}
 				<button id=btn_checkout class=orange>
 					<t class=en>Place Order</t>
 					<t class=ro>Comanda</t>
 				</button>
-				{{/buynow_count}}
 			</td>
 		</tr>
+		{{/buynow_count}}
 	</table>
 	<h2>
 		<t class=en>Saved for later
