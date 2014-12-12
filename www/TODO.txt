@@ -16,7 +16,6 @@ HOT FUNCTIONALITY
 
 HOT BUGS
 --------
-- move to/from cart: first item doesn't move
 - category div sometimes dissapears when going back to browsing
 
 

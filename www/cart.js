@@ -171,8 +171,6 @@ function cart_make_draggable() {
 			'</td></tr></table>',
 	}).bind('sortupdate', sortupdate)
 
-	// sortable() makes draggable the non-li elements too...
-	$('#main').find(':not(li)').attr('draggable', 'false')
 }
 
 action.cart = function() {
