@@ -162,6 +162,21 @@ end
 	</tr>
 </table>
 
+<script type="text/x-mustache" id=filters_template>
+<ul>
+{{#.}}
+	<li>
+		<b>{{{dname}}}</b>
+		<ul>
+		{{#values}}
+			<li>{{{dvname}}} <span class=gray> ({{{count}}})</span></li>
+		{{/values}}
+		</ul>
+	</li>
+{{/.}}
+</ul>
+</script>
+
 <script type="text/x-mustache" id=browse_template>
 	<table width=100% id=top_navbar class=navbar>
 		<tr>

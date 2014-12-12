@@ -31,13 +31,13 @@ for i,t in groupby(query([[
 		and agl.id_attribute_group <> 1716930793
 	group by
 		agl.id_attribute_group,
-		al.id_attribute
+		al.name
 ]], catid), 'did') do
 	local did = t[1].did
 	local dim = {dname = t[1].dname, values = {}}
 	table.insert(dims, dim)
 	for i,t in ipairs(t) do
-		table.insert(dim.values, {t.dvid, t.dvname, tonumber(t.count)})
+		table.insert(dim.values, {dvid = t.dvid, dvname = t.dvname, count = tonumber(t.count)})
 	end
 end
 
