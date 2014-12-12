@@ -23,6 +23,7 @@ local t = query([[
 		and agl.id_lang = 1
 	where
 		cp.id_category = ?
+		and agl.name <> 'culoare'
 	group by
 		agl.id_attribute_group,
 		al.id_attribute
