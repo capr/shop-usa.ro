@@ -8,7 +8,6 @@
 HOT FUNCTIONALITY
 -----------------
 - show "trust" logos in checkout page
-- UA tracker
 - header banners: Facebook Like
 - top navbar: search, logheaza-te, cart
 - homepage banner slider

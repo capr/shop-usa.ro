@@ -437,7 +437,7 @@ end
 				<t class=ro>Transport:</t>
 			</td>
 			<td></td>
-			<td align=right class=price>
+			<td align=right class="price nowrap">
 				{{#shipping}}
 					<t class=en>{{{shipping}}} RON</t>
 					<t class=ro>{{{shipping}}} Lei</t>
@@ -453,7 +453,7 @@ end
 				Total:
 			</td>
 			<td></td>
-			<td align=right class=price>
+			<td align=right class="price nowrap">
 				<t class=en>{{{total}}} RON</t>
 				<t class=ro>{{{total}}} Lei</t>
 			</td>
