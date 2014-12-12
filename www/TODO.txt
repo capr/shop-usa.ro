@@ -10,7 +10,6 @@ HOT FUNCTIONALITY
 - show product id in product page and in image title in browsing
 - show total in cart with shipping cost
 - show "trust" logos in checkout page
-- one-column order form? labels & inputs closer together; placeholders everywhere!
 - UA tracker
 - header banners: Facebook Like
 - top navbar: search, logheaza-te, cart
@@ -79,6 +78,17 @@ NICE-TO-HAVES
 - db reporting tool:
 	- parametrized
 	- recursive master-detail
+- better checkout experience:
+	- one-column order form?
+	- labels & inputs closer together
+	- placeholders everywhere!
+	- hide topbar on checkout?
+	- explain why a field is needed in error messages
+	- breadcrumb Cart -> Checkout ?
+	- better thank you page (user might feel generous after placing an order):
+		- newsletter widget
+		- facebook like button
+- abandoned cart email
 
 
 DESIGN
@@ -86,9 +96,3 @@ DESIGN
 - use fa icons for grid/list
 - make top bar follow scroll too (a slim version of it)
 
-
-FRAMEWORK
----------
-- language filter: short forms
-	- <anytag:en> ... </anytag>
-- caching, compressing and etagging dynamic content

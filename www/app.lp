@@ -302,7 +302,12 @@ end
 				<div style="min-height: 100px">
 					<a href="/brand/{{{bid}}}"><img src="/img/m/{{{bid}}}.jpg"></a>
 				</div>
+				<span style="font-size: 130%">
 				<a href="/brand/{{{bid}}}"><b>{{{bname}}}</b></a> {{{name}}}
+				</span>
+				<br>
+				<br>
+				<b>COD PRODUS: <span class=price>{{{pid}}}</span></b>
 				<br>
 				<br>
 				<div id=combi style="min-height: 60px"></div>
@@ -321,7 +326,6 @@ end
 					</tr>
 					{{/dims}}
 				</table>
-				<br>
 				<br>
 				<button type=button id=add_to_cart class=orange>
 					<t class=en>add to bag</t>

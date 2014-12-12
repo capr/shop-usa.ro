@@ -198,6 +198,8 @@ local function addcat(t)
 		addcat(t.cat)
 	end
 end
-addcat(root)
+if root then
+	addcat(root)
+end
 
 out(json(prod))
