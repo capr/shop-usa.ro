@@ -340,3 +340,30 @@ input.price {
 	text-align: right;
 }
 
+/* back-to-top button */
+.cd-top {
+	display: inline-block;
+	width: 40px;
+	height: 30px;
+	position: fixed;
+	bottom: 20px;
+	left: 1250px;
+	border: 1px solid #888;
+	overflow: hidden;
+	text-indent: 100%;
+	white-space: nowrap;
+	background: #999 url(cd-top-arrow.svg) no-repeat center 50%;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity .3s 0s, visibility 0s .3s;
+}
+.cd-top.cd-is-visible, .cd-top.cd-fade-out, .cd-top:hover {
+  transition: opacity .3s 0s, visibility 0s 0s;
+}
+.cd-top.cd-is-visible {
+  visibility: visible;
+  opacity: 1;
+}
+.cd-top.cd-fade-out {
+  opacity: .4;
+}

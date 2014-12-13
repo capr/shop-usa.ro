@@ -7,9 +7,19 @@ function login(auth, success, error, opt, arg) {
 		if (success)
 			success(usr)
 	}
+	function login_failed(xhr) {
+		var err = xhr.responseText
+		S('server_error', 'There was an error.<br>Please try again or contact us.')
+		S('login_error_email_taken', 'This email is already taken')
+		S('login_error_user_pass', 'Wrong email address or password')
+		var msg = S('login_error_'+err) || S('server_error')
+		notify(msg)
+		if (error)
+			error()
+	}
 	return ajax('/login.json' + (arg || ''), $.extend({
 			success: logged_in,
-			error: error,
+			error: login_failed,
 			data: auth,
 		}, opt))
 }
@@ -84,12 +94,9 @@ function account_widget(acc) {
 		$('#btn_create_account').prop('disabled', false)
 		enable_save()
 
-		// post a notification with the error, if any
+		// focus on email, if email taken
 		var err = xhr.responseText
-		if (!err)
-			notify(S('server_error'), 'There was an error. We don\'t know more details.')
-		else if (err == 'email_taken') {
-			notify(S('email_taken', 'This email is already taken'))
+		if (err == 'email_taken') {
 			email_taken = true
 			validator.element('#usr_email')
 			validator.focusInvalid()

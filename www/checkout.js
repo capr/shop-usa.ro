@@ -54,15 +54,7 @@ function load_cart() {
 
 // county/city autocomplete --------------------------------------------------
 
-var g_cities
-function update_citites(cities) {
-	g_cities = cities
-	update_autocomplete()
-}
-
-function update_autocomplete() {
-	if(!g_cities) return
-	if (!$('#addr_form').length) return
+function update_autocomplete(g_cities) {
 
 	var counties = []
 	var all_cities = []
@@ -74,30 +66,23 @@ function update_autocomplete() {
 			county_map[city] = county
 		})
 	})
-	$('#addr_county').autocomplete({lookup: counties})
 
-	$('#addr_city').focus(function() {
+	$('#addr_county')
+		.autocomplete('dispose')
+		.autocomplete({lookup: counties})
 
-		var county = $('#addr_county').val()
+	function city_changed() {
+		var city = $(this).val()
+		var county = county_map[city]
+		if (!county) return
+		$('#addr_county').val(county)
+		$('#addr_county').validate()
+	}
 
-		var cities
-		if (county in g_cities) {
-			cities = []
-			$.each(g_cities[county], function(city) {
-				cities.push(city)
-			})
-		} else
-			cities = all_cities
-
-		$('#addr_city').autocomplete({
-			lookup: cities,
-		}).change(function() {
-			var city = $(this).val()
-			var county = county_map[city]
-			$('#addr_county').val(county)
-		})
-	})
-
+	$('#addr_city')
+		.autocomplete('dispose')
+		.autocomplete({lookup: all_cities, onSelect: city_changed})
+		.on('input', city_changed)
 }
 
 // shipping section ----------------------------------------------------------
@@ -153,7 +138,7 @@ function update_shipping_section() {
 		return true
 	}
 
-	update_autocomplete()
+	get('/cities.json', update_autocomplete)
 }
 
 // placing order -------------------------------------------------------------
@@ -188,7 +173,6 @@ function place_order() {
 		note     : $('#order_note').val(),
 		shiptype : $('input[name=shipping_method]:checked').val(),
 	}, order_placed, order_error)
-
 }
 
 // main ----------------------------------------------------------------------
@@ -203,11 +187,7 @@ action.checkout = function() {
 
 	update_shipping_section()
 
-	$('#btn_place_order').click(function() {
-		place_order()
-	})
-
-	get('/cities.json', update_citites)
+	$('#btn_place_order').click(place_order)
 }
 
 action.order_placed = function() {

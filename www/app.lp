@@ -130,6 +130,7 @@ end
 				</tr>
 			</table>
 			<div id=main></div>
+			<a class="cd-top">Top</a>
 		</td>
 	</tr>
 </table>

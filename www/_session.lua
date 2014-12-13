@@ -148,7 +148,7 @@ end
 
 function auth.pass(auth)
 	if auth.action == 'login' then
-		return pass_uid(auth.email, auth.pass)
+		return allow(pass_uid(auth.email, auth.pass), 'user_pass')
 	elseif auth.action == 'create' then
 		local email = glue.trim(assert(auth.email))
 		assert(#email >= 1)

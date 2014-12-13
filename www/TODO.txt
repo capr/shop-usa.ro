@@ -1,3 +1,14 @@
+FLASHBUGS
+- category div sometimes dissapears when going back to browsing
+- forgot pass link -> trigger usr event
+
+
+FLASHFEATS
+- "trust" logos in checkout page
+- facebook like button on the page header
+- homepage banner slider
+
+
 - rethink events so that they can be rebound and canceled all at once
 	- ajax
 	- listen
@@ -7,39 +18,27 @@
 
 HOT FUNCTIONALITY
 -----------------
-- show "trust" logos in checkout page
-- header banners: Facebook Like
-- top navbar: search, logheaza-te, cart
-- homepage banner slider
 - homepage custom bands
+	- add-to-homepage button
+	- homepage product list widget
 - footer brand marquee
-
-HOT BUGS
---------
-- category div sometimes dissapears when going back to browsing
+- top navbar: search, logheaza-te, cart
+- implement _escaped_fragment_
 
 
 BIG BUGS
 --------
-- implement _escaped_fragment_
 - IE9 and history.js (very few IE9 users, but a lot of IE8 users)
 
 
 USABILITY BUGS (CONFUSIONS)
 ---------------------------
-- shift click doesn't work to open in new tab!
-- forgot pass link -> trigger usr event
-- add breadcrumbs to product page
-- make admin if logging in with facebook too
 - brand page shows category tree but people expect to see products
 - scroll doesn't follow if screen is to small. solutions:
 	- get antiscroll
 	- make font smaller
 	- leave it as it is
 	- put less items on the page on small screens
-- no error message on create account failure
-- no error message on login failure
-- back to top button
 - brand list ordering (vert-horiz instead of horiz-vert)
 - informatii despre pret (contine sau nu TVA sau transport) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
 - textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
@@ -49,10 +48,8 @@ USABILITY BUGS (CONFUSIONS)
 - order history: show order status and per-item status, especially "canceled"
 - order: warn if shipping cost is not standard when saving
 
-
-UI BUGS
--------
-- autocomplete of county sometimes doesn't work
+HARD BUGS
+---------
 - notify is not centered on site, but on screen
 - browser scrolls immediately after url_changed but content not yet loaded
 	- the scroll position is adjusted afterwards, but the jerkiness is annoying

@@ -267,6 +267,24 @@ function notify(msg, cls) {
 	})
 }
 
+$(function() {
+	var btn = $('.cd-top')
+
+	$(window).scroll(function() {
+		($(this).scrollTop() > $(window).height()) ?
+			btn.addClass('cd-is-visible') :
+			btn.removeClass('cd-is-visible cd-fade-out')
+		if ($(this).scrollTop() > $(window).height() * 2)
+			btn.addClass('cd-fade-out')
+	})
+
+	btn.on('click', function(event) {
+		event.preventDefault()
+		$('body,html').animate({ scrollTop: 0, }, 700, 'easeOutQuint')
+	})
+
+})
+
 // keyboard navigation -------------------------------------------------------
 
 var keydown_events = {} // {id: handler}
@@ -372,6 +390,8 @@ function url_changed() {
 function setlink(a, url, params, hook) {
 	$(a).attr('href', full_url(url, params))
 		.click(function(event) {
+			// shit/ctrl+click passes through to open in new window or tab
+			if (event.shiftKey || event.ctrlKey) return
 			event.preventDefault()
 			if (hook) hook()
 			exec(url, params)

@@ -71,7 +71,10 @@ S('street_required_error', 'Completeaza adresa')
 S('city_required_error', 'Nu uita sa completezi orasul')
 S('county_required_error', 'Nu uita sa completezi judetul')
 S('order_error', 'Nu am reusit sa plasam comanda.\nTe rugam sa incerci din nou sau sa ne contactezi direct.')
-S('email_taken', 'Email deja inregistrat')
+
+S('server_error', 'S-a produs o eroare.<br>Te rugam sa incerci din nou<br>sau sa ne contactezi.')
+S('login_error_email_taken', 'Email deja inregistrat')
+S('login_error_user_pass', 'Email sau parola incorecta')
 
 S('changes_saved', 'Modificarile au fost salvate')
 S('update_failed', 'S-a produs o eroare.<br>Modificarile NU au fost salvate')
