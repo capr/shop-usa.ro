@@ -87,6 +87,16 @@ function update_autocomplete(g_cities) {
 
 // shipping section ----------------------------------------------------------
 
+function update_addresses(addr) {
+	var addr0 = addr.addr[0]
+	if (!addr0) return
+	$('#addr_street').val(addr0.addr)
+	$('#addr_city').val(addr0.city)
+	$('#addr_county').val(addr0.county)
+
+	render('addresses', addr, '#addresses')
+}
+
 var validate_addr
 
 function update_shipping_section() {
@@ -139,6 +149,7 @@ function update_shipping_section() {
 	}
 
 	get('/cities.json', update_autocomplete)
+	get('/addresses.json', update_addresses)
 }
 
 // placing order -------------------------------------------------------------

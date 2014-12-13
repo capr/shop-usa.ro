@@ -948,22 +948,33 @@ end
 		</tr>
 
 		<tr>
-			<td align=right>
-				<br>
-				<br>
-				<span class=subtotal>Total:
-					<span class=price>
-						<t class=en><span class=grand_total></span> RON</t>
-						<t class=ro><span class=grand_total></span> Lei</t>
-					</span>
-				</span>
-				<br>
-				<br>
-				<button type=button id=btn_place_order class=orange>
-					<t class=en>Place Order</t>
-					<t class=ro>Comanda</t>
-				</button>
-			</td>
+			<td>
+				<table width=100%>
+					<tr>
+						<td valign=bottom>
+							<img
+								title:en="Order safely. Your connection is secured with SSL 128-bit"
+								title:ro="Comanda in siguranta. Conexiunea ta este protejata prin SSL 128-bit"
+								src="/ssl.png">
+						</td>
+						<td align=right>
+							<br>
+							<br>
+							<span class=subtotal>Total:
+								<span class=price>
+									<t class=en><span class=grand_total></span> RON</t>
+									<t class=ro><span class=grand_total></span> Lei</t>
+								</span>
+							</span>
+							<br>
+							<br>
+							<button type=button id=btn_place_order class=orange>
+								<t class=en>Place Order</t>
+								<t class=ro>Plaseaza Comanda</t>
+							</button>
+						</td>
+					</tr>
+				</table>
 			<td>
 			</td>
 		</tr>
@@ -1565,8 +1576,9 @@ end
 	<br>
 	In pagina de comanda va trebui sa completezi informatiile necesare
 	trimiterii coletului. Comanda se va finaliza prin apasarea butonului
-	"COMANDA" in urma careia vei primi un email de confirmare, iar comanda ta
-	va fi preluata in cel mai scurt timp de unul dintre operatorii nostri.
+	"PLASEAZA COMANDA" in urma careia vei primi un email de confirmare,
+	iar comanda ta va fi preluata in cel mai scurt timp de unul dintre
+	operatorii nostri.
 	</t>
 </script>
 
