@@ -97,6 +97,10 @@ function update_addresses(addr) {
 	render('addresses', addr, '#addresses')
 }
 
+function load_addresses() {
+	get('/addresses.json', update_addresses)
+}
+
 var validate_addr
 
 function update_shipping_section() {
@@ -149,7 +153,8 @@ function update_shipping_section() {
 	}
 
 	get('/cities.json', update_autocomplete)
-	get('/addresses.json', update_addresses)
+	listen('usr.checkout_page.current_action', load_addresses)
+	load_addresses()
 }
 
 // placing order -------------------------------------------------------------

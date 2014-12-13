@@ -64,7 +64,6 @@ NICE-TO-HAVES
 	- recursive master-detail
 - better checkout experience:
 	- one-column order form?
-	- labels & inputs closer together
 	- placeholders everywhere!
 	- hide everything distracting on checkout?
 	- explain why a field is needed in error messages
