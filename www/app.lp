@@ -657,10 +657,10 @@ end
 	<form id=usr_form>
 		<table width=100% style="border-spacing: 5px;">
 			<tr>
-				<td width=30%>
+				<td width=20%>
 					<label for=usr_email>Email:</label>
 				</td>
-				<td>
+				<td width=80%>
 					<div class=errdiv1><div for=usr_email class="error errdiv2"></div></div>
 					<input id=usr_email name=usr_email class=email type=text
 						value="{{email}}"
@@ -884,13 +884,13 @@ end
 				<form id=addr_form>
 					<table width=100% style="border-spacing: 4px">
 						<tr>
-							<td>
+							<td width=20%>
 								<label for=addr_street>
 									<t class=en>Address:</t>
 									<t class=ro>Adresa:</t>
 								</label>
 							</td>
-							<td>
+							<td width=80%>
 								<div class=errdiv1><div for=addr_street class="error errdiv2"></div></div>
 								<input id=addr_street name=addr_street type=text required>
 							</td>
