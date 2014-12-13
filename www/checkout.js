@@ -89,11 +89,15 @@ function update_autocomplete(g_cities) {
 
 function update_addresses(addr) {
 	var addr0 = addr.addr[0]
-	if (!addr0) return
-	$('#addr_street').val(addr0.addr)
-	$('#addr_city').val(addr0.city)
-	$('#addr_county').val(addr0.county)
-
+	if (addr0) {
+		$('#addr_street').val(addr0.addr)
+		$('#addr_city').val(addr0.city)
+		$('#addr_county').val(addr0.county)
+	} else {
+		$('#addr_street').val('')
+		$('#addr_city').val('')
+		$('#addr_county').val('')
+	}
 	render('addresses', addr, '#addresses')
 }
 
