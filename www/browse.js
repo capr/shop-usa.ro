@@ -145,6 +145,12 @@ function update_pagenav(prod_count, cur_page, bid, order) {
 		exec(cat_url(g_catid, 1, bid, order))
 	})
 	$('a[order="'+order+'"]').removeClass('link')
+
+	// update brand links
+	$('#brands_list a[bid]').off('click').each(function() {
+		var bid = parseInt($(this).attr('bid'))
+		setlink(this, cat_url(g_catid, 1, bid, order))
+	})
 }
 
 // brands list ---------------------------------------------------------------
@@ -159,7 +165,7 @@ function select_brand(bid, scroll) {
 }
 
 var g_brands_catid
-function load_brands(catid, bid) { // used in cat.js
+function load_brands(catid, bid, order) { // used in cat.js
 	if (g_brands_catid == catid)
 		return
 	load_content('#brands', '/brands.json/all/'+catid, function(data) {
@@ -174,7 +180,7 @@ function load_brands(catid, bid) { // used in cat.js
 
 		$('#brands_list a[bid]').each(function() {
 			var bid = parseInt($(this).attr('bid'))
-			setlink(this, cat_url(catid, 1, bid))
+			setlink(this, cat_url(catid, 1, bid, order))
 		})
 
 		select_brand(bid, true)
