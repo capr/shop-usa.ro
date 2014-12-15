@@ -103,11 +103,11 @@ function select_cat(catid) {
 
 // cat tree / changing -------------------------------------------------------
 
-function cat_make_clickable(catid) {
+function cat_make_clickable(catid, order) {
 	$('#cat ul[catid] > a').off('click')
 	$('#cat ul[catid]:visible > a').each(function() {
 		var catid = $(this).parent().attr('catid')
-		setlink(this, cat_url(catid))
+		setlink(this, cat_url(catid, 1, null, order))
 	})
 }
 

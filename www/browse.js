@@ -151,6 +151,8 @@ function update_pagenav(prod_count, cur_page, bid, order) {
 		var bid = parseInt($(this).attr('bid'))
 		setlink(this, cat_url(g_catid, 1, bid, order))
 	})
+
+	cat_make_clickable(g_catid, order)
 }
 
 // brands list ---------------------------------------------------------------
