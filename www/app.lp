@@ -181,7 +181,7 @@ end
 <script type="text/x-mustache" id=browse_template>
 	<table width=100% id=top_navbar class=navbar>
 		<tr>
-			<td valign=middle>
+			<td valign=middle width=60>
 				<table>
 					<tr>
 						<td><a viewstyle=grid><img src="/grid.png"></a></td>
@@ -190,7 +190,7 @@ end
 					</tr>
 				</table>
 			</td>
-			<td align=right class="small nowrap">
+			<td class="small nowrap">
 				<b class=gray>
 					<t class=en>Order by: </t>
 					<t class=ro>Ordoneaza dupa: </t>
