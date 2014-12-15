@@ -191,8 +191,10 @@ end
 				</table>
 			</td>
 			<td align=right class="small nowrap">
-				<t class=en>Order by: </t>
-				<t class=ro>Ordoneaza dupa: </t>
+				<span class=gray>
+					<t class=en>Order by: </t>
+					<t class=ro>Ordoneaza dupa: </t>
+				</span>
 				<a order=date class=link><t class=en>Newest first</t><t class=ro>Noutate</t></a> |
 				<a order=price class=link><t class=en>Price</t><t class=ro>Pret</t></a> |
 				<a order=discount class=link><t class=en>Discount</t><t class=ro>Discount</t></a>
