@@ -135,7 +135,7 @@ function cat_url(catid, pagenum, bid, order) {
 
 	//console.log(catid, g_cats[catid] ? 'found' : 'not found')
 	return '/cat'+
-		((catid != g_home_catid || pagenum > 1 || bid)
+		((catid != g_home_catid || pagenum > 1 || bid || order)
 			&& '/'+slug(catid, g_cats[catid].name) || '')+
 		((pagenum > 1 || bid) ? '/page-'+pagenum : (bid || order ? '/-' : ''))+
 		(bid ? '/'+bid : (order ? '/-' : ''))+
