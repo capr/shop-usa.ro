@@ -197,7 +197,7 @@ end
 				<a order=price class=link><t class=en>Price</t><t class=ro>Pret</t></a> |
 				<a order=discount class=link><t class=en>Discount</t><t class=ro>Discount</t></a>
 			</td>
-			<td vlign=middle align=right width=200 class=nowrap>
+			<td vlign=middle align=right width=250 class=nowrap>
 				<div class="pagenav small"></div>
 			</td>
 		</tr>
