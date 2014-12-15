@@ -1,24 +1,26 @@
 FLASHBUGS
 - category div sometimes dissapears when going back to browsing
 - forgot pass link -> trigger usr event
+- google fucking analytics keeps the spinning wheel turning as usual...
 
 
 FLASHFEATS
 ----------
+- order history: show order status and per-item status, especially "canceled"
 - facebook like button on the page header
-- homepage banner slider
 - use fa icons for grid/list
 
 
 HOT FUNCTIONALITY
 -----------------
+- homepage banner slider
 - homepage custom bands
 	- add-to-homepage button
 	- homepage product list widget
 - footer brand marquee
+
 - top navbar: search, logheaza-te, cart
 - implement _escaped_fragment_
-
 
 
 USABILITY BUGS (CONFUSIONS)
@@ -28,15 +30,11 @@ USABILITY BUGS (CONFUSIONS)
 	- get antiscroll
 	- make font smaller
 	- leave it as it is
-	- put less items on the page on small screens
 - brand list ordering (vert-horiz instead of horiz-vert)
-- informatii despre pret (contine sau nu TVA sau transport) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
+- informatii despre pret (contine sau nu TVA) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
 - textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
-- bulina cu pastrate pt. mai tarziu
-- google fucking analytics keeps the spinning wheel turning as usual...
-- preserve div height when browsing gallery images to prevent flicker
-- order history: show order status and per-item status, especially "canceled"
 - order: warn if shipping cost is not standard when saving
+
 
 HARD BUGS
 ---------
@@ -44,15 +42,16 @@ HARD BUGS
 - IE9 and history.js (very few IE9 users, but a lot of IE8 users)
 - browser scrolls immediately after url_changed but content not yet loaded
 	- the scroll position is adjusted afterwards, but the jerkiness is annoying
+- help icon and tooltips
 
 
 FUNCTIONALITY
 -------------
+- sorting
+- search
 - user list: check/uncheck admin
 - checkout: list of addresses from past orders
-- search
 - filters
-- sorting
 
 
 NICE-TO-HAVES

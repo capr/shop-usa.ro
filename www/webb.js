@@ -326,10 +326,11 @@ $(function() {
 	History.Adapter.bind(window, 'statechange', url_changed)
 })
 
-function full_url(url, params) {
+function full_url(path, params) {
 	// encode params and add lang param to url if needed.
 	var lang_ = lang()
 	var explicit_lang = lang_ != C('default_lang', 'en')
+	var url = path
 	if (params || explicit_lang) {
 		if (explicit_lang)
 			params = $.extend({}, params, {lang: lang_})

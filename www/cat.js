@@ -113,7 +113,7 @@ function cat_make_clickable(catid) {
 
 var g_home_catid = 2
 
-action.cat = function(catid, pagenum, bid, gender) {
+action.cat = function(catid, pagenum, bid, order) {
 
 	catid = intarg(catid) || g_home_catid
 	pagenum = intarg(pagenum) || 1
@@ -121,24 +121,25 @@ action.cat = function(catid, pagenum, bid, gender) {
 
 	load_cats(function() {
 		select_cat(catid)
-		load_prods(catid, pagenum, bid, gender)
+		load_prods(catid, pagenum, bid, order)
 		load_brands(catid, bid)
 		//load_filters(catid, bid)
 	})
 }
 
-function cat_url(catid, pagenum, bid, gender) {
+function cat_url(catid, pagenum, bid, order) {
 
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
+	order = order == 'date' ? '' : order
 
 	//console.log(catid, g_cats[catid] ? 'found' : 'not found')
 	return '/cat'+
 		((catid != g_home_catid || pagenum > 1 || bid)
 			&& '/'+slug(catid, g_cats[catid].name) || '')+
-		((pagenum > 1 || bid) ? '/page-'+pagenum : '')+
-		optarg(bid)+
-		optarg(gender)
+		((pagenum > 1 || bid) ? '/page-'+pagenum : (bid || order ? '/-' : ''))+
+		(bid ? '/'+bid : (order ? '/-' : ''))+
+		optarg(order)
 }
 
 function invalidate_cats() {

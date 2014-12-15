@@ -1,9 +1,12 @@
 
-local catid, page, bid, pagesize, gender = ...
+local catid, page, bid, pagesize, order = ...
 catid = assert(uint_arg(catid))
 page  = tonumber(page) or 1
 pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
 bid = tonumber(bid)
+order = str_arg(order) or 'date'
+
+local q = str_arg(GET.q)
 
 local offset = (page - 1) * pagesize
 
@@ -33,6 +36,12 @@ else
 	]], catid)
 end
 
+local sort_col = {
+	date = 'p.date_upd', --asc is desc
+	price = 'p.price',
+	discount = 'p.discount desc',
+}
+
 --note: we sort by "oldest first" to get "newest first"
 --because we crawl from page 1 up so page 1 is the oldest.
 local prods = query([[
@@ -60,11 +69,10 @@ local prods = query([[
 	where
 		p.active = 1
 ]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
-]] .. (gender and ('and p.gender = '..quote(gender)) or '') .. [[
 	group by
 		p.id_product
 	order by
-		p.date_upd
+]] .. (assert(sort_col[order])) .. [[
 	limit
 ]]..offset..', '..pagesize, usd_rate(), usd_rate(), catid)
 

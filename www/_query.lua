@@ -48,6 +48,7 @@ local function macro_subst(name, args)
 end
 
 local function preprocess(sql)
+	sql = sql:gsub('%-%-[^\r\n]*', '') --remove comments
 	sql = sql:gsub('$(%w+)(%b())', macro_subst)
 	sql = sql:gsub('$(%w+)', substs)
 	return sql
@@ -79,7 +80,6 @@ local function set_params(sql, ...)
 		end
 		t[i] = v
 	end
-	--TODO: skip string literals
 	local i = 0
 	return sql:gsub('%?', function() i = i + 1; return t[i] end)
 end

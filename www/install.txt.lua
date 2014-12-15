@@ -16,7 +16,7 @@ local function constable(name)
 	return query1([[
 		select c.table_name from information_schema.table_constraints c
 		where c.table_schema = ? and c.constraint_name = ?
-	]], db_name, name)
+	]], config'db_name', name)
 end
 
 local function dropfk(name)
@@ -75,8 +75,11 @@ qsubst'bool1   tinyint not null default 1'
 qsubst'atime   timestamp default current_timestamp'
 qsubst'mtime   timestamp' --on update current_timestamp
 qsubst'money   decimal(20,6)'
+qsubst'qty     decimal(20,6)'
+qsubst'lang    char(2) not null'
 
 --drop everything
+nodrop = true
 droptable'nlemail'
 droptable'convrate'
 droptable'ordrlog'
@@ -85,7 +88,109 @@ droptable'ordr'
 droptable'cartitem'
 droptable'usr'
 
+nodrop = false
+droptable'combival'
+droptable'combi'
+droptable'img'
+droptable'prodname'
+droptable'prod'
+droptable'descrval'
+droptable'descr'
+droptable'valname'
+droptable'valdim'
+droptable'val'
+droptable'dimname'
+droptable'dim'
+
 --create everything
+pq[[
+$table dim (   --color, size, ...
+	did         $pk,
+	descr       text
+);
+]]
+
+pq[[
+$table dimname (
+	did         $id not null, $fk(dimname, did, dim),
+	dlang       $lang,
+	dname       $name,
+	primary key (did, dlang)
+);
+]]
+
+pq[[
+$table val (   --red, green, small, large, ...
+	vid         $pk,
+	did         $id not null, $fk(val, did, dim),
+	descr       text,
+	pvid        $id, $fk(val, pvid, val, vid)
+);
+]]
+
+pq[[
+$table valdim ( --(reg, green) -> color
+	vid         $id not null, $fk(valdim, vid, val),
+	did         $id not null, $fk(valdim, did, dim),
+	primary key (vid, did)
+);
+]]
+
+pq[[
+$table valname (
+	vid         $id not null, $fk(valname, vid, val),
+	vlang       $lang,
+	vname       $name,
+	primary key (vid, vlang)
+);
+]]
+
+pq[[
+$table prod (
+	pid         $pk,
+	sku         $name
+);
+]]
+
+pq[[
+$table prodname (
+	pid         $id not null, $fk(prodname, pid, prod),
+	lang        $lang,
+	name        $name,
+	descr       text,
+	primary key (pid, lang)
+);
+]]
+
+pq[[
+$table img (
+	imgid       $pk
+);
+]]
+
+pq[[
+$table combi ( --(combi1, combi2, ...) -> product1
+	coid        $pk,
+	pid         $id not null, $fk(combi, pid, prod),
+	active      $bool1,
+	browsable   $bool1,
+	price       $money,
+	msrp        $money,
+	stock       $qty not null,
+	imgid       $id, $fk(combi, imgid, img),
+	atime       $atime,
+	mtime       $mtime
+);
+]]
+
+pq[[
+$table combival ( --(small, red) -> combi1, ...
+	coid        $id not null, $fk(combival, coid, combi),
+	vid         $id, $fk(combival, vid, val),
+	primary key (coid, vid)
+);
+]]
+
 pq[[
 $table usr (
 	uid         $pk,

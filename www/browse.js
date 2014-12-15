@@ -32,14 +32,18 @@ function update_prods(prods) {
 	g_prods = prods
 }
 
-function load_prods(catid, pagenum, bid, gender) {
-	load_main('/prods.json/'+catid+'/'+pagenum+'/'+(bid||'-')+'/'+g_pagesize+optarg(gender),
+function load_prods(catid, pagenum, bid, order) {
+	load_main('/prods.json/'+catid+
+			'/'+pagenum+
+			'/'+(bid||'-')+
+			'/'+g_pagesize+
+			optarg(order),
 		function(response) {
 			if (!$('#prods').length) {
 				render('browse', null, '#main')
 				init_viewstyle()
 			}
-			update_pagenav(response.prod_count, pagenum, bid)
+			update_pagenav(response.prod_count, pagenum, bid, order || 'date')
 			update_prods(response.prods)
 			select_brand(bid)
 		})
@@ -109,7 +113,7 @@ function set_scroll_to_top() {
 	g_scroll_to_top = true
 }
 
-function update_pagenav(prod_count, cur_page, bid) {
+function update_pagenav(prod_count, cur_page, bid, order) {
 	scroll_to_top()
 
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
@@ -122,7 +126,7 @@ function update_pagenav(prod_count, cur_page, bid) {
 
 		var bottom = $(this).closest('#bottom_navbar').length > 0
 
-		setlink(this, cat_url(g_catid, pagenum, bid), null,
+		setlink(this, cat_url(g_catid, pagenum, bid, order), null,
 			bottom && set_scroll_to_top)
 	})
 
@@ -134,6 +138,13 @@ function update_pagenav(prod_count, cur_page, bid) {
 			exec(cat_url(g_catid, cur_page - 1, bid))
 		}
 	})
+
+	// order links
+	$('a[order]').off('click').addClass('link').click(function() {
+		var order = $(this).attr('order')
+		exec(cat_url(g_catid, 1, bid, order))
+	})
+	$('a[order="'+order+'"]').removeClass('link')
 }
 
 // brands list ---------------------------------------------------------------
