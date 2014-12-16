@@ -145,14 +145,14 @@ function update_pagenav(prod_count, cur_page, bid, order, q) {
 	// order links
 	$('a[order]').off('click').addClass('link').click(function() {
 		var order = $(this).attr('order')
-		exec(cat_url(g_catid, 1, bid, order))
+		exec(cat_url(g_catid, 1, bid, order, q))
 	})
 	$('a[order="'+order+'"]').removeClass('link')
 
 	// update brand links
 	$('#brands_list a[bid]').off('click').each(function() {
 		var bid = parseInt($(this).attr('bid'))
-		setlink(this, cat_url(g_catid, 1, bid, order))
+		setlink(this, cat_url(g_catid, 1, bid, order, q))
 	})
 
 	cat_make_clickable(g_catid, order)
