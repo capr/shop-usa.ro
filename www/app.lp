@@ -427,7 +427,6 @@ end
 </script>
 
 <script type="text/x-mustache" id=brand_page_template>
-	<b>{{bname}}</b>
 	<br>
 	<br>
 	<div style="min-height: 100px;">
