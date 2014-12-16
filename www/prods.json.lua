@@ -95,9 +95,9 @@ local prods = query([[
 ]] .. (q and [[
 		and (
 			p.id_product = ]]..quote(q)..[[
-			or m.name like ]]..quote('%'..q)..[[
-			or pl.name like ]]..quote('%'..q)..[[
-			or pl.description like ]]..quote('%'..q)..[[
+			or m.name like ]]..quote(q..'%')..[[
+			or pl.name like ]]..quote(q..'%')..[[
+			or pl.description like ]]..quote(q..'%')..[[
 		)
 ]] or '') .. [[
 	group by
