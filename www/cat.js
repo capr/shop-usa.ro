@@ -26,7 +26,7 @@ function format_cat(cat, t) {
 var g_cats // {catid: cat}
 function update_cats(cats) {
 	g_cats = {}
-	$('#cat').html(format_cats(cats, g_cats))
+	$('#cat').html(format_cat(cats, g_cats))
 	setlinks('#cat')
 	init_topbar()
 }
