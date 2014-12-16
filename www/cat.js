@@ -1,9 +1,19 @@
 
+// cat tree / assembling -----------------------------------------------------
+
+function cat_map(cat, t) {
+	t = t || {}
+	t[cat.id] = cat
+	for (var i = 0; i < cat.cats.length; i++) {
+		cat.cats[i].parent = cat
+		cat_map(cat.cats[i], t)
+	}
+	return t
+}
+
 // cat tree / formatting -----------------------------------------------------
 
-function format_cat(cat, t) {
-
-	if (t) t[cat.id] = cat
+function format_cat(cat) {
 
 	var s = '<ul catid=' + cat.id + ' style="display: none;">' +
 		'<a>' +
@@ -16,7 +26,7 @@ function format_cat(cat, t) {
 
 	for (var i = 0; i < cat.cats.length; i++) {
 		cat.cats[i].parent = cat
-		s = s + '<li>' + format_cat(cat.cats[i], t) + '</li>'
+		s = s + '<li>' + format_cat(cat.cats[i]) + '</li>'
 	}
 	s = s + '</ul>'
 
@@ -25,8 +35,8 @@ function format_cat(cat, t) {
 
 var g_cats // {catid: cat}
 function update_cats(cats) {
-	g_cats = {}
-	$('#cat').html(format_cat(cats, g_cats))
+	g_cats = cat_map(cats)
+	$('#cat').html(format_cat(cats))
 	setlinks('#cat')
 	init_topbar()
 }

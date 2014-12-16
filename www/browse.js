@@ -382,7 +382,7 @@ function update_brand_page(brand) {
 
 	var no_g_cats = !g_cats
 	if (no_g_cats)
-		g_cats = brand.cats
+		g_cats = cat_map(brand.cats)
 	$('#bcat a').each(function() {
 		var catid = $(this).parent().attr('catid')
 		setlink(this, cat_url(catid, 1, brand.bid))
