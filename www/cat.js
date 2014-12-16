@@ -120,7 +120,7 @@ action.cat = function(catid, pagenum, bid, order, q) {
 
 	$('#sidebar').show()
 
-	load_catsload_cats(function() {
+	load_cats(function() {
 		select_cat(catid)
 		load_prods(catid, pagenum, bid, order, q)
 		load_brands(catid, bid, order)
