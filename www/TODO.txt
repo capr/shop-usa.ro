@@ -3,24 +3,14 @@ FLASHBUGS
 - forgot pass link -> trigger usr event
 - google fucking analytics keeps the spinning wheel turning as usual...
 
+- search
+- _escaped_fragment_
 
 FLASHFEATS
 ----------
 - order history: show order status and per-item status, especially "canceled"
 - facebook like button on the page header
 - use fa icons for grid/list
-
-
-HOT FUNCTIONALITY
------------------
-- homepage banner slider
-- homepage custom bands
-	- add-to-homepage button
-	- homepage product list widget
-- footer brand marquee
-
-- top navbar: search, logheaza-te, cart
-- implement _escaped_fragment_
 
 
 USABILITY BUGS (CONFUSIONS)
@@ -31,7 +21,7 @@ USABILITY BUGS (CONFUSIONS)
 	- make font smaller
 	- leave it as it is
 - brand list ordering (vert-horiz instead of horiz-vert)
-- informatii despre pret (contine sau nu TVA) - astea ar trebui scrise undeva in header/footer (gen "preturile afisate sunt cele finale')
+- informatii despre pret (contine sau nu TVA) - "preturile afisate sunt cele finale'
 - textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
 - order: warn if shipping cost is not standard when saving
 
@@ -47,8 +37,6 @@ HARD BUGS
 
 FUNCTIONALITY
 -------------
-- sorting
-- search
 - user list: check/uncheck admin
 - checkout: list of addresses from past orders
 - filters
@@ -56,6 +44,11 @@ FUNCTIONALITY
 
 NICE-TO-HAVES
 -------------
+- homepage banner slider
+- homepage custom bands
+	- add-to-homepage button
+	- homepage product list widget
+- footer brand marquee
 - afisare ultimele produse vizualizate
 - promo codes (apply % discount)
 - db reporting tool:
@@ -80,3 +73,5 @@ REDESIGN
 	- listen
 	- setTimeout, setInterval
 	- keydown
+
+- rethink browsing entirely!

@@ -103,21 +103,34 @@ end
 			</table>
 			<table width=100%>
 				<tr>
-					<td width=100%>
+					<td width=60%>
+						<input id=search type=text
+							placeholder:ro="cauta produse dupa nume, cod, etc."
+							placeholder:en="search for products by name, sku, etc."
+						></input>
+					</td>
+					<td width=1 class=nowrap>
+						<button type=button class=slim>
+							<i class="fa fa-search"></i> Cauta
+						</button>
+					</td>
+					<td align=right>
 						<a id=greeting_anonymous href="/account" class="link hidden">
 							<t class=en>Login</t>
 							<t class=ro>Logheaza-te</t>
 						</a>
-						<span id=greeting_logged_in class=hidden>
+						<span id=greeting_logged_in class="nowrap hidden">
 							<t class=en>Hi</t>
 							<t class=ro>Salut</t>
 							<a id=greeting_name href="/account" class=link></a>!
 						</span>
+						&nbsp;
+						&nbsp;
 					</td>
-					<td align=left>
+					<td width=1>
 						<a id=orders_icon href="/orders" class="fa fa-cutlery hidden" title:en=orders title:ro=comenzi></a>
 					</td>
-					<td align=right nowrap>
+					<td width=1 align=right class=nowrap>
 						<div id=cart_icon_div style="position: relative; width: 50px; height: 50px">
 							<a href="/cart">
 								<img style="position: absolute" id=cart_icon>
@@ -334,7 +347,11 @@ end
 				</span>
 				<br>
 				<br>
-				<b>COD PRODUS: <span class=price>{{{pid}}}</span></b>
+				<b>
+					<t class=en>PRODUCT CODE:</t>
+					<t class=ro>COD PRODUS:</t>
+					<span class=price>{{{pid}}}</span>
+				</b>
 				<br>
 				<br>
 				<div id=combi style="min-height: 60px"></div>

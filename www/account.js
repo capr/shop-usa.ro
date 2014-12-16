@@ -264,7 +264,12 @@ function account_widget(acc) {
 			return true
 		}
 
-		$('#usr_email, #usr_name, #usr_phone').on('input', enable_save)
+		$('#usr_email, #usr_name, #usr_phone')
+			.on('input', enable_save)
+			.keypress(function(e) {
+					if(e.keyCode == 13 && !$('#btn_save').prop('disabled'))
+						$('#btn_save').click()
+				})
 
 		$('#btn_save').click(function() {
 			if (!validate_usr())
