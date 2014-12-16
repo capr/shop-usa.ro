@@ -115,10 +115,7 @@ end
 						</button>
 					</td>
 					<td align=right>
-						<a id=greeting_anonymous href="/account" class="link hidden">
-							<t class=en>Login</t>
-							<t class=ro>Logheaza-te</t>
-						</a>
+						<a id=greeting_anonymous href="/account" class="link hidden"><t class=en>Login</t><t class=ro>Logheaza-te</t></a>
 						<span id=greeting_logged_in class="nowrap hidden">
 							<t class=en>Hi</t>
 							<t class=ro>Salut</t>
