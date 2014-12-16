@@ -75,3 +75,16 @@ REDESIGN
 	- keydown
 
 - rethink browsing entirely!
+
+
+IMPROVED SEARCH
+---------------
+- return a list of matching category names (first 10) + count
+- return a list of matching brand names (first 10) + count
+- return the list of matching product names (first page) + count
+- client dispatch:
+	- category page
+	- brand page
+	- category/brand page
+	- product page
+	- search result page with summary lists and "view all" link on each list

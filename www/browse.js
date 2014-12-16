@@ -44,7 +44,7 @@ function load_prods(catid, pagenum, bid, order, q) {
 				render('browse', null, '#main')
 				init_viewstyle()
 			}
-			update_pagenav(response.prod_count, pagenum, bid, order || 'date')
+			update_pagenav(response.prod_count, pagenum, bid, order || 'date', q)
 			update_prods(response.prods)
 			select_brand(bid)
 		})
@@ -114,7 +114,7 @@ function set_scroll_to_top() {
 	g_scroll_to_top = true
 }
 
-function update_pagenav(prod_count, cur_page, bid, order) {
+function update_pagenav(prod_count, cur_page, bid, order, q) {
 	scroll_to_top()
 
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
@@ -127,7 +127,7 @@ function update_pagenav(prod_count, cur_page, bid, order) {
 
 		var bottom = $(this).closest('#bottom_navbar').length > 0
 
-		setlink(this, cat_url(g_catid, pagenum, bid, order), null,
+		setlink(this, cat_url(g_catid, pagenum, bid, order, q), null,
 			bottom && set_scroll_to_top)
 	})
 
