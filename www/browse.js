@@ -378,7 +378,7 @@ action.p = function(pid, coid) {
 function update_brand_page(brand) {
 	render('brand_page', brand, '#main')
 
-	$('#bcat').html(format_cats(brand.cats))
+	$('#bcat').html(format_cat(brand.cats))
 
 	$('#bcat a').each(function() {
 		var catid = $(this).parent().attr('catid')
