@@ -434,6 +434,8 @@ end
 		<img src="/img/m/{{{bid}}}.jpg">
 	</div>
 	<b>Categoriile care contin produse {{bname}}:</b>
+	<br>
+	<br>
 	<div id=bcat class=menu></div>
 </script>
 
