@@ -1,10 +1,9 @@
 
 // cat tree / formatting -----------------------------------------------------
 
-var g_cats // {catid: cat}
-function format_cat(cat) {
+function format_cat(cat, t) {
 
-	g_cats[cat.id] = cat
+	if (t) t[cat.id] = cat
 
 	var s = '<ul catid=' + cat.id + ' style="display: none;">' +
 		'<a>' +
@@ -24,15 +23,11 @@ function format_cat(cat) {
 	return s
 }
 
-function format_cats(home_cat) {
-	g_cats = {}
-	return format_cat(home_cat)
-}
-
+var g_cats // {catid: cat}
 function update_cats(cats) {
-	$('#cat').html(format_cats(cats))
+	g_cats = {}
+	$('#cat').html(format_cats(cats, g_cats))
 	setlinks('#cat')
-	console.log('#cat set', $('#cat').html().length)
 	init_topbar()
 }
 
@@ -61,7 +56,6 @@ function load_cats(success) {
 function cat_make_visible(catid) {
 	$('#cat ul').hide()
 	var ul = $('#cat ul[catid="'+catid+'"]')
-	console.log('make visible', catid, ul)
 	ul.parents('#cat ul[catid]').show()
 	ul.show()
 	ul.children('li').find('> ul').show()
@@ -134,7 +128,6 @@ function cat_url(catid, pagenum, bid, order, q) {
 	pagenum = pagenum || 1
 	order = order == 'date' ? null : order
 
-	console.log(catid, g_cats[catid] ? 'found' : 'not found', Object.keys(g_cats).length)
 	return '/cat'+
 		(catid != g_home_catid ?
 			'/'+slug(catid, g_cats[catid].name) :
