@@ -133,7 +133,7 @@ function cat_url(catid, pagenum, bid, order, q) {
 	pagenum = pagenum || 1
 	order = order == 'date' ? null : order
 
-	//console.log(catid, g_cats[catid] ? 'found' : 'not found')
+	console.log(catid, g_cats[catid] ? 'found' : 'not found')
 	return '/cat'+
 		(catid != g_home_catid ?
 			'/'+slug(catid, g_cats[catid].name) :
