@@ -133,6 +133,8 @@ function update_pagenav(prod_count, cur_page, bid, order) {
 
 	// keyboard page navigation
 	bind_keydown('page', function(event) {
+		if ($('input,textarea,select').is(':focus'))
+			return
 		if (event.which == 39) {
 			exec(cat_url(g_catid, cur_page + 1, bid))
 		} else if (event.which == 37) {
