@@ -1,12 +1,12 @@
 
-local catid, page, bid, pagesize, order = ...
+local catid, page, bid, pagesize, order, q = ...
 catid = assert(uint_arg(catid))
 page  = tonumber(page) or 1
 pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
 bid = tonumber(bid)
+order = order ~= '-' and order or ''
 order = str_arg(order) or 'date'
-
-local q = str_arg(GET.q)
+q = str_arg(q)
 
 local offset = (page - 1) * pagesize
 
@@ -25,6 +25,29 @@ if bid then
 			p.active = 1
 ]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
 ]], catid)
+elseif q then
+	prod_count = query1([[
+		select
+			count(1)
+		from
+			ps_product p
+		inner join ps_category_product cp
+			on cp.id_product = p.id_product
+			and cp.id_category = ?
+		inner join ps_product_lang pl
+			on pl.id_product = p.id_product
+			and pl.id_lang = 1
+		inner join ps_manufacturer m
+			on m.id_manufacturer = p.id_manufacturer
+		where
+			p.active = 1
+			and (
+				p.id_product = ?
+				or m.name like ]]..quote(q..'%')..[[
+				or pl.name like ]]..quote(q..'%')..[[
+				or pl.description like ]]..quote(q..'%')..[[
+			)
+	]], catid, q)
 else
 	prod_count = query1([[
 		select
@@ -64,11 +87,19 @@ local prods = query([[
 	inner join ps_product_lang pl on
 		pl.id_product = p.id_product
 		and pl.id_lang = 1
-	left join ps_manufacturer m on
+	inner join ps_manufacturer m on
 		m.id_manufacturer = p.id_manufacturer
 	where
 		p.active = 1
 ]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
+]] .. (q and [[
+		and (
+			p.id_product = ]]..quote(q)..[[
+			or m.name like ]]..quote('%'..q)..[[
+			or pl.name like ]]..quote('%'..q)..[[
+			or pl.description like ]]..quote('%'..q)..[[
+		)
+]] or '') .. [[
 	group by
 		p.id_product
 	order by

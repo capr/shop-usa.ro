@@ -23,6 +23,7 @@ $(function() {
 
 	init_sidebar()
 	init_newsletter()
+	init_search()
 
 	init_admin()
 	init_status()

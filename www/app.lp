@@ -81,7 +81,7 @@ end
 				</tr>
 			</table>
 			<br>
-			<div id=topbar style="height: 30px"></div>
+			<div id=topbar style="height: 22px"></div>
 			<table width=100% id=letters>
 				<tr valign=top height=40>
 					<?
@@ -105,12 +105,12 @@ end
 				<tr>
 					<td width=60%>
 						<input id=search type=text
-							placeholder:ro="cauta produse dupa nume, cod, etc."
-							placeholder:en="search for products by name, sku, etc."
+							placeholder:ro="cauta produse dupa nume, cod, brand, etc."
+							placeholder:en="search for products by name, sku, brand, etc."
 						></input>
 					</td>
 					<td width=1 class=nowrap>
-						<button type=button class=slim>
+						<button type=button id=btn_search class=slim>
 							<i class="fa fa-search"></i> Cauta
 						</button>
 					</td>

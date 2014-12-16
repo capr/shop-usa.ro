@@ -32,12 +32,13 @@ function update_prods(prods) {
 	g_prods = prods
 }
 
-function load_prods(catid, pagenum, bid, order) {
+function load_prods(catid, pagenum, bid, order, q) {
 	load_main('/prods.json/'+catid+
 			'/'+pagenum+
 			'/'+(bid||'-')+
 			'/'+g_pagesize+
-			optarg(order),
+			'/'+(order||'date')+
+			optarg(encodeURIComponent(q||'')),
 		function(response) {
 			if (!$('#prods').length) {
 				render('browse', null, '#main')
@@ -476,3 +477,18 @@ function init_newsletter() {
 	})
 }
 
+// search --------------------------------------------------------------------
+
+function init_search() {
+
+	$('#search').keypress(function(e) {
+		if (e.keyCode == 13)
+			$('#btn_search').click()
+	})
+
+	$('#btn_search').click(function() {
+		var q = $('#search').val()
+		if (!q) return
+		exec(cat_url(null, null, null, null, q))
+	})
+}

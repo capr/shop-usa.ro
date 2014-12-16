@@ -369,6 +369,9 @@ function parse_url(url) {
 			hide_nav()
 			render(template, null, '#main')
 		}
+	} else {
+		for (var i = 0; i < args.length; i++)
+			args[i] = decodeURIComponent(args[i])
 	}
 	return {
 		action: action,

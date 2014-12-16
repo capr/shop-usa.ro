@@ -245,7 +245,7 @@ local function parse_path() --path -> action, args
 
 	--collect the rest of the args
 	for s in sargs:gmatch'[^/]+' do
-		args[#args+1] = s
+		args[#args+1] = ngx.unescape_uri(s)
 	end
 
 	return action, args

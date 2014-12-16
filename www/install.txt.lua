@@ -290,3 +290,8 @@ $table convrate (
 	primary key (ron, usd, date)
 )
 ]]
+
+--create fulltext indices
+--pq'create fulltext index ft_name on ps_product_lang(name)'
+--pq'create fulltext index ft_description on ps_product_lang(description)'
+--pq'create fulltext index ft_name on ps_manufacturer(name)'
