@@ -16,7 +16,7 @@ function format_cat(cat, t) {
 
 	for (var i = 0; i < cat.cats.length; i++) {
 		cat.cats[i].parent = cat
-		s = s + '<li>' + format_cat(cat.cats[i]) + '</li>'
+		s = s + '<li>' + format_cat(cat.cats[i], t) + '</li>'
 	}
 	s = s + '</ul>'
 
