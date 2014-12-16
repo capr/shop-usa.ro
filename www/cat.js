@@ -39,21 +39,20 @@ function update_cats(cats) {
 // cat tree / loading --------------------------------------------------------
 
 var g_cats_response
-function load_cats(on_success) {
-	$('#sidebar').show()
+function load_cats(success) {
 	if (g_cats) {
-		on_success()
+		if (success) success()
 		return
 	}
 	if (g_cats_response) {
 		update_cats(g_cats_response)
 		g_cats_response = null
-		on_success()
+		if (success) success()
 		return
 	}
 	load_content('#cat', '/cat.json', function(cats) {
 		update_cats(cats)
-		on_success()
+		if (success) success()
 	})
 }
 
@@ -119,7 +118,9 @@ action.cat = function(catid, pagenum, bid, order, q) {
 	pagenum = intarg(pagenum) || 1
 	bid = intarg(bid) || ''
 
-	load_cats(function() {
+	$('#sidebar').show()
+
+	load_catsload_cats(function() {
 		select_cat(catid)
 		load_prods(catid, pagenum, bid, order, q)
 		load_brands(catid, bid, order)

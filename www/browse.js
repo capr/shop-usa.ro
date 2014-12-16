@@ -212,6 +212,7 @@ function update_brands_page(brands) {
 
 action.brands = function(search) {
 	hide_nav()
+	load_cats()
 	load_main('/brands.json/'+search, function(data) {
 		$.each(data.brands, function(i, b) { b.slug = slug(b.bid, b.bname); })
 		update_brands_page(data.brands)
@@ -389,6 +390,7 @@ function update_brand_page(brand) {
 
 action.brand = function(bid) {
 	hide_nav()
+	load_cats()
 	load_main('/brand.json/'+intarg(bid), update_brand_page)
 }
 
