@@ -433,6 +433,7 @@ end
 	<div style="min-height: 100px;">
 		<img src="/img/m/{{{bid}}}.jpg">
 	</div>
+	<b>Categoriile care contin produse {{bname}}:</b>
 	<div id=bcat class=menu></div>
 </script>
 
