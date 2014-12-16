@@ -380,10 +380,15 @@ function update_brand_page(brand) {
 
 	$('#bcat').html(format_cat(brand.cats))
 
+	var no_gcats = !g_cats
+	if (no_cats)
+		g_cats = brand.cats
 	$('#bcat a').each(function() {
 		var catid = $(this).parent().attr('catid')
 		setlink(this, cat_url(catid, 1, brand.bid))
 	})
+	if (no_cats)
+		g_cats = null
 
 	$('#bcat ul').show()
 }
