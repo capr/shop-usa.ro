@@ -1,9 +1,9 @@
 FLASHBUGS
-- category div sometimes dissapears when going back to browsing
+---------
 - forgot pass link -> trigger usr event
 - google fucking analytics keeps the spinning wheel turning as usual...
 
-- search
+
 - _escaped_fragment_
 
 FLASHFEATS
@@ -42,6 +42,9 @@ FUNCTIONALITY
 - filters
 
 
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
 NICE-TO-HAVES
 -------------
 - homepage banner slider
@@ -54,6 +57,7 @@ NICE-TO-HAVES
 - db reporting tool:
 	- parametrized
 	- recursive master-detail
+	- inline search
 - better checkout experience:
 	- one-column order form?
 	- placeholders everywhere!

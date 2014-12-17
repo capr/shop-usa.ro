@@ -13,6 +13,7 @@ end
 	<script src="/all.js"></script>
 </head>
 <body>
+<div id=layout>
 <table>
 	<tr>
 		<td valign=top width=280>
@@ -172,6 +173,7 @@ end
 		</td>
 	</tr>
 </table>
+</div>
 
 <script type="text/x-mustache" id=filters_template>
 <ul>
@@ -1727,6 +1729,85 @@ end
 	Nu am gasit pagina pe care o cauti.
 	</t>
 </script>
+
+<script type="text/x-mustache" id=md_horiz_template>
+	<table width=100%>
+		<tr>
+			<td valign=top>
+				<div style="height: 400px; overflow: auto;">
+					{{{master}}}
+				</div>
+			</td>
+			<td valign=top>
+				<div id=detail style="height: 400px; overflow: auto;"></div>
+			</td>
+		</tr>
+	</table>
+</script>
+
+<script type="text/x-mustache" id=md_vert_template>
+	<table width=100%>
+		<tr>
+			<td valign=top>
+				<div style="height: 400px; overflow: auto;">
+					{{{master}}}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td valign=top>
+				<div id=detail style="height: 400px; overflow: auto;"></div>
+			</td>
+		</tr>
+	</table>
+</script>
+
+<script type="text/x-mustache" id=report_template>
+	<table width="100%">
+		<tr>
+			{{#fields}}
+			<th align=left>
+				{{{.}}}
+			</th>
+			{{/fields}}
+		</tr>
+		{{#rows}}
+		<tr rowid={{{id}}}>
+			{{#values}}
+			<td>
+				{{{.}}}
+			</td>
+			{{/values}}
+		</tr>
+		{{/rows}}
+	</table>
+</script>
+
+<script type="text/x-mustache" id=grid_template>
+	<table width="100%" class=grid>
+		<thead>
+			<tr>
+				{{#fields}}
+				<th align=left>
+					{{{name}}}
+				</th>
+				{{/fields}}
+			</tr>
+		</thead>
+		<tbody>
+			{{#rows}}
+			<tr>
+				{{#.}}
+				<td class=nowrap>
+					{{{.}}}
+				</td>
+				{{/.}}
+			</tr>
+			{{/rows}}
+		</tbody>
+	</table>
+</script>
+
 
 <div id=fb-root class=hidden></div>
 </body>

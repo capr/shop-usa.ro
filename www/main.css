@@ -369,3 +369,17 @@ input.price {
 .cd-top.cd-fade-out {
   opacity: .4;
 }
+
+/* grid */
+.grid .selected {
+	background-color: #ddd;
+}
+
+.grid .cell {
+	font-size: 14px;
+	padding: 0;
+	margin: 0;
+	border: 1px solid #999;
+	margin-left: -1px;
+	background-color: #ffd;
+}

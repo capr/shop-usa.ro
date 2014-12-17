@@ -1,13 +1,14 @@
 --database query function
 setfenv(1, require'g')
-local mysql = require'resty.mysql'
+local mysql = require'resty_mysql'
 
 --db connection --------------------------------------------------------------
 
 local db --global db object
 
-local function assert_db(ret, err, errno, sqlstate)
-	if ret ~= nil then return ret, err end
+local function assert_db(ret, ...)
+	if ret ~= nil then return ret, ... end
+	local err, errno, sqlstate = ...
 	error('db error: '..err..': '..(errno or '')..' '..(sqlstate or ''))
 end
 
@@ -96,15 +97,6 @@ local function remove_nulls(t)
 	end
 end
 
-local function count_cols(t)
-	if not t[1] then return end --not a result set
-	local n = 0
-	for k,v in pairs(t[1]) do
-		n = n + 1
-	end
-	return n
-end
-
 --query execution ------------------------------------------------------------
 
 print_queries = false
@@ -115,8 +107,7 @@ local function run_query(sql)
 		print(sql)
 	end
 	assert_db(db:send_query(sql))
-	local t, err = assert_db(db:read_result())
-	local n = count_cols(t)
+	local t, err, cols = assert_db(db:read_result())
 	remove_nulls(t)
 	if err == 'again' then --multi-result/multi-statement query
 		t = {t}
@@ -126,10 +117,10 @@ local function run_query(sql)
 			t[#t+1] = t1
 		until not err
 	end
-	return t, n
+	return t, cols
 end
 
-function query_(sql, ...) --execute, iterate rows, close
+function query(sql, ...) --execute, iterate rows, close
 	connect()
 	sql = set_params(sql, ...)
 	return run_query(sql)
@@ -137,15 +128,11 @@ end
 
 --query frontends ------------------------------------------------------------
 
-function query(...)
-	return (query_(...))
-end
-
 function query1(sql, ...) --query first row (or first row/column) and close
-	local t, n = query_(sql, ...)
+	local t, cols = query(sql, ...)
 	local row = t[1]
 	if not row then return end
-	if n == 1 then
+	if #cols == 1 then
 		local _,v = next(row)
 		return v
 	end --first row/col
@@ -153,7 +140,7 @@ function query1(sql, ...) --query first row (or first row/column) and close
 end
 
 function iquery(sql, ...) --insert query: return autoincremented id
-	return query_(sql, ...).insert_id
+	return query(sql, ...).insert_id
 end
 
 function changed(res)

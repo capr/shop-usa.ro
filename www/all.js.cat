@@ -10,6 +10,7 @@ jquery.autocomplete.js
 jquery.toasty.js
 jquery.powertip.js
 jquery.dropdown.js
+jquery.caret.js
 mustache.js
 webb.js
 config.js
@@ -25,4 +26,6 @@ checkout.js
 resetpass.js
 browse.js
 orders.js
+backend.js
+grid.js
 app.js

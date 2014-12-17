@@ -149,6 +149,7 @@ _G.__index.print = print --override Lua's print() for pp.
 --json API -------------------------------------------------------------------
 
 local cjson = require'cjson'
+cjson.encode_sparse_array(false, 0, 0) --encode all sparse arrays
 
 function json(v)
 	if type(v) == 'table' then
