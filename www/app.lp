@@ -1784,28 +1784,30 @@ end
 </script>
 
 <script type="text/x-mustache" id=grid_template>
-	<table width="100%" class=grid>
-		<thead>
-			<tr>
-				{{#fields}}
-				<th align=left>
-					{{{name}}}
-				</th>
-				{{/fields}}
-			</tr>
-		</thead>
-		<tbody>
-			{{#rows}}
-			<tr>
-				{{#.}}
-				<td class=nowrap>
-					{{{.}}}
-				</td>
-				{{/.}}
-			</tr>
-			{{/rows}}
-		</tbody>
-	</table>
+	<center>
+		<table class=grid width=90%>
+			<thead>
+				<tr>
+					{{#fields}}
+					<th align=left class="nowrap cell">
+						{{{name}}}
+					</th>
+					{{/fields}}
+				</tr>
+			</thead>
+			<tbody>
+				{{#rows}}
+				<tr>
+					{{#.}}
+					<td class="nowrap cell">
+						<span>{{{.}}}</span>
+					</td>
+					{{/.}}
+				</tr>
+				{{/rows}}
+			</tbody>
+		</table>
+	</center>
 </script>
 
 

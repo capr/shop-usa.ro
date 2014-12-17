@@ -371,15 +371,25 @@ input.price {
 }
 
 /* grid */
+.grid {
+
+}
+
 .grid .selected {
 	background-color: #ddd;
 }
 
 .grid .cell {
-	font-size: 14px;
+	padding-left: 5px;
+	padding-right: 5px;
+	width: 0px;
+	overflow: ellipsis;
+}
+
+.grid .input {
+	font-size: 100%;
+	border: 0;
 	padding: 0;
-	margin: 0;
-	border: 1px solid #999;
-	margin-left: -1px;
 	background-color: #ffd;
+	overflow: hidden;
 }
