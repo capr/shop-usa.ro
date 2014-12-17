@@ -144,9 +144,16 @@ function grid(data, dst) {
 					set_edit(active_cell, 0)
 				else
 					set_edit()
+		} else if (e.which == 113) {
+			// F2
+			if (!g.immediate_mode)
+				if (!active_input)
+					set_edit(active_cell, 0)
 		} else if (e.which == 27) {
 			// esc
 			set_edit()
+		} else {
+			console.log(e.which)
 		}
 	})
 
