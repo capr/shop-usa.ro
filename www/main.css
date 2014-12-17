@@ -384,6 +384,10 @@ input.price {
 	overflow: ellipsis;
 }
 
+.grid .cell.selected {
+	background-color: #ffd;
+}
+
 .grid .input {
 	font-size: 100%;
 	border: 0;

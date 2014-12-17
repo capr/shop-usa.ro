@@ -1762,27 +1762,6 @@ end
 	</table>
 </script>
 
-<script type="text/x-mustache" id=report_template>
-	<table width="100%">
-		<tr>
-			{{#fields}}
-			<th align=left>
-				{{{.}}}
-			</th>
-			{{/fields}}
-		</tr>
-		{{#rows}}
-		<tr rowid={{{id}}}>
-			{{#values}}
-			<td>
-				{{{.}}}
-			</td>
-			{{/values}}
-		</tr>
-		{{/rows}}
-	</table>
-</script>
-
 <script type="text/x-mustache" id=grid_template>
 	<center>
 		<table class=grid width=90%>
@@ -1809,7 +1788,6 @@ end
 		</table>
 	</center>
 </script>
-
 
 <div id=fb-root class=hidden></div>
 </body>
