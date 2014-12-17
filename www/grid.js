@@ -26,9 +26,11 @@ action.grid = function() {
 
 		// stabilize widths
 		function recompute_widths() {
+			grid.hide()
 			grid.find('td')
 				.each(function() { $(this).removeAttr('style'); })
 				.each(function() { $(this).css('width', $(this).width()+'px'); })
+			grid.show()
 		}
 		recompute_widths()
 		$(window).resize(recompute_widths)
