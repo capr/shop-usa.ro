@@ -24,16 +24,17 @@ function grid(data, dst) {
 
 	// row selection ----------------------------------------------------------
 	var active_row
-	function select_row(row, caret) {
+	function select_row_only(row) {
 		if (!row.length) return
-
-		// deselect old row and select new row
 		if (active_row)
 			active_row.removeClass('selected')
 		row.addClass('selected')
 		active_row = row
+	}
 
-		// move the active cell
+	function select_row(row, caret) {
+		if (!row.length) return
+		select_row_only(row)
 		g.selected_col(g.selected_col() || 0, caret)
 	}
 	g.selected_row = function(i, caret) {
@@ -124,6 +125,13 @@ function grid(data, dst) {
 		} else {
 			console.log(e.which)
 		}
+	})
+
+	// mouse bindings ---------------------------------------------------------
+	grid.find('td').click(function() {
+		if (active_cell[0] == this) return
+		select_row_only($(this).parent())
+		select_cell($(this), 0)
 	})
 
 	g.selected_row(0)
