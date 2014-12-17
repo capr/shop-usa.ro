@@ -389,6 +389,6 @@ input.price {
 	border: 0;
 	padding: 0;
 	background-color: #ffd;
-	overflow: hidden;
+	position: relative;
 }
 

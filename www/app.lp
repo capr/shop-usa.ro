@@ -1790,7 +1790,7 @@ end
 				<tr>
 					{{#fields}}
 					<th align=left class="nowrap cell">
-						{{{name}}}
+						<a>{{{name}}}</a>
 					</th>
 					{{/fields}}
 				</tr>
@@ -1800,7 +1800,7 @@ end
 				<tr>
 					{{#.}}
 					<td class="nowrap cell">
-						<span>{{{.}}}</span>
+						<div style="position: absolute;"></div><span>{{{.}}}</span>
 					</td>
 					{{/.}}
 				</tr>

@@ -8,6 +8,8 @@ function grid(data, dst) {
 		page_rows: 20,
 	}
 
+	// rendering --------------------------------------------------------------
+
 	function clean_data(data) {
 		for (var i = 0; i < data.rows.length; i++) {
 			var row = data.rows[i]
@@ -23,6 +25,7 @@ function grid(data, dst) {
 	var grid = dst.find('table.grid')
 
 	// row selection ----------------------------------------------------------
+
 	var active_row
 	function select_row_only(row) {
 		if (!row.length) return
@@ -49,25 +52,28 @@ function grid(data, dst) {
 	}
 
 	// cell selection ---------------------------------------------------------
+
 	var active_cell
 	var active_input
 	function select_cell(cell, caret) {
 		if (!cell.length) return
 
 		// remove the input on the active cell
-		if (active_cell)
-			active_cell.html('<span>'+active_cell.find('>input').val()+'</span>')
+		if (active_cell) {
+			active_cell.find('span').html(active_input.val())
+			active_cell.find('div').html('')
+		}
 
 		// compute the dimensions of the input box based on text width and cell height.
 		// the edit box outer width should not exceed text width, to avoid reflowing.
 		var span = cell.find('>span')
 		var val = span.html().trim()
-		var w = span.width()
+		var w = cell.width()
 		var h = cell.height()-1
 
 		// create the input box and focus it
-		cell.html('<input type=text class=input style="width: '+w+'px; height: '+h+'px;" value="' + val + '">')
-		var input = cell.find('>input')
+		cell.find('div').html('<input type=text class=input style="width: '+w+'px; height: '+h+'px;" value="' + val + '">')
+		var input = cell.find('input')
 		input.focus()
 
 		// set globals
@@ -88,6 +94,7 @@ function grid(data, dst) {
 	}
 
 	// key bindings -----------------------------------------------------------
+
 	$(document).keydown(function(e) {
 		var altshift = e.altKey && e.shiftKey
 		if (e.which == 39 && (altshift || (
@@ -128,11 +135,19 @@ function grid(data, dst) {
 	})
 
 	// mouse bindings ---------------------------------------------------------
-	grid.find('td').click(function() {
+
+	grid.find('>tbody td').click(function() {
 		if (active_cell[0] == this) return
 		select_row_only($(this).parent())
 		select_cell($(this), 0)
 	})
+
+	grid.find('>thead th').click(function() {
+		var col = $(this).index()
+		console.log(col)
+	})
+
+	// select first row and return --------------------------------------------
 
 	g.selected_row(0)
 
