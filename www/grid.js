@@ -143,8 +143,9 @@ function grid(data, dst) {
 	})
 
 	grid.find('>thead th').click(function() {
-		var col = $(this).index()
-		console.log(col)
+		var i = $(this).index()
+		g.fetch(data.fields[i].name + ':' +
+			(data.fields[i].sort == 'asc' ? 'desc' : 'asc'))
 	})
 
 	// select first row and return --------------------------------------------
@@ -166,10 +167,16 @@ action.grid = function() {
 	for (var i = 0; i < args.length; i++)
 		args[i] = encodeURIComponent(args[i])
 
-	var url = '/dataset.json/'+args.join('/')+location.search
-	load_main(url, function(data) {
-		var gr = grid(data, '#main')
-	})
+	function load(orderby) {
+		var url = '/dataset.json/'+args.join('/')+location.search+
+			(orderby ? (location.search ? '&' : '?')+'sort='+orderby : '')
+		load_main(url, function(data) {
+			var g = grid(data, '#main')
+			g.fetch = load
+		})
+	}
+	load()
+
 }
 
 })()

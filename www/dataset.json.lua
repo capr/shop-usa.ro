@@ -53,10 +53,12 @@ local function sql_grid_fetch(t) --fetch_sql()
 		local startrow = (self.startrow or 1)-1
 		local maxrows = self.maxrows or 100
 		local orderby = self.orderby
+
 		local t,cols = query(self.fetch_sql()..
 			(orderby and ' order by '..orderby or '')..
 			' limit '..startrow..', '..maxrows)
 		local rows = {}
+
 		for i,t in ipairs(t) do
 			local row = {}
 			rows[i] = row
@@ -64,12 +66,25 @@ local function sql_grid_fetch(t) --fetch_sql()
 				row[j] = t[col.name]
 			end
 		end
+
+		--set fields sort flag from the orderby spec
+		local sortcol = {}
+		if orderby then
+			for s in glue.gsplit(orderby, ',') do
+				local col, dir = s:match'^([^%s]+)%s*(.*)$'
+				if dir == '' then dir = 'asc' end
+				sortcol[col] = dir
+			end
+		end
+
 		local fields = {}
 		for i,col in ipairs(cols) do
 			fields[i] = {
 				name = col.name,
+				sort = sortcol[col.name],
 			}
 		end
+
 		return {
 			fields = fields,
 			rows = rows,

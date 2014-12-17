@@ -1790,7 +1790,7 @@ end
 				<tr>
 					{{#fields}}
 					<th align=left class="nowrap cell">
-						<a>{{{name}}}</a>
+						<a>{{{name}}}</a> <i class="fa fa-sort-{{sort}}"></i>
 					</th>
 					{{/fields}}
 				</tr>
