@@ -140,7 +140,10 @@ function grid(data, dst) {
 		} else if (e.which == 13) {
 			// enter
 			if (!g.immediate_mode)
-				set_edit(active_cell, 0)
+				if (!active_input)
+					set_edit(active_cell, 0)
+				else
+					set_edit()
 		} else if (e.which == 27) {
 			// esc
 			set_edit()
