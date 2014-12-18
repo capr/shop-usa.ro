@@ -83,6 +83,7 @@ local t = query([[
 		on pai.id_product_attribute = pa.id_product_attribute
 	left join ps_image i
 		on i.id_image = pai.id_image
+		and i.cover = 1
 	where
 		ci.uid = ?
 		and p.active = 1
