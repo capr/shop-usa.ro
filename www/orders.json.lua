@@ -33,7 +33,6 @@ for i,oi in groupby(query([[
 			on pai.id_product_attribute = pa.id_product_attribute
 		left join ps_image im
 			on im.id_image = pai.id_image
-			and im.cover = 1
 	where
 		o.uid = ?
 	group by
