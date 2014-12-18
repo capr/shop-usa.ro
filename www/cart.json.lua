@@ -113,9 +113,6 @@ for i,grp in groupby(t, 'buylater') do
 			table.insert(combi.vids, t[1].vid)
 			table.insert(combi.vnames, t[1].vname)
 			table.insert(combi.dnames, t[1].dname)
-			for i,e in ipairs(t) do
-				table.insert(combi.imgs, tonumber(e.imgid))
-			end
 		end
 	end
 end
