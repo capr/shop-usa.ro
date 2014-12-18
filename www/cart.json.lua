@@ -88,7 +88,7 @@ local t = query([[
 		and p.active = 1
 	order by
 		ci.buylater,
-		ci.pos, ci.atime desc,
+		ci.pos, ci.atime desc, ci.ciid,
 		a.position, a.id_attribute,
 		i.position, i.id_image
 ]], usd_rate(), usd_rate(), uid())
