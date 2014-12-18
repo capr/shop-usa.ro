@@ -25,118 +25,185 @@ function grid(data, dst, g) {
 		}
 	}
 	clean_data(data)
+
 	render('grid', data, dst)
 
-	var grid = dst.find('table.grid')
+	// selectors --------------------------------------------------------------
+
+	g.row_count = function() { return data.rows.length; }
+	g.col_count = function() { return data.fields.length; }
+
+	g.grid = dst.find('.grid')
+
+	g.rows = function() { return g.grid.find('.row'); }
+	g.row = function(i) {
+		i = Math.min(Math.max(i, 0), g.row_count() - 1)
+		return g.rows().filter(':nth-child('+(i+1)+')')
+	}
+	g.cells = function(row) { return (row || g.grid).find('.cell'); }
+	g.cell = function(row, i) {
+		if (typeof row == 'number')
+			row = g.row(row)
+		i = Math.min(Math.max(i, 0), g.col_count() - 1)
+		return row.find('.cell:nth-child('+(i+1)+')')
+	}
+	g.fields = function() { return g.grid.find('.field'); }
+	g.cellrow = function(cell) { return cell.parent(); }
 
 	// row selection ----------------------------------------------------------
 
-	var active_row
+	g.selected_rows = function() { g.grid.find('.row.selected'); }
+	g.deselect_rows = function(rows) { rows.removeClass('selected'); }
+	g.select_rows = function(rows) { rows.addClass('selected'); }
 
-	function select_row_only(row) {
-		if (!row.length) return
-		if (active_row)
-			active_row.removeClass('selected')
-		row.addClass('selected')
+	// row focusing -----------------------------------------------------------
+
+	var active_row = $([])
+
+	g.deactivate_row = function() {
+		if (!g.deactivate_cell()) return
+		if (!g.exit_row(active_row)) return
+		active_row.removeClass('active')
+		g.deselect_rows(active_row)
+		active_row = $([])
+		return true
+	}
+
+	g.activate_row = function(row) {
+		row = $(row)
+		if (!row.length) return // no row
+		if (active_row.is(row)) return // same row
+		if (!g.deactivate_row()) return
+		g.select_rows(row)
+		row.addClass('active')
 		active_row = row
 		return true
 	}
 
-	function select_row(row) {
-		if (!row.length) return
-		var selected = select_row_only(row)
-		g.selected_col(active_cell ? g.selected_col() : 0)
-		return selected
+	g.active_row = function(row) {
+		if (!row) return active_row
+		return g.activate_row(row)
 	}
 
-	// select a row by index, or return the index of the selected row.
-	g.selected_row = function(i) {
-		if (!is(i))
-			return active_row ? active_row.index() : null
-		if (i < 0) return
-		var row = grid.find('>tbody>tr:nth-child('+(i+1)+')')
-		return select_row(row)
+	// cell focusing ----------------------------------------------------------
+
+	var active_cell = $([])
+
+	g.deactivate_cell = function() {
+		if (!g.exit_edit()) return
+		active_cell.removeClass('active')
+		active_cell = $([])
+		return true
 	}
 
-	g.row_count = function() {
-		return grid.find('>tbody>tr').length
-	}
-
-	// cell selection ---------------------------------------------------------
-
-	var active_cell
-
-	function select_cell(cell) {
-		if (!cell.length) return
-		g.exit_edit()
-		if (active_cell)
-			active_cell.removeClass('selected')
-		cell.addClass('selected')
+	g.activate_cell = function(cell) {
+		cell = $(cell)
+		if (!cell.length) return // no cell
+		if (active_cell.is(cell)) return // same cell
+		if (!g.cellrow(cell).is(g.active_row())) { // diff. row
+			if (!g.activate_row(g.cellrow(cell)))
+				return
+		} else { // same row
+			if(!g.deactivate_cell())
+				return
+		}
+		cell.addClass('active')
 		active_cell = cell
 		return true
 	}
 
-	// select a column in the selected row by index, or return the index
-	// of the selected column.
-	g.selected_col = function(i) {
-		if (!is(i))
-			return active_cell ? active_cell.index() : null
-		if (!active_row) return
-		if (i < 0) return
-		var cell = active_row.find('>td:nth-child('+(i+1)+')')
-		return select_cell(cell)
+	g.active_cell = function(cell) {
+		if (!cell) return active_cell
+		return g.activate_cell(cell)
 	}
-
-	// select a cell, potentially changing both the selected row and column.
-	g.selected_cell = function(cell) {
-		cell = $(cell)
-		if (cell[0] == active_cell[0]) return // already selected
-		select_row_only(cell.parent())
-		return select_cell(cell)
-	}
-
-	g.cells = function() { return grid.find('>tbody td'); }
-	g.headcells = function() { return grid.find('>thead th'); }
 
 	// cell editing -----------------------------------------------------------
 
 	var active_input
 
-	function enter_edit() {
-		if (active_input) return
-		exit_edit()
+	g.input = function() { return active_input; }
+	g.caret = function(caret) {
+		if (!active_input) return
+		if (!is(caret))
+			return active_input.caret()
+		active_input.caret(caret)
+	}
+	g.focused = function() {
+		if (!active_input) return
+		return active_input.is(':focus')
+	}
+
+	function is_modified(cell) {
+		return $(this).data('oldval') !== undefined
+	}
+	g.modified_cells = function(cell) {
+		return g.cells().filter(is_modified)
+	}
+
+	g.enter_edit = function(caret, select) {
+		if (active_input) return input
 		var cell = active_cell
-		if (!cell) return
-		// compute the dimensions of the input box based on text width and cell height.
-		// the edit box outer width should not exceed text width, to avoid reflowing.
-		var val = cell.find('>span').html().trim()
+		if (!cell.length) return
+		var val = cell.find('.value').html().trim()
 		var w = cell.width()
-		var h = cell.height() - 1
-		cell.find('div').html('<input type=text class=input style="width: '+w+'px; height: '+h+'px;" value="' + val + '">')
-		var input = cell.find('input')
+		var h = cell.height()
+		var div = cell.find('.input_div')
+		div.html('<input type=text class=input style="width: '+w+'px; height: '+h+'px;">')
+		var input = div.find('input')
+		input.val(val)
 		input.focus()
+		if (is(caret))
+			input.caret(caret)
+		if (select)
+			input.select()
 		active_input = input
 		return input
 	}
 
-	function exit_edit(cancel) {
-		if (!active_input) return
+	g.exit_edit = function(cancel) {
+		if (!active_input)
+			return true
 		if (!cancel) {
-			var val = active_input.val()
-			active_cell.find('span').html(val)
+			var val = active_input.val().trim()
+			var span = active_cell.find('.value')
+			var oldval = span.html().trim()
+			if (val != oldval) {
+				if (!g.save_cell(active_cell, val, oldval))
+					return
+				span.html(val)
+				active_cell.data('oldval', oldval)
+			}
 		}
-		active_cell.find('div').html('')
+		active_cell.find('.input_div').html('')
 		active_input = null
+		return true
 	}
 
-	g.input = function() { return active_input; }
-	g.caret = function(caret) {
-		return active_input &&
-			(is(caret) ? active_input.caret(caret) : active_input.caret())
+	// cell navigation --------------------------------------------------------
+
+	g.near_cell = function(rows, cols) {
+		var rowindex = g.active_row().index() + (rows || 0)
+		var cellindex = g.active_cell().index() + (cols || 0)
+		return g.cell(rowindex, cellindex)
 	}
-	g.focused = function() { return active_input && active_input.is(':focus'); }
-	g.enter_edit = enter_edit
-	g.exit_edit = exit_edit
+
+	g.move = function(rows, cols) {
+		return g.activate_cell(g.near_cell(rows, cols))
+	}
+
+	// saving data ------------------------------------------------------------
+
+	g.exit_row = function(row) { return true; } // stub
+	g.save_cell = function(row, col, val, oldval) { return true; } // stub
+
+	g.save = function() {
+		g.modified_cells().each(function() {
+			//
+		})
+	}
+
+	// code all policy below this line and only using the g.* api -------------
+	// ------------------------------------------------------------------------
 
 	// key bindings -----------------------------------------------------------
 
@@ -156,11 +223,8 @@ function grid(data, dst, g) {
 							!shift))))
 		) {
 			// right arrow
-			var selected = g.selected_col(g.selected_col() + 1)
-			if (input && selected && g.immediate_mode) {
-				g.enter_edit()
-				g.caret(0)
-			}
+			if (g.move(0, 1) && input && g.immediate_mode)
+				g.enter_edit(0)
 			e.preventDefault()
 		} else if (e.which == 37 && (
 				!input ||
@@ -171,67 +235,45 @@ function grid(data, dst, g) {
 							!shift))))
 		) {
 			// left arrow
-			var selected = g.selected_col(g.selected_col() - 1)
-			if (input && selected && g.immediate_mode) {
-				g.enter_edit()
-				g.caret(-1)
-			}
+			if (g.move(0, -1) && input && g.immediate_mode)
+				g.enter_edit(-1)
 			e.preventDefault()
-		} else if (e.which == 38) {
-			// up arrow
-			var selected = g.selected_row(g.selected_row() - 1)
-			if (input && selected && g.immediate_mode) {
-				g.enter_edit()
-				g.caret(caret)
+		} else if (
+			e.which == 38 || e.which == 33 || // up, page-up
+			e.which == 40 || e.which == 34    // down, page-down
+		) {
+			if (input && !g.immediate_mode) return
+			var rows
+			switch(e.which) {
+				case 38: rows = -1; break
+				case 40: rows =  1; break
+				case 33: rows = -g.page_rows; break
+				case 34: rows =  g.page_rows; break
 			}
+			if (g.move(rows, 0) && input && g.immediate_mode)
+				g.enter_edit(caret)
 			e.preventDefault()
-		} else if (e.which == 40) {
-			// down arrow
-			var selected = g.selected_row(g.selected_row() + 1)
-			if (input && selected && g.immediate_mode) {
-				g.enter_edit()
-				g.caret(caret)
-			}
-			e.preventDefault()
-		} else if (e.which == 33) {
-			// page up
-			var row = Math.max(0, g.selected_row() - g.page_rows)
-			var selected = g.selected_row(row)
-			if (input && selected && g.immediate_mode) {
-				g.enter_edit()
-				g.caret(caret)
-			}
-		} else if (e.which == 34) {
-			// page down
-			var row = Math.min(g.row_count() - 1, g.selected_row() + g.page_rows)
-			var selected = g.selected_row(row)
-			if (input && selected && g.immediate_mode) {
-				g.enter_edit()
-				g.caret(caret)
-			}
 		} else if (e.which == 13 || e.which == 113) {
 			// enter or F2
-			if (!input) {
-				input = enter_edit()
-				if (input) {
-					input.caret(-1)
-					input.select()
-				}
-			} else if (e.which == 13)
-				exit_edit()
+			if (!input)
+				g.enter_edit(-1, true)
+			else if (e.which == 13)
+				g.exit_edit()
+			e.preventDefault()
 		} else if (e.which == 27) {
 			// esc
-			exit_edit(true)
+			g.exit_edit(true)
+			e.preventDefault()
 		}
 	})
 
 	// mouse bindings ---------------------------------------------------------
 
 	g.cells().click(function() {
-		g.selected_cell(this)
+		g.activate_cell(this)
 	})
 
-	g.headcells().click(function() {
+	g.fields().click(function() {
 		var i = $(this).index()
 		g.fetch(data.fields[i].name + ':' +
 			(data.fields[i].sort == 'asc' ? 'desc' : 'asc'))
@@ -239,9 +281,9 @@ function grid(data, dst, g) {
 
 	// select first row and return --------------------------------------------
 
-	g.selected_row(0)
+	g.activate_cell(g.cell(0, 0))
 	if (g.immediate_mode)
-		g.enter_edit()
+		g.enter_edit(-1, true)
 
 	return g
 }
@@ -263,7 +305,7 @@ action.grid = function() {
 			(orderby ? (location.search ? '&' : '?')+'sort='+orderby : '')
 		load_main(url, function(data) {
 			var g = grid(data, '#main', {
-				//immediate_mode: true,
+				immediate_mode: true,
 			})
 			g.fetch = load
 		})

@@ -1766,7 +1766,7 @@ end
 	<center>
 		<table class=grid width=90%>
 			<thead>
-				<tr>
+				<tr class=field>
 					{{#fields}}
 					<th align=left class="nowrap cell">
 						<a>{{{name}}}</a> <i class="fa fa-sort-{{sort}}"></i>
@@ -1776,10 +1776,10 @@ end
 			</thead>
 			<tbody>
 				{{#rows}}
-				<tr>
+				<tr class=row>
 					{{#.}}
 					<td class="nowrap cell">
-						<div style="position: absolute;"></div><span>{{{.}}}</span>
+						<div class=input_div></div><span class=value>{{{.}}}</span>
 					</td>
 					{{/.}}
 				</tr>

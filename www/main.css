@@ -33,6 +33,10 @@ input, select, textarea {
 	width: 100%;
 }
 
+input:hover, select:hover, textarea:hover, button:hover {
+	border-color: #999;
+}
+
 input, select {
 	height: 23px;
 }
@@ -372,9 +376,12 @@ input.price {
 
 /* grid ------------------------------------------------------------------- */
 
-.grid {}
+.grid {
+	border: 5px solid #eee;
+	border-collapse: collapse;
+}
 
-.grid .selected {
+.grid .row.selected {
 	background-color: #ddd;
 }
 
@@ -384,15 +391,27 @@ input.price {
 	overflow: ellipsis;
 }
 
-.grid .cell.selected {
+.grid .cell.active {
 	background-color: #ffd;
+	border: 5px solid #999 !important;
+	border-left: 5px solid #999 !important;
+}
+
+.grid .input_div {
+	position: absolute;
 }
 
 .grid .input {
 	font-size: 100%;
-	border: 0;
 	padding: 0;
 	background-color: #ffd;
 	position: relative;
+	top: -1px;
+	left: -1px;
+	box-sizing: content-box;
+	border: 1px solid #000;
 }
 
+.grid .input:focus {
+	outline: none !important;
+}
