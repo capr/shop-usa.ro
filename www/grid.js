@@ -148,7 +148,7 @@ function grid(data, dst, g) {
 		var caret = g.caret()
 
 		if (e.which == 39 && (
-				!input || !g.immediate_mode ||
+				!input ||
 					(g.immediate_mode && (
 						altshift || (
 							g.focused() &&
@@ -163,7 +163,7 @@ function grid(data, dst, g) {
 			}
 			e.preventDefault()
 		} else if (e.which == 37 && (
-				!input || !g.immediate_mode ||
+				!input ||
 					(g.immediate_mode && (
 						altshift || (
 							g.focused() &&
@@ -263,7 +263,7 @@ action.grid = function() {
 			(orderby ? (location.search ? '&' : '?')+'sort='+orderby : '')
 		load_main(url, function(data) {
 			var g = grid(data, '#main', {
-				immediate_mode: true,
+				//immediate_mode: true,
 			})
 			g.fetch = load
 		})
