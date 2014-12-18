@@ -1766,9 +1766,9 @@ end
 	<center>
 		<table class=grid width=90%>
 			<thead>
-				<tr class=field>
+				<tr>
 					{{#fields}}
-					<th align=left class="nowrap cell">
+					<th align=left class="nowrap field">
 						<a>{{{name}}}</a> <i class="fa fa-sort-{{sort}}"></i>
 					</th>
 					{{/fields}}

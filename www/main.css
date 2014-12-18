@@ -377,12 +377,12 @@ input.price {
 /* grid ------------------------------------------------------------------- */
 
 .grid {
-	border: 5px solid #eee;
+	border: 1px solid #eee;
 	border-collapse: collapse;
 }
 
 .grid .row.selected {
-	background-color: #ddd;
+	background-color: #e3e3e3;
 }
 
 .grid .cell {
@@ -392,9 +392,11 @@ input.price {
 }
 
 .grid .cell.active {
-	background-color: #ffd;
-	border: 5px solid #999 !important;
-	border-left: 5px solid #999 !important;
+	background-color: #ffc;
+}
+
+.grid .cell.edit {
+	outline: 1px solid #999 !important;
 }
 
 .grid .input_div {
@@ -404,14 +406,15 @@ input.price {
 .grid .input {
 	font-size: 100%;
 	padding: 0;
-	background-color: #ffd;
+	background-color: #ffc;
 	position: relative;
-	top: -1px;
-	left: -1px;
+	top: 0px;
+	left: 0px;
 	box-sizing: content-box;
-	border: 1px solid #000;
+	border: 0;
 }
 
 .grid .input:focus {
-	outline: none !important;
+	outline: 0 !important;
+	#box-shadow: 1px 1px
 }

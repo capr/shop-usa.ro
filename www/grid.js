@@ -1,21 +1,33 @@
 (function() {
 
-function is(arg) {
-	return arg !== undefined && arg !== null
+function sign(x) { return x > 0 ? 1 : x < 0 ? -1 : 0; }
+function is(arg) { return arg !== undefined && arg !== null; }
+function clamp(x, x0, x1) { return Math.min(Math.max(x, x0), x1); }
+
+function text_selected(input) {
+	if (!input) return
+	var p0 = input[0].selectionStart
+	var p1 = input[0].selectionEnd
+	return p0 == 0 && p1 == input.val().length
 }
 
 function grid(data, dst, g) {
-
-	dst = $(dst)
 
 	var g = $.extend({
 		page_rows: 20,
 		immediate_mode: false,
 	}, g)
 
-	// rendering --------------------------------------------------------------
+	// data mappings ----------------------------------------------------------
 
-	function clean_data(data) {
+	var idfield_index
+	for (var j = 0; j < data.fields.length; j++)
+		if (data.fields[j].name == data.idfield) {
+			idfield_index = j
+			break
+		}
+
+	function prepare_data(data) {
 		for (var i = 0; i < data.rows.length; i++) {
 			var row = data.rows[i]
 			for (var j = 0; j < data.fields.length; j++) {
@@ -24,31 +36,78 @@ function grid(data, dst, g) {
 			}
 		}
 	}
-	clean_data(data)
 
-	render('grid', data, dst)
+	var idmap = {} // id: row
+	function make_idmap(data) {
+		var rows = g.rows()
+		for (var i = 0; i < data.rows.length; i++) {
+			var row = data.rows[i]
+			var id = row[idfield_index]
+			idmap[id] = rows[i]
+		}
+	}
+
+	g.rowbyid = function(id) {
+		return idmap[id]
+	}
+
+	g.render = function(data, dst) {
+		dst = $(dst)
+		prepare_data(data)
+		render('grid', data, dst)
+		g.grid = dst.find('.grid')
+		make_idmap(data)
+	}
 
 	// selectors --------------------------------------------------------------
 
 	g.row_count = function() { return data.rows.length; }
 	g.col_count = function() { return data.fields.length; }
 
-	g.grid = dst.find('.grid')
-
 	g.rows = function() { return g.grid.find('.row'); }
 	g.row = function(i) {
-		i = Math.min(Math.max(i, 0), g.row_count() - 1)
+		i = clamp(i, 0, g.row_count() - 1)
 		return g.rows().filter(':nth-child('+(i+1)+')')
 	}
-	g.cells = function(row) { return (row || g.grid).find('.cell'); }
+	g.cells = function(row) { return (row ? $(row) : g.grid).find('.cell'); }
 	g.cell = function(row, i) {
 		if (typeof row == 'number')
 			row = g.row(row)
-		i = Math.min(Math.max(i, 0), g.col_count() - 1)
+		else
+			row = $(row)
+		i = clamp(i, 0, g.col_count() - 1)
 		return row.find('.cell:nth-child('+(i+1)+')')
 	}
 	g.fields = function() { return g.grid.find('.field'); }
-	g.cellrow = function(cell) { return cell.parent(); }
+	g.rowof = function(cell) { return cell.parent(); }
+
+	// cell values ------------------------------------------------------------
+
+	g.val = function(cell, val) {
+		cell = $(cell)
+		var span = cell.find('.value')
+		var oldval = span.html().trim()
+		if (val === undefined)
+			return oldval
+		if (val != oldval) {
+			span.html(val)
+			cell.data('newval', val)
+			cell.data('oldval', oldval)
+		}
+	}
+
+	g.commit = function() {
+		g.cells().each(function(i,cell) {
+			$(cell).removeData('newval oldval')
+		})
+	}
+
+	g.rollback = function() {
+		g.cells().each(function(i,cell) {
+			g.val(cell, cell.data('oldval'))
+		})
+		g.commit()
+	}
 
 	// row selection ----------------------------------------------------------
 
@@ -100,8 +159,8 @@ function grid(data, dst, g) {
 		cell = $(cell)
 		if (!cell.length) return // no cell
 		if (active_cell.is(cell)) return // same cell
-		if (!g.cellrow(cell).is(g.active_row())) { // diff. row
-			if (!g.activate_row(g.cellrow(cell)))
+		if (!g.rowof(cell).is(g.active_row())) { // diff. row
+			if (!g.activate_row(g.rowof(cell)))
 				return
 		} else { // same row
 			if(!g.deactivate_cell())
@@ -133,18 +192,12 @@ function grid(data, dst, g) {
 		return active_input.is(':focus')
 	}
 
-	function is_modified(cell) {
-		return $(this).data('oldval') !== undefined
-	}
-	g.modified_cells = function(cell) {
-		return g.cells().filter(is_modified)
-	}
-
 	g.enter_edit = function(caret, select) {
-		if (active_input) return input
+		if (active_input)
+			return active_input
 		var cell = active_cell
 		if (!cell.length) return
-		var val = cell.find('.value').html().trim()
+		var val = g.val(cell)
 		var w = cell.width()
 		var h = cell.height()
 		var div = cell.find('.input_div')
@@ -156,6 +209,7 @@ function grid(data, dst, g) {
 			input.caret(caret)
 		if (select)
 			input.select()
+		active_cell.addClass('edit')
 		active_input = input
 		return input
 	}
@@ -165,26 +219,29 @@ function grid(data, dst, g) {
 			return true
 		if (!cancel) {
 			var val = active_input.val().trim()
-			var span = active_cell.find('.value')
-			var oldval = span.html().trim()
-			if (val != oldval) {
-				if (!g.save_cell(active_cell, val, oldval))
-					return
-				span.html(val)
-				active_cell.data('oldval', oldval)
-			}
+			g.val(active_cell, val)
 		}
+		active_cell.removeClass('edit')
 		active_cell.find('.input_div').html('')
 		active_input = null
+		g.quick_edit = null
 		return true
 	}
 
 	// cell navigation --------------------------------------------------------
 
 	g.near_cell = function(rows, cols) {
-		var rowindex = g.active_row().index() + (rows || 0)
-		var cellindex = g.active_cell().index() + (cols || 0)
-		return g.cell(rowindex, cellindex)
+		rows = rows || 0
+		cols = cols || 0
+		if (rows && cols) return // can't move in two directions at once
+		var rowindex = g.active_row().index() + rows
+		var cellindex = g.active_cell().index() + cols
+		var cell = g.cell(rowindex, cellindex)
+		// skip readonly and hidden cells and rows
+		if (cell.is('.readonly') || !cell.is(':visible') || !g.row(rowindex).is(':visible')) {
+			return g.near_cell(rows + sign(rows), cols + sign(cols))
+		}
+		return cell
 	}
 
 	g.move = function(rows, cols) {
@@ -193,56 +250,81 @@ function grid(data, dst, g) {
 
 	// saving data ------------------------------------------------------------
 
-	g.exit_row = function(row) { return true; } // stub
-	g.save_cell = function(row, col, val, oldval) { return true; } // stub
-
-	g.save = function() {
-		g.modified_cells().each(function() {
-			//
-		})
+	g.exit_row = function(row) {
+		return g.exit_edit() && g.save()
 	}
 
-	// code all policy below this line and only using the g.* api -------------
-	// ------------------------------------------------------------------------
+	g.oldval = function(cell) {
+		var val = cell.data('oldval')
+		if (!is(val))
+			val = cell.find('.value').html().trim()
+		return val
+	}
+
+	g.save = function() {
+
+		var records = []
+		g.rows().each(function(i, row) {
+			// collect modified values
+			var values
+			g.cells(row).each(function(j, cell) {
+				var val = $(cell).data('newval')
+				if (!is(val)) return
+				values = values || {}
+				values[data.fields[j].name] = val
+			})
+			if (values) {
+				var id = g.oldval(g.cell(row, idfield_index))
+				records.push({id: id, values: values})
+			}
+		})
+
+		if (!records.length)
+			return true
+
+		g.save_records(records, function(records) {
+			// update records
+			for (var i = 0; i < records.length; i++) {
+				var rec = records[i]
+				var row = g.rowbyid(rec.id)
+				g.cells(row).each(function(i, cell) {
+					g.val(cell, rec[i])
+				})
+			}
+			g.commit()
+		})
+		return true
+	}
+
+	g.save_records = function(records, success) {} // stub
 
 	// key bindings -----------------------------------------------------------
 
 	$(document).keydown(function(e) {
 
-		var shift = e.shiftKey
-		var altshift = e.altKey && shift
 		var input = g.input()
 		var caret = g.caret()
 
-		if (e.which == 39 && (
+		// left and right arrows
+		if ((e.which == 37 || e.which == 39) && (
 				!input ||
-					(g.immediate_mode && (
-						altshift || (
+					((g.immediate_mode || g.quick_edit) && (
+						(e.altKey && e.shiftKey && !e.ctrlKey) || (
 							g.focused() &&
-							g.caret() == input.val().length &&
-							!shift))))
+							g.caret() == (e.which == 37 ? 0 : input.val().length) &&
+							!e.shiftKey))))
 		) {
-			// right arrow
-			if (g.move(0, 1) && input && g.immediate_mode)
-				g.enter_edit(0)
+			if (g.move(0, e.which == 37 ? -1 : 1) && input && g.immediate_mode)
+				g.enter_edit(e.which == 37 ? -1 : 0)
 			e.preventDefault()
-		} else if (e.which == 37 && (
-				!input ||
-					(g.immediate_mode && (
-						altshift || (
-							g.focused() &&
-							g.caret() == 0 &&
-							!shift))))
+			return
+		}
+
+		// up, down, page-up, page-down
+		if ((e.which == 38 || e.which == 33 ||
+				e.which == 40 || e.which == 34
+			) && (!input || g.immediate_mode || g.quick_edit)
 		) {
-			// left arrow
-			if (g.move(0, -1) && input && g.immediate_mode)
-				g.enter_edit(-1)
-			e.preventDefault()
-		} else if (
-			e.which == 38 || e.which == 33 || // up, page-up
-			e.which == 40 || e.which == 34    // down, page-down
-		) {
-			if (input && !g.immediate_mode) return
 			var rows
 			switch(e.which) {
 				case 38: rows = -1; break
@@ -250,27 +332,51 @@ function grid(data, dst, g) {
 				case 33: rows = -g.page_rows; break
 				case 34: rows =  g.page_rows; break
 			}
+			var selected = text_selected(input)
 			if (g.move(rows, 0) && input && g.immediate_mode)
-				g.enter_edit(caret)
+				g.enter_edit(caret, selected)
 			e.preventDefault()
-		} else if (e.which == 13 || e.which == 113) {
-			// enter or F2
+			return
+		}
+
+		// enter or F2
+		if (e.which == 13 || e.which == 113) {
 			if (!input)
-				g.enter_edit(-1, true)
+				g.enter_edit(null, true)
 			else if (e.which == 13)
 				g.exit_edit()
 			e.preventDefault()
-		} else if (e.which == 27) {
-			// esc
+			return
+		}
+
+		// esc
+		if (e.which == 27) {
 			g.exit_edit(true)
 			e.preventDefault()
+			return
 		}
+
 	})
+
+	// printable characters: enter quick edit mode
+	$(document).keypress(function(e) {
+		if (e.charCode == 0) return
+		if (e.ctrlKey  || e.metaKey || e.altKey) return
+		if (g.input()) return
+		g.enter_edit(null, true)
+		g.quick_edit = true
+	})
+
+	// render -----------------------------------------------------------------
+
+	g.render(data, dst)
 
 	// mouse bindings ---------------------------------------------------------
 
 	g.cells().click(function() {
-		g.activate_cell(this)
+		if (g.activate_cell(this))
+			if (g.immediate_mode)
+				g.enter_edit(-1, true)
 	})
 
 	g.fields().click(function() {
@@ -279,7 +385,7 @@ function grid(data, dst, g) {
 			(data.fields[i].sort == 'asc' ? 'desc' : 'asc'))
 	})
 
-	// select first row and return --------------------------------------------
+	// activate first cell ----------------------------------------------------
 
 	g.activate_cell(g.cell(0, 0))
 	if (g.immediate_mode)
@@ -301,13 +407,25 @@ action.grid = function() {
 		args[i] = encodeURIComponent(args[i])
 
 	function load(orderby) {
+
 		var url = '/dataset.json/'+args.join('/')+location.search+
 			(orderby ? (location.search ? '&' : '?')+'sort='+orderby : '')
+
 		load_main(url, function(data) {
+
 			var g = grid(data, '#main', {
-				immediate_mode: true,
+				//immediate_mode: true,
 			})
+
 			g.fetch = load
+
+			var url = '/dataset.json/'+args.join('/')+'/update'+location.search
+			g.save_records = function(records, success) {
+				post(url, {records: records}, function(data) {
+					success(data.records)
+				})
+			}
+
 		})
 	}
 	load()
