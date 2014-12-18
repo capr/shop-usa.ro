@@ -1204,7 +1204,7 @@ end
 											<a href="/p/{{{pid}}}/{{{coid}}}"><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 										</td>
 										<td>
-											<a><b>{{{bname}}}</b> {{{name}}}</a>
+											<a href="/p/{{{pid}}}/{{{coid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 											<br>
 											<span class=price>
 												<t class=en>{{{price}}} RON</t>
