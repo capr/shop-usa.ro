@@ -138,11 +138,8 @@ function cat_url(catid, pagenum, bid, order, q) {
 	pagenum = pagenum || 1
 	order = order == 'date' ? null : order
 
-	if (catid == g_home_catid && pagenum == 1 && !bid && !order && !q)
-		return '/'
-
-	return
-		'/cat'+
+	return (
+		(catid != g_home_catid || pagenum != 1 || bid || order || q ? '/cat' : '/')+
 		(catid != g_home_catid ?
 			'/'+slug(catid, g_cats[catid].name) :
 			(pagenum > 1 || bid || order || q ? '/-' : ''))+
@@ -150,6 +147,7 @@ function cat_url(catid, pagenum, bid, order, q) {
 		(bid ? '/'+bid : (order || q ? '/-' : ''))+
 		(order ? '/'+order : (q ? '/-' : ''))+
 		optarg(encodeURIComponent(q||''))
+	)
 }
 
 function invalidate_cats() {
