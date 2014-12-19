@@ -21,7 +21,7 @@ function load_main(url, success, error, opt) {
 function init_homepage() {
 
 	$('.banner').unslider({
-		speed: 1500,
+		speed: 500,
 		delay: 5000,
 		keys: false,
 		dots: true,
