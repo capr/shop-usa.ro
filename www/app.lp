@@ -165,8 +165,8 @@ end
 				</map>
 				<map name="slide3">
 					<area alt=""
-						title:en="check out all fashion products"
-						title:ro="vezi toate articolele fashion"
+						title:en="check out all products"
+						title:ro="vezi toate articolele"
 						href="https://shop-usa.ro/cat/haine-200027563" shape="rect"
 						coords="690,257,835,292">
 				</map>
