@@ -3,14 +3,13 @@ FLASHBUGS
 - forgot pass link -> trigger usr event
 - google fucking analytics keeps the spinning wheel turning as usual...
 
-
-- _escaped_fragment_
-
 FLASHFEATS
 ----------
 - order history: show order status and per-item status, especially "canceled"
 - facebook like button on the page header
-- use fa icons for grid/list
+
+
+- _escaped_fragment_
 
 
 USABILITY BUGS (CONFUSIONS)
@@ -47,7 +46,6 @@ FUNCTIONALITY
 
 NICE-TO-HAVES
 -------------
-- homepage banner slider
 - homepage custom bands
 	- add-to-homepage button
 	- homepage product list widget

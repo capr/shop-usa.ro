@@ -312,7 +312,7 @@ function action(action, ...)
 		local ext = path:match'%.([^%.]+)$'
 		if ext == 'cat' then
 			local fext = action:match'%.([^%.]+)$'
-			chunk = catlist(path, fext == 'js' and ';' or '\n')
+			chunk = catlist(path, fext == 'js' and ';\n' or '\n')
 		elseif ext == 'lp' then
 			lp.setoutfunc'out'
 			local template = glue.readfile(path)

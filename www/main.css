@@ -431,11 +431,12 @@ input.price {
 }
 
 .grid .cell.active {
-	background-color: #ffc;
+	background-color: #fff;
+	outline: 1px solid #bbb;
 }
 
 .grid .cell.edit {
-	outline: 1px solid #999 !important;
+	outline: 1px solid #339;
 }
 
 .grid .input_div {
@@ -445,7 +446,6 @@ input.price {
 .grid .input {
 	font-size: 100%;
 	padding: 0;
-	background-color: #ffc;
 	position: relative;
 	top: 0px;
 	left: 0px;

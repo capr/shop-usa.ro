@@ -1574,7 +1574,7 @@ end
 				<t class=ro>Luni-Vineri, intre orele 10-17</t>
 			</td>
 			<td valign=top>
-				<iframe width="450" height="450" frameborder="0" style="border:0"
+				<iframe width="650" height="450" frameborder="0" style="border:0"
 					src="https://www.google.com/maps/embed/v1/place?q=str%20Atena%20nr%204%20Bucuresti&key=AIzaSyBWOoJutPpIR1jCYXxILQkX0o5hNYrSSu8&zoom=15"></iframe>
 			</td>
 		</tr>
