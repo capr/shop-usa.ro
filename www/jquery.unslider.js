@@ -28,7 +28,8 @@
 			complete: f, // when a slide's finished
 			keys: !f, // keyboard shortcuts - disable if it breaks things
 			dots: f, // display ••••o• pagination
-			fluid: f // is it a percentage width?,
+			fluid: f, // is it a percentage width?,
+			easing: 'easeOutQuint',
 		};
 
 		//  Create a deep clone for methods where context changes
@@ -105,8 +106,8 @@
 			};
 
 			//  Swipe support
-			if($.event.swipe) {
-				this.el.on('swipeleft', _.prev).on('swiperight', _.next);
+			if($.event.special.swipe) {
+				this.el.on('swipeleft', _.next).on('swiperight', _.prev);
 			}
 		};
 
@@ -117,6 +118,7 @@
 			if(index < 0) index = (this.items.length - 1);
 
 			var target = this.items.eq(index);
+			target.show()
 			var obj = {height: target.outerHeight()};
 			var speed = cb ? 5 : this.opts.speed;
 
@@ -124,7 +126,8 @@
 				//  Handle those pesky dots
 				_.el.find('.dot:eq(' + index + ')').addClass('active').siblings().removeClass('active');
 
-				this.el.animate(obj, speed) && this.ul.animate($.extend({left: '-' + index + '00%'}, obj), speed, function(data) {
+				this.el.animate(obj, speed, _.opts.easing) &&
+				this.ul.animate($.extend({left: '-' + index + '00%'}, obj), speed, _.opts.easing, function(data) {
 					_.current = index;
 					$.isFunction(_.opts.complete) && !cb && _.opts.complete(_.el);
 				});

@@ -388,6 +388,7 @@ function url_changed() {
 	unbind_keydown_all()
 	analytics_pageview() // note: title is not available at this time
 	var t = parse_url(location.pathname)
+	check_homepage()
 	t.handler.apply(null, t.args)
 }
 

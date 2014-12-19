@@ -346,7 +346,8 @@ input.price {
 	text-align: right;
 }
 
-/* back-to-top button */
+/* back-to-top button ----------------------------------------------------- */
+
 .cd-top {
 	display: inline-block;
 	width: 40px;
@@ -372,6 +373,43 @@ input.price {
 }
 .cd-top.cd-fade-out {
   opacity: .4;
+}
+
+/* slider ----------------------------------------------------------------- */
+
+.banner { position: relative; overflow: auto; }
+    .banner li { list-style: none; }
+        .banner ul li { float: left; }
+
+.banner .dots {
+	position: absolute;
+	left: -20px;
+	right: 0;
+	bottom: -5px;
+}
+
+.banner .dots li {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	margin: 0 4px;
+
+	text-indent: -999em;
+
+	border: 2px solid #000;
+	border-radius: 6px;
+
+	cursor: pointer;
+	opacity: .4;
+
+	-webkit-transition: background .5s, opacity .5s;
+	-moz-transition: background .5s, opacity .5s;
+	transition: background .5s, opacity .5s;
+}
+
+.banner .dots li.active {
+	background: #fff;
+	opacity: 1;
 }
 
 /* grid ------------------------------------------------------------------- */

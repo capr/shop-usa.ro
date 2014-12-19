@@ -18,9 +18,29 @@ function load_main(url, success, error, opt) {
 
 // init ----------------------------------------------------------------------
 
+function init_homepage() {
+
+	$('.banner').unslider({
+		speed: 1500,
+		delay: 5000,
+		keys: false,
+		dots: true,
+		fluid: false
+	})
+
+}
+
+function check_homepage() {
+	if (location.pathname == '/')
+		$('#homepage').show()
+	else
+		$('#homepage').hide()
+}
+
 $(function() {
 	scroll_top()
 
+	init_homepage()
 	init_sidebar()
 	init_newsletter()
 	init_search()
