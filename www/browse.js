@@ -29,6 +29,11 @@ function update_prods(prods) {
 		cart.add(upid(this, 'pid'))
 	})
 
+	if (location.pathname == '/')
+		$('#homepage').show()
+	else
+		$('#homepage').hide()
+
 	g_prods = prods
 }
 
@@ -41,14 +46,7 @@ function load_prods(catid, pagenum, bid, order, q) {
 			optarg(encodeURIComponent(q||'')),
 		function(response) {
 			if (!$('#prods').length) {
-
-				if (location.pathname == '/')
-					$('#homepage').show()
-				else
-					$('#homepage').hide()
-
 				render('browse', null, '#main')
-
 				init_viewstyle()
 			}
 			update_pagenav(response.prod_count, pagenum, bid, order || 'date', q)
