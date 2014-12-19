@@ -30,13 +30,6 @@ function init_homepage() {
 
 }
 
-function check_homepage() {
-	if (location.pathname == '/')
-		$('#homepage').show()
-	else
-		$('#homepage').hide()
-}
-
 $(function() {
 	scroll_top()
 
