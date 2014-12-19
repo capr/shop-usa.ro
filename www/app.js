@@ -28,6 +28,7 @@ function init_homepage() {
 		fluid: false
 	})
 
+	$('.banner img').show().maphilight()
 }
 
 $(function() {

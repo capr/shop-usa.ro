@@ -11,9 +11,12 @@ jquery.toasty.js
 jquery.powertip.js
 jquery.dropdown.js
 jquery.caret.js
+
 jquery.event.move.js
 jquery.event.swipe.js
 jquery.unslider.js
+jquery.maphighlight.js
+
 mustache.js
 webb.js
 config.js

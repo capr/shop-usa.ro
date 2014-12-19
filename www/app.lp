@@ -144,11 +144,32 @@ end
 			<div id=homepage>
 				<div class=banner>
 					<ul>
-						<li><img src="/slide1.jpg"></li>
-						<li class=hidden><img src="/slide2.jpg"></li>
-						<li class=hidden><img src="/slide3.jpg"></li>
+						<li><img src="/slide1.jpg" usemap="#slide1"></li>
+						<li class=hidden><img src="/slide2.jpg" usemap="#slide2"></li>
+						<li class=hidden><img src="/slide3.jpg" usemap="#slide3"></li>
 					</ul>
 				</div>
+				<map name="slide1">
+					<area alt=""
+						title:en="check out all discounts"
+						title:ro="vezi toate discounturile"
+						href="https://shop-usa.ro/cat/-/-/-/discount" shape="rect"
+						coords="490,250,639,287">
+				</map>
+				<map name="slide2">
+					<area alt=""
+						title:en="check out all products in the range"
+						title:ro="vezi toate produsele din gama"
+						href="/cat/incaltaminte-sport-100027580" shape="rect"
+						coords="720,247,869,287">
+				</map>
+				<map name="slide3">
+					<area alt=""
+						title:en="check out all fashion products"
+						title:ro="vezi toate articolele fashion"
+						href="https://shop-usa.ro/cat/haine-200027563" shape="rect"
+						coords="690,257,835,292">
+				</map>
 			</div>
 			<div id=main></div>
 			<a class="cd-top">Top</a>
