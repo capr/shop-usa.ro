@@ -1806,13 +1806,13 @@ end
 				<tr>
 					{{#fields}}
 					<th align=left class="nowrap field">
-						<a>{{{name}}}</a><i style="float: right;" class="sorticon fa fa-sort-{{sort}}"></i>
+						<a>{{{name}}}<i style="float: right;" class="sorticon fa fa-sort-{{sort}}"></i></a>
 					</th>
 					{{/fields}}
 				</tr>
 			</thead>
 			<tbody>
-				{{#rows}}
+				{{#values}}
 				<tr class=row>
 					{{#.}}
 					<td class="nowrap cell">
@@ -1820,7 +1820,7 @@ end
 					</td>
 					{{/.}}
 				</tr>
-				{{/rows}}
+				{{/values}}
 			</tbody>
 		</table>
 	</center>

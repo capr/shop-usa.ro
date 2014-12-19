@@ -11,9 +11,10 @@ function text_selected(input) {
 	return p0 == 0 && p1 == input.val().length
 }
 
-function grid(data, dst, g) {
+function grid(g) {
 
-	var g = $.extend({
+	var g = $.extend(true, {
+		dst: '#main',
 		page_rows: 20,
 		immediate_mode: false,
 	}, g)
@@ -21,16 +22,17 @@ function grid(data, dst, g) {
 	// data mappings ----------------------------------------------------------
 
 	var idfield_index
-	for (var j = 0; j < data.fields.length; j++)
-		if (data.fields[j].name == data.idfield) {
-			idfield_index = j
-			break
-		}
 
-	function prepare_data(data) {
-		for (var i = 0; i < data.rows.length; i++) {
-			var row = data.rows[i]
-			for (var j = 0; j < data.fields.length; j++) {
+	function get_field_index(fieldname) {
+		for (var j = 0; j < g.fields.length; j++)
+			if (g.fields[j].name == fieldname)
+				return j
+	}
+
+	function prepare_data() {
+		for (var i = 0; i < g.values.length; i++) {
+			var row = g.values[i]
+			for (var j = 0; j < g.fields.length; j++) {
 				if (!row[j])
 					row[j] = '&nbsp;' // prevent the template from skipping the cell
 			}
@@ -38,10 +40,11 @@ function grid(data, dst, g) {
 	}
 
 	var idmap = {} // id: row
+
 	function make_idmap(data) {
 		var rows = g.rows()
-		for (var i = 0; i < data.rows.length; i++) {
-			var row = data.rows[i]
+		for (var i = 0; i < g.values.length; i++) {
+			var row = g.values[i]
 			var id = row[idfield_index]
 			idmap[id] = rows[i]
 		}
@@ -51,18 +54,19 @@ function grid(data, dst, g) {
 		return idmap[id]
 	}
 
-	g.render = function(data, dst) {
-		dst = $(dst)
-		prepare_data(data)
-		render('grid', data, dst)
+	g.render = function() {
+		var dst = $(g.dst)
+		idfield_index = get_field_index(g.idfield)
+		prepare_data()
+		render('grid', g, dst)
 		g.grid = dst.find('.grid')
-		make_idmap(data)
+		make_idmap(g.data)
 	}
 
 	// selectors --------------------------------------------------------------
 
-	g.row_count = function() { return data.rows.length; }
-	g.col_count = function() { return data.fields.length; }
+	g.row_count = function() { return g.values.length; }
+	g.col_count = function() { return g.fields.length; }
 
 	g.rows = function() { return g.grid.find('.row'); }
 	g.row = function(i) {
@@ -78,7 +82,7 @@ function grid(data, dst, g) {
 		i = clamp(i, 0, g.col_count() - 1)
 		return row.find('.cell:nth-child('+(i+1)+')')
 	}
-	g.fields = function() { return g.grid.find('.field'); }
+	g.cols = function() { return g.grid.find('.field'); }
 	g.rowof = function(cell) { return cell.parent(); }
 
 	// cell values ------------------------------------------------------------
@@ -87,24 +91,24 @@ function grid(data, dst, g) {
 		cell = $(cell)
 		var span = cell.find('.value')
 		var oldval = span.html().trim()
-		if (val === undefined)
+		if (val == undefined) // get it
 			return oldval
-		if (val != oldval) {
+		if (val !== oldval) { // set it
 			span.html(val)
-			cell.data('newval', val)
-			cell.data('oldval', oldval)
+			return oldval
 		}
 	}
 
 	g.commit = function() {
 		g.cells().each(function(i,cell) {
-			$(cell).removeData('newval oldval')
+			$(cell).removeData('newval oldval serverval').removeClass('changed')
 		})
 	}
 
 	g.rollback = function() {
 		g.cells().each(function(i,cell) {
-			g.val(cell, cell.data('oldval'))
+			var oldval = cell.data('oldval')
+			//g.val(cell, )
 		})
 		g.commit()
 	}
@@ -217,12 +221,19 @@ function grid(data, dst, g) {
 	g.exit_edit = function(cancel) {
 		if (!active_input)
 			return true
+		var cell = active_cell
 		if (!cancel) {
 			var val = active_input.val().trim()
-			g.val(active_cell, val)
+			var oldval = g.val(active_cell, val)
+			if (oldval !== val) {
+				cell.removeClass('rejected corrected')
+				cell.addClass('changed')
+				if (cell.data('oldval') === undefined)
+					cell.data('oldval', oldval)
+			}
 		}
-		active_cell.removeClass('edit')
-		active_cell.find('.input_div').html('')
+		cell.removeClass('edit')
+		cell.find('.input_div').html('')
 		active_input = null
 		g.quick_edit = null
 		return true
@@ -268,10 +279,12 @@ function grid(data, dst, g) {
 			// collect modified values
 			var values
 			g.cells(row).each(function(j, cell) {
-				var val = $(cell).data('newval')
-				if (!is(val)) return
+				cell = $(cell)
+				if (!cell.hasClass('changed')) return
+				var val = g.val(cell)
+				if (val === undefined) return
 				values = values || {}
-				values[data.fields[j].name] = val
+				values[g.fields[j].name] = val
 			})
 			if (values) {
 				var id = g.oldval(g.cell(row, idfield_index))
@@ -288,7 +301,23 @@ function grid(data, dst, g) {
 				var rec = records[i]
 				var row = g.rowbyid(rec.id)
 				g.cells(row).each(function(i, cell) {
-					g.val(cell, rec[i])
+					cell = $(cell)
+					var serverval = rec.values[i]
+					var oldval = cell.data('oldval')
+					var userval = g.val(cell)
+					console.log(serverval, userval, oldval)
+					if (serverval === userval) {
+						g.val(cell, serverval)
+						cell.removeClass('changed rejected corrected')
+					} else if (serverval === oldval) {
+						cell.removeClass('changed corrected')
+						cell.addClass('rejected')
+					} else {
+						cell.data('newval', userval)
+						g.val(cell, serverval)
+						cell.removeClass('changed rejected')
+						cell.addClass('corrected')
+					}
 				})
 			}
 			g.commit()
@@ -369,7 +398,7 @@ function grid(data, dst, g) {
 
 	// render -----------------------------------------------------------------
 
-	g.render(data, dst)
+	g.render()
 
 	// mouse bindings ---------------------------------------------------------
 
@@ -379,10 +408,10 @@ function grid(data, dst, g) {
 				g.enter_edit(-1, true)
 	})
 
-	g.fields().click(function() {
+	g.cols().click(function() {
 		var i = $(this).index()
-		g.fetch(data.fields[i].name + ':' +
-			(data.fields[i].sort == 'asc' ? 'desc' : 'asc'))
+		g.fetch(g.fields[i].name + ':' +
+			(g.fields[i].sort == 'asc' ? 'desc' : 'asc'))
 	})
 
 	// activate first cell ----------------------------------------------------
@@ -412,11 +441,11 @@ action.grid = function() {
 		var url = '/dataset.json/'+args.join('/')+location.search+
 			(orderby ? (location.search ? '&' : '?')+'sort='+orderby : '')
 
-		load_main(url, function(data) {
+		load_main(url, function(g_) {
 
-			var g = grid(data, '#main', {
+			var g = grid($.extend(true, {
 				//immediate_mode: true,
-			})
+			}, g_))
 
 			g.fetch = load
 

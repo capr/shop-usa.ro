@@ -94,7 +94,7 @@ local function sql_grid_fetch(t) --fetch_sql()
 
 		return {
 			fields = fields,
-			rows = rows,
+			values = rows,
 			idfield = self.get_idfield(),
 		}
 	end
