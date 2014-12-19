@@ -138,7 +138,11 @@ function cat_url(catid, pagenum, bid, order, q) {
 	pagenum = pagenum || 1
 	order = order == 'date' ? null : order
 
-	return '/cat'+
+	if (catid == g_home_catid && pagenum == 1 && !bid && !order && !q)
+		return '/'
+
+	return
+		'/cat'+
 		(catid != g_home_catid ?
 			'/'+slug(catid, g_cats[catid].name) :
 			(pagenum > 1 || bid || order || q ? '/-' : ''))+
