@@ -179,6 +179,7 @@ function grid(g) {
 				return
 		}
 		cell.addClass('active')
+		cell[0].scrollIntoView()
 		active_cell = cell
 		return true
 	}
