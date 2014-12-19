@@ -39,7 +39,7 @@ end
 						<form id=nl_form>
 							<label class=small for=nl_email>
 								<t class=en>Stay up-to-date with our latest offers</t>
-								<t class=ro>Aboneaza-te la newsletter</t>
+								<t class=ro>Primeste cele mai noi oferte:</t>
 							</label>
 							<br>
 							<input
