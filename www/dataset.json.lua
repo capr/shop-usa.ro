@@ -131,7 +131,7 @@ local function sql_grid_fetch(t) --fetch_sql()
 				pk = hasflag(col.flags, 2),
 				uk = hasflag(col.flags, 4),
 				unsigned = hasflag(col.flags, 32),
-				readonly =
+				--readonly =
 			}
 		end
 
