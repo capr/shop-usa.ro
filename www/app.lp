@@ -52,7 +52,7 @@ end
 							<div class=errdiv1><div for=nl_email class="error errdiv2 small"></div></div>
 						</form>
 					</td>
-					<td width=200 valign=bottom align=right class=nowrap style="line-height: 100%; border-right: 1px solid #ccc">
+					<td width=230 valign=bottom align=right class=nowrap style="line-height: 100%; border-right: 1px solid #ccc">
 						<div style="margin-right: 20px;">
 							<b>
 								<a href="/contact">CONTACT</a><br>
