@@ -17,6 +17,8 @@ jquery.event.swipe.js
 jquery.unslider.js
 jquery.maphighlight.js
 
+jquery.scrollintoview.js
+
 mustache.js
 webb.js
 config.js
