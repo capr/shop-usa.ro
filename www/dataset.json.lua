@@ -84,11 +84,54 @@ local function sql_grid_fetch(t) --fetch_sql()
 			end
 		end
 
+		--decode field types and flags
+		local coltypes = {
+			[0] = 'number', [1] = 'number',
+			[2] = 'number', [3] = 'number',
+			[4] = 'number', [5] = 'number',
+			[6] = 'null', [7] = 'datetime',
+			[8] = 'number', [9] = 'number',
+			[10] = 'date', [11] = 'time',
+			[12] = 'datetime', [13] = 'number',
+			[14] = 'date', [15] = 'text',
+			[16] = 'number', [17] = 'datetime',
+			[18] = 'datetime', [19] = 'time',
+			[246] = 'number', [247] = 'lookup',
+			[248] = 'list', [249] = 'file',
+			[250] = 'file', [251] = 'file',
+			[252] = 'file', [253] = 'text',
+			[254] = 'text',
+		}
+
+		local nolength = {
+			date = true, time = true, datetime = true,
+			lookup = true, list = true
+		}
+
+		local has_decimals = { [0] = true, [246] = true, }
+
+		local function hasflag(flags, flag)
+			return bit.band(flags, flag) == flag or nil
+		end
+
 		local fields = {}
 		for i,col in ipairs(cols) do
+			local coltype = coltypes[col.type]
+			if coltype == 'file' and not hasflag(col.flags, 128) then
+				coltype = 'text'
+			end
 			fields[i] = {
 				name = col.name,
 				sort = sortcol[col.name],
+				type = coltype,
+				maxsize = not nolength[coltype] and col.length or nil,
+				decimals = has_decimals[col.type] and col.decimals or nil,
+				default = col.default,
+				not_null = hasflag(col.flags, 1),
+				pk = hasflag(col.flags, 2),
+				uk = hasflag(col.flags, 4),
+				unsigned = hasflag(col.flags, 32),
+				readonly =
 			}
 		end
 
@@ -156,8 +199,12 @@ local function rest_grid(grid)
 		local data = json(POST.data)
 		local t = {}
 		for i,rec in ipairs(data.records) do
-			grid.update(rec.id, rec.values)
-			t[#t+1] = grid.get(rec.id)
+			local ok, err = pcall(grid.update, rec.id, rec.values)
+			local rec = grid.get(rec.id)
+			if not ok then
+				rec.error = err
+			end
+			t[#t+1] = rec
 		end
 		return {records = t}
 	end

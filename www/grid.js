@@ -49,7 +49,7 @@ function grid(g) {
 	var toClass = {}.toString
 
 	g.fmt_value = function() {
-		return this === Mustache.NULL ? 'null' : this
+		return (this === Mustache.NULL || this === window) ? 'null' : this
 	}
 
 	g.value_type = function() {
@@ -89,36 +89,33 @@ function grid(g) {
 
 	// cell values ------------------------------------------------------------
 
+	g.cast_val = function(val, refval) {
+		if (typeof refval == 'number') {
+			val = parseFloat(val)
+			if (val != val)
+				val = null
+		}
+		if (typeof refval == 'boolean')
+			val = !!val
+		return val
+	}
+
 	g.val = function(cell, val) {
 		cell = $(cell)
 		var col = cell.index()
 		var row = g.rowof(cell).index()
-		var oldval = g.values[row][col]
-		if (val == undefined) // get it
-			return oldval
-		if (val !== oldval) { // set it
-			if (typeof oldval == 'number')
-				val = parseFloat(val)
-			if (typeof oldval == 'boolean')
-				val = !!val
+		var curval = g.values[row][col]
+		if (val === undefined) // get it
+			return curval
+		if (val !== curval) { // set it
+			val = g.cast_val(val, curval)
 			g.values[row][col] = val
-			cell.find('.value').html(val)
-			return oldval
+			var v = cell.find('.value')
+			v.html(g.fmt_value.call(val))
+			v.removeClass('null string number boolean')
+			v.addClass(g.value_type.call(val))
+			return curval // return the replaced value
 		}
-	}
-
-	g.commit = function() {
-		g.cells().each(function(i,cell) {
-			$(cell).removeData('newval oldval serverval').removeClass('changed')
-		})
-	}
-
-	g.rollback = function() {
-		g.cells().each(function(i,cell) {
-			var oldval = cell.data('oldval')
-			//g.val(cell, )
-		})
-		g.commit()
 	}
 
 	// row selection ----------------------------------------------------------
@@ -232,13 +229,20 @@ function grid(g) {
 			return true
 		var cell = active_cell
 		if (!cancel) {
-			var val = active_input.val().trim()
-			var oldval = g.val(active_cell, val)
-			if (oldval !== val) {
+			var curval = g.val(active_cell)
+			var newval = g.cast_val(active_input.val().trim(), curval)
+			if (newval !== curval) {
+				g.val(cell, newval)
 				cell.removeClass('rejected corrected')
-				cell.addClass('changed')
-				if (cell.data('oldval') === undefined)
-					cell.data('oldval', oldval)
+				var oldval = cell.data('oldval')
+				if (newval !== oldval) {
+					cell.addClass('changed')
+					if (oldval === undefined) {
+						cell.data('oldval', curval)
+						cell.attr('title', 'old value: '+g.fmt_value.call(curval))
+					}
+				} else
+					cell.removeClass('changed')
 			}
 		}
 		cell.removeClass('edit')
@@ -274,11 +278,30 @@ function grid(g) {
 		return g.exit_edit() && g.save()
 	}
 
-	g.oldval = function(cell) {
-		var val = cell.data('oldval')
-		if (!is(val))
-			val = cell.find('.value').html().trim()
-		return val
+	function update_records(records) {
+		for (var i = 0; i < records.length; i++) {
+			var rec = records[i]
+			var row = g.rowbyid(rec.id)
+			g.cells(row).each(function(i, cell) {
+				cell = $(cell)
+				var serverval = rec.values[i]
+				var oldval = cell.data('oldval')
+				var userval = g.val(cell)
+				if (serverval === userval) {
+					g.val(cell, serverval)
+					cell.removeClass('changed rejected corrected')
+				} else if (serverval === oldval) {
+					cell.removeClass('changed corrected')
+					cell.addClass('rejected')
+					cell.attr('title', rec.error)
+				} else {
+					cell.data('newval', userval)
+					g.val(cell, serverval)
+					cell.removeClass('changed rejected')
+					cell.addClass('corrected')
+				}
+			})
+		}
 	}
 
 	g.save = function() {
@@ -291,12 +314,11 @@ function grid(g) {
 				cell = $(cell)
 				if (!cell.hasClass('changed')) return
 				var val = g.val(cell)
-				if (val === undefined) return
 				values = values || {}
 				values[g.fields[j].name] = val
 			})
 			if (values) {
-				var id = g.oldval(g.cell(row, idfield_index))
+				var id = g.val(g.cell(row, idfield_index))
 				records.push({id: id, values: values})
 			}
 		})
@@ -304,32 +326,7 @@ function grid(g) {
 		if (!records.length)
 			return true
 
-		g.save_records(records, function(records) {
-			// update records
-			for (var i = 0; i < records.length; i++) {
-				var rec = records[i]
-				var row = g.rowbyid(rec.id)
-				g.cells(row).each(function(i, cell) {
-					cell = $(cell)
-					var serverval = rec.values[i]
-					var oldval = cell.data('oldval')
-					var userval = g.val(cell)
-					if (serverval === userval) {
-						g.val(cell, serverval)
-						cell.removeClass('changed rejected corrected')
-					} else if (serverval === oldval) {
-						cell.removeClass('changed corrected')
-						cell.addClass('rejected')
-					} else {
-						cell.data('newval', userval)
-						g.val(cell, serverval)
-						cell.removeClass('changed rejected')
-						cell.addClass('corrected')
-					}
-				})
-			}
-			g.commit()
-		})
+		g.save_records(records, update_records)
 		return true
 	}
 
@@ -411,7 +408,9 @@ function grid(g) {
 	// mouse bindings ---------------------------------------------------------
 
 	g.cells().click(function() {
-		if (g.activate_cell(this))
+		if (this == g.active_cell()[0])
+			g.enter_edit(-1, true)
+		else if (g.activate_cell(this))
 			if (g.immediate_mode)
 				g.enter_edit(-1, true)
 	})
