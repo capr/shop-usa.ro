@@ -59,6 +59,120 @@ local function pack_rows(t, cols)
 	return rows
 end
 
+local pack_fields = (function()
+
+	local mytypes = {
+		[0] = 'decimal', 'tiny',
+		'short', 'long',
+		'float', 'double',
+		'null', 'timestamp',
+		'longlong' ,'int24',
+		'date', 'time',
+		'datetime', 'year',
+		'newdate', 'varchar',
+		'bit',
+		'timestamp2',
+		'datetime2',
+		'time2',
+		[246] = 'newdecimal',
+		[247] = 'enum',
+		[248] = 'set',
+		[249] = 'tiny_blob',
+		[250] = 'medium_blob',
+		[251] = 'long_blob',
+		[252] = 'blob',
+		[253] = 'var_string',
+		[254] = 'string',
+		[255] = 'geometry',
+	}
+
+	local coltypes = {
+		decimal = 'number',
+		tiny = 'number',
+		short = 'number',
+		long = 'number',
+		float = 'number',
+		double = 'number',
+		null = 'null',
+		timestamp = 'datetime',
+		longlong = 'number',
+		int24 = 'number',
+		date = 'date',
+		time = 'time',
+		datetime = 'datetime',
+		year = 'number',
+		newdate = 'date',
+		varchar = 'text',
+		bit = 'number',
+		timestamp2 = 'datetime',
+		datetime2 = 'datetime',
+		time2 = 'time',
+		newdecimal = 'number',
+		enum = 'lookup',
+		set = 'lookup',
+		tiny_blob = 'file',
+		medium_blob = 'file',
+		long_blob = 'file',
+		blob = 'file',
+		var_string = 'text',
+		string = 'text',
+		geometry = 'text',
+	}
+
+	local nolength = glue.index{'date', 'time', 'datetime', 'lookup'}
+	local inttypes = glue.index{'tiny', 'short', 'long', 'longlong', 'int24', 'year', 'bit'}
+	local decimals = glue.index{'decimal', 'newdecimal'}
+
+	local not_null_flag = 1
+	local pk_flag = 2
+	local uk_flag = 4
+	local unsigned_flag = 32
+	local binary_flag = 128
+	local autoinc_flag = 512
+
+	local function hasflag(flags, flag)
+		return bit.band(flags, flag) == flag or nil
+	end
+
+	return function(cols)
+		local fields = {}
+		for i,col in ipairs(cols) do
+			local mytype = mytypes[col.type]
+			local coltype = coltypes[mytype]
+			if coltype == 'file' and not hasflag(col.flags, binary_flag) then
+				coltype = 'text'
+			end
+			fields[i] = {
+				name = col.name,
+				type = coltype,
+				maxlength = not nolength[coltype] and col.length or nil,
+				decimals = inttypes[mytype] and 0 or decimals[mytype] and col.decimals or nil,
+				default = col.default,
+				not_null = hasflag(col.flags, not_null_flag),
+				pk = hasflag(col.flags, pk_flag),
+				uk = hasflag(col.flags, uk_flag),
+				unsigned = hasflag(col.flags, unsigned_flag),
+				autoinc = hasflag(col.flags, autoinc_flag),
+			}
+			fields[i].readonly = fields[i].autoinc
+		end
+		return fields
+	end
+end)()
+
+local function set_sort_flags(fields, orderby)
+	local sortcol = {}
+	if not orderby then return end
+	for s in glue.gsplit(orderby, ',') do
+		local col, dir = s:match'^([^%s]+)%s*(.*)$'
+		if dir == '' then dir = 'asc' end
+		sortcol[col] = dir
+	end
+	for i,field in ipairs(fields) do
+		field.sort = sortcol[field.name]
+	end
+end
+
 local function sql_grid_fetch(t) --fetch_sql()
 
 	local self = t or {}
@@ -73,67 +187,8 @@ local function sql_grid_fetch(t) --fetch_sql()
 			' limit '..startrow..', '..maxrows)
 
 		local rows = pack_rows(t, cols)
-
-		--set fields sort flag from the orderby spec
-		local sortcol = {}
-		if orderby then
-			for s in glue.gsplit(orderby, ',') do
-				local col, dir = s:match'^([^%s]+)%s*(.*)$'
-				if dir == '' then dir = 'asc' end
-				sortcol[col] = dir
-			end
-		end
-
-		--decode field types and flags
-		local coltypes = {
-			[0] = 'number', [1] = 'number',
-			[2] = 'number', [3] = 'number',
-			[4] = 'number', [5] = 'number',
-			[6] = 'null', [7] = 'datetime',
-			[8] = 'number', [9] = 'number',
-			[10] = 'date', [11] = 'time',
-			[12] = 'datetime', [13] = 'number',
-			[14] = 'date', [15] = 'text',
-			[16] = 'number', [17] = 'datetime',
-			[18] = 'datetime', [19] = 'time',
-			[246] = 'number', [247] = 'lookup',
-			[248] = 'list', [249] = 'file',
-			[250] = 'file', [251] = 'file',
-			[252] = 'file', [253] = 'text',
-			[254] = 'text',
-		}
-
-		local nolength = {
-			date = true, time = true, datetime = true,
-			lookup = true, list = true
-		}
-
-		local has_decimals = { [0] = true, [246] = true, }
-
-		local function hasflag(flags, flag)
-			return bit.band(flags, flag) == flag or nil
-		end
-
-		local fields = {}
-		for i,col in ipairs(cols) do
-			local coltype = coltypes[col.type]
-			if coltype == 'file' and not hasflag(col.flags, 128) then
-				coltype = 'text'
-			end
-			fields[i] = {
-				name = col.name,
-				sort = sortcol[col.name],
-				type = coltype,
-				maxsize = not nolength[coltype] and col.length or nil,
-				decimals = has_decimals[col.type] and col.decimals or nil,
-				default = col.default,
-				not_null = hasflag(col.flags, 1),
-				pk = hasflag(col.flags, 2),
-				uk = hasflag(col.flags, 4),
-				unsigned = hasflag(col.flags, 32),
-				--readonly =
-			}
-		end
+		local fields = pack_fields(cols)
+		set_sort_flags(fields, orderby)
 
 		return {
 			fields = fields,

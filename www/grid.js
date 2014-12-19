@@ -57,12 +57,25 @@ function grid(g) {
 			(toClass.call(this).match(/ (\w+)\]/)[1]).toLowerCase()
 	}
 
+	function set_classes() {
+		g.cells().each(function(_, cell) {
+			cell = $(cell)
+			var col = cell.index()
+			var row = g.rowof(cell).index()
+			var field = g.fields[col]
+			var val = g.values[row][col]
+			if (field.readonly)
+				cell.addClass('readonly')
+		})
+	}
+
 	g.render = function() {
 		var dst = $(g.dst)
 		idfield_index = get_field_index(g.idfield)
 		render('grid', g, dst)
 		g.grid = dst.find('.grid')
 		make_idmap(g.data)
+		set_classes()
 	}
 
 	// selectors --------------------------------------------------------------
@@ -89,14 +102,15 @@ function grid(g) {
 
 	// cell values ------------------------------------------------------------
 
-	g.cast_val = function(val, refval) {
-		if (typeof refval == 'number') {
+	g.cast = function(val, col) {
+		var field = g.fields[col]
+		if (field.type == 'number') {
 			val = parseFloat(val)
 			if (val != val)
 				val = null
-		}
-		if (typeof refval == 'boolean')
+		} else if (field.type == 'boolean') {
 			val = !!val
+		}
 		return val
 	}
 
@@ -108,7 +122,7 @@ function grid(g) {
 		if (val === undefined) // get it
 			return curval
 		if (val !== curval) { // set it
-			val = g.cast_val(val, curval)
+			val = g.cast(val, col)
 			g.values[row][col] = val
 			var v = cell.find('.value')
 			v.html(g.fmt_value.call(val))
@@ -207,12 +221,16 @@ function grid(g) {
 			return active_input
 		var cell = active_cell
 		if (!cell.length) return
+		var field = g.fields[cell.index()]
+		if (field.readonly) return
 		var val = g.val(cell)
 		var w = cell.width()
 		var h = cell.height()
 		var div = cell.find('.input_div')
 		div.html('<input type=text class=input style="width: '+w+'px; height: '+h+'px;">')
 		var input = div.find('input')
+		if (field.maxlength)
+			input.attr('maxlength', field.maxlength)
 		input.val(val)
 		input.focus()
 		if (is(caret))
@@ -230,7 +248,7 @@ function grid(g) {
 		var cell = active_cell
 		if (!cancel) {
 			var curval = g.val(active_cell)
-			var newval = g.cast_val(active_input.val().trim(), curval)
+			var newval = g.cast(active_input.val().trim(), active_cell.index())
 			if (newval !== curval) {
 				g.val(cell, newval)
 				cell.removeClass('rejected corrected')
@@ -261,8 +279,9 @@ function grid(g) {
 		var rowindex = g.active_row().index() + rows
 		var cellindex = g.active_cell().index() + cols
 		var cell = g.cell(rowindex, cellindex)
-		// skip readonly and hidden cells and rows
-		if (cell.is('.readonly') || !cell.is(':visible') || !g.row(rowindex).is(':visible')) {
+		if (cell.is(g.active_cell)) return cell // didn't move
+		// skip hidden cells and rows
+		if (!cell.is(':visible') || !g.row(rowindex).is(':visible')) {
 			return g.near_cell(rows + sign(rows), cols + sign(cols))
 		}
 		return cell
