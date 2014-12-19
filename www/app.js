@@ -22,7 +22,7 @@ function init_homepage() {
 
 	$('.banner').unslider({
 		speed: 500,
-		delay: 5000,
+		delay: 3000,
 		keys: false,
 		dots: true,
 		fluid: false
