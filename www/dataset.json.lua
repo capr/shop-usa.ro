@@ -153,6 +153,7 @@ local pack_fields = (function()
 				uk = hasflag(col.flags, uk_flag),
 				unsigned = hasflag(col.flags, unsigned_flag),
 				autoinc = hasflag(col.flags, autoinc_flag),
+				align = coltype == 'number' and 'right' or 'left',
 			}
 			fields[i].readonly = fields[i].autoinc
 		end

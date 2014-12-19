@@ -1805,7 +1805,7 @@ end
 			<thead>
 				<tr>
 					{{#fields}}
-					<th align=left class="nowrap field">
+					<th align={{{align}}} class="nowrap field">
 						<a>{{{name}}}<i style="float: right;" class="sorticon fa fa-sort-{{sort}}"></i></a>
 					</th>
 					{{/fields}}

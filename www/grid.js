@@ -63,9 +63,10 @@ function grid(g) {
 			var col = cell.index()
 			var row = g.rowof(cell).index()
 			var field = g.fields[col]
-			var val = g.values[row][col]
 			if (field.readonly)
 				cell.addClass('readonly')
+			if (field.align)
+				cell.attr('align', field.align)
 		})
 	}
 
@@ -279,7 +280,7 @@ function grid(g) {
 		var rowindex = g.active_row().index() + rows
 		var cellindex = g.active_cell().index() + cols
 		var cell = g.cell(rowindex, cellindex)
-		if (cell.is(g.active_cell)) return cell // didn't move
+		if (cell.is(g.active_cell)) return cell // didn't move, prevent recursion
 		// skip hidden cells and rows
 		if (!cell.is(':visible') || !g.row(rowindex).is(':visible')) {
 			return g.near_cell(rows + sign(rows), cols + sign(cols))
