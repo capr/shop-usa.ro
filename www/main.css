@@ -444,7 +444,18 @@ input.price {
 }
 
 .grid .field a { color: #fff; }
-.grid .field a:hover { color: #f80; }
+.grid .field a:hover { color: #ff0; }
+
+.grid .sorticon {
+	font-size: 140%;
+	color: #fff;
+	width: 1em;
+}
+
+.grid .sorticon.fa-sort-asc {
+	position: relative;
+	top: 5px;
+}
 
 .grid .row.selected {
 	background-color: #e3e3e3;
