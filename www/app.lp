@@ -1572,6 +1572,12 @@ end
 				</h3>
 				<t class=en>Monday to Friday, between 10-17</t>
 				<t class=ro>Luni-Vineri, intre orele 10-17</t>
+
+				<br>
+				<br>
+				<a href="https://www.facebook.com/pages/Shop-Usa/734267986593458" target=_blank>
+					<img style="display: inline-block;" src="/f.png">
+				</a>
 			</td>
 			<td valign=top>
 				<iframe width="650" height="450" frameborder="0" style="border:0"
