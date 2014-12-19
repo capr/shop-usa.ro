@@ -329,12 +329,14 @@
     return match;
   };
 
+  var NULL = {};
+
   /**
    * Represents a rendering context by wrapping a view object and
    * maintaining a reference to the parent context.
    */
   function Context(view, parentContext) {
-    this.view = view == null ? {} : view;
+    this.view = view === null ? NULL : view;
     this.cache = { '.': this.view };
     this.parent = parentContext;
   }
@@ -368,11 +370,11 @@
 
           while (value != null && index < names.length)
             value = value[names[index++]];
-        } else {
+        } else if (typeof context.view == 'object') {
           value = context.view[name];
         }
 
-        if (value != null)
+        if (value !== undefined)
           break;
 
         context = context.parent;
@@ -525,7 +527,7 @@
   };
 
   mustache.name = "mustache.js";
-  mustache.version = "0.8.1";
+  mustache.version = "0.8.2";
   mustache.tags = [ "{{", "}}" ];
 
   // All high-level mustache.* functions use this writer.
@@ -574,5 +576,6 @@
   mustache.Scanner = Scanner;
   mustache.Context = Context;
   mustache.Writer = Writer;
+  mustache.NULL = NULL;
 
 }));

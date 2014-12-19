@@ -1816,7 +1816,7 @@ end
 				<tr class=row>
 					{{#.}}
 					<td class="nowrap cell">
-						<div class=input_div></div><span class=value>{{{.}}}</span>
+						<div class=input_div></div><span class="value {{{value_type}}}">{{fmt_value}}</span>
 					</td>
 					{{/.}}
 				</tr>

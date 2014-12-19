@@ -19,7 +19,7 @@ function grid(g) {
 		immediate_mode: false,
 	}, g)
 
-	// data mappings ----------------------------------------------------------
+	// row by id --------------------------------------------------------------
 
 	var idfield_index
 
@@ -27,16 +27,6 @@ function grid(g) {
 		for (var j = 0; j < g.fields.length; j++)
 			if (g.fields[j].name == fieldname)
 				return j
-	}
-
-	function prepare_data() {
-		for (var i = 0; i < g.values.length; i++) {
-			var row = g.values[i]
-			for (var j = 0; j < g.fields.length; j++) {
-				if (!row[j])
-					row[j] = '&nbsp;' // prevent the template from skipping the cell
-			}
-		}
 	}
 
 	var idmap = {} // id: row
@@ -54,10 +44,22 @@ function grid(g) {
 		return idmap[id]
 	}
 
+	// rendering --------------------------------------------------------------
+
+	var toClass = {}.toString
+
+	g.fmt_value = function() {
+		return this === Mustache.NULL ? 'null' : this
+	}
+
+	g.value_type = function() {
+		return this === Mustache.NULL ? 'null' :
+			(toClass.call(this).match(/ (\w+)\]/)[1]).toLowerCase()
+	}
+
 	g.render = function() {
 		var dst = $(g.dst)
 		idfield_index = get_field_index(g.idfield)
-		prepare_data()
 		render('grid', g, dst)
 		g.grid = dst.find('.grid')
 		make_idmap(g.data)
@@ -89,12 +91,18 @@ function grid(g) {
 
 	g.val = function(cell, val) {
 		cell = $(cell)
-		var span = cell.find('.value')
-		var oldval = span.html().trim()
+		var col = cell.index()
+		var row = g.rowof(cell).index()
+		var oldval = g.values[row][col]
 		if (val == undefined) // get it
 			return oldval
 		if (val !== oldval) { // set it
-			span.html(val)
+			if (typeof oldval == 'number')
+				val = parseFloat(val)
+			if (typeof oldval == 'boolean')
+				val = !!val
+			g.values[row][col] = val
+			cell.find('.value').html(val)
 			return oldval
 		}
 	}
@@ -305,7 +313,6 @@ function grid(g) {
 					var serverval = rec.values[i]
 					var oldval = cell.data('oldval')
 					var userval = g.val(cell)
-					console.log(serverval, userval, oldval)
 					if (serverval === userval) {
 						g.val(cell, serverval)
 						cell.removeClass('changed rejected corrected')
