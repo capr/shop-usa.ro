@@ -1801,7 +1801,7 @@ end
 
 <script type="text/x-mustache" id=grid_template>
 	<center>
-		<table class=grid width=90%>
+		<table class=grid width=100%>
 			<thead>
 				<tr>
 					{{#fields}}

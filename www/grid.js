@@ -401,6 +401,7 @@ action.grid = function() {
 	})
 
 	$('#layout').html('<div id=main></div>')
+	$('body').css('margin-left', 0)
 
 	var args = Array.prototype.slice.call(arguments)
 	for (var i = 0; i < args.length; i++)
