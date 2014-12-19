@@ -308,17 +308,19 @@ function grid(g) {
 				var oldval = cell.data('oldval')
 				var userval = g.val(cell)
 				if (serverval === userval) {
-					g.val(cell, serverval)
 					cell.removeClass('changed rejected corrected')
+					cell.removeData('oldval')
 				} else if (serverval === oldval) {
 					cell.removeClass('changed corrected')
 					cell.addClass('rejected')
 					cell.attr('title', rec.error)
 				} else {
-					cell.data('newval', userval)
+					cell.data('userval', userval)
 					g.val(cell, serverval)
+					cell.removeData('oldval')
 					cell.removeClass('changed rejected')
 					cell.addClass('corrected')
+					cell.attr('title', 'wanted: '+g.fmt_value.call(userval))
 				}
 			})
 		}
