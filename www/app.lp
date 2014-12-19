@@ -64,7 +64,7 @@ end
 						</div>
 					</td>
 					<td width=206 valign=bottom align=right class=nowrap style="border-right: 1px solid #ccc">
-						<div style="position: relative; top: 4px; margin-right: 20px; font-size: 50%">L-V 9-18</div>
+						<div style="position: relative; top: 4px; margin-right: 20px; font-size: 80%">Comanda direct | Luni-Vineri 10-17</div>
 						<div style="position: relative; top: 4px; margin-right: 20px;">
 							<i class="fa fa-phone" style="font-size: 22px"></i>
 							<span style="font-size: 24px; line-height: 100%">0745 577 786</span>
