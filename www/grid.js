@@ -41,7 +41,7 @@ function grid(g) {
 	}
 
 	g.rowbyid = function(id) {
-		return idmap[id]
+		return $(idmap[id])
 	}
 
 	// rendering --------------------------------------------------------------
@@ -73,7 +73,7 @@ function grid(g) {
 	g.render = function() {
 		var dst = $(g.dst)
 		idfield_index = get_field_index(g.idfield)
-		render('grid', g, dst)
+		render('grid', g, dst, 'grid_row')
 		g.grid = dst.find('.grid')
 		make_idmap(g.data)
 		set_classes()
@@ -228,10 +228,10 @@ function grid(g) {
 		var w = cell.width()
 		var h = cell.height()
 		var div = cell.find('.input_div')
-		div.html('<input type=text class=input style="width: '+w+'px; height: '+h+'px;">')
+		div.html('<input type=text class=input'+
+			(field.maxlength ? ' maxlength='+field.maxlength : '')+
+			' style="width: '+w+'px; height: '+h+'px; text-align: '+field.align+'">')
 		var input = div.find('input')
-		if (field.maxlength)
-			input.attr('maxlength', field.maxlength)
 		input.val(val)
 		input.focus()
 		if (is(caret))
@@ -262,6 +262,10 @@ function grid(g) {
 					}
 				} else
 					cell.removeClass('changed')
+				// even if the cell just got reverted back to its old value,
+				// the row still gets marked as changed, because other cells
+				// might still be in rejected state.
+				g.rowof(cell).addClass('changed')
 			}
 		}
 		cell.removeClass('edit')
@@ -269,6 +273,29 @@ function grid(g) {
 		active_input = null
 		g.quick_edit = null
 		return true
+	}
+
+	g.insert_row = function() {
+		var rowindex = g.active_row().index()
+
+		// make the record with default values
+		var rec = []
+		for (var i = 0; i < g.fields.length; i++)
+			rec.push(g.fields[i]['default'] || null)
+
+		// add it to the table
+		g.values.splice(rowindex, 0, rec)
+
+		// render it and add it into position
+		var s = render('grid_row', {
+			'.': rec,
+			fmt_value: g.fmt_value,
+			value_type: g.value_type,
+		})
+		g.active_row().before(s)
+
+		// move the active row to it
+		g.move(-1)
 	}
 
 	// cell navigation --------------------------------------------------------
@@ -308,28 +335,32 @@ function grid(g) {
 				var oldval = cell.data('oldval')
 				var userval = g.val(cell)
 				if (serverval === userval) {
-					cell.removeClass('changed rejected corrected')
+					cell.removeClass('rejected corrected changed')
 					cell.removeData('oldval')
 				} else if (serverval === oldval) {
-					cell.removeClass('changed corrected')
+					cell.removeClass('corrected')
 					cell.addClass('rejected')
 					cell.attr('title', rec.error)
 				} else {
 					cell.data('userval', userval)
 					g.val(cell, serverval)
 					cell.removeData('oldval')
-					cell.removeClass('changed rejected')
+					cell.removeClass('rejected changed')
 					cell.addClass('corrected')
 					cell.attr('title', 'wanted: '+g.fmt_value.call(userval))
 				}
 			})
+			// even if some cells got rejected and thus they're still marked
+			// as "changed", the row itself is not changed until the user
+			// changes at least one cell again.
+			row.removeClass('changed')
 		}
 	}
 
 	g.save = function() {
 
 		var records = []
-		g.rows().each(function(i, row) {
+		g.rows().filter('.changed').each(function(_, row) {
 			// collect modified values
 			var values
 			g.cells(row).each(function(j, cell) {
@@ -410,6 +441,11 @@ function grid(g) {
 			g.exit_edit(true)
 			e.preventDefault()
 			return
+		}
+
+		// insert
+		if (e.which == 45) {
+			g.insert_row()
 		}
 
 	})

@@ -1813,17 +1813,21 @@ end
 			</thead>
 			<tbody>
 				{{#values}}
-				<tr class=row>
-					{{#.}}
-					<td class="nowrap cell">
-						<div class=input_div></div><span class="value {{{value_type}}}">{{fmt_value}}</span>
-					</td>
-					{{/.}}
-				</tr>
+					{{>grid_row}}
 				{{/values}}
 			</tbody>
 		</table>
 	</center>
+</script>
+
+<script type="text/x-mustache" id=grid_row_template>
+	<tr class=row>
+		{{#.}}
+		<td class="nowrap cell">
+			<div class=input_div></div><span class="value {{{value_type}}}">{{fmt_value}}</span>
+		</td>
+		{{/.}}
+	</tr>
 </script>
 
 <div id=fb-root class=hidden></div>

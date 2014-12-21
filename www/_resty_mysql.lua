@@ -359,37 +359,24 @@ local function _parse_field_packet(data)
     local col = new_tab(0, 2)
     local pos
     col.catalog, pos = _from_length_coded_str(data, 1)
-
-    --print("catalog: ", col.catalog, ", pos:", pos)
-
     col.db, pos = _from_length_coded_str(data, pos)
     col.table, pos = _from_length_coded_str(data, pos)
     col.orig_table, pos = _from_length_coded_str(data, pos)
     col.name, pos = _from_length_coded_str(data, pos)
-
     col.orig_name, pos = _from_length_coded_str(data, pos)
-
     pos = pos + 1 -- ignore the filler
-
     col.charsetnr, pos = _get_byte2(data, pos)
-
     col.length, pos = _get_byte4(data, pos)
-
     col.type = strbyte(data, pos)
-
     pos = pos + 1
-
     col.flags, pos = _get_byte2(data, pos)
-
     col.decimals = strbyte(data, pos)
     pos = pos + 1
-
     local default = sub(data, pos + 2)
     if default and default ~= "" then
         col.default = default
     end
-
-    return col
+	 return col
 end
 
 

@@ -591,30 +591,13 @@ function template_object(name) {
 	return $('#' + name + '_template')
 }
 
-var render_func = memoize(function(name) {
-	var s = template_object(name).html()
-	return function(data) {
-		return Mustache.render(s, data || {})
-	}
-})
-
-function render_multi_column(template_name, items, col_count) {
-	var s = '<table width=100%>'
-	var render = render_func(template_name)
-	var w = 100 / col_count
-	$.each(items, function(i, item) {
-		if (i % col_count == 0)
-			s = s + '<tr>'
-		s = s + '<td width='+w+'% valign=top>' + render(item) + '</td>'
-		if (i % col_count == col_count - 1 || i == items.length)
-			s = s + '</tr>'
-	})
-	s = s + '</table>'
-	return s
+function load_partial_(name) {
+	return template_object(name).html()
 }
 
 function render(template_name, data, dst) {
-	var s = render_func(template_name)(data)
+	var t = template_object(template_name).html()
+	var s = Mustache.render(t, data || {}, load_partial_)
 	if (dst) {
 		dst = $(dst)
 		var id = dst.attr('id')
@@ -623,6 +606,20 @@ function render(template_name, data, dst) {
 		setlinks(dst)
 	} else
 		return s
+}
+
+function render_multi_column(template_name, items, col_count) {
+	var s = '<table width=100%>'
+	var w = 100 / col_count
+	$.each(items, function(i, item) {
+		if (i % col_count == 0)
+			s = s + '<tr>'
+		s = s + '<td width='+w+'% valign=top>' + render(template_name, item) + '</td>'
+		if (i % col_count == col_count - 1 || i == items.length)
+			s = s + '</tr>'
+	})
+	s = s + '</table>'
+	return s
 }
 
 function select_map(a, selv) {
@@ -635,3 +632,4 @@ function select_map(a, selv) {
 	})
 	return t
 }
+

@@ -374,7 +374,7 @@
           value = context.view[name];
         }
 
-        if (value !== undefined)
+        if (value != null)
           break;
 
         context = context.parent;
