@@ -384,7 +384,7 @@
     }
 
     if (isFunction(value))
-      value = value.call(this.view);
+      value = value(this.view);
 
     return value;
   };

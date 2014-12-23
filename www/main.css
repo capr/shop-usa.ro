@@ -428,6 +428,10 @@ input.price {
 	font-weight: bold;
 	font-size: 80%;
 	text-transform: uppercase;
+	background-color: #999;
+}
+
+.grid.focused .field {
 	background-color: #555;
 }
 
@@ -475,6 +479,9 @@ input.price {
 
 .grid .cell.active {
 	background-color: #fff;
+}
+
+.grid.focused .cell.active {
 	outline: 1px solid #bbb;
 }
 
@@ -491,12 +498,13 @@ input.price {
 	visibility: hidden;
 }
 
-.grid .cell.readonly { background-color: #eef; }
-.grid .row.active .cell.readonly { background-color: #ddf; }
-
+#.grid .cell.new { background-color: #eef; }        /* new cell */
 .grid .cell.changed { background-color: #9f9; }    /* user changed */
 .grid .cell.rejected { background-color: #f99; }   /* server rejected the change */
 .grid .cell.corrected { background-color: #ff9; }  /* server accepted but corrected the change */
+
+.grid .cell.readonly { background-color: #eef; }
+.grid .row.active .cell.readonly { background-color: #ddf; }
 
 .grid .input_div {
 	position: absolute;
