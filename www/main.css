@@ -498,10 +498,11 @@ input.price {
 	visibility: hidden;
 }
 
-#.grid .cell.new { background-color: #eef; }        /* new cell */
+#.grid .cell.new { background-color: #eef; }       /* new cell */
 .grid .cell.changed { background-color: #9f9; }    /* user changed */
 .grid .cell.rejected { background-color: #f99; }   /* server rejected the change */
 .grid .cell.corrected { background-color: #ff9; }  /* server accepted but corrected the change */
+.grid .cell.edit { background-color: #fff; }       /* user changed but editing */
 
 .grid .cell.readonly { background-color: #eef; }
 .grid .row.active .cell.readonly { background-color: #ddf; }

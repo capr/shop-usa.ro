@@ -27,24 +27,35 @@ function grid(g) {
 		values: [[1, 'foo', 0], [2, 'bar', null]],
 	}, g)
 
-	// id->row map ------------------------------------------------------------
+	// values -----------------------------------------------------------------
 
-	var idfield_index
-
-	function get_field_index(fieldname) {
-		for (var j = 0; j < g.fields.length; j++)
-			if (g.fields[j].name == fieldname)
-				return j
+	// make a new record with default values
+	g.create_record = function() {
+		var rec = []
+		for (var i = 0; i < g.fields.length; i++)
+			rec.push(g.fields[i]['default'] || null)
+		return rec
 	}
 
-	var idmap = {} // id: row
+	// rec_id->row map --------------------------------------------------------
+
+	function get_field_index(fieldname) {
+		for (var i = 0; i < g.fields.length; i++)
+			if (g.fields[i].name == fieldname)
+				return i
+	}
+
+	var idmap // id: row
+	var id_fi
 
 	function make_idmap() {
+		id_fi = get_field_index(g.idfield) || 0
+		idmap = {}
 		var rows = g.rows()
-		for (var i = 0; i < g.values.length; i++) {
-			var row = g.values[i]
-			var id = row[idfield_index]
-			idmap[id] = rows[i]
+		for (var ri = 0; ri < g.values.length; ri++) {
+			var rec = g.values[ri]
+			var id = rec[id_fi]
+			idmap[id] = rows[ri]
 		}
 	}
 
@@ -52,45 +63,83 @@ function grid(g) {
 		return $(idmap[id])
 	}
 
+	g.id = function(row) {
+		var ri = $(row).index()
+		return g.values[ri][id_fi]
+	}
+
+	// col_index<->field_index mappings ---------------------------------------
+
+	function make_fieldmaps() {
+		if (!g.fieldmap) {
+			g.fieldmap = []
+			g.rfieldmap = []
+			for (var i = g.fields.length - 1; i >= 0; i--) {
+			//for (var i = 0; i < g.fields.length; i++) {
+				g.fieldmap.push(i)
+				g.rfieldmap.push(i)
+			}
+		} else {
+			g.rfieldmap = g.fieldmap.slice()
+			for (var ci = 0; i < g.fieldmap.length; ci++) {
+				var fi = g.fieldmap[ci]
+				g.rfieldmap[fi] = ci
+			}
+		}
+
+		if (g.fields.length > 16) {
+			g.fields[4].readonly = true
+			g.fields[5].readonly = true
+			g.fields[8].readonly = true
+			g.fields[16].readonly = true
+			g.fieldmap.splice(12, 4)
+		}
+
+	}
+
+	g.field = function(ci) {
+		return g.fields[g.fieldmap[ci]]
+	}
+
 	// rendering --------------------------------------------------------------
 
 	var format_value = function(v, field) {
 		return (v === null) ? 'null' : v
 	}
+	g.format_value = format_value
 
 	var value_type = function(v, field) {
 		return v === null ? 'null' : (typeof v)
 	}
-
-	g.format_value = format_value
 	g.value_type = value_type
 
-	function render_context(fields, values) {
+	function render_context(values) {
 
 		var t = {}
-		var row, col
+		var rec, ci
 		var val = {}
 
 		var ft = []
-		$.each(fields, function(i, f) {
+		$.each(g.fieldmap, function(ci, fi) {
 			ft.push($.extend({
-				index: i,
+				index: ci,
 				align: 'left',
-			}, f))
+			}, g.fields[fi]))
 		})
 		t.fields = ft
 		t.rows = values
 
-		t.cols = function(r) {
-			col = 0
-			row = r
-			return r
+		t.cols = function(rec_) {
+			ci = 0
+			rec = rec_
+			return ft
 		}
 
 		t.col = function() {
-			val.field = fields[col]
-			val.raw = row[col]
-			col++
+			var fi = g.fieldmap[ci]
+			val.field = g.fields[fi]
+			val.raw = rec[fi]
+			ci++
 			return val
 		}
 
@@ -103,9 +152,9 @@ function grid(g) {
 	}
 
 	g.render = function() {
+		make_fieldmaps()
 		var dst = $(g.dst)
-		idfield_index = get_field_index(g.idfield) || 0
-		var t = render_context(g.fields, g.values)
+		var t = render_context(g.values)
 		render('grid', t, dst)
 		g.grid = dst.find('.grid')
 		make_idmap()
@@ -115,7 +164,7 @@ function grid(g) {
 	// selectors --------------------------------------------------------------
 
 	g.row_count = function() { return g.values.length; }
-	g.col_count = function() { return g.fields.length; }
+	g.col_count = function() { return g.fieldmap.length; }
 
 	g.rows_ct = function() { return g.grid.find('.rows'); }
 	g.rows = function() { return g.grid.find('.row'); }
@@ -137,8 +186,8 @@ function grid(g) {
 
 	// cell values ------------------------------------------------------------
 
-	g.cast = function(val, col) {
-		var field = g.fields[col]
+	g.cast = function(val, ci) {
+		var field = g.field(ci)
 		if (field.type == 'number') {
 			val = parseFloat(val)
 			if (val != val)
@@ -151,16 +200,17 @@ function grid(g) {
 
 	g.val = function(cell, val) {
 		cell = $(cell)
-		var col = cell.index()
-		var row = g.rowof(cell).index()
-		var curval = g.values[row][col]
+		var ci = cell.index()
+		var ri = g.rowof(cell).index()
+		var fi = g.fieldmap[ci]
+		var curval = g.values[ri][fi]
 		if (val === undefined) // get it
 			return curval
 		if (val !== curval) { // set it
-			val = g.cast(val, col)
-			g.values[row][col] = val
+			val = g.cast(val, ci)
+			g.values[ri][fi] = val
 			var v = cell.find('.value')
-			v.html(g.format_value(val, g.fields[col]))
+			v.html(g.format_value(val, g.field(ci)))
 			v.removeClass('null string number boolean')
 			v.addClass(g.value_type(val))
 			return curval // return the replaced value
@@ -175,9 +225,6 @@ function grid(g) {
 	g.deactivate = function() {
 		if (!g.active())
 			throw 'not active'
-		//g.prev_active_cell = g.deactivate_cell()
-		//g.deactivate_row()
-		//if (!g.prev_active_cell) return
 		if (!g.exit_edit()) return
 		g.grid.removeClass('focused')
 		active_grid = null
@@ -190,7 +237,6 @@ function grid(g) {
 			return
 		g.grid.addClass('focused')
 		active_grid = g
-		//g.activate_cell(g.prev_active_cell)
 		return true
 	}
 
@@ -287,7 +333,7 @@ function grid(g) {
 			return active_input
 		var cell = active_cell
 		if (!cell.length) return
-		var field = g.fields[cell.index()]
+		var field = g.field(cell.index())
 		if (field.readonly) return
 		var val = g.val(cell)
 		var w = cell.width()
@@ -316,9 +362,9 @@ function grid(g) {
 			return true
 		var cell = active_cell
 		if (!cancel) {
-			var col = active_cell.index()
+			var ci = active_cell.index()
 			var curval = g.val(active_cell)
-			var newval = g.cast(active_input.val().trim(), col)
+			var newval = g.cast(active_input.val().trim(), ci)
 			if (newval !== curval) {
 				g.val(cell, newval)
 				cell.removeClass('rejected corrected')
@@ -327,7 +373,7 @@ function grid(g) {
 					cell.addClass('changed')
 					if (oldval === undefined) {
 						cell.data('oldval', curval)
-						cell.attr('title', 'old value: '+g.format_value(curval, g.fields[col]))
+						cell.attr('title', 'old value: '+g.format_value(curval, g.field(ci)))
 					}
 				} else
 					cell.removeClass('changed')
@@ -344,39 +390,37 @@ function grid(g) {
 		return true
 	}
 
-	g.insert_row = function(rowindex) {
+	g.insert_row = function(ri) {
 
-		// range-check & default rowindex
-		if (!is(rowindex))
-			rowindex = g.active_row().index()
-		rowindex = clamp(rowindex, 0, g.row_count())
-		var append = rowindex == g.row_count()
+		// range-check & set default row index
+		if (!is(ri))
+			ri = g.active_row().index()
+		ri = clamp(ri, 0, g.row_count())
+		var append = ri == g.row_count()
 
 		// make a new record with default values
-		var rec = []
-		for (var i = 0; i < g.fields.length; i++)
-			rec.push(g.fields[i]['default'] || null)
+		var rec = g.create_record()
 
 		// add it to the values table
-		g.values.splice(rowindex, 0, rec)
+		g.values.splice(ri, 0, rec)
 
 		// render it, add it to position, and get it
-		var s = render('grid_rows', render_context(g.fields, [rec]))
+		var s = render('grid_rows', render_context([rec]))
 		if (append)
 			g.rows_ct().append(s)
 		else
-			g.row(rowindex).before(s)
+			g.row(ri).before(s)
 
-		var row = g.row(rowindex)
+		var row = g.row(ri)
 		var cells = g.cells(row)
 
 		// activate the row on the same cell as before
 		g.activate_cell(g.cell(row, g.active_cell().index()))
 
 		// mark non-null cells and the row as changed
-		$.each(g.values[rowindex], function(i, val) {
+		$.each(rec, function(fi, val) {
 			if (val !== null) {
-				g.cell(row, i).addClass('changed')
+				g.cell(row, g.rfieldmap[fi]).addClass('changed')
 				row.addClass('changed')
 			}
 		})
@@ -386,45 +430,13 @@ function grid(g) {
 		row.addClass('new')
 	}
 
-	g.delete_row = function(rowindex) {
+	g.delete_row = function(ri) {
 
-		// range-check & default rowindex
-		if (!is(rowindex))
-			rowindex = g.active_row().index()
-		if (rowindex < 0 || rowindex >= g.row_count())
+		// range-check & set default row index
+		if (!is(ri))
+			ri = g.active_row().index()
+		if (ri < 0 || ri >= g.row_count())
 			return
-
-		/*
-		// make a new record with default values
-		g.values.rowindex
-
-		// add it to the values table
-		g.values.splice(rowindex, 0, rec)
-
-		// render it, add it to position, and get it
-		var s = render('grid_rows', render_context(g.fields, [rec]))
-		if (append)
-			g.rows_ct().append(s)
-		else
-			g.row(rowindex).before(s)
-		var row = g.row(rowindex)
-
-		// activate the row on the same cell as before
-		g.activate_cell(g.cell(row, g.active_cell().index()))
-
-		// mark non-null cells as changed
-		$.each(g.values[rowindex], function(i, val) {
-			if (val !== null)
-				g.cell(row, i).addClass('changed')
-		})
-
-		// mark all cells and the row as new
-		g.cells(row).addClass('new')
-		row.addClass('new')
-
-		// mark the row as changed
-		row.addClass('changed')
-		*/
 	}
 
 	// saving data ------------------------------------------------------------
@@ -437,9 +449,10 @@ function grid(g) {
 		for (var i = 0; i < records.length; i++) {
 			var rec = records[i]
 			var row = g.rowbyid(rec.id)
-			g.cells(row).each(function(i, cell) {
+			g.cells(row).each(function(ci, cell) {
 				cell = $(cell)
-				var serverval = rec.values[i]
+				var fi = g.fieldmap[ci]
+				var serverval = rec.values[fi]
 				var oldval = cell.data('oldval')
 				var userval = g.val(cell)
 				if (serverval === userval) {
@@ -455,7 +468,7 @@ function grid(g) {
 					cell.removeData('oldval')
 					cell.removeClass('rejected changed')
 					cell.addClass('corrected')
-					cell.attr('title', 'wanted: '+g.format_value(userval, g.fields[i]))
+					cell.attr('title', 'wanted: '+g.format_value(userval, g.field(ci)))
 				}
 			})
 			// even if some cells got rejected and thus they're still marked
@@ -471,15 +484,15 @@ function grid(g) {
 		g.rows().filter('.changed').each(function(_, row) {
 			// collect modified values
 			var values
-			g.cells(row).each(function(j, cell) {
+			g.cells(row).each(function(ci, cell) {
 				cell = $(cell)
 				if (!cell.hasClass('changed')) return
 				var val = g.val(cell)
 				values = values || {}
-				values[g.fields[j].name] = val
+				values[g.field(ci).name] = val
 			})
 			if (values) {
-				var id = g.val(g.cell(row, idfield_index))
+				var id = g.id(row)
 				records.push({id: id, values: values})
 			}
 		})
@@ -495,33 +508,40 @@ function grid(g) {
 
 	// cell navigation --------------------------------------------------------
 
-	g.near_cell = function(rows, cols) {
+	g.near_cell = function(cell, rows, cols) {
+		cell = cell || g.active_cell()
 		rows = rows || 0
 		cols = cols || 0
-		var rowindex = g.active_row().index() + rows
-		var cellindex = g.active_cell().index() + cols
 
+		var ri = g.rowof(cell).index() + rows
+		var ci = cell.index() + cols
+
+		// end of the row: move to next-row-first-cell or last-row-last-cell.
 		if (
-			(cols < 0 && cellindex < 0) ||
-			(cols > 0 && cellindex > g.col_count() - 1)
+			(cols < 0 && ci < 0) ||
+			(cols > 0 && ci > g.col_count() - 1)
 		) {
-			rowindex = rowindex + sign(cols)
-			if (rowindex < 0 || rowindex > g.row_count() - 1)
+			ri = ri + sign(cols)
+			if (ri < 0 || ri > g.row_count() - 1)
 				return
-			cellindex = -sign(cols) * 1/0
+			ci = -sign(cols) * 1/0
 		}
 
-		var cell = g.cell(rowindex, cellindex)
-		if (cell.is(g.active_cell)) return cell // didn't move, prevent recursion
-		// skip hidden cells and rows
-		if (!cell.is(':visible') || !g.row(rowindex).is(':visible')) {
-			return g.near_cell(rows + sign(rows), cols + sign(cols))
+		var nearcell = g.cell(ri, ci)
+		if (nearcell.is(cell)) return cell // didn't move, prevent recursion
+
+		// skip readonly cells and rows
+		if (g.field(nearcell.index()).readonly) {
+			var ri = g.rowof(nearcell).index()
+			var ci = cell.index()
+			return g.near_cell(nearcell, sign(rows), sign(cols))
 		}
-		return cell
+
+		return nearcell
 	}
 
 	g.move = function(rows, cols) {
-		return g.activate_cell(g.near_cell(rows, cols))
+		return g.activate_cell(g.near_cell(null, rows, cols))
 	}
 
 	// key bindings -----------------------------------------------------------
@@ -639,18 +659,17 @@ function grid(g) {
 			if (g.active() && this == g.active_cell()[0])
 				g.enter_edit(-1, true)
 			else {
-			console.log('click')
-			if (g.activate())
-				if (g.activate_cell(this))
-					if (g.immediate_mode)
-						g.enter_edit(-1, true)
+				if (g.activate())
+					if (g.activate_cell(this))
+						if (g.immediate_mode)
+							g.enter_edit(-1, true)
 			}
 		})
 
 		g.grid.on('click', '.field', function() {
 			if (!g.activate()) return
-			var i = $(this).index()
-			var field = g.fields[i]
+			var ci = $(this).index()
+			var field = g.field(ci)
 			g.fetch(field.name+':'+(field.sort == 'asc' ? 'desc' : 'asc'))
 		})
 
@@ -686,7 +705,7 @@ action.grid = function() {
 		load_main(url, function(g_) {
 
 			var g = grid($.extend(true, {
-				//immediate_mode: true,
+				immediate_mode: true,
 			}, g_))
 
 			g.fetch = load
