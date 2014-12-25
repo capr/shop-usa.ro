@@ -1823,7 +1823,7 @@ end
 	<tr class=row>
 		{{#cols}}
 			{{#col}}
-			<td class="nowrap cell {{{readonly}}}" align={{{align}}}>
+			<td class="nowrap cell {{{readonly}}}" align={{{align}}} valign=top>
 				<div class=input_div></div><span class="value {{{type}}}">{{value}}</span>
 			</td>
 			{{/col}}

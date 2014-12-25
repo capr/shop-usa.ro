@@ -1,4 +1,4 @@
-(function() {
+var grid = (function() {
 
 function sign(x) { return x > 0 ? 1 : x < 0 ? -1 : 0; }
 function is(arg) { return arg !== undefined && arg !== null; }
@@ -19,12 +19,6 @@ function grid(g) {
 		dst: '#main',
 		page_rows: 20, // how many rows on page-down / up (TODO: autocompute)
 		immediate_mode: false,
-		fields: [
-			{name: 'id', readonly: true, },
-			{name: 'name', type: 'text', maxlength: 16, default: 'default name', },
-			{name: 'count', type: 'number', decimals: 2, },
-		],
-		values: [[1, 'foo', 0], [2, 'bar', null]],
 	}, g)
 
 	// values -----------------------------------------------------------------
@@ -39,7 +33,7 @@ function grid(g) {
 
 	// rec_id->row map --------------------------------------------------------
 
-	function get_field_index(fieldname) {
+	function fieldindex_byname(fieldname) {
 		for (var i = 0; i < g.fields.length; i++)
 			if (g.fields[i].name == fieldname)
 				return i
@@ -49,7 +43,7 @@ function grid(g) {
 	var id_fi
 
 	function make_idmap() {
-		id_fi = get_field_index(g.idfield) || 0
+		id_fi = fieldindex_byname(g.idfield) || 0
 		idmap = {}
 		var rows = g.rows()
 		for (var ri = 0; ri < g.values.length; ri++) {
@@ -59,11 +53,11 @@ function grid(g) {
 		}
 	}
 
-	g.rowbyid = function(id) {
+	g.row_byid = function(id) {
 		return $(idmap[id])
 	}
 
-	g.id = function(row) {
+	g.row_id = function(row) {
 		var ri = $(row).index()
 		return g.values[ri][id_fi]
 	}
@@ -74,8 +68,7 @@ function grid(g) {
 		if (!g.fieldmap) {
 			g.fieldmap = []
 			g.rfieldmap = []
-			for (var i = g.fields.length - 1; i >= 0; i--) {
-			//for (var i = 0; i < g.fields.length; i++) {
+			for (var i = 0; i < g.fields.length; i++) {
 				g.fieldmap.push(i)
 				g.rfieldmap.push(i)
 			}
@@ -86,15 +79,6 @@ function grid(g) {
 				g.rfieldmap[fi] = ci
 			}
 		}
-
-		if (g.fields.length > 16) {
-			g.fields[4].readonly = true
-			g.fields[5].readonly = true
-			g.fields[8].readonly = true
-			g.fields[16].readonly = true
-			g.fieldmap.splice(12, 4)
-		}
-
 	}
 
 	g.field = function(ci) {
@@ -151,11 +135,16 @@ function grid(g) {
 		return t
 	}
 
+	g.get_template = function(name) {
+		return $('#' + name + '_template').html()
+	}
+
 	g.render = function() {
 		make_fieldmaps()
 		var dst = $(g.dst)
-		var t = render_context(g.values)
-		render('grid', t, dst)
+		var ctx = render_context(g.values)
+		var s = Mustache.render(g.get_template('grid'), ctx, g.get_template)
+		dst.html(s)
 		g.grid = dst.find('.grid')
 		make_idmap()
 		make_clickable()
@@ -430,6 +419,8 @@ function grid(g) {
 		row.addClass('new')
 	}
 
+	var deleted = [] // [rec1, ...]
+
 	g.delete_row = function(ri) {
 
 		// range-check & set default row index
@@ -437,6 +428,27 @@ function grid(g) {
 			ri = g.active_row().index()
 		if (ri < 0 || ri >= g.row_count())
 			return
+
+		var row = g.row(ri)
+		var ci = g.active_cell().index()
+
+		// deactivate row
+		if (g.active_row().is(row))
+			if (!g.deactivate_row(row))
+				return
+
+		// if not new, store and mark as deleted
+		if (!row.hasClass('new'))
+			deleted[g.row_id(row)] = g.values[ri]
+
+		// remove from the values table
+		g.values.splice(ri, 1)
+
+		// remove from DOM
+		row.remove()
+
+		// activate the row on the same cell as before
+		g.activate_cell(g.cell(ri, ci))
 	}
 
 	// saving data ------------------------------------------------------------
@@ -448,7 +460,7 @@ function grid(g) {
 	function update_records(records) {
 		for (var i = 0; i < records.length; i++) {
 			var rec = records[i]
-			var row = g.rowbyid(rec.id)
+			var row = g.row_byid(rec.id)
 			g.cells(row).each(function(ci, cell) {
 				cell = $(cell)
 				var fi = g.fieldmap[ci]
@@ -492,7 +504,7 @@ function grid(g) {
 				values[g.field(ci).name] = val
 			})
 			if (values) {
-				var id = g.id(row)
+				var id = g.row_id(row)
 				records.push({id: id, values: values})
 			}
 		})
@@ -512,6 +524,8 @@ function grid(g) {
 		cell = cell || g.active_cell()
 		rows = rows || 0
 		cols = cols || 0
+
+		if (!cell.length) return cell // no cells
 
 		var ri = g.rowof(cell).index() + rows
 		var ci = cell.index() + cols
@@ -631,7 +645,7 @@ function grid(g) {
 
 		// delete key: delete active row
 		if (!input && e.which == 46) {
-			e.delete_row()
+			g.delete_row()
 			e.preventDefault()
 			return
 		}
@@ -722,9 +736,19 @@ action.grid = function() {
 	load()
 
 	$('#main').after('<br><br><div id=d2 style="width: 500px; height: 300px"></div>')
-	var g = grid({dst: '#d2'})
+	var g = grid({
+		dst: '#d2',
+		fields: [
+			{name: 'id', readonly: true, },
+			{name: 'name', type: 'text', maxlength: 16, default: 'default name', },
+			{name: 'count', type: 'number', decimals: 2, },
+		],
+		values: [[1, 'foo', 0], [2, 'bar', null]],
+		fieldmap: [2, 0, 1],
+	})
 	g.activate()
 
 }
 
+return grid
 })()
