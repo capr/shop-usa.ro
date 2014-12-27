@@ -1800,13 +1800,36 @@ end
 </script>
 
 <script type="text/x-mustache" id=grid_template>
-	<center>
-		<table class=grid width=100%>
+	<div class=grid>
+		<table width={{{width}}}>
 			<thead>
 				<tr>
 					{{#fields}}
-					<th align={{{align}}} class="nowrap field">
-						<a>{{{name}}}<i style="float: right;" class="sorticon fa fa-sort-{{sort}}"></i></a>
+					<th valign=top
+						class="nowrap field {{^fixed_pos}}movable{{/fixed_pos}}"
+						{{#width}}style="width: {{{width}}}px"{{/width}}
+					>
+						{{^fixed_width}}
+						<div class=resizer_div>
+							<div class=resizer></div>
+						</div>
+						{{/fixed_width}}
+						<table width=100% height=100% class=field_box>
+							<tr>
+							{{#align_left}}
+								<td class=nowrap align=left valign=bottom><a>{{{name}}}</a></td>
+								<td class=nowrap align=right valign=bottom width=1>
+									<a><i class="sort_icon fa fa-sort{{#sort}}-{{{sort}}}{{/sort}}"></i></a>
+								</td>
+							{{/align_left}}
+							{{#align_right}}
+								<td class=nowrap align=left valign=bottom width=1>
+									<a><i class="sort_icon fa fa-sort{{#sort}}-{{{sort}}}{{/sort}}"></i></a>
+								</td>
+								<td class=nowrap align=right valign=bottom><a>{{{name}}}</a></td>
+							{{/align_right}}
+							</tr>
+						</table>
 					</th>
 					{{/fields}}
 				</tr>
@@ -1815,7 +1838,12 @@ end
 				{{>grid_rows}}
 			</tbody>
 		</table>
-	</center>
+		<div class="hidden move_sign_div">
+			<div class="move_sign">
+				<i class="fa fa-arrow-right"></i><i class="fa fa-arrow-left"></i>
+			</div>
+		</div>
+	</div>
 </script>
 
 <script type="text/x-mustache" id=grid_rows_template>

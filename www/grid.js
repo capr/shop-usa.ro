@@ -103,6 +103,8 @@ function grid(g) {
 		var rec, ci
 		var val = {}
 
+		t.width = g.width
+
 		var ft = []
 		$.each(g.fieldmap, function(ci, fi) {
 			ft.push($.extend({
@@ -110,6 +112,11 @@ function grid(g) {
 				align: 'left',
 			}, g.fields[fi]))
 		})
+
+		$.each(ft, function(i, f) {
+			f['align_'+f.align] = true
+		})
+
 		t.fields = ft
 		t.rows = values
 
@@ -172,6 +179,9 @@ function grid(g) {
 	}
 	g.cols = function() { return g.grid.find('.field'); }
 	g.rowof = function(cell) { return cell.parent(); }
+	g.vcells = function(i) {
+		return g.grid.find('.field:nth-child('+(i+1)+'),.cell:nth-child('+(i+1)+')')
+	}
 
 	// cell values ------------------------------------------------------------
 
@@ -669,6 +679,8 @@ function grid(g) {
 	// mouse bindings ---------------------------------------------------------
 
 	function make_clickable() {
+
+		// activate cell / enter edit
 		g.grid.on('click', '.cell', function() {
 			if (g.active() && this == g.active_cell()[0])
 				g.enter_edit(-1, true)
@@ -680,12 +692,140 @@ function grid(g) {
 			}
 		})
 
-		g.grid.on('click', '.field', function() {
+		// sort
+		g.grid.on('click', '.field_box a', function() {
 			if (!g.activate()) return
-			var ci = $(this).index()
+			var ci = $(this).closest('.field').index()
 			var field = g.field(ci)
 			g.fetch(field.name+':'+(field.sort == 'asc' ? 'desc' : 'asc'))
 		})
+
+		g.grid.on('click', '.field', function() {
+			g.activate()
+		})
+
+		// resize columns
+		g.grid.find('.resizer')
+			.drag(function(e, d) {
+				if (!g.activate()) return
+				var col = $(this).closest('.field')
+				var ci = col.index()
+				var field = g.field(ci)
+				if (field.fixed_width) return
+				var w = d.offsetX - col.position().left
+				col.width(w)
+				field.width = w
+			})
+
+		// move columns
+		/*
+		g.grid.find('.field')
+			.drag('start', function(e) {
+				if (!g.activate()) return
+				var ci = $(this).index()
+				var field = g.field(ci)
+				if (field.fixed_pos) return
+				g.ddi = ci
+				g.vcells(g.ddi).css('opacity', 0.5)
+				$(this).prepend(
+					'<div class=dragging_div>'+
+						'<div class="field dragging" style="left: '+
+							e.offsetX+'px;">'+
+							$(this).html()+
+						'</div>'+
+					'</div>')
+				g.dd = g.grid.find('.dragging_div')
+				return g.dd
+			}, { relative: true, distance: 10, })
+			.drag(function(e, d) {
+				if (!g.dd) return
+				g.dd.css({ left: d.offsetX, })
+			}, { relative: true, })
+			.drag('end', function() {
+				if (!g.dd) return
+				g.dd.remove()
+				g.dd = null
+				g.vcells(g.ddi).css('opacity', '')
+			})
+			.drop('start', function() {
+				if (!g.dd) return
+				$(this).addClass('dropping')
+				$(this).find('.dropper').show()
+			})
+			.drop('end', function() {
+				if (!g.dd) return
+				$(this).removeClass('dropping')
+				$(this).find('.dropper').hide()
+			})
+		*/
+
+		g.grid.find('.field')
+			.on('mousedown', function() {
+				if (!g.activate()) return
+				var ci = $(this).index()
+				var field = g.field(ci)
+				if (field.fixed_pos) return
+				g.drag = {ci: ci}
+				g.vcells(g.drag.ci).css('opacity', 0.5)
+				g.grid.find('.resizer').hide()
+				e.preventDefault()
+			})
+			.on('move', function(e) {
+				if (!g.drag) return
+			})
+			.on('moveend', function(e) {
+				if (!g.drag) return
+				g.vcells(g.drag.ci).css('opacity', '')
+				g.drag.ms.hide()
+				g.drag = null
+				g.grid.find('.resizer').show()
+				e.preventDefault()
+			})
+
+		// check if a point (x0, y0) is inside rect (x, y, w, h)
+		function hit(x0, y0, x, y, w, h) {
+			return x0 >= x && x0 <= x + w && y0 >= y && y0 <= y + h
+		}
+
+		g.grid.find('thead')
+			.bind('mousemove', function(e) {
+				if (!g.drag) return
+
+				g.drag.ms = g.drag.ms || g.grid.find('.move_sign_div')
+				g.drag.cols = g.drag.cols || g.cols()
+
+				var x0 = e.pageX
+				var y0 = e.pageY
+
+				var col
+				$.each(g.drag.cols, function() {
+					var c = $(this)
+					var o = c.offset()
+					var x = o.left
+					var y = o.top
+					var w = c.width()
+					var h = c.height()
+					console.log(x0, y0, x, y, w, h, hit(x0, y0, x, y, w, h))
+					if (hit(x0, y0, x, y, w, h)) {
+						col = c
+						return false
+					}
+				})
+
+				console.log(col)
+				if (!col) return
+
+				var o = col.offset()
+				var x = e.offsetX < col.width() / 2 ? 0 : col.width()
+				g.drag.ms.css({
+					top:  o.top,
+					left: o.left + x,
+				})
+				g.drag.ms.show()
+				e.preventDefault()
+				console.log(e.offsetX, o.left)
+
+			})
 
 	}
 
@@ -735,13 +875,14 @@ action.grid = function() {
 	}
 	load()
 
-	$('#main').after('<br><br><div id=d2 style="width: 500px; height: 300px"></div>')
+	$('#main').after('<br><br><br><br><div id=d2 style="width: 100%; height: 300px; margin-left: 100px;"></div>')
 	var g = grid({
+		//width: 700,
 		dst: '#d2',
 		fields: [
-			{name: 'id', readonly: true, },
-			{name: 'name', type: 'text', maxlength: 16, default: 'default name', },
-			{name: 'count', type: 'number', decimals: 2, },
+			{name: 'id', readonly: true, width: 100, },
+			{name: 'name', type: 'text', maxlength: 16, default: 'default name', width: 250, },
+			{name: 'count', type: 'number', decimals: 2, width: 150, },
 		],
 		values: [[1, 'foo', 0], [2, 'bar', null]],
 		fieldmap: [2, 0, 1],

@@ -12,6 +12,7 @@ jquery.powertip.js
 jquery.dropdown.js
 jquery.caret.js
 jquery.event.drag.js
+jquery.event.drop.js
 
 jquery.event.move.js
 jquery.event.swipe.js
