@@ -416,6 +416,11 @@ input.price {
 
 /* grid ------------------------------------------------------------------- */
 
+.grid {
+	font-size: 10pt;
+	margin: 50px;
+}
+
 .grid > table {
 	#border: 1px solid #eee;
 	border: 0px solid #ddd;
@@ -441,9 +446,10 @@ input.price {
 }
 
 .grid .field_box {
-	#font-weight: bold;
-	font-size: 80%;
-	text-transform: uppercase;
+	font-weight: normal;
+	#font-size: 80%;
+	#text-transform: uppercase;
+	text-transform: capitalize;
 }
 
 .grid .field_box a {

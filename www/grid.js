@@ -872,7 +872,7 @@ action.grid = function() {
 	}
 	load()
 
-	$('#main').after('<br><br><br><br><div id=d2 style="width: 100%; height: 300px; margin-left: 100px;"></div>')
+	$('#main').after('<div id=d2></div>')
 	var g = grid({
 		//width: 700,
 		dst: '#d2',
