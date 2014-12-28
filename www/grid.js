@@ -224,7 +224,7 @@ function grid(g) {
 		if (!g.active())
 			throw 'not active'
 		if (!g.exit_edit()) return
-		g.grid.removeClass('focused')
+		g.grid.removeClass('active')
 		active_grid = null
 		return true
 	}
@@ -233,7 +233,7 @@ function grid(g) {
 		if (g.active()) return true
 		if (active_grid && !active_grid.deactivate())
 			return
-		g.grid.addClass('focused')
+		g.grid.addClass('active')
 		active_grid = g
 		return true
 	}

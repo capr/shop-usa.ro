@@ -416,9 +416,19 @@ input.price {
 
 /* grid ------------------------------------------------------------------- */
 
-.grid {
+.grid > table {
 	#border: 1px solid #eee;
+	border: 0px solid #ddd;
 	border-collapse: collapse;
+	#box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.75);
+}
+
+.grid > table > tbody > tr:first-child > td {
+	#box-shadow: inset 0px 3px 5px -3px rgba(0,0,0,0.75);
+}
+
+.grid > table > tbody > tr:last-child > td {
+	border-bottom-width: 1px;
 }
 
 .grid .field {
@@ -431,7 +441,7 @@ input.price {
 }
 
 .grid .field_box {
-	font-weight: bold;
+	#font-weight: bold;
 	font-size: 80%;
 	text-transform: uppercase;
 }
@@ -483,20 +493,16 @@ input.price {
 		1px 1px 0 #000;
 }
 
-.grid.focused .field {
+.grid.active .field {
 	background-color: #555;
 }
 
-.grid > table {
-	box-shadow: 2px 2px 5px -2px rgba(0,0,0,0.75);
+.grid .field+.field {
+	border-left: 1px solid #ccc;
 }
 
-.grid > table > tbody > tr:first-child > td {
-	box-shadow: inset 0px 3px 5px -3px rgba(0,0,0,0.75);
-}
-
-.grid .field + .field {
-	border-left: 1px solid #fff;
+.grid.active .field+.field {
+	border-left: 1px solid #999;
 }
 
 .grid .field a { color: #fff; }
@@ -514,15 +520,15 @@ input.price {
 	overflow: ellipsis;
 }
 
-.grid .cell + .cell {
-	#border-left: 1px solid #fff;
+.grid .cell+.cell {
+	border-left-width: 1px;
 }
 
 .grid .cell.active {
 	background-color: #fff;
 }
 
-.grid.focused .cell.active {
+.grid.active .cell.active {
 	outline: 1px solid #bbb;
 }
 
