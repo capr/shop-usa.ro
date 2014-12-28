@@ -568,10 +568,15 @@ input.price {
 	font-size: 100%;
 	padding: 0;
 	position: relative;
-	top: -1px;
+	top: 0px;
 	left: 0px;
 	box-sizing: content-box;
 	border: 0;
+}
+
+/* compensate for the bottom border */
+.grid > table > tbody > tr:last-child > td .input {
+	top: -1px;
 }
 
 .grid .input:focus {
