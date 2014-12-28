@@ -569,7 +569,6 @@ input.price {
 
 .grid .dragging_div {
 	position: absolute;
-	#visibility: hidden;
 }
 
 .grid .dragging {
@@ -578,10 +577,8 @@ input.price {
 	border-right: 1px solid #fff;
 	cursor: move;
 	font-size: 100%;
-	width: 20px;
-	height: 20px;
-	border: 5px solid red;
 }
 
-.grid .dropping {}
-
+.grid .dropping {
+	#background-color: #f00 !important;
+}

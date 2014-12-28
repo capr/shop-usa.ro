@@ -65,19 +65,17 @@ function grid(g) {
 	// col_index<->field_index mappings ---------------------------------------
 
 	function make_fieldmaps() {
+
 		if (!g.fieldmap) {
 			g.fieldmap = []
-			g.rfieldmap = []
-			for (var i = 0; i < g.fields.length; i++) {
+			for (var i = 0; i < g.fields.length; i++)
 				g.fieldmap.push(i)
-				g.rfieldmap.push(i)
-			}
-		} else {
-			g.rfieldmap = g.fieldmap.slice()
-			for (var ci = 0; i < g.fieldmap.length; ci++) {
-				var fi = g.fieldmap[ci]
-				g.rfieldmap[fi] = ci
-			}
+		}
+
+		g.rfieldmap = g.fieldmap.slice()
+		for (var ci = 0; i < g.fieldmap.length; ci++) {
+			var fi = g.fieldmap[ci]
+			g.rfieldmap[fi] = ci
 		}
 	}
 
@@ -178,9 +176,10 @@ function grid(g) {
 		return row.find('.cell:nth-child('+(i+1)+')')
 	}
 	g.cols = function() { return g.grid.find('.field'); }
+	g.col = function(ci) { return g.grid.find('.field:nth-child('+(ci+1)+')'); }
 	g.rowof = function(cell) { return cell.parent(); }
-	g.vcells = function(i) {
-		return g.grid.find('.field:nth-child('+(i+1)+'),.cell:nth-child('+(i+1)+')')
+	g.vcells = function(ci) {
+		return g.grid.find('.field:nth-child('+(ci+1)+'),.cell:nth-child('+(ci+1)+')')
 	}
 
 	// cell values ------------------------------------------------------------
@@ -568,6 +567,29 @@ function grid(g) {
 		return g.activate_cell(g.near_cell(null, rows, cols))
 	}
 
+	// column re-ordering -----------------------------------------------------
+
+	g.move_col = function(sci, dci) {
+		if (sci === dci) return
+
+		// update fieldmap
+		var fi = g.fieldmap[sci]
+		g.fieldmap.splice(sci, 1)
+		g.fieldmap.splice(dci, 0, fi)
+
+		// update DOM
+		var scells = g.vcells(sci)
+		var dcells = g.vcells(dci > sci && dci < g.col_count()-1 ? dci+1 : dci)
+		if (dci == g.col_count()-1)
+			$.each(dcells, function(i) {
+				$(this).after(scells[i])
+			})
+		else
+			$.each(dcells, function(i) {
+				$(this).before(scells[i])
+			})
+	}
+
 	// key bindings -----------------------------------------------------------
 
 	$(document).keydown(function(e) {
@@ -672,10 +694,6 @@ function grid(g) {
 		g.quick_edit = true
 	})
 
-	// render -----------------------------------------------------------------
-
-	g.render()
-
 	// mouse bindings ---------------------------------------------------------
 
 	function make_clickable() {
@@ -718,119 +736,98 @@ function grid(g) {
 			})
 
 		// move columns
-		/*
 		g.grid.find('.field')
+
 			.drag('start', function(e) {
 				if (!g.activate()) return
 				var ci = $(this).index()
 				var field = g.field(ci)
 				if (field.fixed_pos) return
-				g.ddi = ci
-				g.vcells(g.ddi).css('opacity', 0.5)
-				$(this).prepend(
+				var col = $(this)
+				g.vcells(ci).css('opacity', 0.5)
+				col.prepend(
 					'<div class=dragging_div>'+
-						'<div class="field dragging" style="left: '+
-							e.offsetX+'px;">'+
-							$(this).html()+
+						'<div class="field dragging" style="'+
+							'width: '+col.width()+'px;'+
+							'height: '+col.height()+'px;'+
+							'left: '+e.startX+'px;'+
+							'">'+col.html()+
 						'</div>'+
 					'</div>')
-				g.dd = g.grid.find('.dragging_div')
-				return g.dd
-			}, { relative: true, distance: 10, })
+				var div = g.grid.find('.dragging_div')
+				var move_sign = g.grid.find('.move_sign_div')
+				g.drag = {ci: ci, col: col, div: div, move_sign: move_sign}
+				return div
+			}, {
+				relative: true,
+				distance: 10,
+			})
+
 			.drag(function(e, d) {
-				if (!g.dd) return
-				g.dd.css({ left: d.offsetX, })
+				if (!g.drag) return
+				g.drag.div.css({ left: d.offsetX, })
+				check_drop(e)
 			}, { relative: true, })
+
 			.drag('end', function() {
-				if (!g.dd) return
-				g.dd.remove()
-				g.dd = null
-				g.vcells(g.ddi).css('opacity', '')
-			})
-			.drop('start', function() {
-				if (!g.dd) return
-				$(this).addClass('dropping')
-				$(this).find('.dropper').show()
-			})
-			.drop('end', function() {
-				if (!g.dd) return
-				$(this).removeClass('dropping')
-				$(this).find('.dropper').hide()
-			})
-		*/
-
-		g.grid.find('.field')
-			.on('mousedown', function() {
-				if (!g.activate()) return
-				var ci = $(this).index()
-				var field = g.field(ci)
-				if (field.fixed_pos) return
-				g.drag = {ci: ci}
-				g.vcells(g.drag.ci).css('opacity', 0.5)
-				g.grid.find('.resizer').hide()
-				e.preventDefault()
-			})
-			.on('move', function(e) {
 				if (!g.drag) return
-			})
-			.on('moveend', function(e) {
-				if (!g.drag) return
+				g.drag.div.remove()
 				g.vcells(g.drag.ci).css('opacity', '')
-				g.drag.ms.hide()
+				g.drag.move_sign.hide()
+
+				var sci = g.drag.ci       // source col
+				var dci = g.drag.drop_ci  // dest. col
+				if (dci != null) {
+					// compensate for removal of the source col
+					if (dci > sci)
+						dci--
+					g.move_col(sci, dci)
+				}
+
 				g.drag = null
-				g.grid.find('.resizer').show()
-				e.preventDefault()
 			})
 
-		// check if a point (x0, y0) is inside rect (x, y, w, h)
-		function hit(x0, y0, x, y, w, h) {
-			return x0 >= x && x0 <= x + w && y0 >= y && y0 <= y + h
-		}
-
-		g.grid.find('thead')
-			.bind('mousemove', function(e) {
+			.drop('start', function(e) {
 				if (!g.drag) return
-
-				g.drag.ms = g.drag.ms || g.grid.find('.move_sign_div')
-				g.drag.cols = g.drag.cols || g.cols()
-
-				var x0 = e.pageX
-				var y0 = e.pageY
-
-				var col
-				$.each(g.drag.cols, function() {
-					var c = $(this)
-					var o = c.offset()
-					var x = o.left
-					var y = o.top
-					var w = c.width()
-					var h = c.height()
-					console.log(x0, y0, x, y, w, h, hit(x0, y0, x, y, w, h))
-					if (hit(x0, y0, x, y, w, h)) {
-						col = c
-						return false
-					}
-				})
-
-				console.log(col)
-				if (!col) return
-
-				var o = col.offset()
-				var x = e.offsetX < col.width() / 2 ? 0 : col.width()
-				g.drag.ms.css({
-					top:  o.top,
-					left: o.left + x,
-				})
-				g.drag.ms.show()
-				e.preventDefault()
-				console.log(e.offsetX, o.left)
-
+				var col = $(this)
+				g.drag.dropcol = col
+				check_drop(e)
+				col.addClass('dropping')
 			})
+
+			.drop('end', function() {
+				if (!g.drag) return
+				$(this).removeClass('dropping')
+			})
+
+		function check_drop(e) {
+			var col = g.drag.dropcol
+			if (!col) return
+			var o = col.offset()
+			var x = o.left
+			var y = o.top
+			var w = col.width()
+			var bw =
+				parseInt(col.css('border-left-width'))+
+				parseInt(col.css('margin-left'))+
+				parseInt(col.css('padding-left'))
+			var ci = col.index()
+			if (e.clientX > x + w / 2) {
+				if (ci == g.col_count() - 1) // last col
+					x = x + w + bw
+				else
+					x = g.col(ci + 1).offset().left
+				ci++
+			}
+			g.drag.drop_ci = ci
+			g.drag.move_sign.css({ left: x + bw, top: y, }).show()
+		}
 
 	}
 
-	// activate first cell ----------------------------------------------------
+	// render the grid and activate the cell at (0, 0) ------------------------
 
+	g.render()
 	g.activate_cell(g.cell(0, 0))
 	if (g.immediate_mode)
 		g.enter_edit(-1, true)
