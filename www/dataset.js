@@ -2,18 +2,40 @@ var dataset, ajax_dataset
 
 (function() {
 
-function assert(t, err) { if (t == null) throw (err || 'assertion failed'); return t; }
-function clamp(x, x0, x1) { return Math.min(Math.max(x, x0), x1); }
+// helpers -------------------------------------------------------------------
 
-//
-dataset = function(d) {
+function assert(t, err) {
+	if (t == null || t == false)
+		throw (err || 'assertion failed')
+	return t
+}
 
-	var d = $.extend({
-		fields: [],   // [{name:, ...}]
-		values: [],   // [[v11,v12,...],[v21,v22,...],...]
-		attrs: {},    // {key: [ri: [fi: val]]}
-		removed: [],  // [id1,...]
-	}, d)
+function clamp(x, x0, x1) {
+	return Math.min(Math.max(x, x0), x1)
+}
+
+function insert(a, i, e) {
+	if (i >= a.length) // sparse
+		a[i] = e
+	else
+		a.splice(i, 0, e)
+}
+
+function remove(a, i) {
+	var v = a[i]
+	a.splice(i, 1)
+	return v
+}
+
+// dataset -------------------------------------------------------------------
+
+dataset = function(d_opt) {
+
+	var d = {
+		fields: [],           // [{name:, ...}]
+		attrs: {value: []},   // {key: [ri: [fi: val]]}
+		removed: [],          // [id1,...]
+	}
 
 	// get field index by name
 
@@ -41,15 +63,20 @@ dataset = function(d) {
 	// get row count; get value
 
 	d.row_count = function() {
-		return d.values.length
+		return d.attrs.value.length
 	}
 
-	d.clamp_rowindex = function(ri) {
-		return clamp(ri, 0, d.row_count() - 1)
+	d.clamp_rowindex = function(ri, extra) {
+		return clamp(ri, 0, d.row_count() - 1 + (extra || 0))
+	}
+
+	d.check_rowindex = function(ri, extra) {
+		assert(d.clamp_rowindex(ri, extra) === ri)
+		return ri
 	}
 
 	d.val = function(ri, fi) {
-		return d.values[ri][fi]
+		return d.attrs.value[ri][fi] // not sparse, unlike all other attrs
 	}
 
 	// get/set cell attributes
@@ -70,7 +97,7 @@ dataset = function(d) {
 		}
 		var t = d.attrs[k]
 		if (v === undefined) {
-			// remove attr
+			// remove attr value
 			if (!t) return
 			var r = t[ri]
 			if (!r) return
@@ -81,7 +108,7 @@ dataset = function(d) {
 					delete d.attrs[k]
 			}
 		} else {
-			// set attr
+			// set attr value
 			if (!t) {
 				t = []
 				d.attrs[k] = t
@@ -107,6 +134,7 @@ dataset = function(d) {
 		delete d.attrs.row_inserted
 		delete d.attrs.row_changed
 		d.removed = []
+		d.order_changed = false
 	}
 
 	// set value, tracking changed values
@@ -123,7 +151,7 @@ dataset = function(d) {
 			if (!d.row_attrs(ri, 'oldval'))
 				d.setattr(ri, 0, 'row_changed')
 		}
-		d.values[ri][fi] = val
+		d.attrs.value[ri][fi] = val // not sparse, unlike all other attrs
 	}
 
 	d.row_changed = function(ri) {
@@ -136,30 +164,39 @@ dataset = function(d) {
 
 	// insert a new record with default values at index
 
-	d.empty_record = function() {
+	d.last_id = 0
+
+	d.new_id = function() {
+		return --d.last_id // use negative values for client-generated ids
+	}
+
+	d.new_record = function() {
 		var rec = []
 		for (var fi in d.fields) {
 			var field = d.fields[fi]
 			var val = field.server_default
 			rec.push(val !== undefined ? val : null)
 		}
+		rec[id_fi] = d.new_id()
 		return rec
 	}
 
 	d.insert = function(ri) {
 		if (ri == null)
 			ri = d.row_count()
-		var rec = d.empty_record()
 
-		if (ri > d.clamp_rowindex(ri)) {
-			// explanation: splice doesn't insert on out-of-range indices.
-			d.values[ri] = rec
-		} else {
-			d.values.splice(ri, 0, rec)
-			// shift attr arrays too to make room for the record.
-			for (var k in d.attrs)
-				d.attrs[k].splice(ri, 0, undefined)
-		}
+		// shift attr arrays to make room for the record at ri.
+		for (var k in d.attrs)
+			insert(d.attrs[k], ri)
+
+		// set a new record at ri.
+		var rec = d.new_record()
+		d.attrs.value[ri] = rec
+
+		// update idmap
+		console.log('ins', JSON.stringify(d.attrs.value))
+		idmap[rec[id_fi]] = ri
+
 		// mark row as inserted and changed.
 		d.setattr(ri, 0, 'row_inserted row_changed', true)
 
@@ -167,7 +204,8 @@ dataset = function(d) {
 		for (var fi in d.fields) {
 			var field = d.fields[fi]
 			var val = field.client_default
-			d.setvalue(ri, fi, val)
+			if (val !== undefined)
+				d.setvalue(ri, fi, val)
 		}
 	}
 
@@ -181,9 +219,25 @@ dataset = function(d) {
 		if (!d.row_is_new(ri))
 			d.removed.push(d.rowid(ri))
 
-		d.values.splice(ri, 1)
 		for (var k in d.attrs)
-			d.attrs[k].splice(ri, 1)
+			remove(d.attrs[k], ri)
+	}
+
+	// move a record to a new index
+
+	d.move = function(sri, dri) {
+		sri = d.check_rowindex(sri)
+		dri = d.clamp_rowindex(dri, 1)
+		if (sri == dri) return
+
+		// update attrs (TODO: do it without remove/insert)
+		for (var k in d.attrs) {
+			var t = d.attrs[k]
+			var row = remove(t, sri)
+			insert(t, dri > sri ? dri-1 : dri, row)
+		}
+
+		d.order_changed = true
 	}
 
 	// pack current change set
@@ -194,10 +248,10 @@ dataset = function(d) {
 		// add changed values
 		var oldvals = d.row_attrs(ri, 'oldval')
 		for (var fi in oldvals)
-			values[d.fields[fi].name] = d.values[ri][fi]
+			values[d.fields[fi].name] = d.val(ri, fi)
 
 		// add the id field
-		values[d.fields[id_fi].name] = d.values[ri][id_fi]
+		values[d.fields[id_fi].name] = d.rowid(ri)
 
 		return values
 	}
@@ -213,10 +267,18 @@ dataset = function(d) {
 		for (var ri in d.attrs.row_inserted)
 			insert.push(d.changed_values(ri))
 
+		var row_order
+		if (d.order_changed) {
+			row_order = []
+			for (var ri in d.attrs.value)
+				row_order.push(d.rowid(ri))
+		}
+
 		return {
 			update: update,
 			insert: insert,
 			remove: d.removed,
+			row_order: row_order,
 		}
 	}
 
@@ -236,11 +298,10 @@ dataset = function(d) {
 					d.setattr(ri, fi, 'corrected rejected')
 					d.setattr(ri, fi, 'error', rec.error)
 				} else {
-					d.setattr(ri, fi, 'userval', userval)
 					d.setvalue(ri, fi, serverval)
+					d.setattr(ri, fi, 'userval', userval)
 					d.setattr(ri, fi, 'oldval rejected')
 					d.setattr(ri, fi, 'corrected', true)
-					d.setattr(ri, fi, 'wanted', userval)
 				}
 			}
 			// even if some cells got rejected and thus they're still marked
@@ -258,10 +319,12 @@ dataset = function(d) {
 		return ri
 	}
 
-	d.move = function(ri_) {
+	d.move_cursor = function(ri_) {
 		ri = clamp(ri_, 0, d.row_count() - 1)
 		$(d).trigger('move', ri)
 	}
+
+	$.extend(d, d_opt)
 
 	return d
 }
@@ -295,7 +358,9 @@ var ds = dataset({
 		{name: 'id'},
 		{name: 'name', default: 'default_name'},
 	],
-	values: [[1, 'name1'], [2, null]],
+	attrs: {
+		value: [[1, 'name1'], [2, null]],
+	},
 })
 
 ds.insert() // insert row at the bottom
@@ -305,8 +370,9 @@ ds.setvalue(1, 1, '1-changed') // set value on existing row
 ds.remove(2) // remove the second existing row
 ds.insert() // insert row at the bottom to be deleted
 ds.setvalue(ds.row_count()-1, 1, 'changed') // set value on new row about to be deleted
-ds.remove(ds.row_count() - 1)  // remove new, changed row
-console.log(JSON.stringify(ds.values))
+ds.remove(ds.row_count() - 1) // remove new, changed row
+ds.move(1, 0)
+
 console.log(JSON.stringify(ds.attrs))
 console.log(JSON.stringify(ds.pack_changeset()))
 

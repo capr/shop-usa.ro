@@ -1,8 +1,20 @@
 var grid = (function() {
 
-function sign(x) { return x > 0 ? 1 : x < 0 ? -1 : 0; }
-function clamp(x, x0, x1) { return Math.min(Math.max(x, x0), x1); }
-function assert(t, err) { if (t == null) throw (err || 'assertion failed'); return t; }
+// helpers -------------------------------------------------------------------
+
+function sign(x) {
+	return x > 0 ? 1 : x < 0 ? -1 : 0
+}
+
+function assert(t, err) {
+	if (t == null || t == false)
+		throw (err || 'assertion failed')
+	return t
+}
+
+function clamp(x, x0, x1) {
+	return Math.min(Math.max(x, x0), x1)
+}
 
 function make_url(path, opt_args, opt_params) {
 	var args = []
@@ -25,6 +37,8 @@ function fully_selected(input) {
 	var p1 = input[0].selectionEnd
 	return p0 == 0 && p1 == input.val().length
 }
+
+// grid ----------------------------------------------------------------------
 
 var active_grid // the grid that gets keyboard input
 
