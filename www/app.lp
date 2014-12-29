@@ -1806,7 +1806,7 @@ end
 				<tr>
 					{{#fields}}
 					<th valign=top
-						class="nowrap field {{^fixed_pos}}movable{{/fixed_pos}}"
+						class="field {{^fixed_pos}}movable{{/fixed_pos}}"
 						{{#width}}style="width: {{{width}}}px"{{/width}}
 					>
 						{{^fixed_width}}
@@ -1851,7 +1851,7 @@ end
 	<tr class=row>
 		{{#cols}}
 			{{#col}}
-			<td class="nowrap cell {{{readonly}}}" align={{{align}}} valign=top>
+			<td class="cell {{{readonly}}}" align={{{align}}} valign=top>
 				<div class=input_div></div><span class="value {{{type}}}">{{value}}</span>
 			</td>
 			{{/col}}

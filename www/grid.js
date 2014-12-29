@@ -1,37 +1,68 @@
 var grid = (function() {
 
 function sign(x) { return x > 0 ? 1 : x < 0 ? -1 : 0; }
-function is(arg) { return arg !== undefined && arg !== null; }
 function clamp(x, x0, x1) { return Math.min(Math.max(x, x0), x1); }
+function assert(t, err) { if (t == null) throw (err || 'assertion failed'); return t; }
 
-function text_selected(input) {
+function make_url(path, opt_args, opt_params) {
+	var args = []
+	for (var i in opt_args)
+		args.push(encodeURIComponent(opt_args[i]))
+	args = args.join('/')
+
+	var params = []
+	for (var k in opt_params)
+		params.push(encodeURIComponent(k)+'='+encodeURIComponent(opt_params[k]))
+	params = params.join('&')
+
+	return path+(args?'/'+args:'')+(params?'?'+params:'')
+}
+
+// check if the text in an input box is fully selected.
+function fully_selected(input) {
 	if (!input) return
 	var p0 = input[0].selectionStart
 	var p1 = input[0].selectionEnd
 	return p0 == 0 && p1 == input.val().length
 }
 
-var active_grid
+var active_grid // the grid that gets keyboard input
 
-function grid(g) {
+function grid(g_opt) {
 
-	var g = $.extend({
-		dst: '#main',
-		page_rows: 20, // how many rows on page-down / up (TODO: autocompute)
-		immediate_mode: false,
-	}, g)
+	// data model <-> rendering model (i.e. all you need to know):
+	//
+	// data vocabulary: field, record, value; row index (ri), field index (fi).
+	// rendering vocabulary: row, cell, col; row index (ri), col index (ci).
+	//
+	// g.fields[fi] -> field (field definitions, in field order)
+	// g.values[ri] -> record; record[fi] -> value (raw values, in field order)
+	// g.fieldmap[ci] -> fi (column index -> field index mapping)
+	// g.row(ri) -> row (row selector)
+	// g.cell(ri, ci) -> cell (value cell selector; only fieldmap values are rendered)
+	// g.hcell(ci) -> hcell (header cell selector; only fieldmap hcells are rendered)
+	// g.row_id(row) -> id (per g.idfield_name or g.idfield_index)
+	// g.row_byid(id) -> row (per g.idmap)
 
-	// values -----------------------------------------------------------------
-
-	// make a new record with default values
-	g.create_record = function() {
-		var rec = []
-		for (var i = 0; i < g.fields.length; i++)
-			rec.push(g.fields[i]['default'] || null)
-		return rec
+	var g = {
+		// data
+		fields: [],               // [{name:, width:, ...}]
+		values: [],               // [[v11,v12,...],[v21,v22,...],...]
+		// rendering
+		fieldmap: null,           // [ci: fi] (created automatically if missing)
+		container: null,          // rendering container selector (required)
+		// behavior
+		page_rows: 20,            // how many rows to move on page-down/page-up
+		immediate_mode: false,    // stay in edit mode while navigating
+		save_on_exit_row: true,   // trigger save on vertical movement
+		save_on_exit_edit: false, // trigger save when done editing each cell
+		// load/save
+		url_path: null,           // URL path (enables loading and saving)
+		url_args: [],             // encoded and appended to URL path
+		url_params: {},           // URL query params
 	}
 
-	// rec_id->row map --------------------------------------------------------
+	// record id -> row map ---------------------------------------------------
 
 	function fieldindex_byname(fieldname) {
 		for (var i = 0; i < g.fields.length; i++)
@@ -42,8 +73,10 @@ function grid(g) {
 	var idmap // id: row
 	var id_fi
 
-	function make_idmap() {
-		id_fi = fieldindex_byname(g.idfield) || 0
+	function init_idmap() {
+		id_fi = g.idfield_name ?
+			assert(fieldindex_byname(g.idfield_name), 'wrong idfield_name') :
+			(g.idfield_index || 0)
 		idmap = {}
 		var rows = g.rows()
 		for (var ri = 0; ri < g.values.length; ri++) {
@@ -62,21 +95,13 @@ function grid(g) {
 		return g.values[ri][id_fi]
 	}
 
-	// col_index<->field_index mappings ---------------------------------------
+	// col index <-> field index mappings -------------------------------------
 
-	function make_fieldmaps() {
-
-		if (!g.fieldmap) {
-			g.fieldmap = []
-			for (var i = 0; i < g.fields.length; i++)
-				g.fieldmap.push(i)
-		}
-
-		g.rfieldmap = g.fieldmap.slice()
-		for (var ci = 0; i < g.fieldmap.length; ci++) {
-			var fi = g.fieldmap[ci]
-			g.rfieldmap[fi] = ci
-		}
+	function init_fieldmap() {
+		if (g.fieldmap) return
+		g.fieldmap = []
+		for (var i in g.fields)
+			g.fieldmap.push(i)
 	}
 
 	g.field = function(ci) {
@@ -95,7 +120,7 @@ function grid(g) {
 	}
 	g.value_type = value_type
 
-	function render_context(values) {
+	g.render_context = function(values) {
 
 		var t = {}
 		var rec, ci
@@ -140,18 +165,23 @@ function grid(g) {
 		return t
 	}
 
-	g.get_template = function(name) {
+	g.template = function(name) {
 		return $('#' + name + '_template').html()
 	}
 
+	g.render_template = function(template, values) {
+		var ctx = g.render_context(values)
+		return Mustache.render(g.template(template), ctx, g.template)
+	}
+
 	g.render = function() {
-		make_fieldmaps()
-		var dst = $(g.dst)
-		var ctx = render_context(g.values)
-		var s = Mustache.render(g.get_template('grid'), ctx, g.get_template)
-		dst.html(s)
-		g.grid = dst.find('.grid')
-		make_idmap()
+		var container = $(g.container)
+		assert(container.length == 1, 'container not found')
+		init_fieldmap()
+		var s = g.render_template('grid', g.values)
+		container.html(s)
+		g.grid = container.find('.grid')
+		init_idmap()
 		make_clickable()
 	}
 
@@ -162,11 +192,13 @@ function grid(g) {
 
 	g.rows_ct = function() { return g.grid.find('.rows'); }
 	g.rows = function() { return g.grid.find('.row'); }
+	g.changed_rows = function() { return g.grid.find('.row.changed'); }
 	g.row = function(i) {
 		i = clamp(i, 0, g.row_count() - 1)
 		return g.rows().filter(':nth-child('+(i+1)+')')
 	}
 	g.cells = function(row) { return (row ? $(row) : g.grid).find('.cell'); }
+	g.changed_cells = function(row) { return (row ? $(row) : g.grid).find('.cell.changed'); }
 	g.cell = function(row, i) {
 		if (typeof row == 'number')
 			row = g.row(row)
@@ -175,8 +207,8 @@ function grid(g) {
 		i = clamp(i, 0, g.col_count() - 1)
 		return row.find('.cell:nth-child('+(i+1)+')')
 	}
-	g.cols = function() { return g.grid.find('.field'); }
-	g.col = function(ci) { return g.grid.find('.field:nth-child('+(ci+1)+')'); }
+	g.hcells = function() { return g.grid.find('.field'); }
+	g.hcell = function(ci) { return g.grid.find('.field:nth-child('+(ci+1)+')'); }
 	g.rowof = function(cell) { return cell.parent(); }
 	g.vcells = function(ci) {
 		return g.grid.find('.field:nth-child('+(ci+1)+'),.cell:nth-child('+(ci+1)+')')
@@ -246,7 +278,7 @@ function grid(g) {
 
 	// row focusing -----------------------------------------------------------
 
-	var active_row = $([])
+	var active_row
 
 	g.deactivate_row = function() {
 		if (!g.deactivate_cell()) return
@@ -277,7 +309,7 @@ function grid(g) {
 
 	// cell focusing ----------------------------------------------------------
 
-	var active_cell = $([])
+	var active_cell
 
 	g.deactivate_cell = function() {
 		if (!g.exit_edit()) return
@@ -317,7 +349,7 @@ function grid(g) {
 	g.input = function() { return active_input; }
 	g.caret = function(caret) {
 		if (!active_input) return
-		if (!is(caret))
+		if (caret == null)
 			return active_input.caret()
 		active_input.caret(caret)
 	}
@@ -343,7 +375,7 @@ function grid(g) {
 		var input = div.find('input')
 		input.val(val)
 		input.focus()
-		if (is(caret))
+		if (caret != null)
 			input.caret(caret)
 		if (select)
 			input.select()
@@ -376,7 +408,7 @@ function grid(g) {
 				} else
 					cell.removeClass('changed')
 				// even if the cell just got reverted back to its old value,
-				// the row still gets marked as changed, because other cells
+				// the row gets marked as changed anyway, because other cells
 				// might still be in rejected state.
 				g.rowof(cell).addClass('changed')
 			}
@@ -385,13 +417,24 @@ function grid(g) {
 		cell.find('.input_div').html('')
 		active_input = null
 		g.quick_edit = null
-		return true
+		return g.save_on_exit_edit ? g.save_values() : true
+	}
+
+	// make a new record with default values
+	g.create_record = function() {
+		var rec = []
+		for (var fi in g.fields)
+			rec.push(
+				g.fields[fi].client_default ||
+				g.fields[fi].server_default ||
+				null)
+		return rec
 	}
 
 	g.insert_row = function(ri) {
 
-		// range-check & set default row index
-		if (!is(ri))
+		// range-check or infer row index.
+		if (ri == null)
 			ri = g.active_row().index()
 		ri = clamp(ri, 0, g.row_count())
 		var append = ri == g.row_count()
@@ -403,7 +446,7 @@ function grid(g) {
 		g.values.splice(ri, 0, rec)
 
 		// render it, add it to position, and get it
-		var s = render('grid_rows', render_context([rec]))
+		var s = g.render_template('grid_rows', [rec])
 		if (append)
 			g.rows_ct().append(s)
 		else
@@ -415,17 +458,15 @@ function grid(g) {
 		// activate the row on the same cell as before
 		g.activate_cell(g.cell(row, g.active_cell().index()))
 
-		// mark non-null cells and the row as changed
-		$.each(rec, function(fi, val) {
-			if (val !== null) {
-				g.cell(row, g.rfieldmap[fi]).addClass('changed')
-				row.addClass('changed')
-			}
+		// mark the cells and the row as changed/new.
+		g.cells().each(function(_, cell) {
+			cell = $(cell)
+			var field = g.field(cell.index())
+			if (field.client_default != null)
+				cell.addClass('changed')
 		})
-
-		// mark all cells and the row as new
 		cells.addClass('new')
-		row.addClass('new')
+		row.addClass('new changed')
 	}
 
 	var deleted = [] // [rec1, ...]
@@ -433,7 +474,7 @@ function grid(g) {
 	g.delete_row = function(ri) {
 
 		// range-check & set default row index
-		if (!is(ri))
+		if (ri == null)
 			ri = g.active_row().index()
 		if (ri < 0 || ri >= g.row_count())
 			return
@@ -460,20 +501,116 @@ function grid(g) {
 		g.activate_cell(g.cell(ri, ci))
 	}
 
-	// saving data ------------------------------------------------------------
+	// ajax requests ----------------------------------------------------------
 
-	g.exit_row = function(row) {
-		return g.exit_edit() && g.save()
+	g.sort_expr = function() {
+		var s = ''
+		for (var fi in g.fields) {
+			var field = g.fields[fi]
+			if (field.sort)
+				s += field.name+':'+field.sort
+		}
+		return s
 	}
 
-	function update_records(records) {
-		for (var i = 0; i < records.length; i++) {
-			var rec = records[i]
-			var row = g.row_byid(rec.id)
+	g.ajax_url = function() {
+		if (!g.url_path) return
+		var params = {}
+		var sort = g.sort_expr()
+		if (sort) params.sort = sort
+		$.extend(params, g.url_params)
+		return make_url(g.url_path, g.url_args, params)
+	}
+
+	g.ajax_success = function(data) {} // stub
+	g.ajax_error = function(xhr) {} // stub
+
+	// make a GET request (or a POST request if data is passed).
+	g.ajax = function(data, success, error) {
+		var url = g.ajax_url()
+		if (!url) {
+			if (success) success()
+			return
+		}
+		var opt = {}
+		opt.success = function(data) {
+			g.ajax_success(data)
+			if (success) success(data)
+		}
+		opt.error = function(xhr) {
+			g.ajax_error(xhr)
+			if (error) error(xhr)
+		}
+		if (data != null) {
+			opt.type = 'POST'
+			opt.data = {data: JSON.stringify(data)}
+		}
+		$.ajax(url, opt)
+	}
+
+	// saving / loading state -------------------------------------------------
+
+	g.state = function() {
+		//
+	}
+
+	g.update_state = function(state) {
+		//
+	}
+
+	g.save_state = function() {
+		//
+	}
+
+	// saving values ----------------------------------------------------------
+
+	g.exit_row = function(row) {
+		if (!g.exit_edit()) return
+		return g.save_on_exit_row ? g.save_values() : true
+	}
+
+	g.changed_records = function() {
+		var records = []
+		g.changed_rows().each(function(_, row) {
+			var values = {}
+			g.changed_cells(row).each(function(_, cell) {
+				var ci = $(cell).index()
+				var val = g.val(cell)
+				values[g.field(ci).name] = val
+			})
+			var id = g.row_id(row)
+			records.push({id: id, values: values})
+		})
+		return records
+	}
+
+	g.save_values_success = function(data) {
+		g.update_state(data)
+		g.update_values(data.values)
+	}
+
+	g.save_values_error = function(xhr) {} // stub
+
+	g.save_values = function() {
+		var records = g.changed_records()
+		if (!records.length) return true // nothing to save
+		var state = g.state()
+		g.ajax({
+			records: records,
+			state: state,
+		}, g.save_values_success,
+			g.save_values_error)
+		return true
+	}
+
+	g.update_values = function(values) {
+		for (var i in values) {
+			var rec = values[i]
+			var row = g.row_byid(rec[id_fi])
 			g.cells(row).each(function(ci, cell) {
 				cell = $(cell)
 				var fi = g.fieldmap[ci]
-				var serverval = rec.values[fi]
+				var serverval = rec[fi]
 				var oldval = cell.data('oldval')
 				var userval = g.val(cell)
 				if (serverval === userval) {
@@ -493,39 +630,42 @@ function grid(g) {
 				}
 			})
 			// even if some cells got rejected and thus they're still marked
-			// as "changed", the row itself is not changed until the user
-			// changes at least one cell again.
+			// as "changed", the row itself will not be considered changed until
+			// the user changes at least one cell again.
 			row.removeClass('changed')
 		}
 	}
 
-	g.save = function() {
+	// loading values ---------------------------------------------------------
 
-		var records = []
-		g.rows().filter('.changed').each(function(_, row) {
-			// collect modified values
-			var values
-			g.cells(row).each(function(ci, cell) {
-				cell = $(cell)
-				if (!cell.hasClass('changed')) return
-				var val = g.val(cell)
-				values = values || {}
-				values[g.field(ci).name] = val
-			})
-			if (values) {
-				var id = g.row_id(row)
-				records.push({id: id, values: values})
-			}
-		})
+	g.load_success = function(data) {
 
-		if (!records.length)
-			return true
+		// reset state
+		if (g.active())
+			active_grid = null
+		active_row = $([])
+		active_cell = $([])
+		active_input = null
 
-		g.save_records(records, update_records)
-		return true
+		g.update_state(data)
+
+		if (data) {
+			g.fields = data.fields
+			g.values = data.values
+		}
+		g.render()
+
+		g.activate_cell(g.cell(0, 0))
+		if (g.immediate_mode)
+			g.enter_edit(-1, true)
+
 	}
 
-	g.save_records = function(records, success) {} // stub
+	g.load_error = function(xhr) {} // stub
+
+	g.load = function() {
+		g.ajax(null, g.load_success, g.load_error)
+	}
 
 	// cell navigation --------------------------------------------------------
 
@@ -539,7 +679,8 @@ function grid(g) {
 		var ri = g.rowof(cell).index() + rows
 		var ci = cell.index() + cols
 
-		// end of the row: move to next-row-first-cell or last-row-last-cell.
+		// end of the row trying to move to the right: move to next-row-first-cell.
+		// beginning of the row trying to move to the left: move to prev-row-last-cell.
 		if (
 			(cols < 0 && ci < 0) ||
 			(cols > 0 && ci > g.col_count() - 1)
@@ -588,6 +729,8 @@ function grid(g) {
 			$.each(dcells, function(i) {
 				$(this).before(scells[i])
 			})
+
+		g.save_state()
 	}
 
 	// key bindings -----------------------------------------------------------
@@ -635,7 +778,7 @@ function grid(g) {
 				case 33: rows = -g.page_rows; break
 				case 34: rows =  g.page_rows; break
 			}
-			var selected = text_selected(input)
+			var selected = fully_selected(input)
 			if (g.move(rows, 0) && input && g.immediate_mode)
 				g.enter_edit(caret, selected)
 			e.preventDefault()
@@ -698,7 +841,12 @@ function grid(g) {
 
 	function make_clickable() {
 
-		// activate cell / enter edit
+		// activate the grid by clicking on the header
+		g.grid.on('click', '.field', function() {
+			g.activate()
+		})
+
+		// activate cell / enter edit by clicking on a cell
 		g.grid.on('click', '.cell', function() {
 			if (g.active() && this == g.active_cell()[0])
 				g.enter_edit(-1, true)
@@ -710,32 +858,71 @@ function grid(g) {
 			}
 		})
 
-		// sort
+		// trigger sorting by clicking on the field box
 		g.grid.on('click', '.field_box a', function() {
 			if (!g.activate()) return
+
 			var ci = $(this).closest('.field').index()
 			var field = g.field(ci)
-			g.fetch(field.name+':'+(field.sort == 'asc' ? 'desc' : 'asc'))
+
+			// toggle sorting on this field
+			field.sort = field.sort == 'asc' ? 'desc' :
+				(field.sort == 'desc' ? null : 'asc')
+
+			g.load()
 		})
 
-		g.grid.on('click', '.field', function() {
-			g.activate()
-		})
-
-		// resize columns
+		// resize columns by dragging the resizer
 		g.grid.find('.resizer')
+
 			.drag(function(e, d) {
-				if (!g.activate()) return
+
+				g.activate() // resizing allowed even if activation failed
+
 				var col = $(this).closest('.field')
 				var ci = col.index()
 				var field = g.field(ci)
-				if (field.fixed_width) return
+				if (field.fixed_width) return // not movable
+
+				// compute width
 				var w = d.offsetX - col.position().left
-				col.width(w)
+
+				// update data
 				field.width = w
+
+				// update DOM
+				col.width(w)
 			})
 
-		// move columns
+			.drag('end', function() {
+				g.save_state()
+			})
+
+		// move columns --------------------------------------------------------
+
+		function check_drop(e) {
+			var col = g.drag.dropcol
+			if (!col) return
+			var o = col.offset()
+			var x = o.left
+			var y = o.top
+			var w = col.width()
+			var bw =
+				parseInt(col.css('border-left-width'))+
+				parseInt(col.css('margin-left'))+
+				parseInt(col.css('padding-left'))
+			var ci = col.index()
+			if (e.clientX > x + w / 2) {
+				if (ci == g.col_count() - 1) // last col
+					x = x + w + bw
+				else
+					x = g.hcell(ci + 1).offset().left
+				ci++
+			}
+			g.drag.drop_ci = ci
+			g.drag.move_sign.css({ left: x + bw, top: y, }).show()
+		}
+
 		g.grid.find('.field')
 
 			.drag('start', function(e) {
@@ -800,37 +987,12 @@ function grid(g) {
 				$(this).removeClass('dropping')
 			})
 
-		function check_drop(e) {
-			var col = g.drag.dropcol
-			if (!col) return
-			var o = col.offset()
-			var x = o.left
-			var y = o.top
-			var w = col.width()
-			var bw =
-				parseInt(col.css('border-left-width'))+
-				parseInt(col.css('margin-left'))+
-				parseInt(col.css('padding-left'))
-			var ci = col.index()
-			if (e.clientX > x + w / 2) {
-				if (ci == g.col_count() - 1) // last col
-					x = x + w + bw
-				else
-					x = g.col(ci + 1).offset().left
-				ci++
-			}
-			g.drag.drop_ci = ci
-			g.drag.move_sign.css({ left: x + bw, top: y, }).show()
-		}
-
 	}
 
-	// render the grid and activate the cell at (0, 0) ------------------------
+	// init and load ----------------------------------------------------------
 
-	g.render()
-	g.activate_cell(g.cell(0, 0))
-	if (g.immediate_mode)
-		g.enter_edit(-1, true)
+	$.extend(g, g_opt)
+	g.load()
 
 	return g
 }
@@ -841,41 +1003,17 @@ action.grid = function() {
 		allow(admin())
 	})
 
-	$('#layout').html('<div id=main></div>')
-	$('body').css('margin-left', 0)
+	$('#layout').html('<div id=main></div><div id=d2></div>')
 
-	var args = Array.prototype.slice.call(arguments)
-	for (var i = 0; i < args.length; i++)
-		args[i] = encodeURIComponent(args[i])
+	var g = grid({
+		container: '#main',
+		url_path: '/dataset.json/ordr',
+		immediate_mode: true,
+	})
 
-	function load(orderby) {
-
-		var url = '/dataset.json/'+args.join('/')+location.search+
-			(orderby ? (location.search ? '&' : '?')+'sort='+orderby : '')
-
-		load_main(url, function(g_) {
-
-			var g = grid($.extend(true, {
-				immediate_mode: true,
-			}, g_))
-
-			g.fetch = load
-
-			var url = '/dataset.json/'+args.join('/')+'/update'+location.search
-			g.save_records = function(records, success) {
-				post(url, {records: records}, function(data) {
-					success(data.records)
-				})
-			}
-
-		})
-	}
-	load()
-
-	$('#main').after('<div id=d2></div>')
 	var g = grid({
 		//width: 700,
-		dst: '#d2',
+		container: '#d2',
 		fields: [
 			{name: 'id', readonly: true, width: 100, },
 			{name: 'name', type: 'text', maxlength: 16, default: 'default name', width: 250, },
@@ -884,7 +1022,6 @@ action.grid = function() {
 		values: [[1, 'foo', 0], [2, 'bar', null]],
 		fieldmap: [2, 0, 1],
 	})
-	g.activate()
 
 }
 

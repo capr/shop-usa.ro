@@ -523,6 +523,7 @@ input.price {
 	padding-right: 5px;
 	padding-top: 3px;
 	padding-bottom: 2px;
+	white-space: nowrap;
 	overflow: ellipsis;
 }
 

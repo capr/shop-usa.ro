@@ -2,6 +2,7 @@ var dataset, ajax_dataset
 
 (function() {
 
+function assert(t, err) { if (t == null) throw (err || 'assertion failed'); return t; }
 function clamp(x, x0, x1) { return Math.min(Math.max(x, x0), x1); }
 
 //
@@ -17,7 +18,7 @@ dataset = function(d) {
 	// get field index by name
 
 	d.fieldindex_byname = function(fieldname) {
-		for (var i = 0; i < g.fields.length; i++)
+		for (var i in g.fields)
 			if (g.fields[i].name == fieldname)
 				return i
 	}
@@ -26,7 +27,8 @@ dataset = function(d) {
 
 	var idmap = {} // {id: ri}
 	var id_fi = d.id_field_name ?
-		d.fieldindex_byname(d.id_field_name) : (d.id_field_index || 0)
+		assert(d.fieldindex_byname(d.id_field_name)) :
+		(d.id_field_index || 0)
 
 	d.rowindex_byid = function(id) {
 		return idmap[id]
@@ -53,28 +55,49 @@ dataset = function(d) {
 	// get/set cell attributes
 
 	d.attr = function(ri, fi, k) {
-		return d.attrs[k] && d.attrs[k][ri] && d.attrs[k][ri][fi]
+		var t = d.attrs[k]; if (!t) return
+		var r = t[ri]; if (!r) return
+		return r[fi]
 	}
 
 	d.setattr = function(ri, fi, k, v) {
 		if (k.indexOf(' ') > -1) {
-			for (k in k.split(' '))
-				d.setattr(ri, fi, k, v)
+			// set multiple attributes to the same value
+			var t = k.split(' ')
+			for (var k in t)
+				d.setattr(ri, fi, t[k], v)
 			return
 		}
-		d.attrs[k] = d.attrs[k] || []
+		var t = d.attrs[k]
 		if (v === undefined) {
-			delete d.attrs[k][ri][fi]
-			if (!d.attrs[k][ri].length)
-				delete d.attrs[k][ri]
+			// remove attr
+			if (!t) return
+			var r = t[ri]
+			if (!r) return
+			delete r[fi]
+			if (!r.length) {
+				delete t[ri]
+				if (!t.length)
+					delete d.attrs[k]
+			}
 		} else {
-			d.attrs[k][ri] = d.attrs[k][ri] || []
-			d.attrs[k][ri][fi] = v
+			// set attr
+			if (!t) {
+				t = []
+				d.attrs[k] = t
+			}
+			var r = t[ri]
+			if (!r) {
+				r = []
+				t[ri] = r
+			}
+			r[fi] = v
 		}
 	}
 
 	d.row_attrs = function(ri, k) {
-		return d.attrs[k] && d.attrs[k][ri]
+		var t = d.attrs[k]; if (!t) return
+		return t[ri]
 	}
 
 	// (re-)initialize the current change set
@@ -91,9 +114,11 @@ dataset = function(d) {
 	d.setvalue = function(ri, fi, val) {
 		var oldval = d.attr(ri, fi, 'oldval')
 		if (oldval === undefined) {
+			// first-time change.
 			d.setattr(ri, fi, 'oldval', d.val(ri, fi))
 			d.setattr(ri, 0, 'row_changed', true)
 		} else if (val === oldval) {
+			// changed back to old value.
 			d.setattr(ri, fi, 'oldval')
 			if (!d.row_attrs(ri, 'oldval'))
 				d.setattr(ri, 0, 'row_changed')
@@ -106,27 +131,17 @@ dataset = function(d) {
 	}
 
 	d.value_changed = function(ri, fi) {
-		return d.attr('oldval', ri, fi) !== undefined
+		return d.attr(ri, fi, 'oldval') !== undefined
 	}
 
 	// insert a new record with default values at index
 
-	// create a record with all values set to null
 	d.empty_record = function() {
 		var rec = []
-		for (var fi = 0; fi < d.fields.length; fi++)
-			rec.push(null)
-		return rec
-	}
-
-	// set default values where values are null in a record
-	d.set_defaults = function(rec) {
-		for (var fi = 0; fi < d.fields.length; fi++) {
-			if (rec[fi] == null) {
-				var val = d.fields[fi].default
-				if (val != null)
-					rec[fi] = val
-			}
+		for (var fi in d.fields) {
+			var field = d.fields[fi]
+			var val = field.server_default
+			rec.push(val !== undefined ? val : null)
 		}
 		return rec
 	}
@@ -134,18 +149,26 @@ dataset = function(d) {
 	d.insert = function(ri) {
 		if (ri == null)
 			ri = d.row_count()
-		var rec = d.set_defaults(d.empty_record())
+		var rec = d.empty_record()
 
 		if (ri > d.clamp_rowindex(ri)) {
-			// explanation: splice doesn't insert on out-of-range indices
+			// explanation: splice doesn't insert on out-of-range indices.
 			d.values[ri] = rec
 		} else {
 			d.values.splice(ri, 0, rec)
-			for (k in d.attrs)
+			// shift attr arrays too to make room for the record.
+			for (var k in d.attrs)
 				d.attrs[k].splice(ri, 0, undefined)
 		}
+		// mark row as inserted and changed.
+		d.setattr(ri, 0, 'row_inserted row_changed', true)
 
-		d.setattr(ri, 0, 'row_inserted', true)
+		// set client defaults.
+		for (var fi in d.fields) {
+			var field = d.fields[fi]
+			var val = field.client_default
+			d.setvalue(ri, fi, val)
+		}
 	}
 
 	d.row_is_new = function(ri) {
@@ -159,7 +182,7 @@ dataset = function(d) {
 			d.removed.push(d.rowid(ri))
 
 		d.values.splice(ri, 1)
-		for (k in d.attrs)
+		for (var k in d.attrs)
 			d.attrs[k].splice(ri, 1)
 	}
 
@@ -167,37 +190,45 @@ dataset = function(d) {
 
 	d.changed_values = function(ri) {
 		var values = {}
+
+		// add changed values
 		var oldvals = d.row_attrs(ri, 'oldval')
 		for (var fi in oldvals)
 			values[d.fields[fi].name] = d.values[ri][fi]
+
+		// add the id field
+		values[d.fields[id_fi].name] = d.values[ri][id_fi]
+
 		return values
 	}
 
 	d.pack_changeset = function() {
+
 		var update = []
+		for (var ri in d.attrs.row_changed)
+			if (!d.row_is_new(ri))
+				update.push(d.changed_values(ri))
+
 		var insert = []
-		var changeset = {update: update, insert: insert, delete: d.removed}
-		for (var ri in d.attrs.row_changed) {
-			var values = d.changed_values(ri)
-			if (d.row_is_new(ri)) continue
-			update.push({id: d.rowid(ri), values: values})
+		for (var ri in d.attrs.row_inserted)
+			insert.push(d.changed_values(ri))
+
+		return {
+			update: update,
+			insert: insert,
+			remove: d.removed,
 		}
-		for (var ri in d.attrs.row_inserted) {
-			var values = d.changed_values(ri)
-			insert.push(values)
-		}
-		return changeset
 	}
 
 	// update current change set
 
-	d.update_records = function(records) {
-		for (var i = 0; i < records.length; i++) {
-			var rec = records[i]
+	d.update_changeset = function(changeset) {
+		for (var i in changeset.update) {
+			var rec = changeset.update[i]
 			var ri = d.rowindex_byid(rec.id)
-			for (var fi = 0; fi < d.fields.length; fi++) {
+			for (var fi in d.fields) {
 				var serverval = rec.values[fi]
-				var oldval = d.attr('oldval', ri, fi)
+				var oldval = d.attr(ri, fi, 'oldval')
 				var userval = d.val(ri, fi)
 				if (serverval === userval) {
 					d.setattr(ri, fi, 'rejected corrected oldval')
@@ -213,8 +244,8 @@ dataset = function(d) {
 				}
 			}
 			// even if some cells got rejected and thus they're still marked
-			// as "changed", the row itself is not changed until the user
-			// changes at least one cell again.
+			// as "changed", the row itself will not get changed until
+			// the user changes at least one cell again.
 			d.setattr(ri, 0, 'row_changed')
 		}
 	}
@@ -253,6 +284,9 @@ ajax_dataset = function(d_opt) {
 }
 
 })()
+
+
+// test ----------------------------------------------------------------------
 
 if (true) {
 

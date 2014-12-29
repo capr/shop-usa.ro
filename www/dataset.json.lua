@@ -5,17 +5,17 @@ local function table_grid_update(t) --table, idfield
 
 	local self = t or {}
 
-	local function get_idfield()
-		if not self.idfield then
-			self.idfield = query1(
+	local function get_idfield_name()
+		if not self.idfield_name then
+			self.idfield_name = query1(
 				"show keys from "..self.table..
 					" where key_name = 'PRIMARY'").Column_name
 		end
-		return self.idfield
+		return self.idfield_name
 	end
 
 	local function whereidexpr()
-		return ' where '..get_idfield()..' = ?'
+		return ' where '..get_idfield_name()..' = ?'
 	end
 
 	local function setexpr(values)
@@ -42,7 +42,7 @@ local function table_grid_update(t) --table, idfield
 		query('update '..self.table..setexpr..whereidexpr(), unpack(vals))
 	end
 
-	self.get_idfield = get_idfield
+	self.get_idfield_name = get_idfield_name
 
 	return self
 end
@@ -147,7 +147,7 @@ local pack_fields = (function()
 				type = coltype,
 				maxlength = not nolength[coltype] and col.length or nil,
 				decimals = inttypes[mytype] and 0 or decimals[mytype] and col.decimals or nil,
-				default = col.default,
+				server_default = col.default,
 				not_null = hasflag(col.flags, not_null_flag),
 				pk = hasflag(col.flags, pk_flag),
 				uk = hasflag(col.flags, uk_flag),
@@ -194,7 +194,7 @@ local function sql_grid_fetch(t) --fetch_sql()
 		return {
 			fields = fields,
 			values = rows,
-			idfield = self.get_idfield(),
+			idfield_name = self.get_idfield_name(),
 		}
 	end
 
@@ -212,7 +212,7 @@ local function table_grid_fetch(t) --table, fields
 	function self.get(id)
 		local t, cols = query(
 			'select '..(self.fields or '*')..' from '..self.table..
-			' where '..self.get_idfield()..' = ?', id)
+			' where '..self.get_idfield_name()..' = ?', id)
 		local record = {id = id, values = {}}
 		for j,col in ipairs(cols) do
 			record.values[j] = t[1][col.name]
