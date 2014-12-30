@@ -5,7 +5,7 @@ var dataset, ajax_dataset
 // helpers -------------------------------------------------------------------
 
 function assert(t, err) {
-	if (t == null || t == false)
+	if (t == null || t === false)
 		throw (err || 'assertion failed')
 	return t
 }
@@ -87,39 +87,46 @@ dataset = function(d_opt) {
 		return r[fi]
 	}
 
+	var unsetattr = function(ri, fi, k) {
+		var t = d.attrs[k]
+		if (!t) return
+		var r = t[ri]
+		if (!r) return
+		delete r[fi]
+		if (r.length) return
+		delete t[ri]
+		if (t.length) return
+		delete d.attrs[k]
+	}
+
 	d.setattr = function(ri, fi, k, v) {
+
+		// set multiple attributes to the same value
 		if (k.indexOf(' ') > -1) {
-			// set multiple attributes to the same value
 			var t = k.split(' ')
 			for (var k in t)
 				d.setattr(ri, fi, t[k], v)
 			return
 		}
+
+		if (v === undefined)
+			return unsetattr(ri, fi, k)
+
 		var t = d.attrs[k]
-		if (v === undefined) {
-			// remove attr value
-			if (!t) return
-			var r = t[ri]
-			if (!r) return
-			delete r[fi]
-			if (!r.length) {
-				delete t[ri]
-				if (!t.length)
-					delete d.attrs[k]
-			}
-		} else {
-			// set attr value
-			if (!t) {
-				t = []
-				d.attrs[k] = t
-			}
-			var r = t[ri]
-			if (!r) {
-				r = []
-				t[ri] = r
-			}
-			r[fi] = v
+		if (!t) {
+			t = []
+			d.attrs[k] = t
 		}
+		var r = t[ri]
+		if (!r) {
+			r = []
+			t[ri] = r
+		}
+		r[fi] = v
+	}
+
+	d.hasattr = function(ri, fi, k) {
+		return d.attr(ri, fi, k) !== undefined
 	}
 
 	d.row_attrs = function(ri, k) {
@@ -129,7 +136,7 @@ dataset = function(d_opt) {
 
 	// (re-)initialize the current change set
 
-	d.reset_changeset = function() {
+	d.apply_changes = function() {
 		delete d.attrs.oldval
 		delete d.attrs.row_inserted
 		delete d.attrs.row_changed
@@ -137,9 +144,13 @@ dataset = function(d_opt) {
 		d.order_changed = false
 	}
 
+	d.cancel_changes = function() {
+		// TODO
+	}
+
 	// set value, tracking changed values
 
-	d.setvalue = function(ri, fi, val) {
+	d.setval = function(ri, fi, val) {
 		var oldval = d.attr(ri, fi, 'oldval')
 		if (oldval === undefined) {
 			// first-time change.
@@ -155,11 +166,11 @@ dataset = function(d_opt) {
 	}
 
 	d.row_changed = function(ri) {
-		return d.attr(ri, 0, 'row_changed') !== undefined
+		return d.hasattr(ri, 0, 'row_changed')
 	}
 
 	d.value_changed = function(ri, fi) {
-		return d.attr(ri, fi, 'oldval') !== undefined
+		return d.hasattr(ri, fi, 'oldval')
 	}
 
 	// insert a new record with default values at index
@@ -205,12 +216,12 @@ dataset = function(d_opt) {
 			var field = d.fields[fi]
 			var val = field.client_default
 			if (val !== undefined)
-				d.setvalue(ri, fi, val)
+				d.setval(ri, fi, val)
 		}
 	}
 
 	d.row_is_new = function(ri) {
-		return d.attr(ri, 0, 'row_inserted') !== undefined
+		return d.hasattr(ri, 0, 'row_inserted')
 	}
 
 	// remove a record at index
@@ -256,7 +267,7 @@ dataset = function(d_opt) {
 		return values
 	}
 
-	d.pack_changeset = function() {
+	d.pack_changes = function() {
 
 		var update = []
 		for (var ri in d.attrs.row_changed)
@@ -284,7 +295,7 @@ dataset = function(d_opt) {
 
 	// update current change set
 
-	d.update_changeset = function(changeset) {
+	d.update_changes = function(changeset) {
 		for (var i in changeset.update) {
 			var rec = changeset.update[i]
 			var ri = d.rowindex_byid(rec.id)
@@ -295,13 +306,13 @@ dataset = function(d_opt) {
 				if (serverval === userval) {
 					d.setattr(ri, fi, 'rejected corrected oldval')
 				} else if (serverval === oldval) {
-					d.setattr(ri, fi, 'corrected rejected')
 					d.setattr(ri, fi, 'error', rec.error)
+					d.setattr(ri, fi, 'corrected rejected')
 				} else {
-					d.setvalue(ri, fi, serverval)
+					d.setval(ri, fi, serverval)
+					d.setattr(ri, fi, 'corrected', true)
 					d.setattr(ri, fi, 'userval', userval)
 					d.setattr(ri, fi, 'oldval rejected')
-					d.setattr(ri, fi, 'corrected', true)
 				}
 			}
 			// even if some cells got rejected and thus they're still marked
@@ -364,17 +375,17 @@ var ds = dataset({
 })
 
 ds.insert() // insert row at the bottom
-ds.setvalue(ds.row_count()-1, 1, 'hello') // overwrite default value on new row
+ds.setval(ds.row_count()-1, 1, 'hello') // overwrite default value on new row
 ds.insert(0) // insert row at the top with default values
-ds.setvalue(1, 1, '1-changed') // set value on existing row
+ds.setval(1, 1, '1-changed') // set value on existing row
 ds.remove(2) // remove the second existing row
 ds.insert() // insert row at the bottom to be deleted
-ds.setvalue(ds.row_count()-1, 1, 'changed') // set value on new row about to be deleted
+ds.setval(ds.row_count()-1, 1, 'changed') // set value on new row about to be deleted
 ds.remove(ds.row_count() - 1) // remove new, changed row
 ds.move(1, 0)
 
 console.log(JSON.stringify(ds.attrs))
-console.log(JSON.stringify(ds.pack_changeset()))
+console.log(JSON.stringify(ds.pack_changes()))
 
 }
 
