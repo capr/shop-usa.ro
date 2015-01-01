@@ -114,7 +114,7 @@ dataset = function(d_opt) {
 			rowmap.push(ri)
 
 			// skip all children of the record if the record is collapsed
-			var n = row.children && row.children.count
+			var n = row.childcount
 			if (n && !row.expanded)
 				ri += n
 		}
@@ -197,8 +197,16 @@ dataset = function(d_opt) {
 		// make it a sibling of the row it displaced
 		if (rows[ri]) {
 			var prow = rows[ri].parent_row
-			row.parent_row = prow
-			prow.children.push(row)
+			if (prow) {
+				// set parent->child and child->parent links
+				row.parent_row = prow
+				prow.children.push(row)
+				// increment childcount in all parents
+				while (prow) {
+					prow.childcount++
+					prow = prow.parent_row
+				}
+			}
 		}
 
 		// insert the new row at ri
@@ -278,10 +286,6 @@ dataset = function(d_opt) {
 
 	}
 
-	d.rowindex_byid = function(id) {
-		return idmap[id]
-	}
-
 	d.row_id = function(vri) {
 		return rows[rowmap[vri]].values[id_fi]
 	}
@@ -311,7 +315,10 @@ dataset = function(d_opt) {
 				var prow = rows[idmap[pid]]
 				row.parent_row = prow
 				row.level = prow.level + 1
-				prow.children = prow.children || []
+				if (!prow.children) {
+					prow.children = []
+					prow.childcount = 0
+				}
 				prow.children.push(row)
 			} else {
 				row.level = 0
@@ -321,6 +328,7 @@ dataset = function(d_opt) {
 
 		// recreate the rows array based on the tree
 		rows = []
+		d.rows = rows
 		function push_rows(root_rows) {
 			for (ri in root_rows) {
 				var row = root_rows[ri]
@@ -353,7 +361,6 @@ dataset = function(d_opt) {
 	// changeset aspect -------------------------------------------------------
 
 	d.row_is_new = function(vri) { return rows[rowmap[vri]].isnew; }
-
 	d.row_changed = function(vri) { return !!rows[rowmap[vri]].oldvalues; }
 
 	d.val_changed = function(vri, vfi) {
@@ -364,7 +371,7 @@ dataset = function(d_opt) {
 	}
 
 	d.removed_rows = function() {
-
+		//
 	}
 
 	d.changes = function() {
@@ -392,28 +399,6 @@ dataset = function(d_opt) {
 	d.changed_values = function() {}
 	d.apply_changes = function() {}
 	d.cancel_changes = function() {}
-
-	// serialization aspect ---------------------------------------------------
-
-	d.records = function() {
-		var t = []
-		for (var vri = 0; vri < d.rowcount(); vri++) {
-			var rec = {}
-			t.push(rec)
-			for (var vfi = 0; vfi < d.fieldcount(); vfi++)
-				rec[fields[fieldmap[vfi]].name] = d.val(vri, vfi)
-		}
-		return t
-	}
-
-	d.serialize = function() {
-		return json(d.records())
-	}
-
-	d.deserialize = function(s) {
-		var t = json(s)
-		//TODO
-	}
 
 	// remote I/O aspect ------------------------------------------------------
 
@@ -537,6 +522,5 @@ for(ri=0;ri<d.rowcount();ri++) {
 }
 console.log(s)
 
-//console.log(d.serialize())
 //console.log(d.json(d.changes()))
 
