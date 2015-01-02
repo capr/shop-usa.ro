@@ -563,10 +563,7 @@ function grid(g_opt) {
 	g.move_col = function(sci, dci) {
 		if (sci === dci) return
 
-		// update fieldmap
-		var fi = g.fieldmap[sci]
-		g.fieldmap.splice(sci, 1)
-		g.fieldmap.splice(dci, 0, fi)
+		d.move_field(sci, dci)
 
 		// update DOM
 		var scells = g.vcells(sci)

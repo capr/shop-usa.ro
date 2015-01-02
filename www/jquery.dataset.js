@@ -171,6 +171,15 @@ function dataset(d_opt) {
 	d.field = function(vfi) { return fields[fieldmap[vfi]]; }
 	d.row = function(vri) { return rows[rowmap[vri]]; }
 
+	// move fields
+
+	d.move_field = function(svfi, dvfi) {
+		if (svfi === dvfi) return
+		var sfi = d.fieldmap[svfi]
+		remove(d.fieldmap, svfi)
+		insert(d.fieldmap, dvfi, sfi)
+	}
+
 	// get/set row values
 
 	d.val = function(vri, vfi) {
