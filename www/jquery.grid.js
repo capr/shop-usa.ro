@@ -167,7 +167,6 @@ function grid(g_opt) {
 		cell = $(cell)
 		var ci = cell.index()
 		var ri = g.rowof(cell).index()
-		console.log(ri, ci, d.val(ri, ci))
 		return d.val(ri, ci)
 	}
 
@@ -841,14 +840,17 @@ function grid(g_opt) {
 		// expand/collapse nodes
 
 		g.grid.find('.expander').click(function() {
-			var cell = $(this)
-			var ci = cell.index()
+			if (!g.activate()) return
+			var cell = $(this).closest('.cell')
 			var ri = g.rowof(cell).index()
-			d.setexpanded(ri, !d.expanded(ri))
+			var ci = cell.index()
+			var expanded = !d.expanded(ri)
+			d.setexpanded(ri, expanded)
 			g.init()
 			if (!g.activate()) return
 			var cell = g.cell(ri, ci)
 			g.activate_cell(cell)
+			g.rowof(cell).toggleClass('expanded', expanded)
 		})
 
 	}
