@@ -54,8 +54,7 @@ function grid(g_opt) {
 	// rendering --------------------------------------------------------------
 
 	var format_value = function(v, field, row) {
-		return (field.name == 'name' ? strrep('&nbsp;&nbsp;&nbsp;', row.level) : '') +
-			((v === null) ? 'null' : v)
+		return (v === null) ? 'null' : v
 	}
 	g.format_value = format_value
 
@@ -70,6 +69,7 @@ function grid(g_opt) {
 		var ri = -1
 		var ci
 		var val = {}
+		var row
 
 		var ft = []
 		for (var ci = 0; ci < d.fieldcount(); ci++) {
@@ -87,22 +87,26 @@ function grid(g_opt) {
 
 		t.cols = function() {
 			ri++
+			row = d.row(ri)
 			ci = 0
 			return ft
 		}
 
 		t.col = function() {
 			val.field = d.field(ci)
-			//console.log(ri, ci, ft)
 			val.raw = d.val(ri, ci)
 			ci++
 			return val
 		}
 
-		val.value = function(v) { return format_value(v.raw, v.field, d.rows[ri]); }
+		val.value = function(v) { return format_value(v.raw, v.field, row); }
 		val.type = function(v) { return value_type(v.raw); }
 		val.readonly = function(v) { return v.field.readonly ? 'readonly' : ''; }
 		val.align = function(v) { return v.field.align; }
+
+		val.tree_field = function() { return val.field.name == 'name'; }
+		val.indent = function() { return row.level * 10; }
+		val.expanded_dir = function() { return row.childcount ? (row.expanded ? 'down' : 'right') : '' }
 
 		return t
 	}
@@ -163,6 +167,7 @@ function grid(g_opt) {
 		cell = $(cell)
 		var ci = cell.index()
 		var ri = g.rowof(cell).index()
+		console.log(ri, ci, d.val(ri, ci))
 		return d.val(ri, ci)
 	}
 
@@ -497,7 +502,7 @@ function grid(g_opt) {
 
 	// loading values ---------------------------------------------------------
 
-	g.init = function(data) {
+	g.init = function() {
 
 		// reset state
 		if (g.active())
@@ -505,8 +510,6 @@ function grid(g_opt) {
 		active_row = $([])
 		active_cell = $([])
 		active_input = null
-
-		g.update_state(data)
 		g.render()
 
 		g.activate_cell(g.cell(0, 0))
@@ -846,8 +849,6 @@ function grid(g_opt) {
 		g.render()
 	})
 	g.init()
-
-	d.expand_all()
 
 	return g
 }

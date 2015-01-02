@@ -1,3 +1,6 @@
+.hidden {
+	display: none;
+}
 
 .grid {
 	font-family: sans-serif;
