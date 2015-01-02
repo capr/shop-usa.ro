@@ -1,6 +1,8 @@
-var dataset, ajax_dataset
 
-(function() {
+// jQuery dataset.
+// Written by Cosmin Apreutesei. Public Domain.
+
+$.dataset = (function() {
 
 // helpers -------------------------------------------------------------------
 
@@ -64,17 +66,48 @@ function json(v) {
 	return typeof v == 'string' ? JSON.parse(v) : JSON.stringify(v)
 }
 
+function ValidationError() {
+	var e = Error.apply(this, arguments)
+	e.name = this.name = 'ValidationError'
+	this.stack = e.stack
+	this.message = e.message
+	return this
+}
+var IntermediateInheritor = function() {}
+IntermediateInheritor.prototype = Error.prototype
+ValidationError.prototype = new IntermediateInheritor()
+
 // dataset -------------------------------------------------------------------
 
-dataset = function(d_opt) {
+var validators = {
+	number: function(val, field) {
+		if (!parseFloat(val))
+			throw new ValidationError('invalid number')
+	},
+}
 
-	var d = {}
+var converters = {
+	number: function(val, field) {
+		return parseFloat(val)
+	},
+	boolean: function(val, field) {
+		return !!val
+	},
+}
+
+function dataset(d_opt) {
+
+	var d = {
+		converters: converters,
+		validators: validators,
+		ValidationError: ValidationError,
+	}
 
 	// events aspect ----------------------------------------------------------
 
 	var ev = $(d)
-	d.on = ev.on
-	d.trigger = ev.trigger
+	d.on = $.proxy(ev.on, ev)
+	d.trigger = $.proxy(ev.trigger, ev)
 
 	// memory I/O aspect ------------------------------------------------------
 
@@ -149,28 +182,41 @@ dataset = function(d_opt) {
 		return val ? val(field, row, fields) : row.values[fi]
 	}
 
-	d.setval = function(vri, vfi, v) {
+	d.validate = function(val, field) {
+		var validate = field.validate || d.validators[field.type]
+		if (!validate) return
+		validate.call(d, val, field)
+	}
+
+	d.convert = function(val, field) {
+		var convert = field.convert || d.converters[field.type]
+		return convert ? convert.call(d, val, field) : val
+	}
+
+	d.setval = function(vri, vfi, val) {
 		var ri = rowmap[vri]
 		var fi = fieldmap[vfi]
 		var row = rows[ri]
 		var field = fields[fi]
 
 		// validate
-		var validate = field.validate
-		if (validate && !validate(v, field, row, fields))
-			return false
+		d.validate(val, field)
+
+		// convert
+		val = d.convert(val, field)
 
 		// save old values if not already saved and the row is not new
 		if (!row.isnew && !row.oldvalues)
 			row.oldvalues = row.values.slice(0)
 
 		// set the value
-		row.values[fi] = v
+		row.values[fi] = val
 
 		// trigger changed event
-		ev.trigger('changed', [vri, vfi, v, field, row])
+		ev.trigger('changed', [vri, vfi, val, field, row])
 
-		return true
+		// return converted value
+		return val
 	}
 
 	// add/remove rows
@@ -223,6 +269,8 @@ dataset = function(d_opt) {
 			if (val != null)
 				d.setval(ri, fi, val)
 		}
+
+		return row
 	}
 
 	d.remove = function(vri) {
@@ -241,6 +289,8 @@ dataset = function(d_opt) {
 
 		// recreate rowmap
 		init_rowmap()
+
+		return row
 	}
 
 	var remove_row = function() {
@@ -255,9 +305,10 @@ dataset = function(d_opt) {
 		init_idmap()
 		init_tree()
 		init_rowmap()
+		ev.trigger('ready')
 	}
 
-	// row id and row index by id aspect --------------------------------------
+	// row index by id aspect -------------------------------------------------
 
 	var update_idmap = function(ri) {
 		var id = rows[ri].values[id_fi]
@@ -426,6 +477,13 @@ dataset = function(d_opt) {
 	d.row_is_new = function(vri) { return rows[rowmap[vri]].isnew; }
 	d.row_changed = function(vri) { return !!rows[rowmap[vri]].oldvalues; }
 
+	d.oldval = function(vri, vfi) {
+		var row = rows[rowmap[vri]]
+		var fi = fieldmap[vfi]
+		var oldvals = row.oldvalues
+		return oldvals ? oldvals[fi] : row.values[fi]
+	}
+
 	d.val_changed = function(vri, vfi) {
 		var row = rows[rowmap[vri]]
 		var fi = fieldmap[vfi]
@@ -553,26 +611,11 @@ dataset = function(d_opt) {
 		return make_url(d.url_path, d.url_args, params)
 	}
 
-	d.ajax_success = function(data) {} // stub
-	d.ajax_error = function(xhr) {} // stub
-
 	// make a GET request (or a POST request if data is passed).
 	d.ajax = function(data, success, error) {
 		var url = d.url()
-		if (!url) {
-			d.ajax_success()
-			if (success) success()
-			return
-		}
-		var opt = {}
-		opt.success = function(data) {
-			d.ajax_success(data)
-			if (success) success(data)
-		}
-		opt.error = function(xhr) {
-			d.ajax_error(xhr)
-			if (error) error(xhr)
-		}
+		if (!url) return
+		var opt = {success: success, error: error}
 		if (data != null) {
 			opt.type = 'POST'
 			opt.data = {data: json(data)}
@@ -586,7 +629,7 @@ dataset = function(d_opt) {
 			d.rows = data.rows
 			d.fieldmap = data.fieldmap
 			d.init()
-			if (success) success()
+			if (success) success(data)
 		}
 		d.ajax(null, succ, error)
 	}
@@ -608,59 +651,6 @@ dataset = function(d_opt) {
 	return d
 }
 
-
+return dataset
 })()
-
-// helpers
-
-function str_repeat(s, n) {
-	return new Array(n+1).join(s)
-}
-
-function print_tree(d) {
-	var s = ''
-	for (var ri=0;ri<d.rowcount();ri++) {
-		s += str_repeat('   ',d.row(ri).level)
-		for (var fi=0;fi<d.fieldcount();fi++)
-			s += d.val(ri, fi) + ' '
-		s += '\n'
-	}
-	console.log('--------\n'+s+'----------')
-}
-
-// tree
-
-var d = dataset({
-	fields: [{name: 'id'},{name: 'name'},{name: 'parent_id'}],
-	parent_id_field_name: 'parent_id',
-	rows: [
-		{values: [0,'a',null]},
-		{values: [1,'b',null]},
-		{values: [2,'c',0]},
-		{values: [3,'d',0]},
-		{values: [4,'e',2]},
-		{values: [5,'f',2]},
-		{values: [6,'g',5]},
-	],
-})
-
-print_tree(d)
-d.expand_all()
-print_tree(d)
-
-d.remove(0) // remove 0 and all its children
-d.insert()  // insert at the end
-d.setval(d.rowcount()-1, 1, 'z')
-d.setval(0, 1, 'x')
-
-print_tree(d)
-console.log(d.json(d.changes()))
-
-d.cancel_changes()
-print_tree(d)
-console.log(d.json(d.changes()))
-
-// url
-
-console.log(d.make_url('/path', ['a1', 'a2'], {b: 1, a: 2}))
 
