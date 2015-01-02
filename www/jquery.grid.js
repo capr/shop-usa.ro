@@ -18,6 +18,10 @@ function clamp(x, x0, x1) {
 	return Math.min(Math.max(x, x0), x1)
 }
 
+function strrep(s, n) {
+	return new Array(n+1).join(s)
+}
+
 // check if the text in an input box is fully selected.
 function fully_selected(input) {
 	if (!input) return
@@ -49,8 +53,9 @@ function grid(g_opt) {
 
 	// rendering --------------------------------------------------------------
 
-	var format_value = function(v, field) {
-		return (v === null) ? 'null' : v
+	var format_value = function(v, field, row) {
+		return (field.name == 'name' ? strrep('&nbsp;&nbsp;&nbsp;', row.level) : '') +
+			((v === null) ? 'null' : v)
 	}
 	g.format_value = format_value
 
@@ -63,7 +68,7 @@ function grid(g_opt) {
 
 		var t = $.extend({}, g.context)
 		var ri = -1
-		var ci, row
+		var ci
 		var val = {}
 
 		var ft = []
@@ -80,10 +85,9 @@ function grid(g_opt) {
 		t.rows = []
 		t.rows.length = d.rowcount() // hack
 
-		t.cols = function(row_) {
+		t.cols = function() {
 			ri++
 			ci = 0
-			row = row_
 			return ft
 		}
 
@@ -95,7 +99,7 @@ function grid(g_opt) {
 			return val
 		}
 
-		val.value = function(v) { return format_value(v.raw, v.field); }
+		val.value = function(v) { return format_value(v.raw, v.field, d.rows[ri]); }
 		val.type = function(v) { return value_type(v.raw); }
 		val.readonly = function(v) { return v.field.readonly ? 'readonly' : ''; }
 		val.align = function(v) { return v.field.align; }
@@ -197,8 +201,7 @@ function grid(g_opt) {
 	g.active = function() { return active_grid == g; }
 
 	g.deactivate = function() {
-		if (!g.active())
-			throw 'not active'
+		if (!g.active()) return true
 		if (!g.exit_edit()) return
 		g.grid.removeClass('active')
 		active_grid = null
@@ -399,6 +402,8 @@ function grid(g_opt) {
 		})
 		cells.addClass('new')
 		row.addClass('new changed')
+
+		g.render()
 	}
 
 	g.delete_row = function(ri) {

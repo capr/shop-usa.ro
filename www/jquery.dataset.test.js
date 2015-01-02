@@ -1,14 +1,14 @@
 
 // helpers
 
-function str_repeat(s, n) {
+function strrep(s, n) {
 	return new Array(n+1).join(s)
 }
 
 function print_tree(d) {
 	var s = ''
 	for (var ri=0;ri<d.rowcount();ri++) {
-		s += str_repeat('   ',d.row(ri).level)
+		s += strrep('   ',d.row(ri).level)
 		for (var fi=0;fi<d.fieldcount();fi++)
 			s += d.val(ri, fi) + ' '
 		s += '\n'
