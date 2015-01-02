@@ -454,6 +454,16 @@ function dataset(d_opt) {
 		return rows[rowmap[vri]].values[parent_fi]
 	}
 
+	d.expanded = function(vri) {
+		return d.row(vri).expanded
+	}
+
+	d.setexpanded = function(vri, expanded) {
+		var row = d.row(vri)
+		row.expanded = expanded
+		init_rowmap()
+	}
+
 	d.collapse_all = function() {
 		for (var ri = 0; ri < rows.length; ri++) {
 			var row = rows[ri]

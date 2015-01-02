@@ -838,6 +838,19 @@ function grid(g_opt) {
 				$(this).removeClass('dropping')
 			})
 
+		// expand/collapse nodes
+
+		g.grid.find('.expander').click(function() {
+			var cell = $(this)
+			var ci = cell.index()
+			var ri = g.rowof(cell).index()
+			d.setexpanded(ri, !d.expanded(ri))
+			g.init()
+			if (!g.activate()) return
+			var cell = g.cell(ri, ci)
+			g.activate_cell(cell)
+		})
+
 	}
 
 	// init -------------------------------------------------------------------
