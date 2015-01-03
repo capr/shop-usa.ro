@@ -71,6 +71,7 @@ local cats = query([[
 	inner join
 		ps_category_lang cl on
 			cl.id_category = c.id_category
+			and cl.id_lang = 1
 	]]..(not editmode() and [[
 	where
 		c.active = 1
