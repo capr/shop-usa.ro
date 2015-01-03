@@ -34,7 +34,13 @@
 						<table width=100% height=100% class=field_box>
 							<tr>
 							{{#align_left}}
-								<td class=nowrap align=left valign=bottom><a>{{{name}}}</a></td>
+								<td class=nowrap align=left valign=bottom
+									style="{{#min_width}}min-width: {{{min_width}}}px;{{/min_width}}"
+								>
+									<div class=autohide>
+										<a>{{{name}}}</a>
+									</div>
+								</td>
 								<td class=nowrap align=right valign=bottom width=1>
 									<a><i class="sort_icon fa fa-sort{{#sort}}-{{{sort}}}{{/sort}}"></i></a>
 								</td>
@@ -43,7 +49,13 @@
 								<td class=nowrap align=left valign=bottom width=1>
 									<a><i class="sort_icon fa fa-sort{{#sort}}-{{{sort}}}{{/sort}}"></i></a>
 								</td>
-								<td class=nowrap align=right valign=bottom><a>{{{name}}}</a></td>
+								<td class=nowrap align=right valign=bottom
+									style="{{#min_width}}min-width: {{{min_width}}}px;{{/min_width}}"
+								>
+									<div class=autohide>
+										<a>{{{name}}}</a>
+									</div>
+								</td>
 							{{/align_right}}
 							</tr>
 						</table>
@@ -68,12 +80,24 @@
 	<tr class=row>
 		{{#cols}}
 			{{#col}}
-			<td class="cell {{{readonly}}}" align={{{align}}} valign=top>
-				<div class=input_div></div>
+			<td class="cell {{{readonly}}} nowrap" align={{{align}}} valign=top>
 				{{#tree_field}}
-					<i class="expander fa fa-caret-{{{expanded_dir}}}" style="margin-left: {{{indent}}}px; width: 1em;"></i>
+					<table width=100%>
+						<tr>
+							<td width={{{indent}}} class="expander nowrap" align=right>
+								<i class="fa fa-caret-{{{expanded_dir}}}" style="margin-right: 5px;"></i>
+							</td>
+							<td>
+								<div class=input_div></div>
+								<div class="value autohide {{{type}}}">{{{value}}}</div>
+							</td>
+						</tr>
+					</table>
 				{{/tree_field}}
-				<span class="value {{{type}}}">{{{value}}}</span>
+				{{^tree_field}}
+					<div class=input_div></div>
+					<span class="value {{{type}}}">{{{value}}}</span>
+				{{/tree_field}}
 			</td>
 			{{/col}}
 		{{/cols}}
@@ -85,11 +109,11 @@
 
 var data = {
 	fields: [
-		{name: 'id', type: 'number', align: 'right', readonly: true},
-		{name: 'name'},
-		{name: 'parent_id', type: 'number'}
+		{name: 'id', type: 'number', align: 'right', readonly: true, width: 50, min_width: 50},
+		{name: 'name', width: 200, min_width: 100},
+		{name: 'parent_id', type: 'number', width: 50, min_width: 50},
 	],
-	parent_id_field_name: 'parent_id',
+	parent_field: 'parent_id',
 	rows: [
 		{values: [0,'a',null]},
 		{values: [1,'b',null]},
@@ -97,8 +121,12 @@ var data = {
 		{values: [3,'d',0]},
 		{values: [4,'e',2]},
 		{values: [5,'f',2]},
-		{values: [6,'g',5]},
+		{values: [6,'g very long long text to try out',5]},
 	],
+}
+
+for (var i = 7; i < 200; i++) {
+	data.rows.push({values: [i,'record '+i, (Math.random() * (i - 7)).toFixed()]})
 }
 
 var d = $.dataset(data)
@@ -119,6 +147,9 @@ $(function() {
 var g = $.grid({
 	dataset: d,
 	container: '#grid',
+	immediate_mode: true,
+	tree_field: 'name',
+	//context: {width: '100%'},
 })
 
 })

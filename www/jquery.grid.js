@@ -18,10 +18,6 @@ function clamp(x, x0, x1) {
 	return Math.min(Math.max(x, x0), x1)
 }
 
-function strrep(s, n) {
-	return new Array(n+1).join(s)
-}
-
 // check if the text in an input box is fully selected.
 function fully_selected(input) {
 	if (!input) return
@@ -37,11 +33,15 @@ var active_grid // the grid that gets keyboard input
 function grid(g_opt) {
 
 	var g = {
-		// rendering
-		container: null,            // rendering container selector (required)
+		// built-in rendering
+		container: null,            // rendering container selector
 		context: {},                // rendering context
 		grid_template: 'grid',      // rendering template for grid
 		rows_template: 'grid_rows', // rendering template for rows
+		// custom rendering
+		grid: null,                 // grid selector
+		// tree aspect
+		tree_field: null,
 		// behavior
 		page_rows: 20,            // how many rows to move on page-down/page-up
 		immediate_mode: false,    // stay in edit mode while navigating
@@ -104,8 +104,8 @@ function grid(g_opt) {
 		val.readonly = function(v) { return v.field.readonly ? 'readonly' : ''; }
 		val.align = function(v) { return v.field.align; }
 
-		val.tree_field = function() { return val.field.name == 'name'; }
-		val.indent = function() { return row.level * 10; }
+		val.tree_field = function() { return val.field.name == g.tree_field; }
+		val.indent = function() { return 16 + row.level * 20; }
 		val.expanded_dir = function() { return row.childcount ? (row.expanded ? 'down' : 'right') : '' }
 
 		return t
@@ -125,7 +125,7 @@ function grid(g_opt) {
 		assert(container.length == 1, 'container not found')
 		var s = g.render_template(g.grid_template, d.rows)
 		container.html(s)
-		g.grid = container.find('.grid')
+		init_selectors()
 		make_clickable()
 	}
 
@@ -138,23 +138,55 @@ function grid(g_opt) {
 	g.rowcount = function() { return d.rowcount(); }
 	g.colcount = function() { return d.fieldcount(); }
 
-	g.rows_ct = function() { return g.grid.find('.rows'); }
-	g.rows = function() { return g.grid.find('.row'); }
+	g.rows_ct = function() {
+		return g.grid.find('.rows');
+	}
+
+	var rows
+	var rowsel
+	var cells
+	var cellsel
+	var allcells
+
+	function init_selectors() {
+		g.grid = $(g.container).find('.grid')
+		rows = g.grid.find('.row')
+		rowsel = []
+		cellsel = []
+		cells = []
+		for (var ri = 0; ri < rows.length; ri++) {
+			var rs = $(rows[ri])
+			rowsel[ri] = rs
+			var cl = rs.find('.cell')
+			cells[ri] = cl
+			var cs = []
+			cellsel[ri] = cs
+			for (var ci = 0; ci < cl.length; ci++)
+				cs[ci] = $(cl[ci])
+		}
+		allcells = g.grid.find('.cell')
+	}
+
+	g.rows = function() { return rows; }
 	g.row = function(ri) {
 		ri = clamp(ri, 0, g.rowcount() - 1)
-		return g.rows().filter(':nth-child('+(ri+1)+')')
+		return rowsel[ri]
 	}
-	g.rowof = function(cell) { return cell.parent(); }
+	g.cells = function(row) {
+		return row ? cells[row.index()] : allcells
+	}
 
-	g.cells = function(row) { return (row ? $(row) : g.grid).find('.cell'); }
-	g.cell = function(row, ci) {
-		if (typeof row == 'number')
-			row = g.row(row)
-		else
-			row = $(row)
+	g.cell = function(ri, ci) {
+		if (typeof ri != 'number')
+			ri = ri.index()
 		ci = clamp(ci, 0, g.colcount() - 1)
-		return row.find('.cell:nth-child('+(ci+1)+')')
+		return cellsel[ri][ci]
 	}
+
+	g.rowof = function(cell) {
+		return cell.parent()
+	}
+
 	g.hcells = function() { return g.grid.find('.field'); }
 	g.hcell = function(ci) { return g.grid.find('.field:nth-child('+(ci+1)+')'); }
 	g.vcells = function(ci) {
@@ -317,9 +349,9 @@ function grid(g_opt) {
 		var field = d.field(cell.index())
 		if (field.readonly) return
 		var val = g.val(cell)
-		var w = cell.width()
-		var h = cell.height()
 		var div = cell.find('.input_div')
+		var w = div.parent().width()
+		var h = cell.height()
 		div.html('<input type=text class=input'+
 			(field.maxlength ? ' maxlength='+field.maxlength : '')+
 			' style="width: '+w+'px; height: '+h+'px; text-align: '+field.align+'">')
@@ -672,6 +704,9 @@ function grid(g_opt) {
 			return
 		}
 
+		// space key on the tree field
+
+
 	})
 
 	// printable characters: enter quick edit mode
@@ -836,18 +871,25 @@ function grid(g_opt) {
 
 		// expand/collapse nodes
 
-		g.grid.find('.expander').click(function() {
+		g.grid.find('.expander').click(function(e) {
 			if (!g.activate()) return
+
 			var cell = $(this).closest('.cell')
 			var ri = g.rowof(cell).index()
 			var ci = cell.index()
+
 			var expanded = !d.expanded(ri)
 			d.setexpanded(ri, expanded)
+
 			g.init()
+
 			if (!g.activate()) return
 			var cell = g.cell(ri, ci)
 			g.activate_cell(cell)
 			g.rowof(cell).toggleClass('expanded', expanded)
+
+			e.preventDefault()
+			return
 		})
 
 	}

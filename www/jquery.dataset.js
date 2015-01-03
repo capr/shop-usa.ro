@@ -81,13 +81,15 @@ ValidationError.prototype = new IntermediateInheritor()
 
 var validators = {
 	number: function(val, field) {
-		if (!parseFloat(val))
+		if (parseFloat(val) === undefined)
 			throw new ValidationError('invalid number')
 	},
 }
 
 var converters = {
 	number: function(val, field) {
+		if (val == '' || val == null)
+			return null
 		return parseFloat(val)
 	},
 	boolean: function(val, field) {
@@ -353,13 +355,10 @@ function dataset(d_opt) {
 	var root_rows
 
 	var init_tree = function() {
+		if (!d.parent_field) return
 
-		// find field index of parent field
-		parent_fi = d.parent_id_field_name ?
-			assert(fieldindex_byname(d.parent_id_field_name)) :
-			d.parent_id_field_index
-
-		if (!parent_fi) return
+		// find the field index for the parent field (which is name or index)
+		parent_fi = fieldindex_byname(d.parent_field) || d.parent_field
 
 		// make tree
 		root_rows = []

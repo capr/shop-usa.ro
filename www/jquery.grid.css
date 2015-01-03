@@ -1,5 +1,27 @@
-.hidden {
-	display: none;
+html, body, table, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+table {
+	border-spacing: 0;
+   border-collapse: separate;
+}
+
+tbody, tr, th, td {
+	border: inherit;
+}
+
+.hidden { display: none; }
+.nowrap { white-space: nowrap; }
+
+.autohide {
+	width: 0;
+	min-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .grid {
@@ -25,12 +47,11 @@
 
 .grid .field {
 	background-color: #999;
+	color: #fff;
 	height: 40px;
 }
 
-.grid .field.movable {
-	background-color: #999;
-}
+.grid .field a:hover { color: #ff0; }
 
 .grid .field_box {
 	font-weight: normal;
@@ -98,9 +119,6 @@
 	border-left: 1px solid #999;
 }
 
-.grid .field a { color: #fff; }
-.grid .field a:hover { color: #ff0; }
-
 .grid .row.selected {
 	background-color: #e3e3e3;
 }
@@ -164,7 +182,7 @@
 
 /* compensate for the bottom border */
 .grid > table > tbody > tr:last-child > td .input {
-	top: -1px;
+	top: 0px;
 }
 
 .grid .input:focus {
