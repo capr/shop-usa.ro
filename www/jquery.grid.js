@@ -306,7 +306,7 @@ function grid(g_opt) {
 		if (!g.activate()) return
 		cell = $(cell)
 		if (!cell.length) return // no cell
-		if (active_cell.is(cell)) return // same cell
+		if (active_cell.is(cell)) return true // same cell
 		if (!g.rowof(cell).is(g.active_row())) { // diff. row
 			if (!g.activate_row(g.rowof(cell)))
 				return
@@ -320,10 +320,7 @@ function grid(g_opt) {
 		return true
 	}
 
-	g.active_cell = function(cell) {
-		if (!cell) return active_cell
-		return g.activate_cell(cell)
-	}
+	g.active_cell = function() { return active_cell; }
 
 	// cell editing -----------------------------------------------------------
 
@@ -466,6 +463,25 @@ function grid(g_opt) {
 
 		// activate the row on the same cell as before
 		g.activate_cell(g.cell(ri, ci))
+	}
+
+	g.toggle_expand_cell = function(cell) {
+
+		if (!g.activate_cell(cell)) return
+		var ri = g.rowof(cell).index()
+		var ci = cell.index()
+
+		if (!d.row(ri).childcount) return
+
+		var expanded = !d.expanded(ri)
+		d.setexpanded(ri, expanded)
+
+		g.init()
+
+		if (!g.activate()) return
+		var cell = g.cell(ri, ci)
+		g.activate_cell(cell)
+		g.rowof(cell).toggleClass('expanded', expanded)
 	}
 
 	// saving / loading state -------------------------------------------------
@@ -705,7 +721,11 @@ function grid(g_opt) {
 		}
 
 		// space key on the tree field
-
+		if (!input && e.which == 32) {
+			g.toggle_expand_cell(active_cell)
+			e.preventDefault()
+			return
+		}
 
 	})
 
@@ -872,24 +892,11 @@ function grid(g_opt) {
 		// expand/collapse nodes
 
 		g.grid.find('.expander').click(function(e) {
+			e.preventDefault()
 			if (!g.activate()) return
 
 			var cell = $(this).closest('.cell')
-			var ri = g.rowof(cell).index()
-			var ci = cell.index()
-
-			var expanded = !d.expanded(ri)
-			d.setexpanded(ri, expanded)
-
-			g.init()
-
-			if (!g.activate()) return
-			var cell = g.cell(ri, ci)
-			g.activate_cell(cell)
-			g.rowof(cell).toggleClass('expanded', expanded)
-
-			e.preventDefault()
-			return
+			g.toggle_expand_cell(cell)
 		})
 
 	}
