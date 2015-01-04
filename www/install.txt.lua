@@ -89,6 +89,12 @@ droptable'cartitem'
 droptable'usr'
 
 nodrop = false
+
+droptable'filterprod'
+droptable'filterval'
+droptable'filtercat'
+droptable'filter'
+
 droptable'combival'
 droptable'combi'
 droptable'img'
@@ -97,12 +103,13 @@ droptable'prod'
 droptable'descrval'
 droptable'descr'
 droptable'valname'
-droptable'valdim'
+droptable'valdim' --remove
 droptable'val'
 droptable'dimname'
 droptable'dim'
 
 --create everything
+
 pq[[
 $table dim (   --color, size, ...
 	did         $pk,
@@ -129,14 +136,6 @@ $table val (   --red, green, small, large, ...
 ]]
 
 pq[[
-$table valdim ( --(reg, green) -> color
-	vid         $id not null, $fk(valdim, vid, val),
-	did         $id not null, $fk(valdim, did, dim),
-	primary key (vid, did)
-);
-]]
-
-pq[[
 $table valname (
 	vid         $id not null, $fk(valname, vid, val),
 	vlang       $lang,
@@ -155,8 +154,8 @@ $table prod (
 pq[[
 $table prodname (
 	pid         $id not null, $fk(prodname, pid, prod),
-	lang        $lang,
-	name        $name,
+	plang       $lang,
+	pname       $name,
 	descr       text,
 	primary key (pid, lang)
 );
@@ -190,6 +189,41 @@ $table combival ( --(small, red) -> combi1, ...
 	primary key (coid, vid)
 );
 ]]
+
+pq[[
+$table filter (
+	fid         $pk,
+	name        $name,
+	en_name     $name
+);
+]]
+
+pq[[
+$table filtercat (
+	fid         $id,
+	catid       $id,
+	primary key (fid, catid)
+);
+]]
+
+pq[[
+$table filterval (
+	fvid        $pk,
+	fid         $id,
+	name        $name,
+	en_name     $name
+);
+]]
+
+pq[[
+$table filterprod (
+	fvid        $id,
+	pid         $id,
+	primary key (fvid, pid)
+);
+]]
+
+------------------------------------------------------------------------------
 
 pq[[
 $table usr (
