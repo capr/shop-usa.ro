@@ -157,7 +157,7 @@ $table prodname (
 	plang       $lang,
 	pname       $name,
 	descr       text,
-	primary key (pid, lang)
+	primary key (pid, plang)
 );
 ]]
 
