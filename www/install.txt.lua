@@ -103,7 +103,6 @@ droptable'prod'
 droptable'descrval'
 droptable'descr'
 droptable'valname'
-droptable'valdim' --remove
 droptable'val'
 droptable'dimname'
 droptable'dim'
