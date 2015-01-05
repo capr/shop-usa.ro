@@ -190,6 +190,8 @@ $table combival ( --(small, red) -> combi1, ...
 );
 ]]
 
+------------------------------------------------------------------------------
+
 pq[[
 $table filter (
 	fid         $pk,
@@ -208,7 +210,7 @@ $table filtercat (
 
 pq[[
 $table filterval (
-	fvid        $pk,
+	vid         $pk,
 	fid         $id,
 	name        $name,
 	en_name     $name
@@ -217,9 +219,9 @@ $table filterval (
 
 pq[[
 $table filterprod (
-	fvid        $id,
 	pid         $id,
-	primary key (fvid, pid)
+	vid         $id,
+	primary key (pid, vid)
 );
 ]]
 
