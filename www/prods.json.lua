@@ -1,12 +1,13 @@
 
-local catid, page, bid, pagesize, order, q = ...
+local catid, page, bid, pagesize, order, q, fq = ...
 catid = assert(uint_arg(catid))
 page  = tonumber(page) or 1
 pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
 bid = tonumber(bid)
 order = order ~= '-' and order or ''
 order = str_arg(order) or 'date'
-q = str_arg(q)
+q = q ~= '-' and str_arg(q) or nil
+fq = str_arg(fq)
 
 local offset = (page - 1) * pagesize
 

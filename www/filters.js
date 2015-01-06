@@ -2,6 +2,8 @@ var load_filters
 
 (function() {
 
+// a filter query (fq) has the format: 'vid1,vid2...;vid3,vid4,...;...'
+// parsing it results in [[vid1,vid2,...],[vid3,vid4,...],...]
 function parse_fq(fq) {
 	if (!fq)
 		return []
@@ -29,7 +31,7 @@ function update_filters(filters, bid, order, q, fq) {
 		}
 	}
 
-	// mark selected vids in filters
+	// mark selected vids in filters based on the vids map.
 	// also, make a fidmap so we can track back fids from vids.
 	var fidmap = {} // {vid: fid}
 	for (var i = 0; i < filters.length; i++) {
@@ -50,7 +52,7 @@ function update_filters(filters, bid, order, q, fq) {
 		for (var i = 0; i < fq.length; i++) {
 			var vids = fq[i]
 			if (!changed) {
-				var fid1 = fidmap[vids[0]]
+				var fid1 = fidmap[vids[0]] // assume same fid for all vids in group
 				if (fid1 == fid) {
 					if (action == 'add') {
 						vids = vids.slice(0)

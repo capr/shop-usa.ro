@@ -38,12 +38,14 @@ function update_prods(prods) {
 }
 
 function load_prods(catid, pagenum, bid, order, q, fq) {
-	load_main('/prods.json/'+catid+
+	load_main(
+			'/prods.json/'+catid+
 			'/'+pagenum+
 			'/'+(bid||'-')+
 			'/'+g_pagesize+
 			'/'+(order||'date')+
-			optarg(encodeURIComponent(q||'')),
+			'/'+(encodeURIComponent(q||'')||'-')+
+			'/'+fq,
 		function(response) {
 			if (!$('#prods').length) {
 				render('browse', null, '#main')
