@@ -47,7 +47,6 @@ function update_filters(filters, bid, order, q, fq) {
 		var fid = fidmap[vid]
 		var t = []
 		var changed
-		console.log('build_fq', fq, action, vid, ';', fid)
 		for (var i = 0; i < fq.length; i++) {
 			var vids = fq[i]
 			if (!changed) {
