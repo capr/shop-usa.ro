@@ -128,7 +128,7 @@ action.cat = function(catid, pagenum, bid, order, q) {
 		select_cat(catid)
 		load_prods(catid, pagenum, bid, order, q)
 		load_brands(catid, bid, order)
-		//load_filters(catid, bid)
+		load_filters(catid, bid)
 	})
 }
 

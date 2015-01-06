@@ -207,18 +207,16 @@ end
 </div>
 
 <script type="text/x-mustache" id=filters_template>
-<ul>
 {{#.}}
-	<li>
-		<b>{{{dname}}}</b>
-		<ul>
+	<b>{{{fname}}}</b>
+	<div class=filter_values_div>
+		<ul class="small tight">
 		{{#values}}
-			<li>{{{dvname}}} <span class=gray> ({{{count}}})</span></li>
+			<li><i class="fa fa-square-o"></i> {{{vname}}}</li>
 		{{/values}}
 		</ul>
-	</li>
+	</div>
 {{/.}}
-</ul>
 </script>
 
 <script type="text/x-mustache" id=browse_template>
@@ -340,7 +338,7 @@ end
 	<br>
 	<input id=brand_search type=text style="width: 220px" placeholder="Brand">
 	<div style="width: 220px; height: 200px; overflow: auto">
-		<ul id=brands_list>
+		<ul id=brands_list class="small tight">
 		{{#.}}
 			<li>
 				<a bid={{{bid}}}>{{{bname}}}</a>

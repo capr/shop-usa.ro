@@ -124,6 +124,7 @@ button:hover:disabled {
 .gray, .gray a, .gray a:visited { color: #999; }
 .gray a { text-decoration: underline; }
 .small { font-size: 13px; }
+.tight { line-height: 130%; }
 .ellipsis {
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -345,6 +346,14 @@ input .inside-right { padding-right: 28px; }
 input.price {
 	width: 50px;
 	text-align: right;
+}
+
+.filter_values_div {
+	width: 220px;
+	max-height: 160px;
+	overflow-y: auto;
+	margin-bottom: 20px;
+	border: 1px solid #ddd;
 }
 
 /* back-to-top button ----------------------------------------------------- */
