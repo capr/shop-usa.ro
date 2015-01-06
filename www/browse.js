@@ -37,7 +37,7 @@ function update_prods(prods) {
 	g_prods = prods
 }
 
-function load_prods(catid, pagenum, bid, order, q) {
+function load_prods(catid, pagenum, bid, order, q, fq) {
 	load_main('/prods.json/'+catid+
 			'/'+pagenum+
 			'/'+(bid||'-')+
@@ -49,7 +49,7 @@ function load_prods(catid, pagenum, bid, order, q) {
 				render('browse', null, '#main')
 				init_viewstyle()
 			}
-			update_pagenav(response.prod_count, pagenum, bid, order || 'date', q)
+			update_pagenav(response.prod_count, pagenum, bid, order || 'date', q, fq)
 			update_prods(response.prods)
 			select_brand(bid)
 		})
@@ -119,7 +119,7 @@ function set_scroll_to_top() {
 	g_scroll_to_top = true
 }
 
-function update_pagenav(prod_count, cur_page, bid, order, q) {
+function update_pagenav(prod_count, cur_page, bid, order, q, fq) {
 	scroll_to_top()
 
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
@@ -132,7 +132,7 @@ function update_pagenav(prod_count, cur_page, bid, order, q) {
 
 		var bottom = $(this).closest('#bottom_navbar').length > 0
 
-		setlink(this, cat_url(g_catid, pagenum, bid, order, q), null,
+		setlink(this, cat_url(g_catid, pagenum, bid, order, q, fq), null,
 			bottom && set_scroll_to_top)
 	})
 
@@ -141,16 +141,16 @@ function update_pagenav(prod_count, cur_page, bid, order, q) {
 		if ($('input,textarea,select').is(':focus'))
 			return
 		if (event.which == 39) {
-			exec(cat_url(g_catid, cur_page + 1, bid))
+			exec(cat_url(g_catid, cur_page + 1, bid, order, q, fq))
 		} else if (event.which == 37) {
-			exec(cat_url(g_catid, cur_page - 1, bid))
+			exec(cat_url(g_catid, cur_page - 1, bid, order, q, fq))
 		}
 	})
 
 	// order links
 	$('a[order]').off('click').addClass('link').click(function() {
 		var order = $(this).attr('order')
-		exec(cat_url(g_catid, 1, bid, order, q))
+		exec(cat_url(g_catid, 1, bid, order, q, fq))
 	})
 	$('a[order="'+order+'"]').removeClass('link')
 

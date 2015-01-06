@@ -203,6 +203,7 @@ pq[[
 $table filtercat (
 	fid         $id,
 	catid       $id,
+	pos         $id,
 	primary key (fid, catid)
 );
 ]]

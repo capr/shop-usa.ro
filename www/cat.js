@@ -116,7 +116,7 @@ function cat_make_clickable(catid, order) {
 
 var g_home_catid = 2
 
-action.cat = function(catid, pagenum, bid, order, q) {
+action.cat = function(catid, pagenum, bid, order, q, fq) {
 
 	catid = intarg(catid) || g_home_catid
 	pagenum = intarg(pagenum) || 1
@@ -126,27 +126,28 @@ action.cat = function(catid, pagenum, bid, order, q) {
 
 	load_cats(function() {
 		select_cat(catid)
-		load_prods(catid, pagenum, bid, order, q)
+		load_prods(catid, pagenum, bid, order, q, fq)
 		load_brands(catid, bid, order)
-		load_filters(catid, bid)
+		load_filters(catid, bid, order, q, fq)
 	})
 }
 
-function cat_url(catid, pagenum, bid, order, q) {
+function cat_url(catid, pagenum, bid, order, q, fq) {
 
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
 	order = order == 'date' ? null : order
 
 	return (
-		(catid != g_home_catid || pagenum != 1 || bid || order || q ? '/cat' : '/')+
+		(catid != g_home_catid || pagenum != 1 || bid || order || q || fq ? '/cat' : '/')+
 		(catid != g_home_catid ?
 			'/'+slug(catid, g_cats[catid].name) :
-			(pagenum > 1 || bid || order || q ? '/-' : ''))+
-		(pagenum > 1 ? '/page-'+pagenum : (bid || order || q ? '/-' : ''))+
-		(bid ? '/'+bid : (order || q ? '/-' : ''))+
-		(order ? '/'+order : (q ? '/-' : ''))+
-		optarg(encodeURIComponent(q||''))
+			(pagenum > 1 || bid || order || q || fq ? '/-' : ''))+
+		(pagenum > 1 ? '/page-'+pagenum : (bid || order || q || fq ? '/-' : ''))+
+		(bid ? '/'+bid : (order || q || fq ? '/-' : ''))+
+		(order ? '/'+order : (q || fq ? '/-' : ''))+
+		(q ? '/'+encodeURIComponent(q) : fq ? '/-' : '')+
+		(fq ? '/'+fq : '')
 	)
 }
 

@@ -18,8 +18,7 @@ for i,t in groupby(query([[
 	order by
 		f.fid, v.vid
 ]], catid), 'fid') do
-	local fid = t[1].fid
-	local filter = {fname = t[1].fname, values = {}}
+	local filter = {fid = t[1].fid, fname = t[1].fname, values = {}}
 	table.insert(filters, filter)
 	for i,t in ipairs(t) do
 		table.insert(filter.values, {vid = t.vid, vname = t.vname})

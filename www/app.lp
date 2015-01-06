@@ -207,16 +207,22 @@ end
 </div>
 
 <script type="text/x-mustache" id=filters_template>
+<div id=filters>
 {{#.}}
 	<b>{{{fname}}}</b>
 	<div class=filter_values_div>
 		<ul class="small tight">
 		{{#values}}
-			<li><i class="fa fa-square-o"></i> {{{vname}}}</li>
+			<li>
+				<a vid={{{vid}}} {{#selected}}class=selected{{/selected}}>
+					<i class="fa fa-{{#selected}}check-{{/selected}}square-o"></i> {{{vname}}}
+				</a>
+			</li>
 		{{/values}}
 		</ul>
 	</div>
 {{/.}}
+</div>
 </script>
 
 <script type="text/x-mustache" id=browse_template>
