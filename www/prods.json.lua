@@ -11,15 +11,19 @@ q = q ~= '-' and str_arg(q) or nil
 
 local fq_sql
 if fq then
-	local tt = {}
+	local joins = {}
 	for s in fq:gmatch'[^;]+' do
 		local t = {}
 		for s in s:gmatch'[^,]+' do
-			table.insert(t, 'fp.vid = '..tonumber(glue.trim(s)))
+			table.insert(t, string.format('fp%d.vid = %d', #joins, tonumber(glue.trim(s))))
 		end
-		table.insert(tt, '(' .. table.concat(t, ' or ') .. ')')
+		table.insert(joins,
+			string.format(
+				'inner join filterprod fp%d on ' ..
+				'fp%d.pid = p.id_product and (' ..
+				table.concat(t, ' or ') .. ')', #joins, #joins))
 	end
-	fq_sql = '(' .. table.concat(tt, ' and ') .. ')'
+	fq_sql = table.concat(joins, '\n')
 end
 
 local function select_prods(count)
@@ -58,14 +62,10 @@ local function select_prods(count)
 			and pl.id_lang = 1
 		inner join ps_manufacturer m on
 			m.id_manufacturer = p.id_manufacturer
-	]] .. (fq_sql and [[
-		inner join filterprod fp
-			on fp.pid = p.id_product
-	]] or '') .. [[
+	]] .. (fq_sql and fq_sql or '') .. [[
 		where
 			p.active = 1
 	]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
-	]] .. (fq_sql and 'and '.. fq_sql or '') .. [[
 	]] .. (q and [[
 			and (
 				p.id_product = ]]..quote(q)..[[
