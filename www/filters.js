@@ -64,7 +64,8 @@ function update_filters(filters, bid, order, q, fq) {
 					changed = true
 				}
 			}
-			t.push(vids.join(','))
+			if (vids.length)
+				t.push(vids.join(','))
 		}
 		if (!changed && action == 'add')
 			t.push(vid)

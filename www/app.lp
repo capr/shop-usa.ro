@@ -215,7 +215,9 @@ end
 		{{#values}}
 			<li>
 				<a vid={{{vid}}} {{#selected}}class=selected{{/selected}}>
-					<i class="fa fa-{{#selected}}check-{{/selected}}square-o"></i> {{{vname}}}
+					<i class="fa fa-{{#selected}}check-{{/selected}}square-o"></i>
+					{{{vname}}}
+					<span class=gray>({{{count}}})</span>
 				</a>
 			</li>
 		{{/values}}

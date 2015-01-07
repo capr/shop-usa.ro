@@ -45,7 +45,7 @@ function load_prods(catid, pagenum, bid, order, q, fq) {
 			'/'+g_pagesize+
 			'/'+(order||'date')+
 			'/'+(encodeURIComponent(q||'')||'-')+
-			'/'+fq,
+			'/'+(fq||''),
 		function(response) {
 			if (!$('#prods').length) {
 				render('browse', null, '#main')
