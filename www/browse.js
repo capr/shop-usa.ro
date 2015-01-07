@@ -154,7 +154,7 @@ function update_pagenav(prod_count, cur_page, bid, order, q, fq) {
 		var order = $(this).attr('order')
 		exec(cat_url(g_catid, 1, bid, order, q, fq))
 	})
-	$('a[order="'+order+'"]').removeClass('link')
+	$('a[order="'+(order||'date')+'"]').removeClass('link')
 
 	// update brand links
 	$('#brands_list a[bid]').off('click').each(function() {
@@ -437,7 +437,7 @@ function select_topbar_cat(catid) {
 // side bar ------------------------------------------------------------------
 
 function init_sidebar() {
-	follow_scroll('#sidebar', 20)
+	//follow_scroll('#sidebar', 20)
 }
 
 // newsletter ----------------------------------------------------------------

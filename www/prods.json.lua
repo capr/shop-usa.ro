@@ -17,6 +17,7 @@ if fq then
 		for s in s:gmatch'[^,]+' do
 			table.insert(t, string.format('fp%d.vid = %d', #joins, tonumber(glue.trim(s))))
 		end
+		assert(#joins < 20)
 		table.insert(joins,
 			string.format(
 				'inner join filterprod fp%d on ' ..
