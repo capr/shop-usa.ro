@@ -91,5 +91,4 @@ end
 out(json({
 	prods = select_prods(),
 	prod_count = select_prods'count',
-	fq_sql = fq_sql,
 }))
