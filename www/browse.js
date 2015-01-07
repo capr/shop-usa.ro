@@ -154,7 +154,7 @@ function update_pagenav(prod_count, cur_page, bid, order, q, fq) {
 		var order = $(this).attr('order')
 		exec(cat_url(g_catid, 1, bid, order, q, fq))
 	})
-	$('a[order="'+(order||'date')+'"]').removeClass('link')
+	$('a[order="'+(order=='-'?'date':order)+'"]').removeClass('link')
 
 	// update brand links
 	$('#brands_list a[bid]').off('click').each(function() {
