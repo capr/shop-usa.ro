@@ -542,9 +542,27 @@ end
 			</td>
 		</tr>
 		<tr>
-			<td align=right colspan=3>
+			<td valign=bottom colspan=2>
+				<table>
+					<tr>
+						<td>
+							<t class=en>Promo Code:</t>
+							<t class=ro>Cod Promotie:</t>
+						</td>
+						<td width=10></td>
+						<td width=150 class=nowrap>
+							<input id=promo_code type=text
+								placeholder:en="promo code"
+								placeholder:ro="cod promo">
+							<button type=button id=btn_promo_code class=slim
+								style="width: 36px; padding: 0">OK</button>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td valign=bottom align=right>
 				<br>
-				<button id=btn_checkout class=orange>
+				<button type=button id=btn_checkout class=orange>
 					<t class=en>Place Order</t>
 					<t class=ro>Comanda</t>
 				</button>
@@ -1096,7 +1114,7 @@ end
 					<input type=text id=email name=email class=email required>
 				</td>
 				<td width=1 valign=top class=nowrap>
-					<button class="slim orange" id=btn_send_email>
+					<button type=button class="slim orange" id=btn_send_email>
 						<t class=en>Send email</t>
 						<t class=ro>Trimite email</t>
 					</button>
@@ -1138,7 +1156,7 @@ end
 					<input type=password id=pass name=pass class=pass autocomplete=off required>
 				</td>
 				<td width=1 valign=top class=nowrap>
-					<button class="slim orange" id=btn_reset_pass>
+					<button type=button class="slim orange" id=btn_reset_pass>
 						<t class=en>Change password</t>
 						<t class=ro>Schimba parola</t>
 					</button>
@@ -1527,7 +1545,7 @@ end
 	<br>
 	<br>
 	<div style="float:right">
-		<button id=btn_save type=button class=orange>
+		<button type=button id=btn_save class=orange>
 			<t class=en>Save Changes</t>
 			<t class=ro>Salveaza</t>
 		</button>

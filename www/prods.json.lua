@@ -52,18 +52,19 @@ local function select_prods(count)
 	]]) .. [[
 		from
 			ps_product p
-		left join ps_image i on
-			i.id_product = p.id_product
-			and i.cover = 1
 		inner join ps_category_product cp on
 			cp.id_product = p.id_product
 			and cp.id_category = ]] .. quote(catid) .. [[
+	]] .. (not count and [[
+		left join ps_image i on
+			i.id_product = p.id_product
+			and i.cover = 1
 		inner join ps_product_lang pl on
 			pl.id_product = p.id_product
 			and pl.id_lang = 1
 		inner join ps_manufacturer m on
 			m.id_manufacturer = p.id_manufacturer
-	]] .. (fq_sql and fq_sql or '') .. [[
+	]] or '') .. (fq_sql and fq_sql or '') .. [[
 		where
 			p.active = 1
 	]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
@@ -73,10 +74,9 @@ local function select_prods(count)
 				or m.name like ]]..quote(q..'%')..[[
 				or pl.name like ]]..quote(q..'%')..[[
 			)
-	]] or '') .. [[
+	]] or '') .. (not count and [[
 		group by
 			p.id_product
-	]] .. (not count and [[
 		order by
 	]] .. (assert(sort_col[order])) or '') .. (not count and [[
 		limit
