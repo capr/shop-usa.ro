@@ -4,6 +4,7 @@ local catid = ...
 catid = assert(uint_arg(catid))
 
 local filters = {}
+
 for i,t in groupby(query([[
 	select
 		f.fid,
@@ -23,7 +24,7 @@ for i,t in groupby(query([[
 	group by
 		v.vid
 	order by
-		f.fid, v.vid
+		f.pos, f.fid, v.name, v.pos
 ]], catid, catid), 'fid') do
 	local filter = {fid = t[1].fid, fname = t[1].fname, values = {}}
 	table.insert(filters, filter)

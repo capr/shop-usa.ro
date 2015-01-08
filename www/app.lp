@@ -209,19 +209,22 @@ end
 <script type="text/x-mustache" id=filters_template>
 <div id=filters>
 {{#.}}
-	<b>{{{fname}}}</b>
-	<div class=filter_values_div>
-		<ul class="small tight">
-		{{#values}}
-			<li>
-				<a vid={{{vid}}} {{#selected}}class=selected{{/selected}}>
-					<i class="fa fa-{{#selected}}check-{{/selected}}square-o"></i>
-					{{{vname}}}
-					<span class=gray>({{{count}}})</span>
-				</a>
-			</li>
-		{{/values}}
-		</ul>
+	<div class=filter_div fid={{{fid}}}>
+		<b>{{{fname}}}</b>
+		<input type=text class="filter_search hidden" placeholder="{{fname}}">
+		<div class=filter_values_div>
+			<ul class="small tight">
+			{{#values}}
+				<li>
+					<a vid={{{vid}}} {{#selected}}class=selected{{/selected}}>
+						<i class="fa fa-{{#selected}}check-{{/selected}}square-o"></i>
+						{{{vname}}}
+						<span class=gray>({{{count}}})</span>
+					</a>
+				</li>
+			{{/values}}
+			</ul>
+		</div>
 	</div>
 {{/.}}
 </div>
@@ -338,22 +341,6 @@ end
 		-->
 		<br>
 		<br>
-	</div>
-</script>
-
-<script type="text/x-mustache" id=brands_list_template>
-	<b>Brands</b>
-	<br>
-	<input id=brand_search type=text style="width: 220px" placeholder="Brand">
-	<div style="width: 220px; height: 200px; overflow: auto">
-		<ul id=brands_list class="small tight">
-		{{#.}}
-			<li>
-				<a bid={{{bid}}}>{{{bname}}}</a>
-				<span class=gray>({{pcount}})</span>
-			</li>
-		{{/.}}
-		</ul>
 	</div>
 </script>
 

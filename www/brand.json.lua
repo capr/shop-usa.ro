@@ -20,7 +20,8 @@ local cats = query([[
 		c.is_root_category as root,
 		cl.name,
 		count(1) as count,
-		c.active
+		c.active,
+		v.vid
 	from
 		ps_category c
 	inner join
@@ -35,6 +36,9 @@ local cats = query([[
 	inner join ps_manufacturer m on
 		m.id_manufacturer = p.id_manufacturer
 		and m.id_manufacturer = ?
+	inner join filterval v on
+		v.fid = (select fid from filter where en_name = 'Brand')
+		and v.en_name = m.name
 	where
 		c.active = 1
 	group by

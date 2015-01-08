@@ -30,6 +30,7 @@ function make_cat_tree(t)
 			name = node.name,
 			count = node.count or 0,
 			active = node.active,
+			vid = node.vid,
 			cats = {},
 		}
 		local range = ci[node.id]

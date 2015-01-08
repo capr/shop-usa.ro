@@ -17,7 +17,7 @@ function parse_fq(fq) {
 	return t
 }
 
-function update_filters(filters, bid, order, q, fq) {
+function update_filters(filters, order, q, fq) {
 
 	var fq = parse_fq(fq)
 
@@ -79,14 +79,26 @@ function update_filters(filters, bid, order, q, fq) {
 		var vid = parseInt(a.attr('vid'))
 		var action = a.hasClass('selected') ? 'remove' : 'add'
 		var modified_fq = build_fq(fq, action, vid)
-		setlink(this, cat_url(g_catid, 1, bid, order, q, modified_fq))
+		setlink(this, cat_url(g_catid, 1, order, q, modified_fq))
 	})
+
+	$('#filters div[fid]').each(function() {
+		var fid = $(this).attr('fid')
+		var list = $(this).find('li')
+		var input = $(this).find('input')
+		if (list.length > 40)
+			input.show()
+		else
+			input.hide()
+		input.quicksearch(list).cache()
+	})
+
 }
 
-load_filters = function(catid, bid, order, q, fq) {
-	load_content('#filters', '/filters.json/'+catid+optarg(bid),
+load_filters = function(catid, order, q, fq) {
+	load_content('#filters', '/filters.json/'+catid,
 		function(filters) {
-			update_filters(filters, bid, order, q, fq)
+			update_filters(filters, order, q, fq)
 		})
 }
 

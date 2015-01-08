@@ -348,8 +348,11 @@ input.price {
 	text-align: right;
 }
 
-.filter_values_div {
+.filter_div {
 	width: 220px;
+}
+
+.filter_values_div {
 	max-height: 160px;
 	overflow-y: auto;
 	margin-bottom: 20px;

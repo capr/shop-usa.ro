@@ -15,6 +15,7 @@ local brands = query([[
 	select
 		m.id_manufacturer as bid,
 		m.name as bname,
+		v.vid,
 		count(1) as pcount
 	from
 		ps_manufacturer m
@@ -23,6 +24,9 @@ local brands = query([[
 		inner join ps_category_product cp on
 			cp.id_product = p.id_product
 			and cp.id_category = ?
+		inner join filterval v on
+			v.fid = (select fid from filter where name = 'Brand')
+			and v.en_name = m.name
 	where
 		]] .. cond .. [[
 		and m.active = 1

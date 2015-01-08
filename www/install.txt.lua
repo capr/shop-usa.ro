@@ -66,7 +66,7 @@ qsubst'table  create table if not exists'
 --type domains
 qsubst'id      int unsigned'
 qsubst'pk      int unsigned primary key auto_increment'
-qsubst'name    varchar(32)'
+qsubst'name    varchar(64)'
 qsubst'email   varchar(128)'
 qsubst'hash    varchar(40)' --hmac_sha1 in hex
 qsubst'url     varchar(2048)'
@@ -195,7 +195,8 @@ pq[[
 $table filter (
 	fid         $pk,
 	name        $name,
-	en_name     $name
+	en_name     $name,
+	pos         $id
 );
 ]]
 
@@ -213,7 +214,9 @@ $table filterval (
 	vid         $pk,
 	fid         $id,
 	name        $name,
-	en_name     $name
+	en_name     $name,
+	pos         $id,
+	index idx_filterval_en_name (en_name)
 );
 ]]
 

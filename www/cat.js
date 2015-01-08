@@ -15,7 +15,8 @@ function cat_map(cat, t) {
 
 function format_cat(cat) {
 
-	var s = '<ul catid=' + cat.id + ' style="display: none;">' +
+	var s = '<ul catid=' + cat.id + (cat.vid ? ' vid=' + cat.vid : '') +
+					' style="display: none;">' +
 		'<a>' +
 			(cat.active && cat.name ||
 				'<span class=canceled>' + cat.name + '</span>') +
@@ -110,41 +111,38 @@ function cat_make_clickable(catid, order) {
 	$('#cat ul[catid] > a').off('click')
 	$('#cat ul[catid]:visible > a').each(function() {
 		var catid = $(this).parent().attr('catid')
-		setlink(this, cat_url(catid, 1, null, order))
+		setlink(this, cat_url(catid, 1, order))
 	})
 }
 
 var g_home_catid = 2
 
-action.cat = function(catid, pagenum, bid, order, q, fq) {
+action.cat = function(catid, pagenum, order, q, fq) {
 
 	catid = intarg(catid) || g_home_catid
 	pagenum = intarg(pagenum) || 1
-	bid = intarg(bid) || ''
 
 	$('#sidebar').show()
 
 	load_cats(function() {
 		select_cat(catid)
-		load_prods(catid, pagenum, bid, order, q, fq)
-		load_brands(catid, bid, order)
-		load_filters(catid, bid, order, q, fq)
+		load_prods(catid, pagenum, order, q, fq)
+		load_filters(catid, order, q, fq)
 	})
 }
 
-function cat_url(catid, pagenum, bid, order, q, fq) {
+function cat_url(catid, pagenum, order, q, fq) {
 
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
 	order = order == 'date' ? null : order
 
 	return (
-		(catid != g_home_catid || pagenum != 1 || bid || order || q || fq ? '/cat' : '/')+
+		(catid != g_home_catid || pagenum != 1 || order || q || fq ? '/cat' : '/')+
 		(catid != g_home_catid ?
 			'/'+slug(catid, g_cats[catid].name) :
-			(pagenum > 1 || bid || order || q || fq ? '/-' : ''))+
-		(pagenum > 1 ? '/page-'+pagenum : (bid || order || q || fq ? '/-' : ''))+
-		(bid ? '/'+bid : (order || q || fq ? '/-' : ''))+
+			(pagenum > 1 || order || q || fq ? '/-' : ''))+
+		(pagenum > 1 ? '/page-'+pagenum : (order || q || fq ? '/-' : ''))+
 		(order ? '/'+order : (q || fq ? '/-' : ''))+
 		(q ? '/'+encodeURIComponent(q) : fq ? '/-' : '')+
 		(fq ? '/'+fq : '')

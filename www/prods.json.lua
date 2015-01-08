@@ -1,11 +1,10 @@
 require'filters'
 
-local catid, page, bid, pagesize, order, q, fq = ...
+local catid, page, pagesize, order, q, fq = ...
 catid = assert(uint_arg(catid))
 page  = tonumber(page) or 1
 pagesize = clamp(tonumber(pagesize) or 99, 1, 99)
 local offset = (page - 1) * pagesize
-bid = tonumber(bid)
 order = order ~= '-' and order or ''
 order = str_arg(order) or 'date'
 q = q ~= '-' and str_arg(q) or nil
@@ -51,7 +50,6 @@ local function select_prods(count)
 	]] or '') .. (fq_sql and fq_sql or '') .. [[
 		where
 			p.active = 1
-	]] .. (bid and ('and p.id_manufacturer = '..quote(bid)) or '') .. [[
 	]] .. (q and [[
 			and (
 				p.id_product = ]]..quote(q)..[[
