@@ -66,17 +66,17 @@ qsubst'table  create table if not exists'
 --type domains
 qsubst'id      int unsigned'
 qsubst'pk      int unsigned primary key auto_increment'
-qsubst'name    varchar(64)'
-qsubst'email   varchar(128)'
-qsubst'hash    varchar(40)' --hmac_sha1 in hex
-qsubst'url     varchar(2048)'
+qsubst'name    varchar(64) character set utf8 collate utf8_general_ci'
+qsubst'email   varchar(128) character set utf8 collate utf8_general_ci'
+qsubst'hash    varchar(40) character set ascii' --hmac_sha1 in hex
+qsubst'url     varchar(2048) character set utf8 collate utf8_general_ci'
 qsubst'bool    tinyint not null default 0'
 qsubst'bool1   tinyint not null default 1'
 qsubst'atime   timestamp default current_timestamp'
 qsubst'mtime   timestamp' --on update current_timestamp
 qsubst'money   decimal(20,6)'
 qsubst'qty     decimal(20,6)'
-qsubst'lang    char(2) not null'
+qsubst'lang    char(2) character set ascii not null'
 
 --drop everything
 nodrop = true
