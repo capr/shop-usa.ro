@@ -28,13 +28,13 @@ function init_homepage() {
 		fluid: false
 	})
 
-	$('.banner img').show().maphilight()
+	//$('.banner img').show().maphilight()
 }
 
 $(function() {
 	scroll_top()
 
-	//init_homepage()
+	init_homepage()
 	init_sidebar()
 	init_newsletter()
 	init_search()
