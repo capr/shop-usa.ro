@@ -1,6 +1,5 @@
 jquery.js
 jquery.history.js
-jquery.cookie.js
 jquery.quicksearch.js
 jquery.zoom.js
 jquery.easing.js
@@ -11,14 +10,8 @@ jquery.toasty.js
 jquery.powertip.js
 jquery.dropdown.js
 jquery.caret.js
-jquery.event.drag.js
-jquery.event.drop.js
-
-jquery.event.move.js
-jquery.event.swipe.js
 jquery.unslider.js
 jquery.maphighlight.js
-
 jquery.scrollintoview.js
 
 mustache.js
