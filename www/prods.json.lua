@@ -1,3 +1,4 @@
+require'filters'
 
 local catid, page, bid, pagesize, order, q, fq = ...
 catid = assert(uint_arg(catid))
@@ -8,24 +9,7 @@ bid = tonumber(bid)
 order = order ~= '-' and order or ''
 order = str_arg(order) or 'date'
 q = q ~= '-' and str_arg(q) or nil
-
-local fq_sql
-if fq then
-	local joins = {}
-	for s in fq:gmatch'[^;]+' do
-		local t = {}
-		for s in s:gmatch'[^,]+' do
-			table.insert(t, string.format('fp%d.vid = %d', #joins, tonumber(glue.trim(s))))
-		end
-		assert(#joins < 20)
-		table.insert(joins,
-			string.format(
-				'inner join filterprod fp%d on ' ..
-				'fp%d.pid = p.id_product and (' ..
-				table.concat(t, ' or ') .. ')', #joins, #joins))
-	end
-	fq_sql = table.concat(joins, '\n')
-end
+local fq_sql = fq and parse_fq(fq)
 
 local function select_prods(count)
 

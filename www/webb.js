@@ -406,7 +406,9 @@ function setlink(a, url, params, hook) {
 function setlinks(dst) {
 	dst = dst || 'body'
 	$(dst).find('a[href],area[href]').each(function() {
-		var url = $(this).attr('href')
+		var a = $(this)
+		if (a.attr('target')) return
+		var url = a.attr('href')
 		var t = parse_url(url)
 		if (!t || !t.handler) return
 		setlink(this, url)

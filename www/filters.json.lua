@@ -1,3 +1,4 @@
+require'filters'
 
 local catid = ...
 catid = assert(uint_arg(catid))

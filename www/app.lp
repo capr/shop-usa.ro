@@ -392,6 +392,9 @@ end
 				<br>
 				<div id=combi style="min-height: 60px"></div>
 				<br>
+				{{#shoes}}
+					<a href="/ghid_incaltaminte.html" target=_blank><b>Ghid Marimi Incaltaminte</b></a>
+				{{/shoes}}
 				<table width=80% id=dimsel>
 					{{#dims}}
 					<tr>

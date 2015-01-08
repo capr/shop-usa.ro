@@ -202,4 +202,9 @@ if root then
 	addcat(root)
 end
 
+--shoes flag for conditionally displaying the link to the "shoe size guide"
+for catid,t in pairs(cats) do
+	prod.shoes = prod.shoes or (catid % 100000000) == 27567
+end
+
 out(json(prod))
