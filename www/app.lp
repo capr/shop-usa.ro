@@ -141,6 +141,11 @@ end
 					</td>
 				</tr>
 			</table>
+			<table width=100%>
+				<tr>
+					<td id=selected_filters height=40 valign=middle>
+				</tr>
+			</table>
 			<div id=homepage>
 				<div class=banner>
 					<ul>
@@ -207,27 +212,39 @@ end
 </div>
 
 <script type="text/x-mustache" id=filters_template>
-<div id=filters>
-{{#.}}
-	<div class=filter_div fid={{{fid}}}>
-		<b>{{{fname}}}</b>
-		<input type=text class="filter_search hidden" placeholder="{{fname}}">
-		<div class=filter_values_div>
-			<ul class="small tight">
-			{{#values}}
-				<li>
-					<a vid={{{vid}}} {{#selected}}class=selected{{/selected}}>
-						<i class="fa fa-{{#selected}}check-{{/selected}}square-o"></i>
-						{{{vname}}}
-						<span class=gray>({{{count}}})</span>
-					</a>
-				</li>
-			{{/values}}
-			</ul>
+	{{#.}}
+		<div class=filter_div fid={{{fid}}}>
+			<b class=filter_name>{{{fname}}}</b>
+			<a class="edit fa fa-edit hidden" title="edit filter"
+				target=_blank href="/dataset.html/filter/{{{fid}}}"></a>
+			<input type=text class="filter_search hidden" placeholder="{{fname}}">
+			<div class=filter_values_div>
+				<ul class="small tight">
+				{{#values}}
+					<li>
+						<a vid={{{vid}}} {{#selected}}class=selected{{/selected}}>
+							<i class="fa fa-{{#selected}}check-{{/selected}}square-o"></i>
+							{{{vname}}}
+							<span class=gray>({{{count}}})</span>
+						</a>
+					</li>
+				{{/values}}
+				</ul>
+			</div>
 		</div>
-	</div>
-{{/.}}
-</div>
+	{{/.}}
+</script>
+
+<script type="text/x-mustache" id=selected_filters_template>
+	{{#.}}
+		{{^first}}&gt;{{/first}}
+		<a class=small
+			{{#catid}} catid={{{catid}}} {{/catid}}
+			{{#vid}} vid={{{vid}}} {{/vid}}
+		><i class="fa fa-check-square-o"></i>
+			{{{vname}}}
+		</a>
+	{{/.}}
 </script>
 
 <script type="text/x-mustache" id=browse_template>
