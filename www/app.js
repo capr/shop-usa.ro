@@ -34,7 +34,7 @@ function init_homepage() {
 $(function() {
 	scroll_top()
 
-	init_homepage()
+	//init_homepage()
 	init_sidebar()
 	init_newsletter()
 	init_search()
