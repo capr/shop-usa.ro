@@ -360,13 +360,13 @@ input.price {
 }
 
 .pagenum {
-	border: 1px solid #eee;
+	border: 1px solid #ddd;
 	display: inline-block;
 	min-width: 20px;
 	height: 20px;
-	padding-left: 4px;
-	padding-right: 4px;
-	text-align: center;
+	padding-left: 6px;
+	padding-right: 2px;
+	text-align: right;
 }
 
 .pagenum.active {
@@ -376,6 +376,7 @@ input.price {
 }
 
 .pagenum.left_arrow, .pagenum.right_arrow {
+	text-align: center;
 	border-width: 0;
 }
 
