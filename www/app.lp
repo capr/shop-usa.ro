@@ -250,7 +250,7 @@ end
 <script type="text/x-mustache" id=browse_template>
 	<table width=100% id=top_navbar class=navbar>
 		<tr>
-			<td valign=middle width=60>
+			<td valign=top width=60>
 				<table>
 					<tr>
 						<td valign=top><a viewstyle=grid><img src="/grid.png"></a></td>
