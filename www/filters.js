@@ -146,7 +146,7 @@ function filters_make_editable() {
 
 load_filters = function(catid, order, q, fq) {
 
-	load_content('#filters', '/filters.json/'+catid,
+	load_content('#filters', '/filters.json/'+catid+'/'+(q||'-')+'/'+(fq||''),
 		function(filters) {
 			update_filters(filters, order, q, fq)
 		})

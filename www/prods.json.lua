@@ -8,7 +8,7 @@ local offset = (page - 1) * pagesize
 order = order ~= '-' and order or ''
 order = str_arg(order) or 'date'
 q = q ~= '-' and str_arg(q) or nil
-local fq_sql = fq and parse_fq(fq)
+local fq_sql = fq and fqt_joins(parse_fq(fq))
 
 local function select_prods(count)
 
