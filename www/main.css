@@ -365,14 +365,13 @@ input.price {
 	min-width: 20px;
 	height: 20px;
 	padding-left: 6px;
-	padding-right: 2px;
+	padding-right: 3px;
 	text-align: right;
 }
 
 .pagenum.active {
-	background-color: #ff8800;
+	background-color: #FFA033;
 	border-color: #999;
-	text-shadow: 0px 0px 3px #fff;
 }
 
 .pagenum.left_arrow, .pagenum.right_arrow {
