@@ -55,7 +55,7 @@ local function filtered_fqt(fqt, exclude_fid)
 		return fqt --fid not in fqt, fqt not modified
 	end
 	--return a copy of fqt without the fid values at index xi
-	local mfqt = {for_fids = {fid}}
+	local mfqt = {for_fids = {exclude_fid}}
 	for i,vids in ipairs(fqt) do
 		if i ~= xi then
 			table.insert(mfqt, vids)
