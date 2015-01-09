@@ -136,6 +136,7 @@ function cat_url(catid, pagenum, order, q, fq) {
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
 	order = order == 'date' ? null : order
+	q = q == '-' ? null : q
 
 	return (
 		(catid != g_home_catid || pagenum != 1 || order || q || fq ? '/cat' : '/')+
