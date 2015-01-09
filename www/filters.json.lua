@@ -125,10 +125,16 @@ for i,filter in ipairs(filters) do
 	filter.values = filter.fqt.values[filter.fid]
 end
 
---clean up filters of fqts and vids, and leave only the metadata and values.
+--return only the filters that contain values.
+local t = {}
 for i,filter in ipairs(filters) do
-	filter.fqt = nil
-	filter.vids = nil
+	if filter.values then
+		table.insert(t, {
+			fid = filter.fid,
+			fname = filter.fname,
+			values = filter.values
+		})
+	end
 end
 
-out(json(filters))
+out(json(t))
