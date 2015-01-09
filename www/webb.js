@@ -274,8 +274,8 @@ $(function() {
 		($(this).scrollTop() > $(window).height()) ?
 			btn.addClass('cd-is-visible') :
 			btn.removeClass('cd-is-visible cd-fade-out')
-		if ($(this).scrollTop() > $(window).height() * 2)
-			btn.addClass('cd-fade-out')
+		//if ($(this).scrollTop() > $(window).height() * 2)
+		//	btn.addClass('cd-fade-out')
 	})
 
 	btn.on('click', function(event) {
