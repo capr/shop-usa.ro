@@ -56,7 +56,7 @@ local function select_prods(count)
 				or m.name like ]]..quote(q..'%')..[[
 				or pl.name like ]]..quote(q..'%')..[[
 			)
-	]] or '') .. (true and [[
+	]] or '') .. ((not count or fq_sql) and [[
 		group by
 			p.id_product
 		order by
