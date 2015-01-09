@@ -42,10 +42,10 @@ local function select_prods(count)
 		left join ps_image i on
 			i.id_product = p.id_product
 			and i.cover = 1
-		inner join ps_product_lang pl on
+		left join ps_product_lang pl on
 			pl.id_product = p.id_product
 			and pl.id_lang = 1
-		inner join ps_manufacturer m on
+		left join ps_manufacturer m on
 			m.id_manufacturer = p.id_manufacturer
 	]] or '') .. (fq_sql and fq_sql or '') .. [[
 		where
