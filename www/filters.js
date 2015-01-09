@@ -53,13 +53,14 @@ function update_filters(filters, order, q, fq) {
 	for (var i = 0; i < filters.length; i++) {
 		var filter = filters[i]
 		var values = filter.values
-		for (var j = 0; j < values.length; j++) {
-			var v = values[j]
-			v.selected = vids[v.vid]
-			fidmap[v.vid] = filter.fid
-			if (v.selected)
-				selected.push(v)
-		}
+		if (values)
+			for (var j = 0; j < values.length; j++) {
+				var v = values[j]
+				v.selected = vids[v.vid]
+				fidmap[v.vid] = filter.fid
+				if (v.selected)
+					selected.push(v)
+			}
 	}
 
 	// build a modified fq
