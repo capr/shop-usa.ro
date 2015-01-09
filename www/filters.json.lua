@@ -18,9 +18,11 @@ for i,t in groupby(query([[
 		inner join filterval v on v.fid = f.fid
 		inner join filterprod fp on fp.vid = v.vid
 		inner join ps_category_product cp on cp.id_product = fp.pid
+		inner join ps_product p on p.id_product = cp.id_product
 	where
 		fc.catid = ?
 		and cp.id_category = ?
+		and p.active = 1
 	group by
 		v.vid
 	order by
