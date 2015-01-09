@@ -82,7 +82,6 @@ local function get_values(fqt)
 	if fqt.values then return end --already got'em.
 	fqt.values = {} --{fid = {val1, ...}}; val = {vid=, vname=, count=}
 	local fids = table.concat(fqt.for_fids, ', ')
-	print_queries = true
 	for i,t in groupby(query([[
 		select
 			f.fid,
