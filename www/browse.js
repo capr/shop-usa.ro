@@ -303,9 +303,8 @@ function create_add_to_order_buttons() {
 function update_product_page(prod) {
 	g_prod = prod
 
-	$.each(prod.path, function(i, p) {
-		p.slug = slug(p.catid, p.catname)
-	})
+	$('#selected_filters').css('visibility', '')
+
 	render('product_page', prod, '#main')
 
 	$('#a_back').click(back)

@@ -368,11 +368,6 @@ end
 </script>
 
 <script type="text/x-mustache" id=product_page_template>
-	<a id=a_back>&laquo; <t class=en>Back</t><t class=ro>Inapoi</t></a>
-	<span class="gray small">&nbsp; | &nbsp;</span>
-	{{#path}}<a href="/cat/{{{slug}}}">{{{catname}}}</a> {{^last}} &raquo; {{/last}}{{/path}}
-	<br>
-	<br>
 	<table width=100%>
 		<tr>
 			<td valign=top width=600 height=400>

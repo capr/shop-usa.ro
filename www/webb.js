@@ -310,6 +310,7 @@ $(function() {
 function hide_nav() {
 	$('#sidebar').hide()
 	$('#homepage').hide()
+	$('#selected_filters').css('visibility', 'hidden')
 }
 
 function check(truth) {
