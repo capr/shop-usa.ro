@@ -303,8 +303,6 @@ function create_add_to_order_buttons() {
 function update_product_page(prod) {
 	g_prod = prod
 
-	$('#selected_filters').css('visibility', '')
-
 	render('product_page', prod, '#main')
 
 	$('#a_back').click(back)

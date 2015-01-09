@@ -161,6 +161,8 @@ end
 
 --category paths -------------------------------------------------------------
 
+--TODO: this is now only used for the shoes flag.
+
 local cats = {}
 for i,t in ipairs(query([[
 	select
@@ -181,30 +183,12 @@ for i,t in ipairs(query([[
 	cats[t.catid] = t
 end
 
-local root
-for catid,t in pairs(cats) do
-	local pcat = cats[t.pcatid]
-	if pcat then
-		pcat.cat = t
-	else
-		root = t
-	end
-end
-
-prod.path = {}
-local function addcat(t)
-	table.insert(prod.path, {catid = t.catid, catname = t.catname, last = not t.cat or nil})
-	if t.cat then
-		addcat(t.cat)
-	end
-end
-if root then
-	addcat(root)
-end
-
 --shoes flag for conditionally displaying the link to the "shoe size guide"
 for catid,t in pairs(cats) do
-	prod.shoes = prod.shoes or (catid % 100000000) == 27567
+	if (catid % 100000000) == 27567 then
+		prod.shoes = true
+		break
+	end
 end
 
 out(json(prod))

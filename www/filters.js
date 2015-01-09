@@ -127,6 +127,8 @@ function update_filters(filters, order, q, fq) {
 		setlink(this, cat_url(g_catid, 1, order, q, modified_fq))
 	})
 
+	$('#selected_filters').css('visibility', '')
+
 	filters_make_editable()
 }
 
