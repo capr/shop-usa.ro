@@ -85,7 +85,7 @@ function clamp(x, min, max) {
 function format_pagenav(prod_count, cur_page) {
 	var s = ''
 	if (cur_page > 1)
-		s = s + '<a title="'+S('previous_page', 'previous page')+'">&laquo;</a> '
+		s = s + '<a class="pagenum left_arrow" title="'+S('previous_page', 'previous page')+'"></a> '
 	var page_count = Math.ceil(prod_count / g_pagesize)
 	cur_page = clamp(cur_page, 1, page_count)
 	var dotted
@@ -96,7 +96,7 @@ function format_pagenav(prod_count, cur_page) {
 			(i >= cur_page-2 && i <= cur_page + 1) ||
 			i == page_count
 		) {
-			s = s + '<a' + (i == cur_page ? ' class=active' : '') + '>' + i + '</a> '
+			s = s + '<a class="pagenum' + (i == cur_page ? ' active' : '') + '">' + i + '</a> '
 			dotted = false
 		} else {
 			if (!dotted)
@@ -105,7 +105,7 @@ function format_pagenav(prod_count, cur_page) {
 		}
 	}
 	if (cur_page < page_count)
-		s = s + ' <a title="'+S('next_page', 'next page')+'">&raquo;</a>'
+		s = s + ' <a class="pagenum right_arrow" title="'+S('next_page', 'next page')+'"></a>'
 	return s
 }
 
@@ -124,10 +124,11 @@ function update_pagenav(prod_count, cur_page, order, q, fq) {
 
 	$('.pagenav').html(format_pagenav(prod_count, cur_page))
 	$('.pagenav a').each(function() {
-		var s = $(this).html()
+		var a = $(this)
+		var s = a.html()
 		var pagenum =
-			(s == '«' && cur_page-1) ||
-			(s == '»' && cur_page+1) ||
+			(a.hasClass('left_arrow') && cur_page-1) ||
+			(a.hasClass('right_arrow') && cur_page+1) ||
 			parseInt(s)
 
 		var bottom = $(this).closest('#bottom_navbar').length > 0

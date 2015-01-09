@@ -359,6 +359,41 @@ input.price {
 	border: 1px solid #ddd;
 }
 
+.pagenum {
+	border: 1px solid #eee;
+	display: inline-block;
+	min-width: 20px;
+	height: 20px;
+	padding-left: 4px;
+	padding-right: 4px;
+	text-align: center;
+}
+
+.pagenum.active {
+	background-color: #ff8800;
+	border-color: #999;
+	text-shadow: 0px 0px 3px #fff;
+}
+
+.pagenum.left_arrow, .pagenum.right_arrow {
+	border-width: 0;
+}
+
+.pagenum.left_arrow:before {
+   font-family: FontAwesome;
+   content: "\f053";
+}
+
+.pagenum.right_arrow:before {
+   font-family: FontAwesome;
+   content: "\f054";
+}
+
+.pagenum.active:visited { color: #000; }
+.pagenum.active:visited:hover { color: #000; }
+.pagenum:hover { border-color: #999; }
+.pagenum.active:hover { border-color: #666; }
+
 /* back-to-top button ----------------------------------------------------- */
 
 .cd-top {
