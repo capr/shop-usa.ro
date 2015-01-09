@@ -88,20 +88,22 @@ function format_pagenav(prod_count, cur_page) {
 		s = s + '<a class="pagenum left_arrow" title="'+S('previous_page', 'previous page')+'"></a> '
 	var page_count = Math.ceil(prod_count / g_pagesize)
 	cur_page = clamp(cur_page, 1, page_count)
-	var dotted
-	for (var i = 1; i <= page_count; i++) {
-		if (
-			i == 1 ||
-			(i <= 4 && cur_page <= 4) ||
-			(i >= cur_page-2 && i <= cur_page + 1) ||
-			i == page_count
-		) {
-			s = s + '<a class="pagenum' + (i == cur_page ? ' active' : '') + '">' + i + '</a> '
-			dotted = false
-		} else {
-			if (!dotted)
-				s = s + ' ... '
-			dotted = true
+	if (page_count > 1) {
+		var dotted
+		for (var i = 1; i <= page_count; i++) {
+			if (
+				i == 1 ||
+				(i <= 4 && cur_page <= 4) ||
+				(i >= cur_page-2 && i <= cur_page + 1) ||
+				i == page_count
+			) {
+				s = s + '<a class="pagenum' + (i == cur_page ? ' active' : '') + '">' + i + '</a> '
+				dotted = false
+			} else {
+				if (!dotted)
+					s = s + ' ... '
+				dotted = true
+			}
 		}
 	}
 	if (cur_page < page_count)
