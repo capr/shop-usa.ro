@@ -253,7 +253,7 @@ end
 			<td valign=middle width=60>
 				<table>
 					<tr>
-						<td><a viewstyle=grid><img src="/grid.png"></a></td>
+						<td valign=top><a viewstyle=grid><img src="/grid.png"></a></td>
 						<td width=4></td>
 						<td><a viewstyle=list><img src="/list.png"></a></td>
 					</tr>
