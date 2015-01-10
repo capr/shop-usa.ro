@@ -124,6 +124,8 @@ action.cat = function(catid, pagenum, order, q, fq) {
 
 	$('#sidebar').show()
 
+	$('#search').val(q)
+
 	load_cats(function() {
 		select_cat(catid)
 		load_prods(catid, pagenum, order, q, fq)
