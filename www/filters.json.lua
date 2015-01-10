@@ -125,10 +125,10 @@ for i,filter in ipairs(filters) do
 	filter.values = filter.fqt.values[filter.fid]
 end
 
---return only the filters that contain more than one value.
+--return only the filters that have values.
 local t = {}
 for i,filter in ipairs(filters) do
-	if filter.values and #filter.values > 0 then
+	if filter.values then
 		table.insert(t, {
 			fid = filter.fid,
 			fname = filter.fname,
