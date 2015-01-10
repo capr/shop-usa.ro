@@ -42,6 +42,7 @@ local function select_prods(count)
 		left join ps_image i on
 			i.id_product = p.id_product
 			and i.cover = 1
+	]] or '') .. ((not count or q) and [[
 		left join ps_product_lang pl on
 			pl.id_product = p.id_product
 			and pl.id_lang = 1
@@ -56,9 +57,10 @@ local function select_prods(count)
 				or m.name like ]]..quote(q..'%')..[[
 				or pl.name like ]]..quote(q..'%')..[[
 			)
-	]] or '') .. ((not count or fq_sql) and [[
+	]] or '') .. ((not count or fq_sql or q) and [[
 		group by
 			p.id_product
+	]] or '') .. (not count and [[
 		order by
 	]] .. (assert(sort_col[order])) or '') .. (not count and [[
 		limit

@@ -157,3 +157,4 @@ load_filters = function(catid, order, q, fq) {
 }
 
 })()
+
