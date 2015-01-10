@@ -124,7 +124,8 @@ action.cat = function(catid, pagenum, order, q, fq) {
 
 	$('#sidebar').show()
 
-	$('#search').val(q)
+	if (q)
+		$('#search').focus().val(q)
 
 	load_cats(function() {
 		select_cat(catid)
