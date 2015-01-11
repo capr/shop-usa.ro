@@ -67,8 +67,8 @@ local function compute_totals(oid, shiptype)
 	t.discount = promocode_discount(promocode)
 	t.discamount = t.discount and math.ceil(t.subtotal * t.discount / 100) or 0
 	t.disctotal = t.subtotal - t.discamount
-	t.shipping = (shiptype ~= 'store' and t.disctotal < 300 and 25) or 0
-	t.total = t.disctotal + t.shipping
+	t.shipcost = (shiptype ~= 'store' and t.disctotal < 300 and 25) or 0
+	t.total = t.disctotal + t.shipcost
 
 	query([[
 		update ordr set
@@ -76,7 +76,7 @@ local function compute_totals(oid, shiptype)
 			discount = ?
 		where
 			oid = ?
-	]], t.shipping, t.discount, oid)
+	]], t.shipcost, t.discount, oid)
 
 	return t
 end
