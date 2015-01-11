@@ -41,6 +41,9 @@ if POST then
 	elseif action == 'buy_later' then
 		query('update cartitem set buylater = 1 where ciid = ? and uid = ?',
 			data.ciid, uid())
+	elseif action == 'promocode' then
+		query('update usr set promocode = ? where uid = ?',
+			str_arg(data.promocode), uid())
 	end
 end
 
@@ -51,7 +54,7 @@ local cart = query1([[
 	from
 		usr u
 		left join promocode c
-			on c.promocode = u.promocode and c.expires > now()
+			on c.promocode = u.promocode and timestampdiff(second, c.expires, now()) > 0
 	where
 		u.uid = ?
 ]], uid())

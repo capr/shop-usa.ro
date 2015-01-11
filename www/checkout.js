@@ -16,15 +16,7 @@ var g_cart
 function compute_totals() {
 	if (!g_cart) return
 	var shipping_method = $('input[name="shipping_method"]').val()
-	var totals = cart.totals(g_cart)
-	var subtotal = totals.subtotal
-	var shipping = totals.shipping[shipping_method]
-	var total = subtotal + shipping
-	return {
-		subtotal: subtotal,
-		total: total,
-		shipping: shipping,
-	}
+	return cart.totals(g_cart, shipping_method)
 }
 
 function update_totals(totals) {
@@ -38,12 +30,11 @@ function update_cart(cart) {
 	var totals = compute_totals()
 	update_totals(totals)
 
-	var data = {
+	var data = $.extend({
 		items:          cart.buynow,
 		buylater_count: cart.buylater.length,
 		buynow_count:   cart.buynow.length,
-		subtotal:       totals.subtotal,
-	}
+	}, totals)
 
 	render('checkout_cart_section', data, '#cart_section')
 }

@@ -10,15 +10,29 @@ listen('cart.cart_icon', function(cart) {
 
 // computing totals ----------------------------------------------------------
 
-function compute_totals(cart) {
+function money(x) {
+	return x.toFixed(0)
+}
+
+function percent(x) {
+	return x.toFixed(0)
+}
+
+function compute_totals(cart, shipping_method) {
 	var subtotal = 0
 	$.each(cart.buynow, function(i,e) { subtotal += e.price; })
+	var discamount = cart.discount ? Math.floor(subtotal * cart.discount / 100) : 0
+	var disctotal = subtotal - discamount
+	var shipping = (shipping_method != 'store' && disctotal < 300 && 25) || 0
+	var total = disctotal + shipping
+
 	return {
-		subtotal: subtotal,
-		shipping: {
-			home: subtotal < 300 ? 25 : 0,
-			store: 0,
-		}
+		subtotal:   money(subtotal),
+		discount:   cart.discount && percent(cart.discount),
+		discamount: discamount && money(discamount),
+		disctotal:  money(disctotal),
+		shipping:   shipping && money(shipping),
+		total:      money(total),
 	}
 }
 
@@ -50,6 +64,10 @@ function buy_later(ciid) {
 
 function reorder_cart(ciids, buylater) {
 	post('/cart.json/reorder', {ciids: ciids, buylater: buylater}, set_cart)
+}
+
+function enter_promocode(code) {
+	post('/cart.json/promocode', {promocode: code}, set_cart)
 }
 
 // cart icon -----------------------------------------------------------------
@@ -114,16 +132,13 @@ function update_cart_page(cart) {
 
 	var totals = compute_totals(cart)
 
-	render('cart_page', {
+	render('cart_page', $.extend({
 		promocode:      cart.promocode,
 		buynow:         render('cart_list', cart.buynow),
 		buylater:       render('cart_list', cart.buylater),
 		buylater_count: cart.buylater.length,
 		buynow_count:   cart.buynow.length,
-		subtotal:       totals.subtotal,
-		shipping:       totals.shipping.home,
-		total:          totals.subtotal + totals.shipping.home,
-	}, '#main')
+	}, totals), '#main')
 
 	update_timeago()
 
@@ -144,6 +159,11 @@ function update_cart_page(cart) {
 
 	$('#btn_checkout').click(function() {
 		exec('/checkout')
+	})
+
+	$('#btn_promocode').click(function() {
+		var promocode = $('#promocode').val()
+		enter_promocode(promocode)
 	})
 
 	cart_make_draggable()

@@ -508,14 +508,28 @@ end
 	<table width=100% class=cart_subtotal>
 		<tr>
 			<td align=right>
-				Subtotal:
+				<t class=en>Subtotal:</t>
+				<t class=ro>Subtotal:</t>
 			</td>
-			<td width=15></td>
-			<td align=right class="price nowrap" width=1>
+			<td></td>
+			<td align=right class="price nowrap">
 				<t class=en>{{{subtotal}}} RON</t>
 				<t class=ro>{{{subtotal}}} Lei</t>
 			</td>
 		</tr>
+		{{#discount}}
+		<tr>
+			<td align=right>
+				<t class=en>Discount:</t>
+				<t class=ro>Discount:</t>
+			</td>
+			<td></td>
+			<td align=right class="price nowrap">
+				<t class=en>-{{{discamount}}} RON</t>
+				<t class=ro>-{{{discamount}}} Lei</t>
+			</td>
+		</tr>
+		{{/discount}}
 		<tr>
 			<td align=right>
 				<t class=en>Shipping:</t>
@@ -556,7 +570,7 @@ end
 							<input id=promocode type=text
 								placeholder:en="promo code"
 								placeholder:ro="cod promo" value="{{promocode}}">
-							<button type=button id=btn_promo_code class=slim
+							<button type=button id=btn_promocode class=slim
 								style="width: 36px; padding: 0">OK</button>
 						</td>
 					</tr>
@@ -860,18 +874,31 @@ end
 		{{/buylater}}
 		{{/items}}
 		<tr>
-			<td align=right>
-				<br>
-				<br>
-				<span class=subtotal>
-					<t class=en>Subtotal:</t>
-					<t class=ro>Subtotal:</t>
-					<span class=price>
-						<t class=en>{{{subtotal}}} RON</t>
-						<t class=ro>{{{subtotal}}} Lei</t>
-					</span>
-				</span>
-				<br>
+			<td>
+				<table width=100% class=subtotal>
+					<tr>
+						<td align=right class=nowrap>
+							<t class=en>Subtotal:</t>
+							<t class=ro>Subtotal:</t>
+						</td>
+						<td align=right class="price nowrap" width=1 style="padding-left: 20px">
+							<t class=en>{{{subtotal}}} RON</t>
+							<t class=ro>{{{subtotal}}} Lei</t>
+						</td>
+					</tr>
+					{{#discount}}
+					<tr>
+						<td align=right class=nowrap>
+							<t class=en>Discount:</t>
+							<t class=ro>Discount:</t>
+						</td>
+						<td align=right class="price nowrap">
+							<t class=en>-{{{discamount}}} RON</t>
+							<t class=ro>-{{{discamount}}} Lei</t>
+						</td>
+					</tr>
+					{{/discount}}
+				</table>
 			</td>
 		</tr>
 	</table>
@@ -949,8 +976,14 @@ end
 					<t class=en>Shipping cost:</t>
 					<t class=ro>Transport:</t>
 					<span class=price>
-						<t class=en><span class=shipping_cost></span> RON</t>
-						<t class=ro><span class=shipping_cost></span> Lei</t>
+						{{#shipping_cost}}
+							<t class=en><span class=shipping_cost></span> RON</t>
+							<t class=ro><span class=shipping_cost></span> Lei</t>
+						{{/shipping_cost}}
+						{{^shipping_cost}}
+							<t class=en>FREE</t>
+							<t class=ro>GRATUIT</t>
+						{{/shipping_cost}}
 					</span>
 				</span>
 				<br>
