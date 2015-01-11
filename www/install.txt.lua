@@ -291,6 +291,8 @@ $table ordr (
 	note        text,
 	shiptype    $name not null,
 	shipcost    $money not null,
+	promocode   $name,
+	discount    $percent not null,
 	status      $name,
 	opuid       $id, $fk(ordr, opuid, usr, uid),
 	opnote      text,

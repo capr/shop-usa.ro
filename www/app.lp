@@ -618,7 +618,10 @@ end
 					placeholder:en="promo code"
 					placeholder:ro="cod promo" value="{{promocode}}">
 				<button type=button id=btn_promocode class=slim
-					style="padding-left: 1em; padding-right: 1em">Aplica</button>
+					style="padding-left: 1em; padding-right: 1em">
+					<t class=en>Apply</t>
+					<t class=ro>Aplica</t>
+				</button>
 			</td>
 		</tr>
 	</table>

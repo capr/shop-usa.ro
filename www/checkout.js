@@ -178,14 +178,15 @@ function place_order() {
 		return
 
 	post('/place_order.json', {
-		email    : $('#usr_email').val(),
-		name     : $('#usr_name').val(),
-		phone    : $('#usr_phone').val(),
-		addr     : $('#addr_street').val(),
-		city     : $('#addr_city').val(),
-		county   : $('#addr_county').val(),
-		note     : $('#order_note').val(),
-		shiptype : $('input[name=shipping_method]:checked').val(),
+		email     : $('#usr_email').val(),
+		name      : $('#usr_name').val(),
+		phone     : $('#usr_phone').val(),
+		addr      : $('#addr_street').val(),
+		city      : $('#addr_city').val(),
+		county    : $('#addr_county').val(),
+		note      : $('#order_note').val(),
+		shiptype  : $('input[name=shipping_method]:checked').val(),
+		promocode : $('#promocode').val(),
 	}, order_placed, order_error)
 }
 

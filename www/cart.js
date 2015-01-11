@@ -21,7 +21,7 @@ function percent(x) {
 function compute_totals(cart, shipping_method) {
 	var subtotal = 0
 	$.each(cart.buynow, function(i,e) { subtotal += e.price; })
-	var discamount = cart.discount ? Math.floor(subtotal * cart.discount / 100) : 0
+	var discamount = cart.discount ? Math.ceil(subtotal * cart.discount / 100) : 0
 	var disctotal = subtotal - discamount
 	var shipping = (shipping_method != 'store' && disctotal < 300 && 25) || 0
 	var total = disctotal + shipping

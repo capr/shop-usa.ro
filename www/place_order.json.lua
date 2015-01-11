@@ -1,3 +1,4 @@
+require'promocode'
 
 local shiptypes = {home = true, store = true}
 local shiptype_strings = {home = 'Home', store = 'Store'}
@@ -9,27 +10,34 @@ local o = assert(json(POST.data))
 local suid = allow(session_uid())
 
 --sanitize and validate fields
-local email    = assert(str_arg(o.email))
-local name     = assert(str_arg(o.name))
-local phone    = assert(str_arg(o.phone))
-local addr     = assert(str_arg(o.addr))
-local city     = assert(str_arg(o.city))
-local county   = assert(str_arg(o.county))
-local country  = 'Romania'
-local note     = str_arg(o.note)
-local shiptype = assert(enum_arg(o.shiptype, 'home', 'store'))
+local email     = assert(str_arg(o.email))
+local name      = assert(str_arg(o.name))
+local phone     = assert(str_arg(o.phone))
+local addr      = assert(str_arg(o.addr))
+local city      = assert(str_arg(o.city))
+local county    = assert(str_arg(o.county))
+local country   = 'Romania'
+local note      = str_arg(o.note)
+local shiptype  = assert(enum_arg(o.shiptype, 'home', 'store'))
+local promocode = str_arg(o.promocode)
 
 --slow down DoS bots. also, give the impression of doing hard work.
 ngx.sleep(0.8)
+
+--save the promocode, but only if set (do not clear it).
+if promocode then
+	save_promocode(promocode)
+end
 
 --add the order header.
 local oid = iquery([[
 	insert into ordr
 		(uid, email, name, phone, addr, city, county, country, note,
-			shiptype, shipcost, status, mtime)
+			shiptype, shipcost, promocode, discount, status, mtime)
 	values
-		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'new', now())
-]], uid(), email, name, phone, addr, city, county, country, note, shiptype)
+		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, 0, 'new', now())
+]], uid(), email, name, phone, addr, city, county, country, note, shiptype,
+	promocode)
 
 --add the cart items at current price.
 query([[
@@ -50,11 +58,30 @@ query([[
 		and ci.uid = ?
 ]], oid, usd_rate(), uid())
 
---compute shipping cost and set it
-local subtotal =
-	tonumber(query1('select sum(price) from ordritem where oid = ?', oid))
-local shipcost = shiptype == 'store' and 0 or (subtotal < 300 and 25 or 0)
-query('update ordr set shipcost = ? where oid = ?', shipcost, oid)
+--compute totals
+local function compute_totals(oid, shiptype)
+	local t = {}
+
+	t.subtotal =
+		tonumber(query1('select sum(price) from ordritem where oid = ?', oid))
+	t.discount = promocode_discount(promocode)
+	t.discamount = t.discount and math.ceil(t.subtotal * t.discount / 100) or 0
+	t.disctotal = t.subtotal - t.discamount
+	t.shipping = (shiptype ~= 'store' and t.disctotal < 300 and 25) or 0
+	t.total = t.disctotal + t.shipping
+
+	query([[
+		update ordr set
+			shipcost = ?,
+			discount = ?
+		where
+			oid = ?
+	]], t.shipping, t.discount, oid)
+
+	return t
+end
+
+local totals = compute_totals(oid, shiptype)
 
 --clear the cart.
 query('delete from cartitem where buylater = 0 and uid = ?', uid())
@@ -77,8 +104,7 @@ local subj = string.format(subj, tostring(oid), config'shop_name' or home_domain
 local order = require'order'.get(oid)
 order.shiptype = S('shiptype_'..shiptype, shiptype_strings[shiptype])
 order.hasaddress = shiptype =='home'
-order.subtotal = subtotal
-order.total = subtotal + shipcost
+glue.update(order, totals)
 
 local msg = render('order_placed_email', order)
 

@@ -1,3 +1,4 @@
+require'promocode'
 
 local action = ...
 
@@ -42,22 +43,13 @@ if POST then
 		query('update cartitem set buylater = 1 where ciid = ? and uid = ?',
 			data.ciid, uid())
 	elseif action == 'promocode' then
-		query('update usr set promocode = ? where uid = ?',
-			str_arg(data.promocode), uid())
+		save_promocode(data.promocode)
 	end
 end
 
-local cart = query1([[
-	select
-		u.promocode,
-		c.discount
-	from
-		usr u
-		left join promocode c
-			on c.promocode = u.promocode and timestampdiff(second, c.expires, now()) > 0
-	where
-		u.uid = ?
-]], uid())
+local cart = {}
+cart.promocode = load_promocode()
+cart.discount = promocode_discount(cart.promocode)
 
 local t = query([[
 	select

@@ -4,7 +4,8 @@ local orders = {}
 for i,oi in groupby(query([[
 	select
 		o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
-		o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
+		o.note, o.shiptype, o.shipcost, o.promocode, o.discount,
+		o.status, o.atime, o.mtime,
 		i.oiid, i.coid, i.qty, i.price, i.status, i.atime as iatime, i.mtime as imtime,
 		p.id_product as pid,
 		pl.name,
@@ -47,6 +48,7 @@ for i,oi in groupby(query([[
 		oid = o.oid, email = o.email, name = o.name, phone = o.phone,
 		addr = o.addr, city = o.city, county = o.county, country = o.country,
 		note = o.note, shiptype = o.shiptype, shipcost = o.shipcost,
+		promocode = o.promocode, discount = o.discount,
 		status = o.status, atime = o.atime, mtime = o.mtime,
 		items = {},
 	}
