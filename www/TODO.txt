@@ -4,11 +4,18 @@ TODO
 - make cron work
 - monitor luajit and send an email with log_data and log_bugs after it finishes
 
-- email cos abandonat dupa 2 zile: cod de reducere 5%
-	- gen new code? when? does it expire? etc.
+- email cos abandonat dupa 2 zile
 
-- camp promo code:
-	- actualizare total
+- promo codes: enter them on the checkout too
+
+
+BACKEND GRIDS
+------------------------------------------------------------------------------
+- users
+- categories
+- filters
+- promo codes
+- products ?
 
 
 FLASHBUGS

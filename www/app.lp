@@ -512,7 +512,7 @@ end
 				<t class=ro>Subtotal:</t>
 			</td>
 			<td></td>
-			<td align=right class="price nowrap">
+			<td align=right class="price nowrap" width=120>
 				<t class=en>{{{subtotal}}} RON</t>
 				<t class=ro>{{{subtotal}}} Lei</t>
 			</td>
@@ -559,22 +559,7 @@ end
 		</tr>
 		<tr>
 			<td valign=bottom colspan=2>
-				<table>
-					<tr>
-						<td>
-							<t class=en>Promo Code:</t>
-							<t class=ro>Cod Promotie:</t>
-						</td>
-						<td width=10></td>
-						<td width=150 class=nowrap>
-							<input id=promocode type=text
-								placeholder:en="promo code"
-								placeholder:ro="cod promo" value="{{promocode}}">
-							<button type=button id=btn_promocode class=slim
-								style="width: 36px; padding: 0">OK</button>
-						</td>
-					</tr>
-				</table>
+				{{>promocode}}
 			</td>
 			<td valign=bottom align=right>
 				<br>
@@ -616,6 +601,25 @@ end
 	</span>
 	{{/buylater_count}}
 	<div id=cart_buylater>{{{buylater}}}</div>
+</script>
+
+<script type="text/x-mustache" id=promocode_template>
+	<table>
+		<tr>
+			<td>
+				<t class=en>Promo Code:</t>
+				<t class=ro>Cod Promotie:</t>
+			</td>
+			<td width=10></td>
+			<td width=150 class=nowrap>
+				<input id=promocode type=text
+					placeholder:en="promo code"
+					placeholder:ro="cod promo" value="{{promocode}}">
+				<button type=button id=btn_promocode class=slim
+					style="width: 36px; padding: 0">OK</button>
+			</td>
+		</tr>
+	</table>
 </script>
 
 <script type="text/x-mustache" id=cart_list_template>
@@ -870,12 +874,16 @@ end
 					</table>
 				</div>
 			</td>
+			<td></td>
 		</tr>
 		{{/buylater}}
 		{{/items}}
 		<tr>
+			<td valign=bottom>
+				{{>promocode}}
+			</td>
 			<td>
-				<table width=100% class=subtotal>
+				<table width=100% class=cart_subtotal>
 					<tr>
 						<td align=right class=nowrap>
 							<t class=en>Subtotal:</t>
@@ -972,7 +980,7 @@ end
 			<td align=right>
 				<br>
 				<br>
-				<span class=subtotal>
+				<span class=cart_subtotal>
 					<t class=en>Shipping cost:</t>
 					<t class=ro>Transport:</t>
 					<span class=price>

@@ -201,7 +201,9 @@ action.cart = function() {
 }
 
 return {
+	load: load_cart,
 	add: add_to_cart,
+	enter_promocode: enter_promocode,
 	totals: compute_totals,
 }
 

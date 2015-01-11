@@ -25,22 +25,25 @@ function update_totals(totals) {
 	$('.grand_total').html(totals.total)
 }
 
-function update_cart(cart) {
-	g_cart = cart
+function update_cart(cart_) {
+	g_cart = cart_
 	var totals = compute_totals()
 	update_totals(totals)
 
 	var data = $.extend({
-		items:          cart.buynow,
-		buylater_count: cart.buylater.length,
-		buynow_count:   cart.buynow.length,
+		promocode:      g_cart.promocode,
+		items:          g_cart.buynow,
+		buylater_count: g_cart.buylater.length,
+		buynow_count:   g_cart.buynow.length,
 	}, totals)
 
 	render('checkout_cart_section', data, '#cart_section')
-}
 
-function load_cart() {
-	load_main('/cart.json', update_cart)
+	$('#btn_promocode').click(function() {
+		var promocode = $('#promocode').val()
+		cart.enter_promocode(promocode)
+	})
+
 }
 
 // county/city autocomplete --------------------------------------------------
@@ -192,13 +195,16 @@ action.checkout = function() {
 	hide_nav()
 	render('checkout', null, '#main')
 
-	listen('usr.checkout_page.current_action', load_cart)
+	listen('cart.checkout_page.current_action', update_cart)
+	listen('usr.checkout_page.current_action', cart.load)
 
 	acc = account_widget({ allow_anonymous: true })
 
 	update_shipping_section()
 
 	$('#btn_place_order').click(place_order)
+
+	login() // trigger load cart
 }
 
 action.order_placed = function() {
