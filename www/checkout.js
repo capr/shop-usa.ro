@@ -186,7 +186,6 @@ function place_order() {
 		county    : $('#addr_county').val(),
 		note      : $('#order_note').val(),
 		shiptype  : $('input[name=shipping_method]:checked').val(),
-		promocode : $('#promocode').val(),
 	}, order_placed, order_error)
 }
 

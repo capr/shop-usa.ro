@@ -19,15 +19,10 @@ local county    = assert(str_arg(o.county))
 local country   = 'Romania'
 local note      = str_arg(o.note)
 local shiptype  = assert(enum_arg(o.shiptype, 'home', 'store'))
-local promocode = str_arg(o.promocode)
+local promocode = load_promocode()
 
 --slow down DoS bots. also, give the impression of doing hard work.
 ngx.sleep(0.8)
-
---save the promocode, but only if set (do not clear it).
-if promocode then
-	save_promocode(promocode)
-end
 
 --add the order header.
 local oid = iquery([[
@@ -111,4 +106,4 @@ local msg = render('order_placed_email', order)
 sendmail(from, email, subj, msg, 'html')
 
 --return petty json
-out(json{ok = true, order = order})
+out(json{ok = true})
