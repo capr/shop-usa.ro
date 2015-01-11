@@ -989,14 +989,8 @@ end
 					<t class=en>Shipping cost:</t>
 					<t class=ro>Transport:</t>
 					<span class=price>
-						{{#shipping_cost}}
-							<t class=en><span class=shipping_cost></span> RON</t>
-							<t class=ro><span class=shipping_cost></span> Lei</t>
-						{{/shipping_cost}}
-						{{^shipping_cost}}
-							<t class=en>FREE</t>
-							<t class=ro>GRATUIT</t>
-						{{/shipping_cost}}
+						<t class=en><span class=shipping_cost>{{{shipping}}}</span> RON</t>
+						<t class=ro><span class=shipping_cost>{{{shipping}}}</span> Lei</t>
 					</span>
 				</span>
 				<br>

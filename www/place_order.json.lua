@@ -111,4 +111,4 @@ local msg = render('order_placed_email', order)
 sendmail(from, email, subj, msg, 'html')
 
 --return petty json
-out(json{ok = true})
+out(json{ok = true, order = order})
