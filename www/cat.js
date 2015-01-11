@@ -141,7 +141,7 @@ function cat_url(catid, pagenum, order, q, fq) {
 
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
-	order = order == 'date' ? null : order
+	order = (order == 'date' || order == '-') ? null : order
 	if (q == '-') q = null
 	if (fq == '-') fq = null
 
