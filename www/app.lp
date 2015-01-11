@@ -553,9 +553,9 @@ end
 						</td>
 						<td width=10></td>
 						<td width=150 class=nowrap>
-							<input id=promo_code type=text
+							<input id=promocode type=text
 								placeholder:en="promo code"
-								placeholder:ro="cod promo">
+								placeholder:ro="cod promo" value="{{promocode}}">
 							<button type=button id=btn_promo_code class=slim
 								style="width: 36px; padding: 0">OK</button>
 						</td>

@@ -103,19 +103,19 @@ function add_to_cart(pid, coid) {
 
 function update_cart_page(cart) {
 
-	function set_sname(i,e) {
+	function set_sname(i,e) { // eg: "Color: White, size: SM"
 		var snames = []
 		for(var i = 0; i < e.vnames.length; i++)
 			snames.push(e.dnames[i] + ': <b>' + e.vnames[i] + '</b>')
 		e.sname = snames.join(', ')
 	}
-
 	$.each(cart.buynow, set_sname)
 	$.each(cart.buylater, set_sname)
 
 	var totals = compute_totals(cart)
 
 	render('cart_page', {
+		promocode:      cart.promocode,
 		buynow:         render('cart_list', cart.buynow),
 		buylater:       render('cart_list', cart.buylater),
 		buylater_count: cart.buylater.length,
