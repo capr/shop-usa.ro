@@ -121,6 +121,7 @@ action.cat = function(catid, pagenum, order, q, fq) {
 
 	catid = intarg(catid) || g_home_catid
 	pagenum = intarg(pagenum) || 1
+	if (order == 'date' || order == '-') order = null
 	if (q == '-') q = null
 	if (fq == '-') fq = null
 
@@ -141,7 +142,7 @@ function cat_url(catid, pagenum, order, q, fq) {
 
 	catid = catid || g_home_catid
 	pagenum = pagenum || 1
-	order = (order == 'date' || order == '-') ? null : order
+	if (order == 'date' || order == '-') order = null
 	if (q == '-') q = null
 	if (fq == '-') fq = null
 
