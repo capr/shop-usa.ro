@@ -81,7 +81,6 @@ qsubst'lang    char(2) character set ascii not null'
 
 --drop everything
 nodrop = true
-droptable'promocode'
 droptable'convrate'
 droptable'nlemail'
 droptable'ordrlog'
@@ -95,6 +94,7 @@ droptable'filtercat'
 droptable'filter'
 
 nodrop = false
+droptable'promocode'
 droptable'combival'
 droptable'combi'
 droptable'img'
@@ -333,7 +333,7 @@ $table convrate (
 
 pq[[
 $table promocode (
-	code        $name primary key,
+	promocode   $name primary key,
 	expires     timestamp,
 	discount    $percent
 );
