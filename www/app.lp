@@ -607,8 +607,10 @@ end
 	<table>
 		<tr>
 			<td>
-				<t class=en>Promo Code:</t>
-				<t class=ro>Cod Promotie:</t>
+				<b>
+					<t class=en>Promo Code:</t>
+					<t class=ro>Cod Promotie:</t>
+				</b>
 			</td>
 			<td width=10></td>
 			<td width=150 class=nowrap>
