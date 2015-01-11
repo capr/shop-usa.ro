@@ -53,7 +53,7 @@ a fost inregistrata cu succes.</b>
 	{{#discamount}}
 	<tr>
 		<td><b>Discount:</b></td>
-		<td align=right><b>{{discamount}}</b> Lei</td>
+		<td align=right><b>-{{discamount}}</b> Lei</td>
 	</tr>
 	{{/discamount}}
 	<tr>
