@@ -117,7 +117,7 @@ function update_filters(filters, order, q, fq) {
 	$('#selected_filters a[catid]').each(function() {
 		var catid = $(this).attr('catid')
 		var pcatid = g_cats[catid].parent.id
-		setlink(this, cat_url(pcatid, 1, order, q, fq))
+		setlink(this, cat_url(pcatid, 1, order, q))
 	})
 
 	$('#selected_filters a[vid]').each(function() {
