@@ -114,13 +114,11 @@ function update_filters(filters, order, q, fq) {
 		input.quicksearch(list).cache()
 	})
 
-	/*
 	$('#selected_filters a[catid]').each(function() {
 		var catid = $(this).attr('catid')
-		var modified_fq = build_fq(fq, 'remove', catid)
-		setlink(this, cat_url(catid, 1, order, q, modified_fq)
+		var pcatid = g_cats[catid].parent.id
+		setlink(this, cat_url(pcatid, 1, order, q, fq))
 	})
-	*/
 
 	$('#selected_filters a[vid]').each(function() {
 		var vid = parseInt($(this).attr('vid'))
