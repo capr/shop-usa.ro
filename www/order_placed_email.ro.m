@@ -50,6 +50,12 @@ a fost inregistrata cu succes.</b>
 		<td><b>Subtotal:</b></td>
 		<td align=right><b>{{subtotal}}</b> Lei</td>
 	</tr>
+	{{#discamount}}
+	<tr>
+		<td><b>Discount:</b></td>
+		<td align=right><b>{{discamount}}</b> Lei</td>
+	</tr>
+	{{/discamount}}
 	<tr>
 		<td><b>Cost transport:</b></td>
 		<td align=right><b>{{shipcost}}</b> Lei</td>
