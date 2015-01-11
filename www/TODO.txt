@@ -1,19 +1,31 @@
+TODO
+------------------------------------------------------------------------------
+- make update_6pm a one-shot run
+- make cron work
+- monitor luajit and send an email with log_data and log_bugs after it finishes
+
+- email cos abandonat dupa 2 zile: cod de reducere 5%
+	- gen new code? when? does it expire? etc.
+
+- camp promo code:
+	- actualizare total
+
+
 FLASHBUGS
----------
+------------------------------------------------------------------------------
 - forgot pass link -> trigger usr event
 - google fucking analytics keeps the spinning wheel turning as usual...
 
 FLASHFEATS
-----------
+------------------------------------------------------------------------------
 - order history: show order status and per-item status, especially "canceled"
 - facebook like button on the page header
-
 
 - _escaped_fragment_
 
 
 USABILITY BUGS (CONFUSIONS)
----------------------------
+------------------------------------------------------------------------------
 - brand page shows category tree but people expect to see products
 - scroll doesn't follow if screen is to small. solutions:
 	- get antiscroll
@@ -26,7 +38,7 @@ USABILITY BUGS (CONFUSIONS)
 
 
 HARD BUGS
----------
+------------------------------------------------------------------------------
 - notify is not centered on site, but on screen
 - IE9 and history.js (very few IE9 users, but a lot of IE8 users)
 - browser scrolls immediately after url_changed but content not yet loaded
@@ -35,15 +47,16 @@ HARD BUGS
 
 
 FUNCTIONALITY
--------------
+------------------------------------------------------------------------------
 - user list: check/uncheck admin
 - checkout: list of addresses from past orders
+- search: use with filters and add to breadcrumbs
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
 NICE-TO-HAVES
--------------
+------------------------------------------------------------------------------
 - homepage custom bands
 	- add-to-homepage button
 	- homepage product list widget
@@ -67,7 +80,7 @@ NICE-TO-HAVES
 
 
 REDESIGN
---------
+------------------------------------------------------------------------------
 - rethink events so that they can be rebound and canceled all at once
 	- ajax
 	- listen
@@ -76,9 +89,13 @@ REDESIGN
 
 - rethink browsing entirely!
 
+- make everything a filter
+	- filter.parent_vid - filter shows only when vid is selected
+	- filterval.parent_vid - value shows only when vid is selected
+
 
 IMPROVED SEARCH
----------------
+------------------------------------------------------------------------------
 - return a list of matching category names (first 10) + count
 - return a list of matching brand names (first 10) + count
 - return the list of matching product names (first page) + count

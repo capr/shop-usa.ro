@@ -44,6 +44,18 @@ if POST then
 	end
 end
 
+local cart = query1([[
+	select
+		u.promocode,
+		c.discount
+	from
+		usr u
+		left join promocode c
+			on c.promocode = u.promocode and c.expires > now()
+	where
+		u.uid = ?
+]], uid())
+
 local t = query([[
 	select
 		ci.ciid,
@@ -93,8 +105,9 @@ local t = query([[
 		i.position, i.id_image
 ]], usd_rate(), usd_rate(), uid())
 
-local cjson = require'cjson'
-local cart = {buynow = {}, buylater = {}}
+cart.buynow = {}
+cart.buylater = {}
+
 for i,grp in groupby(t, 'buylater') do
 	local items = grp[1].buylater == 1 and cart.buylater or cart.buynow
 	for i,ci in groupby(grp, 'ciid') do

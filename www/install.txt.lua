@@ -76,25 +76,25 @@ qsubst'atime   timestamp default current_timestamp'
 qsubst'mtime   timestamp' --on update current_timestamp
 qsubst'money   decimal(20,6)'
 qsubst'qty     decimal(20,6)'
+qsubst'percent decimal(20,6)'
 qsubst'lang    char(2) character set ascii not null'
 
 --drop everything
 nodrop = true
-droptable'nlemail'
+droptable'promocode'
 droptable'convrate'
+droptable'nlemail'
 droptable'ordrlog'
 droptable'ordritem'
 droptable'ordr'
 droptable'cartitem'
 droptable'usr'
-
-nodrop = false
-
 droptable'filterprod'
 droptable'filterval'
 droptable'filtercat'
 droptable'filter'
 
+nodrop = false
 droptable'combival'
 droptable'combi'
 droptable'img'
@@ -249,6 +249,7 @@ $table usr (
 	admin       $bool,
 	note        text,
 	clientip    $name,
+	promocode   $name,
 	atime       $atime,
 	mtime       $mtime
 );
@@ -328,6 +329,14 @@ $table convrate (
 	date        date not null,
 	primary key (ron, usd, date)
 )
+]]
+
+pq[[
+$table promocode (
+	code        $name primary key,
+	expires     timestamp,
+	discount    $percent
+);
 ]]
 
 --create fulltext indices
