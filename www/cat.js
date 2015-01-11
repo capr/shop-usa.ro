@@ -121,6 +121,7 @@ action.cat = function(catid, pagenum, order, q, fq) {
 
 	catid = intarg(catid) || g_home_catid
 	pagenum = intarg(pagenum) || 1
+	if (q == '-') q = null
 
 	$('#sidebar').show()
 
