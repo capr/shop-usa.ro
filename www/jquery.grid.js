@@ -43,10 +43,10 @@ function grid(g_opt) {
 		// tree aspect
 		tree_field: null,
 		// behavior
-		page_rows: 20,            // how many rows to move on page-down/page-up
-		immediate_mode: false,    // stay in edit mode while navigating
-		save_on_exit_row: true,   // trigger save on vertical movement
-		save_on_exit_edit: false, // trigger save when done editing each cell
+		page_rows: 20,              // how many rows to move on page-down/page-up
+		immediate_mode: false,      // stay in edit mode while navigating
+		save_on_exit_row: true,     // trigger save on vertical movement
+		save_on_exit_edit: false,   // trigger save when done editing each cell
 	}
 
 	var d
@@ -459,7 +459,7 @@ function grid(g_opt) {
 		d.remove(ri)
 
 		// remove from DOM
-		row.remove()
+		g.render()
 
 		// activate the row on the same cell as before
 		g.activate_cell(g.cell(ri, ci))

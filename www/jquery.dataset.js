@@ -609,13 +609,13 @@ function dataset(d_opt) {
 
 	// server-side order-by expression
 	d.sort_expr = function() {
-		var s = ''
+		var t = []
 		for (var fi = 0; fi < fields.length; fi++) {
 			var field = fields[fi]
 			if (field.name && field.sort)
-				s += field.name+':'+field.sort
+				t.push(field.name+':'+field.sort)
 		}
-		return s
+		return t.join(',')
 	}
 
 	// url forming

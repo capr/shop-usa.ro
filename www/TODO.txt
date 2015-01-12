@@ -1,7 +1,12 @@
 TODO
 ------------------------------------------------------------------------------
+
+- rename atime -> ctime on all tables
+- add atime on usr
+- set usr.atime for every request that comes with a session_uid()
+	- touch_usr()
+
 - email abandoned cart after 2 days of inactivity
-	- detect inactivity: set usr.atime for every request that comes with a session_uid()
 	- checker script
 		- check all users with usr.atime > 48h that have cart items
 		- generate a promo code that lasts 24h
@@ -21,6 +26,7 @@ FLASHBUGS
 ------------------------------------------------------------------------------
 - forgot pass link -> trigger usr event
 - google fucking analytics keeps the spinning wheel turning as usual...
+
 
 FLASHFEATS
 ------------------------------------------------------------------------------
