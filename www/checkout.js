@@ -29,7 +29,7 @@ function update_cart(cart_) {
 	g_cart = cart_
 
 	if (!g_cart.buynow.length)
-		exec('/cart')
+		exec('/account')
 
 	var totals = compute_totals()
 	update_totals(totals)
