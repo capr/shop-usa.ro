@@ -6,8 +6,6 @@ TODO
 
 - email cos abandonat dupa 2 zile
 
-- promo codes: enter them on the checkout too
-
 
 BACKEND GRIDS
 ------------------------------------------------------------------------------
