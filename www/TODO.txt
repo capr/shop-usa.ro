@@ -1,9 +1,11 @@
 TODO
 ------------------------------------------------------------------------------
-- make cron work
-- monitor luajit and send an email with log_data and log_bugs after it finishes
-
-- email cos abandonat dupa 2 zile
+- email abandoned cart after 2 days of inactivity
+	- detect inactivity: set usr.atime for every request that comes with a session_uid()
+	- checker script
+		- check all users with usr.atime > 48h that have cart items
+		- generate a promo code that lasts 24h
+		- send emails to each user with the code
 
 
 BACKEND GRIDS
