@@ -1,6 +1,5 @@
 TODO
 ------------------------------------------------------------------------------
-- make update_6pm a one-shot run
 - make cron work
 - monitor luajit and send an email with log_data and log_bugs after it finishes
 
