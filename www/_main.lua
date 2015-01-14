@@ -297,6 +297,12 @@ local mime_types = {
 	json = 'application/json',
 }
 
+function touch_usr()
+	local uid = session_uid()
+	if not uid then return end
+	query('update usr set atime = now() where uid = ?', uid)
+end
+
 function action(action, ...)
 
 	--find the action.
@@ -391,6 +397,7 @@ local function main()
 	check_img()
 	parse_request()
 	local act, args = parse_path()
+	touch_usr() --update usr.atime on all requests, except image requests.
 	if act == 'app' then
 		push_outbuf()
 		action(act, unpack(args))

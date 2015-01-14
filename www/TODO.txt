@@ -1,11 +1,6 @@
 TODO
 ------------------------------------------------------------------------------
 
-- rename atime -> ctime on all tables
-- add atime on usr
-- set usr.atime for every request that comes with a session_uid()
-	- touch_usr()
-
 - email abandoned cart after 2 days of inactivity
 	- checker script
 		- check all users with usr.atime > 48h that have cart items
