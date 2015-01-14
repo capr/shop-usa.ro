@@ -64,6 +64,7 @@ action.login = function(token) {
 }
 
 action.reset_password = function(token) {
+	hide_nav()
 
 	render('reset_pass', {}, '#main')
 	$('#pass').focus()

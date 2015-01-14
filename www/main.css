@@ -426,8 +426,8 @@ input.price {
 /* slider ----------------------------------------------------------------- */
 
 .banner { position: relative; overflow: auto; }
-    .banner li { list-style: none; }
-        .banner ul li { float: left; }
+.banner li { list-style: none; }
+.banner ul li { float: left; }
 
 .banner .dots {
 	position: absolute;
