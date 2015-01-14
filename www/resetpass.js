@@ -19,10 +19,6 @@ action.forgot_password = function() {
 		},
 	})
 
-	$('#forgot_pass_form').submit(function(e) {
-		e.preventDefault()
-	})
-
 	$('#btn_send_email').click(function() {
 		if (!$('#forgot_pass_form').valid()) {
 			validator.focusInvalid()
@@ -36,6 +32,11 @@ action.forgot_password = function() {
 				$('#server_error').show()
 			})
 		}
+	})
+
+	$('#forgot_pass_form').submit(function(e) {
+		e.preventDefault()
+		$('#btn_send_email').click()
 	})
 }
 
