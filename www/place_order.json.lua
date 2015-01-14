@@ -28,19 +28,19 @@ ngx.sleep(0.8)
 local oid = iquery([[
 	insert into ordr
 		(uid, email, name, phone, addr, city, county, country, note,
-			shiptype, shipcost, promocode, discount, status, mtime)
+			shiptype, shipcost, promocode, discount, status, ctime, mtime)
 	values
-		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, 0, 'new', now())
+		(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, 0, 'new', now(), now())
 ]], uid(), email, name, phone, addr, city, county, country, note, shiptype,
 	promocode)
 
 --add the cart items at current price.
 query([[
 	insert into ordritem
-		(oid, coid, qty, price, status, mtime)
+		(oid, coid, qty, price, status, ctime, mtime)
 	select
 		?, ci.coid, ci.qty,
-		$ronprice(pa.price, ?) as price, 'new', now()
+		$ronprice(pa.price, ?) as price, 'new', now(), now()
 	from
 		cartitem ci
 		inner join ps_product_attribute pa

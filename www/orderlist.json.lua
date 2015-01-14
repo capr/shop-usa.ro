@@ -8,7 +8,7 @@ allow(admin())
 local sel = [[
 		select
 			o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
-			o.note, o.shiptype, o.shipcost, o.status, o.atime, o.mtime,
+			o.note, o.shiptype, o.shipcost, o.status, o.ctime, o.mtime,
 			o.note, o.uid,
 			o.opnote,
 			u.name as opname,
@@ -50,7 +50,7 @@ else
 				)
 		order by
 			open desc,
-			o.atime desc
+			o.ctime desc
 		]], q, q, q, q, q)
 end
 

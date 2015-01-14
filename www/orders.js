@@ -42,7 +42,7 @@ function update_order(oid, data) {
 function update_orders(data) {
 
 	$.each(data.orders, function(i,o) {
-		o.atime = shortdate(o.atime, 'always')
+		o.ctime = shortdate(o.ctime, 'always')
 		o.opname = firstname(o.opname, o.opemail)
 		o.canceled = o.status == 'canceled' ? 'canceled' : null
 		o.open = o.open ? 'open' : null
@@ -98,7 +98,7 @@ function update_order_page(o) {
 	o.statuses = select_map(statuses, o.status)
 	o.shiptypes = select_map(shiptypes, o.shiptype)
 	o.shiptype = S(o.shiptype)
-	o.atime = longdate(o.atime, 'always')
+	o.ctime = longdate(o.ctime, 'always')
 	o.uname = '{0} ({1})'.format(o.uname, o.uemail)
 	o.opname = firstname(o.opname, o.opemail)
 

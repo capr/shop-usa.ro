@@ -72,8 +72,8 @@ qsubst'hash    varchar(40) character set ascii' --hmac_sha1 in hex
 qsubst'url     varchar(2048) character set utf8 collate utf8_general_ci'
 qsubst'bool    tinyint not null default 0'
 qsubst'bool1   tinyint not null default 1'
-qsubst'atime   timestamp default current_timestamp'
-qsubst'mtime   timestamp' --on update current_timestamp
+qsubst'ctime   timestamp not null'
+qsubst'mtime   timestamp not null on update current_timestamp'
 qsubst'money   decimal(20,6)'
 qsubst'qty     decimal(20,6)'
 qsubst'percent decimal(20,6)'
@@ -176,7 +176,7 @@ $table combi ( --(combi1, combi2, ...) -> product1
 	msrp        $money,
 	stock       $qty not null,
 	imgid       $id, $fk(combi, imgid, img),
-	atime       $atime,
+	ctime       $ctime,
 	mtime       $mtime
 );
 ]]
@@ -250,7 +250,8 @@ $table usr (
 	note        text,
 	clientip    $name,
 	promocode   $name,
-	atime       $atime,
+	atime       timestamp,
+	ctime       $ctime,
 	mtime       $mtime
 );
 ]]
@@ -259,7 +260,7 @@ pq[[
 $table usrtoken (
 	token       $hash not null primary key,
 	uid         $id not null,
-	atime       timestamp
+	ctime       $ctime
 );
 ]]
 
@@ -272,7 +273,7 @@ $table cartitem (
 	qty         $id not null default 1,
 	pos         $id,
 	buylater    $bool,
-	atime       $atime,
+	ctime       $ctime,
 	mtime       $mtime
 );
 ]]
@@ -296,7 +297,7 @@ $table ordr (
 	status      $name,
 	opuid       $id, $fk(ordr, opuid, usr, uid),
 	opnote      text,
-	atime       $atime,
+	ctime       $ctime,
 	mtime       $mtime
 );
 ]]
@@ -311,7 +312,7 @@ $table ordritem (
 	note        text,
 	status      $name,
 	opuid       $id, $fk(ordritem, opuid, usr, uid),
-	atime       $atime,
+	ctime       $ctime,
 	mtime       $mtime
 );
 ]]

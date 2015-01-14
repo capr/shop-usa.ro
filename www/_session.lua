@@ -73,7 +73,12 @@ end
 
 local function create_user()
 	ngx.sleep(0.2) --make filling it up a bit harder
-	return iquery('insert into usr (clientip, mtime) values (?, now())', clientip())
+	return iquery([[
+		insert into usr
+			(clientip, ctime, mtime)
+		values
+			(?, now(), now())
+	]], clientip())
 end
 
 function auth.session()
@@ -137,9 +142,9 @@ local function transfer_cart(cur_uid, new_uid)
 		--so that both users have them.
 		query([[
 			insert into cartitem
-				(uid, pid, coid, qty, pos, buylater, atime, mtime)
+				(uid, pid, coid, qty, pos, buylater, ctime, mtime)
 			select
-				?, pid, coid, qty, pos, buylater, atime, now()
+				?, pid, coid, qty, pos, buylater, ctime, mtime
 			from cartitem where
 				uid = ?
 		]], new_uid, cur_uid)
@@ -219,12 +224,12 @@ local token_lifetime = config('pass_token_lifetime', 3600)
 local function gen_token(uid)
 
 	--now it's a good time to garbage-collect expired tokens
-	query('delete from usrtoken where atime < now() - ?', token_lifetime)
+	query('delete from usrtoken where ctime < now() - ?', token_lifetime)
 
 	--check if too many tokens were requested
 	local n = query1([[
 		select count(1) from usrtoken where
-			uid = ? and atime > now() - ?
+			uid = ? and ctime > now() - ?
 		]], uid, token_lifetime)
 	if tonumber(n) >= config('pass_token_maxcount', 2) then
 		return
@@ -233,8 +238,12 @@ local function gen_token(uid)
 	local token = pass_hash(random_string(32))
 
 	--add the token to db (break on collisions)
-	query('insert into usrtoken (token, uid) values (?, ?)',
-		pass_hash(token), uid)
+	query([[
+		insert into usrtoken
+			(token, uid, ctime)
+		values
+			(?, ?, now())
+		]], pass_hash(token), uid)
 
 	return token
 end
@@ -260,7 +269,7 @@ end
 local function token_uid(token)
 	ngx.sleep(0.2) --slow down brute-forcing
 	return query1([[
-		select uid from usrtoken where token = ? and atime > now() - ?
+		select uid from usrtoken where token = ? and ctime > now() - ?
 		]], pass_hash(token), token_lifetime)
 end
 

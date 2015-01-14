@@ -330,7 +330,7 @@ action.account = function() {
 		load_content('#orders_section', '/orders.json', function(orders) {
 
 			$.each(orders.orders, function(i,o) {
-				o.from_atime = from_date(longdate(o.atime, true))
+				o.from_ctime = from_date(longdate(o.ctime, true))
 			})
 
 			render('orders', orders, '#orders_section')

@@ -12,9 +12,9 @@ if POST then
 
 		query([[
 			insert into ordritem
-				(qty, status, coid, mtime, oid, price)
+				(qty, status, coid, ctime, mtime, oid, price)
 			select
-				 1, 'new', pa.id_product_attribute, now(), ?, $ronprice(pa.price, ?)
+				 1, 'new', pa.id_product_attribute, now(), now(), ?, $ronprice(pa.price, ?)
 			from
 				ps_product_attribute pa
 			where

@@ -5,8 +5,8 @@ for i,oi in groupby(query([[
 	select
 		o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
 		o.note, o.shiptype, o.shipcost, o.promocode, o.discount,
-		o.status, o.atime, o.mtime,
-		i.oiid, i.coid, i.qty, i.price, i.status, i.atime as iatime, i.mtime as imtime,
+		o.status, o.ctime, o.mtime,
+		i.oiid, i.coid, i.qty, i.price, i.status, i.ctime as ictime, i.mtime as imtime,
 		p.id_product as pid,
 		pl.name,
 		group_concat(distinct al.name separator ', ') as vnames,
@@ -49,7 +49,7 @@ for i,oi in groupby(query([[
 		addr = o.addr, city = o.city, county = o.county, country = o.country,
 		note = o.note, shiptype = o.shiptype, shipcost = o.shipcost,
 		promocode = o.promocode, discount = o.discount,
-		status = o.status, atime = o.atime, mtime = o.mtime,
+		status = o.status, ctime = o.ctime, mtime = o.mtime,
 		items = {},
 	}
 	table.insert(orders, order)
@@ -57,7 +57,7 @@ for i,oi in groupby(query([[
 	for i,t in ipairs(oi) do
 		order.items[i] = {
 			oiid = t.oiid, coid = t.coid, qty = t.qty, price = t.price,
-			status = t.status, atime = t.iatime, mtime = t.imtime,
+			status = t.status, ctime = t.ictime, mtime = t.imtime,
 			pid = t.pid,
 			name = t.name,
 			vnames = t.vnames,

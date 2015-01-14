@@ -19,9 +19,9 @@ if POST then
 	if action == 'add' then
 		query([[
 			insert into cartitem
-				(uid, pid, coid, pos, buylater, mtime)
+				(uid, pid, coid, pos, buylater, ctime, mtime)
 			values
-				(?, ?, ?, ?, ?, now())
+				(?, ?, ?, ?, ?, now(), now())
 		]], uid(), data.pid, data.coid, data.pos or 0, data.buylater or 0)
 		out_summary()
 		return
@@ -65,7 +65,7 @@ local t = query([[
 		m.name as bname,
 		i.id_image as imgid,
 		ci.buylater,
-		$timeago(ci.atime) as atime_ago
+		$timeago(ci.ctime) as ctime_ago
 	from
 		cartitem ci
 	inner join ps_product p
@@ -95,7 +95,7 @@ local t = query([[
 		and p.active = 1
 	order by
 		ci.buylater,
-		ci.pos, ci.atime desc, ci.ciid,
+		ci.pos, ci.ctime desc, ci.ciid,
 		a.position, a.id_attribute,
 		i.position, i.id_image
 ]], usd_rate(), usd_rate(), uid())
@@ -114,7 +114,7 @@ for i,grp in groupby(t, 'buylater') do
 			bname = t.bname,
 			vids = {}, vnames = {}, dnames = {},
 			imgid = t.imgid, imgs = {},
-			atime_ago = tonumber(t.atime_ago),
+			ctime_ago = tonumber(t.ctime_ago),
 		}
 		table.insert(items, combi)
 		for i,t in groupby(ci, 'vid') do

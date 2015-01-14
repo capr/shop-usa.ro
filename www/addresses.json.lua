@@ -10,7 +10,7 @@ local addr = query([[
 	where
 		o.uid = ?
 	order by
-		o.atime desc
+		o.mtime desc
 ]], uid())
 
 out(json({addr = addr}))
