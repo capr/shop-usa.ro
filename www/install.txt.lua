@@ -250,7 +250,7 @@ $table usr (
 	note        text,
 	clientip    $name,
 	promocode   $name,
-	atime       timestamp,
+	atime       timestamp not null default 0,
 	ctime       $ctime,
 	mtime       $mtime
 );

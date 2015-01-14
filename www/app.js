@@ -28,6 +28,11 @@ function init_homepage() {
 		fluid: false
 	})
 
+	if (location.pathname == '/')
+		$('#homepage').show()
+	else
+		$('#homepage').hide()
+
 	//$('.banner img').show().maphilight()
 }
 

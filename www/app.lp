@@ -146,7 +146,7 @@ end
 					<td id=selected_filters height=40 valign=middle>
 				</tr>
 			</table>
-			<div id=homepage>
+			<div id=homepage class=hidden>
 				<div class=banner>
 					<ul>
 						<li><img src="/slide1.jpg" usemap="#slide1"></li>
