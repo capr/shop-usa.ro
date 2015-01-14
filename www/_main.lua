@@ -300,7 +300,7 @@ local mime_types = {
 function touch_usr()
 	local uid = session_uid()
 	if not uid then return end
-	query('update usr set atime = now() where uid = ?', uid)
+	query('update usr set atime = now(), mtime = mtime where uid = ?', uid)
 end
 
 function action(action, ...)
