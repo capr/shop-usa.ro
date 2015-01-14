@@ -663,7 +663,7 @@ end
 						<span class="gray small">
 							<t class=en>Added</t>
 							<t class=ro>Adaugat</t>
-							<span class=timeago timeago="{{atime_ago}}"></span>
+							<span class=timeago timeago="{{ctime_ago}}"></span>
 						</span>
 					</td>
 				</tr>
@@ -1289,7 +1289,7 @@ end
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
 			<td>
-				<h4>Comanda {{{oid}}} {{from_atime}}</h4>
+				<h4>Comanda {{{oid}}} {{from_ctime}}</h4>
 				<table width=100%>
 					{{#items}}
 					<tr>
@@ -1366,7 +1366,7 @@ end
 		{{#orders}}
 		<tr oid={{{oid}}} class="{{{canceled}}} {{{open}}}">
 			<td>{{{oid}}}</td>
-			<td>{{atime}}</td>
+			<td>{{ctime}}</td>
 			<td>{{opname}}</td>
 			<td class=nowrap width=1>
 				<div class=ellipsis style="width: 400px">{{opnote}}</div>
@@ -1388,8 +1388,8 @@ end
 						<t class=ro>Comenzi</t>
 					</a>
 					&gt;
-					<t class=en>Order {{oid}} from {{atime}}</t>
-					<t class=ro>Comanda {{oid}} din {{atime}}</t>
+					<t class=en>Order {{oid}} from {{ctime}}</t>
+					<t class=ro>Comanda {{oid}} din {{ctime}}</t>
 				</h3>
 				<h4 style="margin: 0">
 					<t class=en>From {{uname}}, {{uphone}}</t>
