@@ -19,6 +19,10 @@ action.forgot_password = function() {
 		},
 	})
 
+	$('#forgot_pass_form').submit(function(e) {
+		e.preventDefault()
+	})
+
 	$('#btn_send_email').click(function() {
 		if (!$('#forgot_pass_form').valid()) {
 			validator.focusInvalid()

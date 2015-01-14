@@ -6,3 +6,4 @@ nginx/conf/secrets.conf
 www/img
 www/img/
 env
+www/_git
