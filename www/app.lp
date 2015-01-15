@@ -878,10 +878,10 @@ end
 				<div ciid={{{ciid}}}>
 					<table width=100%>
 						<tr>
-							<td width=20%>
+							<td width=20% valign=top>
 								<a href="/p/{{{pid}}}/{{{coid}}}"><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 							</td>
-							<td>
+							<td valign=top>
 								<a href="/p/{{{pid}}}/{{{coid}}}"><b>{{{bname}}}</b> {{{name}}}</a>
 								<br>
 								<span class=price>
