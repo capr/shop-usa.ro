@@ -93,20 +93,24 @@ function firstname(name, email) {
 	}
 }
 
+function rel_time(s) {
+	if (s > 2 * 365 * 24 * 3600)
+		return S('years', '{0} years').format((s / (365 * 24 * 3600)).toFixed(0))
+	else if (s > 2 * 30.5 * 24 * 3600)
+		return S('months', '{0} months').format((s / (30.5 * 24 * 3600)).toFixed(0))
+	else if (s > 1.5 * 24 * 3600)
+		return S('days', '{0} days').format((s / (24 * 3600)).toFixed(0))
+	else if (s > 2 * 3600)
+		return S('hours', '{0} hours').format((s / 3600).toFixed(0))
+	else if (s > 2 * 60)
+		return S('minutes', '{0} minutes').format((s / 60).toFixed(0))
+	else
+		return S('one_minute', '1 minute')
+}
+
 function timeago(time) {
 	var s = (Date.now() / 1000) - time
-	if (s > 2 * 365 * 24 * 3600)
-		return S('years_ago', '{0} years ago').format((s / (365 * 24 * 3600)).toFixed(0))
-	else if (s > 2 * 30.5 * 24 * 3600)
-		return S('months_ago', '{0} months ago').format((s / (30.5 * 24 * 3600)).toFixed(0))
-	else if (s > 1.5 * 24 * 3600)
-		return S('days_ago', '{0} days ago').format((s / (24 * 3600)).toFixed(0))
-	else if (s > 2 * 3600)
-		return S('hours_ago', '{0} hours ago').format((s / 3600).toFixed(0))
-	else if (s > 2 * 60)
-		return S('minutes_ago', '{0} minutes ago').format((s / 60).toFixed(0))
-	else
-		return S('one_minute_ago', '1 minute ago')
+	return (s > 0 ? S('time_ago', '{0} ago') : S('in_time', 'in {0}')).format(rel_time(Math.abs(s)))
 }
 
 var short_months =
@@ -165,24 +169,24 @@ function from_date(d) {
 	return (d.match(/Azi/) ? 'de' : S('from', 'from')) + ' ' + d
 }
 
-var update_timeago
-(function() {
-	function update_timeago_elem() {
-		var time = parseInt($(this).attr('time'))
-		if (!time) {
-			// set client-relative time from timeago attribute
-			var time_ago = parseInt($(this).attr('timeago'))
-			if (!time_ago) return
-			time = (Date.now() / 1000) - time_ago
-			$(this).attr('time', time)
-		}
-		$(this).html(timeago(time))
+function update_timeago_elem() {
+	var time = parseInt($(this).attr('time'))
+	if (!time) {
+		// set client-relative time from timeago attribute
+		var time_ago = parseInt($(this).attr('timeago'))
+		if (!time_ago) return
+		time = (Date.now() / 1000) - time_ago
+		$(this).attr('time', time)
 	}
-	update_timeago = function() {
-		$('.timeago').each(update_timeago_elem)
-	}
-	setInterval(update_timeago, 60 * 1000)
-})()
+	$(this).html(timeago(time))
+}
+
+function update_timeago() {
+	$('.timeago').each(update_timeago_elem)
+}
+
+setInterval(update_timeago, 60 * 1000)
+
 
 // pub/sub -------------------------------------------------------------------
 

@@ -59,7 +59,8 @@ local function compute_totals(oid, shiptype)
 
 	t.subtotal =
 		tonumber(query1('select sum(price) from ordritem where oid = ?', oid))
-	t.discount = promocode_discount(promocode)
+	local p = promocode_data(promocode)
+	t.discount = p and p.discount
 	t.discamount = t.discount and math.ceil(t.subtotal * t.discount / 100) or 0
 	t.disctotal = t.subtotal - t.discamount
 	t.shipcost = (shiptype ~= 'store' and t.disctotal < 300 and 25) or 0

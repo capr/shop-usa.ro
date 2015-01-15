@@ -75,9 +75,9 @@ local function create_user()
 	ngx.sleep(0.2) --make filling it up a bit harder
 	return iquery([[
 		insert into usr
-			(clientip, ctime, mtime)
+			(clientip, atime, ctime, mtime)
 		values
-			(?, now(), now())
+			(?, now(), now(), now())
 	]], clientip())
 end
 

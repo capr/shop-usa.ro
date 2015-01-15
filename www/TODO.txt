@@ -1,11 +1,8 @@
 TODO
 ------------------------------------------------------------------------------
 
-- email abandoned cart after 2 days of inactivity
-	- checker script
-		- check all users with usr.atime > 48h that have cart items
-		- generate a promo code that lasts 24h
-		- send emails to each user with the code
+promo codes
+	-
 
 
 BACKEND GRIDS

@@ -6,12 +6,16 @@ C('default_lang', 'ro')
 
 if (lang() == 'ro') {
 
-S('years_ago', 'acum {0} ani')
-S('months_ago', 'acum {0} luni')
-S('days_ago', 'acum {0} zile')
-S('hours_ago', 'acum {0} ore')
-S('minutes_ago', 'acum {0} minute')
-S('one_minute_ago', 'acum 1 minut')
+S('years', '{0} ani')
+S('months', '{0} luni')
+S('days', '{0} zile')
+S('hours', '{0} ore')
+S('minutes', '{0} minute')
+S('one_minute', '1 minut')
+
+S('time_ago', 'acum {0}')
+S('in_time', 'in {0}')
+
 S('from', 'din')
 S('today', 'Azi')
 S('date_format', '{day} {month} {year} {time}')

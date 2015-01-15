@@ -520,8 +520,8 @@ end
 		{{#discount}}
 		<tr>
 			<td align=right>
-				<t class=en>Discount:</t>
-				<t class=ro>Discount:</t>
+				<t class=en>Discount {{{discount}}}%:</t>
+				<t class=ro>Discount {{{discount}}}%:</t>
 			</td>
 			<td></td>
 			<td align=right class="price nowrap">
@@ -564,11 +564,14 @@ end
 			<td valign=bottom align=right>
 				<br>
 				<button type=button id=btn_checkout class=orange>
-					<t class=en>Place Order</t>
-					<t class=ro>Comanda</t>
+					<t class=en>Place Order*</t>
+					<t class=ro>Comanda*</t>
 				</button>
 			</td>
 		</tr>
+		<tr>
+			<td colspan=3 align=right class=price>* livrarea in 10 zile lucratoare.</td>
+		</td>
 		{{/buynow_count}}
 	</table>
 	<h2>
@@ -606,6 +609,21 @@ end
 <script type="text/x-mustache" id=promocode_template>
 	<table>
 		<tr>
+			<td></td>
+			<td></td>
+			<td colspan=2 class="price small">
+				{{#promocode}}{{^discexpires_ago}}
+					<t class=en>Invalid Code</t>
+					<t class=ro>Cod Invalid</t>
+				{{/discexpires_ago}}{{/promocode}}
+				{{#discexpires_ago}}
+					<t class=en>Expires</t>
+					<t class=ro>Expira</t>
+					<span class=timeago timeago="{{discexpires_ago}}"></span>
+				{{/discexpires_ago}}
+			</td>
+		</tr>
+		<tr>
 			<td>
 				<b>
 					<t class=en>Promo Code:</t>
@@ -613,7 +631,7 @@ end
 				</b>
 			</td>
 			<td width=10></td>
-			<td width=150 class=nowrap>
+			<td width=120 class=nowrap>
 				<input id=promocode type=text
 					placeholder:en="promo code"
 					placeholder:ro="cod promo" value="{{promocode}}">
@@ -902,8 +920,8 @@ end
 					{{#discount}}
 					<tr>
 						<td align=right class=nowrap>
-							<t class=en>Discount:</t>
-							<t class=ro>Discount:</t>
+							<t class=en>Discount {{{discount}}}%:</t>
+							<t class=ro>Discount {{{discount}}}%:</t>
 						</td>
 						<td align=right class="price nowrap">
 							<t class=en>-{{{discamount}}} RON</t>

@@ -49,7 +49,11 @@ end
 
 local cart = {}
 cart.promocode = load_promocode()
-cart.discount = promocode_discount(cart.promocode)
+local p = promocode_data(cart.promocode)
+if p then
+	cart.discount = p.discount
+	cart.discexpires_ago = p.expires_ago
+end
 
 local t = query([[
 	select

@@ -133,7 +133,8 @@ function update_cart_page(cart) {
 	var totals = compute_totals(cart)
 
 	render('cart_page', $.extend({
-		promocode:      cart.promocode,
+		promocode:       cart.promocode,
+		discexpires_ago: cart.discexpires_ago,
 		buynow:         render('cart_list', cart.buynow),
 		buylater:       render('cart_list', cart.buylater),
 		buylater_count: cart.buylater.length,

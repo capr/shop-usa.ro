@@ -35,13 +35,15 @@ function update_cart(cart_) {
 	update_totals(totals)
 
 	var data = $.extend({
-		promocode:      g_cart.promocode,
-		items:          g_cart.buynow,
-		buylater_count: g_cart.buylater.length,
-		buynow_count:   g_cart.buynow.length,
+		promocode:       g_cart.promocode,
+		discexpires_ago: g_cart.discexpires_ago,
+		items:           g_cart.buynow,
+		buylater_count:  g_cart.buylater.length,
+		buynow_count:    g_cart.buynow.length,
 	}, totals)
 
 	render('checkout_cart_section', data, '#cart_section')
+	update_timeago()
 
 	$('#btn_promocode').click(function() {
 		var promocode = $('#promocode').val()

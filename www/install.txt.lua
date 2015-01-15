@@ -92,9 +92,9 @@ droptable'filterprod'
 droptable'filterval'
 droptable'filtercat'
 droptable'filter'
+droptable'promocode'
 
 nodrop = false
-droptable'promocode'
 droptable'combival'
 droptable'combi'
 droptable'img'
@@ -250,6 +250,7 @@ $table usr (
 	note        text,
 	clientip    $name,
 	promocode   $name,
+	codesent    bool0,
 	atime       timestamp not null default 0,
 	ctime       $ctime,
 	mtime       $mtime
@@ -337,8 +338,10 @@ $table convrate (
 pq[[
 $table promocode (
 	promocode   $name primary key,
-	expires     timestamp,
-	discount    $percent
+	expires     timestamp not null,
+	discount    $percent,
+	reason      $name,
+	uid         $id
 );
 ]]
 
