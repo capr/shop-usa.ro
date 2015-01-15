@@ -878,7 +878,7 @@ end
 				<div ciid={{{ciid}}}>
 					<table width=100%>
 						<tr>
-							<td width=15%>
+							<td width=20%>
 								<a href="/p/{{{pid}}}/{{{coid}}}"><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 							</td>
 							<td>
@@ -892,7 +892,6 @@ end
 								<br>
 								<br>
 							</td>
-							<td align=right></td>
 						</tr>
 					</table>
 				</div>

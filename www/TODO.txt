@@ -1,10 +1,3 @@
-TODO
-------------------------------------------------------------------------------
-
-promo codes
-	-
-
-
 BACKEND GRIDS
 ------------------------------------------------------------------------------
 - users
@@ -13,32 +6,19 @@ BACKEND GRIDS
 - promo codes
 - products ?
 
-
-FLASHBUGS
-------------------------------------------------------------------------------
-- forgot pass link -> trigger usr event
-- google fucking analytics keeps the spinning wheel turning as usual...
-
-
-FLASHFEATS
-------------------------------------------------------------------------------
-- order history: show order status and per-item status, especially "canceled"
-- facebook like button on the page header
+- checkout: list of addresses from past orders
 
 - _escaped_fragment_
 
 
 USABILITY BUGS (CONFUSIONS)
 ------------------------------------------------------------------------------
+- forgot pass link -> trigger usr event
+- google fucking analytics keeps the spinning wheel turning as usual...
 - brand page shows category tree but people expect to see products
-- scroll doesn't follow if screen is to small. solutions:
-	- get antiscroll
-	- make font smaller
-	- leave it as it is
 - brand list ordering (vert-horiz instead of horiz-vert)
 - informatii despre pret (contine sau nu TVA) - "preturile afisate sunt cele finale'
 - textul de la pastreaza mai tarziu (ala mic si gri) nu e suficient de vizibil
-- order: warn if shipping cost is not standard when saving
 
 
 HARD BUGS
@@ -52,8 +32,6 @@ HARD BUGS
 
 FUNCTIONALITY
 ------------------------------------------------------------------------------
-- user list: check/uncheck admin
-- checkout: list of addresses from past orders
 - search: use with filters and add to breadcrumbs
 
 ------------------------------------------------------------------------------
@@ -80,7 +58,7 @@ NICE-TO-HAVES
 	- better thank you page (user might feel generous after placing an order):
 		- newsletter widget
 		- facebook like button
-- abandoned cart email
+- facebook like button on the page header
 
 
 REDESIGN
