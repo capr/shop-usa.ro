@@ -39,6 +39,7 @@ if POST then
 				note = ?,
 				shiptype = ?,
 				shipcost = ?,
+				discount = ?,
 				status = ?,
 				opuid = ?,
 				opnote = ?,
@@ -49,7 +50,8 @@ if POST then
 				str_arg(o.email), str_arg(o.name), str_arg(o.phone),
 				str_arg(o.addr), str_arg(o.city), str_arg(o.county),
 				str_arg(o.country), str_arg(o.note), str_arg(o.shiptype),
-				str_arg(o.shipcost), str_arg(o.status), uid(), str_arg(o.opnote),
+				str_arg(o.shipcost), str_arg(o.discount),
+				str_arg(o.status), uid(), str_arg(o.opnote),
 				oid)
 
 		for i,oi in ipairs(o.items) do

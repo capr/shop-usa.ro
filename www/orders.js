@@ -87,13 +87,16 @@ action.orders = function(q) {
 
 function update_order_page(o) {
 
-	o.total = 0
+	o.subtotal = 0
 	$.each(o.items, function(i,oi) {
 		oi.statuses = select_map(item_statuses, oi.status)
 		oi.canceled = oi.status == 'canceled' ? 'canceled' : null
 		oi.item_opname = firstname(oi.opname, oi.opemail)
-		o.total += oi.canceled ? 0 : oi.price
+		o.subtotal += oi.canceled ? 0 : oi.price
 	})
+	o.discpercent = (o.discount / o.subtotal * 100).toFixed(0)
+	o.subtotal -= o.discount
+	o.total = o.subtotal + o.shipcost
 
 	o.statuses = select_map(statuses, o.status)
 	o.shiptypes = select_map(shiptypes, o.shiptype)
@@ -129,6 +132,7 @@ function update_order_page(o) {
 			phone:    $('#phone').val(),
 			shiptype: $('#shiptype').val(),
 			shipcost: $('#shipcost').val(),
+			discount: $('#discount').val(),
 			addr:     $('#addr').val(),
 			city:     $('#city').val(),
 			county:   $('#county').val(),

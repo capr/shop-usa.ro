@@ -72,7 +72,7 @@ local function compute_totals(oid, shiptype)
 			discount = ?
 		where
 			oid = ?
-	]], t.shipcost, t.discount, oid)
+	]], t.shipcost, t.discamount, oid)
 
 	return t
 end

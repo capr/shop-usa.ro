@@ -1495,6 +1495,23 @@ end
 		<tr>
 			<td></td>
 			<td></td>
+			<td><b>Discount {{{discpercent}}}%: </b></td>
+			<td class=price align=right>
+				<input type=text id=discount class=price value="{{{discount}}}"><span class=price>RON</span>
+			</td>
+			<td colspan=3></td>
+		</td>
+		<tr>
+			<td></td>
+			<td></td>
+			<td><b>Subtotal: </b></td>
+			<td class=price align=right>{{{subtotal}}} RON</span>
+			</td>
+			<td colspan=3></td>
+		</td>
+		<tr>
+			<td></td>
+			<td></td>
 			<td><b>Total: </b></td>
 			<td class=price align=right>{{{total}}} RON</span>
 			</td>
