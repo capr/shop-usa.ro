@@ -11,7 +11,8 @@ Discountul il poti revendica folosind codul promo:
 Codul este valabil 24 de ore.
 
 Pentru a beneficia de discount, nu uita sa adaugi codul
-in campul "Cod Promotie" cand comanzi.
+in campul "Cod Promotie" in pagina cosului de cumparaturi
+sau cand comanzi.
 
 Prietenii tai
 de la shop-usa.ro.
