@@ -570,7 +570,11 @@ end
 			</td>
 		</tr>
 		<tr>
-			<td colspan=3 align=right class=price>* livrarea in 10 zile lucratoare.</td>
+			<td colspan=3 align=right class=price>
+				<br>
+				<t class=en>* delivery in 10 working days.</t>
+				<t class=ro>* livrarea in 10 zile lucratoare.</t>
+			</td>
 		</td>
 		{{/buynow_count}}
 	</table>
