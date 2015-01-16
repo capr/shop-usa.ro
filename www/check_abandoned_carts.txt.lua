@@ -24,7 +24,9 @@ for i,u in ipairs(query([[
 			promocode = promocode,
 			sales_email = from,
 		})
-		sendmail(from, u.email, subj, msg)
+		local rcpt = u.email
+		local rcpt = 'cosmin.apreutesei@gmail.com'
+		sendmail(from, rcpt, subj, msg)
 		query('update usr set codesent = 1 where uid = ?', u.uid)
 		print(u.email, u.name, promocode)
 	end
