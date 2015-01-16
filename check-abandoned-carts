@@ -1,0 +1,10 @@
+#!/bin/bash
+
+lines="$(wget http://shop-usa.ro/check_abandoned_carts.txt -q -O-)"
+[ "$lines" ] || exit
+
+(
+echo "Subject: abandoned cart emails"
+echo
+echo "$lines"
+) | sendmail cosmin.apreutesei@gmail.com
