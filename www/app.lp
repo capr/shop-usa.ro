@@ -572,6 +572,7 @@ end
 		<tr>
 			<td colspan=3 align=right class=price>
 				<br>
+				<br>
 				<t class=en>* delivery in 10 working days.</t>
 				<t class=ro>* livrarea in 10 zile lucratoare.</t>
 			</td>
