@@ -401,7 +401,9 @@ local function main()
 	check_img()
 	parse_request()
 	local act, args = parse_path()
-	touch_usr() --update usr.atime on all requests, except image requests.
+	if act ~= 'check_abandoned_carts.txt' then
+		touch_usr() --update usr.atime on all requests, except image requests.
+	end
 	if act == 'app' then
 		push_outbuf()
 		action(act, unpack(args))
