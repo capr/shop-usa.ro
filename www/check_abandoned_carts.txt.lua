@@ -24,6 +24,7 @@ for i,u in ipairs(query([[
 			promocode = promocode,
 			sales_email = from,
 		})
+		local subj = S('abandoned_cart_email_subject', 'We miss you')
 		sendmail(from, u.email, subj, msg)
 		query('update usr set codesent = 1 where uid = ?', u.uid)
 		print(u.email, u.name, promocode)

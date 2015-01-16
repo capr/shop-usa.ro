@@ -15,4 +15,5 @@ Prietenii tai
 de la shop-usa.ro.
 
 Tel.    0745 577 786
-Email:  {{sales_email}}
+Email:  comenzi@shop-usa.ro
+

@@ -94,7 +94,7 @@ query([[
 --send order email to client
 local from = config'sales_email' or home_email(S('sales', 'sales'))
 
-local subj = S('order_placed_subject', 'Order %s at %s')
+local subj = S('order_placed_email_subject', 'Order %s at %s')
 local subj = string.format(subj, tostring(oid), config'shop_name' or home_domain())
 
 local order = require'order'.get(oid)
