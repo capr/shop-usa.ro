@@ -49,6 +49,13 @@ S('december', 'Decembrie')
 S('home', 'acasa')
 S('store', 'magazin')
 
+S('order_status_new', 'nepreluata')
+S('order_status_open', 'preluata')
+S('order_status_secured', 'obtinuta')
+S('order_status_shipped', 'trimisa')
+S('order_status_canceled', 'anulata')
+S('order_status_returned', 'returnata')
+
 S('move_here', 'Muta-l aici')
 S('remove', 'Sterge')
 S('price', '{0} Lei')

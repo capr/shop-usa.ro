@@ -15,4 +15,4 @@ Prietenii tai
 de la shop-usa.ro.
 
 Tel.    0745 577 786
-Email:  andreas@shop-usa.ro
+Email:  {{sales_email}}

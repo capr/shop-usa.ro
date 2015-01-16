@@ -331,6 +331,7 @@ action.account = function() {
 
 			$.each(orders.orders, function(i,o) {
 				o.from_ctime = from_date(longdate(o.ctime, true))
+				o.status = S('order_status_'+o.status, o.status)
 			})
 
 			render('orders', orders, '#orders_section')

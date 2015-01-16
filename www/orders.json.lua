@@ -6,7 +6,8 @@ for i,oi in groupby(query([[
 		o.oid, o.email, o.name, o.phone, o.addr, o.city, o.county, o.country,
 		o.note, o.shiptype, o.shipcost, o.promocode, o.discount,
 		o.status, o.ctime, o.mtime,
-		i.oiid, i.coid, i.qty, i.price, i.status, i.ctime as ictime, i.mtime as imtime,
+		i.oiid, i.coid, i.qty, i.price, i.status as istatus,
+		i.ctime as ictime, i.mtime as imtime,
 		p.id_product as pid,
 		pl.name,
 		group_concat(distinct al.name separator ', ') as vnames,
@@ -52,19 +53,24 @@ for i,oi in groupby(query([[
 		status = o.status, ctime = o.ctime, mtime = o.mtime,
 		items = {},
 	}
-	table.insert(orders, order)
 
+	local total = o.shipcost - o.discount
 	for i,t in ipairs(oi) do
 		order.items[i] = {
 			oiid = t.oiid, coid = t.coid, qty = t.qty, price = t.price,
-			status = t.status, ctime = t.ictime, mtime = t.imtime,
+			status = t.istatus, ctime = t.ictime, mtime = t.imtime,
 			pid = t.pid,
 			name = t.name,
 			vnames = t.vnames,
 			bname = t.bname,
 			imgid = t.imgid,
 		}
+		total = total + t.price * t.qty
 	end
+
+	order.total = total
+
+	table.insert(orders, order)
 end
 
 out(json({orders = orders}))

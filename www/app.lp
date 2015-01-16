@@ -549,7 +549,7 @@ end
 		</tr>
 		<tr>
 			<td align=right>
-				Total:
+				Total de plata:
 			</td>
 			<td></td>
 			<td align=right class="price nowrap">
@@ -635,6 +635,8 @@ end
 				<input id=promocode type=text
 					placeholder:en="promo code"
 					placeholder:ro="cod promo" value="{{promocode}}">
+			</td>
+			<td>
 				<button type=button id=btn_promocode class=slim
 					style="padding-left: 1em; padding-right: 1em">
 					<t class=en>Apply</t>
@@ -1101,7 +1103,7 @@ end
 						<td align=right>
 							<br>
 							<br>
-							<span class=subtotal>Total:
+							<span class=subtotal>Total de plata:
 								<span class=price>
 									<t class=en><span class=grand_total></span> RON</t>
 									<t class=ro><span class=grand_total></span> Lei</t>
@@ -1305,8 +1307,20 @@ end
 	{{#orders}}
 	<table width=100% style="border-spacing: 5px;">
 		<tr>
-			<td>
-				<h4>Comanda {{{oid}}} {{from_ctime}}</h4>
+			<td valign=top>
+				<h4 style="margin-top: 0">Comanda {{{oid}}} {{from_ctime}}</h4>
+			</td>
+			<td width=1 class=nowrap valign=top align=right>
+				<t class=en>Status:</t>
+				<t class=ro>Stare: </t>
+				{{status}}<br>
+				Total de plata: {{{total}}}
+				<t class=en>USD</t>
+				<t class=ro>Lei</t>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2>
 				<table width=100%>
 					{{#items}}
 					<tr>
@@ -1314,7 +1328,7 @@ end
 							<div oiid={{{oiid}}}>
 								<table width=100%>
 									<tr>
-										<td width=15%>
+										<td width=15% valign=top>
 											<a href="/p/{{{pid}}}/{{{coid}}}"><img src="/img/p/{{{imgid}}}-cart.jpg"></a>
 										</td>
 										<td>
@@ -1336,6 +1350,10 @@ end
 					</tr>
 					{{/items}}
 				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2 align=right>
 			</td>
 		</tr>
 	</table>
