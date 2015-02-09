@@ -93,6 +93,8 @@ function firstname(name, email) {
 	}
 }
 
+// time formatting -----------------------------------------------------------
+
 function rel_time(s) {
 	if (s > 2 * 365 * 24 * 3600)
 		return S('years', '{0} years').format((s / (365 * 24 * 3600)).toFixed(0))
@@ -186,7 +188,6 @@ function update_timeago() {
 }
 
 setInterval(update_timeago, 60 * 1000)
-
 
 // pub/sub -------------------------------------------------------------------
 
