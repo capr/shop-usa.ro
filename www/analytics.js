@@ -28,6 +28,10 @@ function analytics_pageview() {} // stub
 				useBeacon: true,
 				page: url,
 			})
+			analytics('ga'+i+'.require', 'displayfeatures', {
+				useBeacon: true,
+				page: url,
+			})
 		}
 	}
 })()
