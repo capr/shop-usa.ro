@@ -56,7 +56,6 @@ query([[
 --compute totals
 local function compute_totals(oid, shiptype)
 	local t = {}
-
 	t.subtotal =
 		tonumber(query1('select sum(price) from ordritem where oid = ?', oid))
 	local p = promocode_data(promocode)

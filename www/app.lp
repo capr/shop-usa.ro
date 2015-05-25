@@ -67,7 +67,7 @@ end
 						<div style="position: relative; top: 4px; margin-right: 20px; font-size: 80%">Comanda direct | Luni-Vineri 10-17</div>
 						<div style="position: relative; top: 4px; margin-right: 20px;">
 							<i class="fa fa-phone" style="font-size: 22px"></i>
-							<span style="font-size: 24px; line-height: 100%">0745 577 786</span>
+							<span style="font-size: 24px; line-height: 100%">0723 443 041</span>
 						</div>
 					</td>
 					<td width=200 valign=bottom align=right class=nowrap style="line-height: 100%">
@@ -201,7 +201,7 @@ end
 				<tr>
 					<td align=center class="gray small">
 						SHOP-USA |
-						str. Atena nr. 4, Bucuresti, Sector 1, Tel: 0745 577 786 |
+						str. Atena nr. 4, Bucuresti, Sector 1, Tel: 0723 443 041 |
 						Website by <a href="http://luapower.com/cosmin" target=_blank>Cosmin Apreutesei</a>
 					</td>
 				</tr>
@@ -1686,7 +1686,7 @@ end
 					<t class=en>Phone:</t>
 					<t class=ro>Telefon:</t>
 				</h3>
-				0745 577 786
+				0723 443 041
 
 				<h3>
 					<t class=en>Opening hours:</t>

@@ -1,5 +1,6 @@
 setfenv(1, require'g')
 
+config('smtp_host', '93.115.10.161')
 config('basepath', '../www')
 
 if config('lang', 'en') == 'ro' then
