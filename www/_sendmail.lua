@@ -1,6 +1,7 @@
 setfenv(1, require'g')
 require'resty_socket'
 local smtp = require'socket.smtp'
+smtp.TIMEOUT = 6000
 local mime = require'mime'
 local ltn12 = require'ltn12'
 
